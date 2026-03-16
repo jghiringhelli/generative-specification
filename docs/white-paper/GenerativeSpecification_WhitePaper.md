@@ -1,6 +1,6 @@
 # Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader
 
-**Author:** Juan Carlos Ghiringhelli, Argos  
+**Author:** Juan Carlos Ghiringhelli (Independent)  
 **Version:** 1.0  
 **Date:** March 2026  
 **Status:** Preprint  
@@ -1359,7 +1359,7 @@ The year 1957 produced two pressures that would not fully meet for sixty years: 
 
 ## About the Author
 
-Juan Carlos Ghiringhelli (JC) is a senior data and software engineer with almost two decades of professional experience building production systems across data infrastructure, AI pipelines, and distributed architectures. Originally from Latin America, he has spent his career at the intersection of engineering rigor and applied AI, working across industries before founding Argos — an independent laboratory for AI-native software development.
+Juan Carlos Ghiringhelli (JC) is a senior data and software engineer with almost two decades of professional experience building production systems across data infrastructure, AI pipelines, and distributed architectures. Originally from Latin America, he has spent his career at the intersection of engineering rigor and applied AI, working across industries as an independent engineer and researcher.
 
 He is currently building a portfolio of AI-native systems — autonomous code builders, semantic search infrastructure for developer tools, prediction market automation, and a training methodology for engineering teams — all developed under the same discipline this paper describes. His work is organized under the principle that AI does not eliminate the need for engineering judgment; it amplifies the consequences of having it or not.
 
@@ -1419,4 +1419,4 @@ Reviewers will be listed upon acceptance.
 
 ---
 
-*© 2026 Juan Carlos Ghiringhelli / Argos. All rights reserved. For republication or citation inquiries, contact the author.*
+*© 2026 Juan Carlos Ghiringhelli. All rights reserved. For republication or citation inquiries, contact the author.*

@@ -561,4 +561,4 @@ Session IDs, model version, and runner flags for all completed runs are in §S3 
 
 ---
 
-*© 2026 Juan Carlos Ghiringhelli / Argos. This supplement may be shared with reviewers for verification purposes.*
+*© 2026 Juan Carlos Ghiringhelli. This supplement may be shared with reviewers for verification purposes.*
