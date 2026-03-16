@@ -1,0 +1,89 @@
+{
+  "version": "1.0",
+  "rubric": "GS Unified Seven-Property Rubric (AX v5)",
+  "properties": [
+    {
+      "id": "derivable",
+      "name": "Derivable",
+      "description": "All implementation artifacts can be derived from the spec without external context.",
+      "maxScore": 2,
+      "scoringCriteria": {
+        "2": "All files, types, schemas, and test expectations are derivable from the spec alone.",
+        "1": "Most artifacts are derivable; minor gaps require engineer inference.",
+        "0": "Significant implementation decisions are absent from the spec."
+      }
+    },
+    {
+      "id": "executable",
+      "name": "Executable",
+      "description": "The generated project compiles and all tests pass against a live database.",
+      "maxScore": 2,
+      "scoringCriteria": {
+        "2": "tsc --noEmit exits 0 AND jest --json numFailedTests === 0.",
+        "1": "Build passes but test failures present; or tests pass but type errors exist.",
+        "0": "Build or tests fail without manual intervention."
+      },
+      "automatedGate": true,
+      "evidenceArtifact": "evidence/jest-output.json"
+    },
+    {
+      "id": "auditable",
+      "name": "Auditable",
+      "description": "ADRs are emitted as files with substantive content; changelog and decision trail are present.",
+      "maxScore": 2,
+      "scoringCriteria": {
+        "2": "All referenced ADRs exist as committed files with rationale, alternatives, and decision.",
+        "1": "ADRs referenced in prose but not emitted, OR emitted as empty stubs.",
+        "0": "No ADR trail present."
+      }
+    },
+    {
+      "id": "defended",
+      "name": "Defended",
+      "description": "Security gates are present: no high CVEs, credentials handled correctly.",
+      "maxScore": 2,
+      "scoringCriteria": {
+        "2": "npm audit reports 0 high CVEs; no hardcoded credentials; JWT and bcrypt implemented to spec.",
+        "1": "Minor security gaps present but no critical vulnerabilities.",
+        "0": "High CVEs present or credentials exposed."
+      },
+      "automatedGate": true,
+      "evidenceArtifact": "evidence/build-log.txt"
+    },
+    {
+      "id": "repeatable",
+      "name": "Repeatable",
+      "description": "A second independent run produces the same pass/fail distribution.",
+      "maxScore": 1,
+      "scoringCriteria": {
+        "1": "Second run evidence artifacts show same Executable result.",
+        "0": "Result varies between runs without spec change."
+      }
+    },
+    {
+      "id": "composable",
+      "name": "Composable",
+      "description": "Modules have clean boundaries; no cross-module coupling violations.",
+      "maxScore": 1,
+      "scoringCriteria": {
+        "1": "Feature modules are independent; no circular dependencies; public API via index exports.",
+        "0": "Modules are entangled; cross-layer imports present."
+      }
+    },
+    {
+      "id": "maintainable",
+      "name": "Maintainable",
+      "description": "Code quality gates from the spec are present and passing.",
+      "maxScore": 2,
+      "scoringCriteria": {
+        "2": "ESLint passes; functions within length limits; no orphaned code.",
+        "1": "Linting passes with warnings; minor maintainability gaps.",
+        "0": "Linting fails or significant structural debt present."
+      }
+    }
+  ],
+  "maxTotalScore": 12,
+  "passingThreshold": 10,
+  "executableRequired": true,
+  "note": "Executable is a hard gate — a score of 0 on Executable fails the run regardless of total score."
+}
