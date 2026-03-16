@@ -4,7 +4,7 @@
 **Section:** §7.7.B — Multi-Agent Adversarial Study
 **Supplement version:** 1.3 (unified 7-condition 14-point rubric; runner-verified treatment-v5 results incorporated)
 **Date:** March 14, 2026
-**Repository:** `github.com/jghiringhelli/forgecraft-mcp` (experiments/)
+**Repository:** `github.com/jghiringhelli/generative-specification` (experiments/)
 **Contact:** jcghiri@gmail.com
 
 This document contains the complete verifiable evidence underlying §7.7.B of the white paper: prompt texts, session IDs, scoring rubric, per-condition audit transcripts, full metric tables, mutation testing progression, and the treatment-v2 post-hoc analysis. Its purpose is replicability — a researcher with access to the benchmark and the model can reproduce every number in this supplement and verify the paper's claims from primary sources.
@@ -547,7 +547,7 @@ All failed runs are archived with their session logs. The `--strict-mcp-config` 
 
 To replicate the primary three conditions:
 
-1. Clone `github.com/jghiringhelli/forgecraft-mcp`
+1. Clone `github.com/jghiringhelli/generative-specification`
 2. `cd experiments && docker compose up -d` — start PostgreSQL
 3. `npm install` in `runner/`
 4. Set `ANTHROPIC_API_KEY` in environment
