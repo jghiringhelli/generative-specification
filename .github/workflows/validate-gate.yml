@@ -1,0 +1,121 @@
+name: Validate Quality Gate
+
+on:
+  pull_request:
+    paths:
+      - 'quality-gates/gates/**'
+
+jobs:
+  validate:
+    name: AI Gate Validation
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changed gate files
+        id: changes
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- quality-gates/gates/ | tr '\n' ' ')
+          echo "files=$CHANGED" >> $GITHUB_OUTPUT
+          echo "Changed files: $CHANGED"
+
+      - name: Schema validation
+        id: schema
+        run: |
+          ERRORS=""
+          for file in ${{ steps.changes.outputs.files }}; do
+            echo "Validating $file..."
+            
+            # Required fields
+            for field in id name description property tags phase trigger blocking check; do
+              if ! grep -q "^${field}:" "$file"; then
+                ERRORS="${ERRORS}\n❌ $file: missing required field '${field}'"
+              fi
+            done
+            
+            # property must be one of the seven
+            PROPERTY=$(grep "^property:" "$file" | sed 's/property: //')
+            VALID_PROPS="Self-describing Bounded Verifiable Defended Auditable Composable Executable"
+            if [[ -n "$PROPERTY" && ! " $VALID_PROPS " == *" $PROPERTY "* ]]; then
+              ERRORS="${ERRORS}\n❌ $file: invalid property '${PROPERTY}'. Must be one of: ${VALID_PROPS}"
+            fi
+            
+            # phase must be valid
+            PHASE=$(grep "^phase:" "$file" | sed 's/phase: //')
+            if [[ -n "$PHASE" && ! " development staging production " == *" $PHASE "* ]]; then
+              ERRORS="${ERRORS}\n❌ $file: invalid phase '${PHASE}'"
+            fi
+            
+            # Check for duplicate id
+            FILE_ID=$(grep "^id:" "$file" | sed 's/id: //')
+            EXISTING=$(grep -r "^id: ${FILE_ID}$" quality-gates/gates/ | grep -v "$file" | head -1)
+            if [[ -n "$EXISTING" ]]; then
+              ERRORS="${ERRORS}\n❌ $file: duplicate id '${FILE_ID}' already exists in ${EXISTING}"
+            fi
+          done
+          
+          if [[ -n "$ERRORS" ]]; then
+            echo "VALIDATION_ERRORS<<EOF" >> $GITHUB_OUTPUT
+            echo -e "$ERRORS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "passed=false" >> $GITHUB_OUTPUT
+          else
+            echo "passed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Label PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const passed = '${{ steps.schema.outputs.passed }}' === 'true';
+            const errors = `${{ steps.schema.outputs.VALIDATION_ERRORS }}`;
+            
+            // Remove existing validation labels
+            const labels = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            for (const label of labels.data) {
+              if (['gate:approved', 'gate:needs-revision', 'gate:schema-error'].includes(label.name)) {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  name: label.name
+                });
+              }
+            }
+            
+            if (!passed) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: ['gate:schema-error']
+              });
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `## ❌ Schema Validation Failed\n\n${errors}\n\nFix these issues and push again. See [schema.yaml](../quality-gates/schema.yaml) for field definitions.`
+              });
+            } else {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: ['gate:approved']
+              });
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `## ✅ Schema Valid\n\nThis gate passes structural validation. A maintainer will review the content and merge.\n\nChecks passed:\n- All required fields present\n- Property is one of the seven GS properties\n- Phase is valid\n- No duplicate id`
+              });
+            }

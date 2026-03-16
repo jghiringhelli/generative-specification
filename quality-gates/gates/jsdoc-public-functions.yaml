@@ -1,0 +1,18 @@
+id: jsdoc-public-functions
+name: Public functions have JSDoc
+description: >
+  Every public function and method has a JSDoc comment with a description, typed @param
+  tags, and a @returns tag. A function without a docstring forces the reader to infer its
+  purpose, inputs, and outputs from implementation details. The Self-describing property
+  requires that the specification artifacts are readable without execution context. A
+  public function is part of the module's contract; its documentation is part of the
+  specification. This gate applies to TypeScript and JavaScript. For other languages,
+  use equivalent documentation standards (Python docstrings, Go doc comments, etc.).
+property: Self-describing
+tags: [typescript, javascript]
+phase: development
+trigger: pr
+blocking: false
+check:
+  type: lint
+  command: "eslint --rule 'jsdoc/require-jsdoc: [error, {publicOnly: true}]' src/**/*.ts"

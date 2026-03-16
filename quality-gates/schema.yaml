@@ -1,0 +1,119 @@
+# Generative Specification — Quality Gate Schema v1
+#
+# Every file in quality-gates/gates/ must conform to this schema.
+# Validation is enforced by the GitHub Action on every PR.
+#
+# Fields marked [required] must be present.
+# Fields marked [optional] may be omitted.
+
+# --- Field Definitions ---
+
+# id [required]
+#   Unique identifier. kebab-case. Once published, ids are permanent.
+#   Example: "typescript-no-any"
+id: string
+
+# name [required]
+#   Human-readable name. Short. Sentence case.
+#   Example: "No implicit any"
+name: string
+
+# description [required]
+#   What this gate enforces and why. 1–4 sentences.
+#   Be specific: a reader should know exactly what passes and what fails.
+description: string
+
+# property [required]
+#   Which of the seven GS properties this gate operationalizes.
+#   Must be exactly one of the values below.
+property:
+  enum:
+    - Self-describing
+    - Bounded
+    - Verifiable
+    - Defended
+    - Auditable
+    - Composable
+    - Executable
+
+# tags [required, at least one]
+#   Technology, domain, or methodology tags this gate applies to.
+#   Examples: typescript, node, api, python, react, microservices, any
+#   Use "any" for language-agnostic gates.
+tags:
+  type: array
+  items: string
+  minItems: 1
+
+# phase [required]
+#   Earliest delivery phase at which this gate applies.
+#   development = applies from the first commit
+#   staging = applies when preparing for a staging deploy
+#   production = applies only before production release
+phase:
+  enum:
+    - development
+    - staging
+    - production
+
+# trigger [required]
+#   When this gate runs.
+trigger:
+  enum:
+    - commit      # runs on every commit (pre-commit hook or CI)
+    - pr          # runs on every pull request
+    - release     # runs as part of the release gate
+
+# blocking [required]
+#   If true, this gate must pass before the trigger event completes.
+#   If false, this gate produces a warning but does not block.
+blocking: boolean
+
+# check [required]
+#   How to evaluate this gate.
+check:
+  type: [required]
+    enum:
+      - lint        # static analysis / linting rule
+      - test        # automated test suite
+      - script      # custom script
+      - audit       # dependency/security audit
+      - manual      # human review required (describe acceptance criteria in description)
+  command: [optional]
+    # Shell command that exits 0 on pass, non-zero on fail.
+    # Required for types: lint, test, script, audit.
+    # Omit for type: manual.
+    type: string
+
+# supersedes [optional]
+#   Id of a gate this gate replaces. The superseded gate should be
+#   simultaneously marked deprecated: true in the same PR.
+supersedes:
+  type: string
+  optional: true
+
+# deprecated [optional, default: false]
+#   If true, this gate is no longer recommended.
+#   Deprecated gates remain in the library for reference and compatibility.
+#   Do not delete deprecated gates; mark them deprecated instead.
+deprecated:
+  type: boolean
+  default: false
+
+# --- Example gate (for reference) ---
+# id: typescript-no-any
+# name: No implicit any
+# description: >
+#   TypeScript's implicit any type allows values to escape the type system silently,
+#   producing errors at runtime that the compiler could have caught. This gate enforces
+#   strict: true and noImplicitAny: true in tsconfig.json, blocking commits where type
+#   checking produces errors. A project that passes this gate can be read by a stateless
+#   agent without type ambiguity.
+# property: Self-describing
+# tags: [typescript]
+# phase: development
+# trigger: commit
+# blocking: true
+# check:
+#   type: lint
+#   command: "tsc --noEmit"

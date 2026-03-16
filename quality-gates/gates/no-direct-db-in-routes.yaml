@@ -1,0 +1,18 @@
+id: no-direct-db-in-routes
+name: No direct database calls in route handlers
+description: >
+  Route handlers do not import or call database clients (Prisma, Sequelize, TypeORM,
+  mongoose, raw SQL) directly. All database operations are delegated to a service or
+  repository layer. Route handlers are driving adapters — they translate HTTP requests
+  into service calls and HTTP responses. A route handler that calls the database directly
+  has violated the layer boundary, making the database dependency invisible to the
+  stateless reader reading only the route file. The Bounded property requires that each
+  module's responsibilities and dependencies are derivable from its contents alone.
+property: Bounded
+tags: [node, typescript, javascript, api, express, fastify]
+phase: development
+trigger: commit
+blocking: true
+check:
+  type: script
+  command: "! grep -rn 'prisma\\.' src/routes/ --include='*.ts' | grep -v '//' && ! grep -rn 'prisma\\.' src/controllers/ --include='*.ts' | grep -v '//'"
