@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: conduit
+          POSTGRES_PASSWORD: conduit
+          POSTGRES_DB: conduit_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Security gate - zero HIGH/CRITICAL CVEs required
+        run: npm audit --audit-level=high
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Apply database schema
+        run: npx prisma db push
+        env:
+          DATABASE_URL: postgresql://conduit:conduit@localhost:5432/conduit_test
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+        env:
+          DATABASE_URL: postgresql://conduit:conduit@localhost:5432/conduit_test
+          JWT_SECRET: ci-test-secret-minimum-32-characters-long-for-hs256
+          JWT_EXPIRY: 7d
+          NODE_ENV: test
+
+      - name: Mutation testing gate
+        run: npx stryker run
+        env:
+          DATABASE_URL: postgresql://conduit:conduit@localhost:5432/conduit_test
+          JWT_SECRET: ci-test-secret-minimum-32-characters-long-for-hs256
+          JWT_EXPIRY: 7d
+          NODE_ENV: test
+
+      - name: Upload coverage to artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/

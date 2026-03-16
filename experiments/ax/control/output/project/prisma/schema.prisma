@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  bio       String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  followers        Follow[]   @relation("UserFollowers")
+  following        Follow[]   @relation("UserFollowing")
+  articles         Article[]
+  favoriteArticles Favorite[]
+  comments         Comment[]
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
+
+model Article {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  description String
+  body        String
+  authorId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags      Tag[]
+  favorites Favorite[]
+  comments  Comment[]
+
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model Tag {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  articles Article[]
+
+  @@index([name])
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String
+  articleId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, articleId])
+  @@index([userId])
+  @@index([articleId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  body      String
+  authorId  String
+  articleId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+  @@index([authorId])
+}

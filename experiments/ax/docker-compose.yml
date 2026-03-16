@@ -1,0 +1,140 @@
+# PostgreSQL for GS Experiment
+# Separate databases per condition to avoid cross-contamination.
+#
+# Usage:
+#   docker compose up -d
+#   docker compose down -v   # wipe all data between runs
+#
+# Connection strings:
+#   Control:        postgresql://conduit:conduit@localhost:5433/conduit_control
+#   Treatment:      postgresql://conduit:conduit@localhost:5435/conduit_treatment
+#   Treatment-v2:   postgresql://conduit:conduit@localhost:5439/conduit_treatment_v2
+
+services:
+  postgres-control:
+    image: postgres:16-alpine
+    container_name: conduit-control
+    environment:
+      POSTGRES_DB:       conduit_control
+      POSTGRES_USER:     conduit
+      POSTGRES_PASSWORD: conduit
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_control:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conduit -d conduit_control"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-treatment:
+    image: postgres:16-alpine
+    container_name: conduit-treatment
+    environment:
+      POSTGRES_DB:       conduit_treatment
+      POSTGRES_USER:     conduit
+      POSTGRES_PASSWORD: conduit
+    ports:
+      - "5435:5432"
+    volumes:
+      - pg_treatment:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conduit -d conduit_treatment"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-naive:
+    image: postgres:16-alpine
+    container_name: conduit-naive
+    environment:
+      POSTGRES_DB:       conduit_naive
+      POSTGRES_USER:     conduit
+      POSTGRES_PASSWORD: conduit
+    ports:
+      - "5437:5432"
+    volumes:
+      - pg_naive:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conduit -d conduit_naive"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-treatment-v2:
+    image: postgres:16-alpine
+    container_name: conduit-treatment-v2
+    environment:
+      POSTGRES_DB:       conduit_treatment_v2
+      POSTGRES_USER:     conduit
+      POSTGRES_PASSWORD: conduit
+    ports:
+      - "5439:5432"
+    volumes:
+      - pg_treatment_v2:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conduit -d conduit_treatment_v2"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-treatment-v3:
+    image: postgres:16-alpine
+    container_name: conduit-treatment-v3
+    environment:
+      POSTGRES_DB:       conduit_treatment_v3
+      POSTGRES_USER:     conduit
+      POSTGRES_PASSWORD: conduit
+    ports:
+      - "5441:5432"
+    volumes:
+      - pg_treatment_v3:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conduit -d conduit_treatment_v3"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-treatment-v4:
+    image: postgres:16-alpine
+    container_name: conduit-treatment-v4
+    environment:
+      POSTGRES_DB:       conduit_treatment_v4
+      POSTGRES_USER:     conduit
+      POSTGRES_PASSWORD: conduit
+    ports:
+      - "5443:5432"
+    volumes:
+      - pg_treatment_v4:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conduit -d conduit_treatment_v4"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-treatment-v5:
+    image: postgres:16-alpine
+    container_name: conduit-treatment-v5
+    environment:
+      POSTGRES_DB:       conduit_treatment_v5
+      POSTGRES_USER:     conduit
+      POSTGRES_PASSWORD: conduit
+    ports:
+      - "5445:5432"
+    volumes:
+      - pg_treatment_v5:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conduit -d conduit_treatment_v5"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pg_control:
+  pg_treatment:
+  pg_naive:
+  pg_treatment_v2:
+  pg_treatment_v3:
+  pg_treatment_v4:
+  pg_treatment_v5:
