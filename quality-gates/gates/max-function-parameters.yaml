@@ -1,0 +1,22 @@
+id: max-function-parameters
+name: Function parameter count does not exceed 5
+description: >
+  No function or constructor accepts more than 5 positional parameters. Functions with
+  many parameters are a code smell for two problems: the function is doing too much
+  (should be decomposed), or the parameters form a natural object that has not yet been
+  named (should be a DTO or parameter object). A six-parameter function call at the
+  call site is unreadable — the reader must map each positional value back to its
+  semantic meaning. A parameter object gives each argument a name at the call site,
+  makes the signature extensible without breaking callers, and allows partial construction.
+  Constructor injection of dependencies is the primary exception pattern: it is acceptable
+  for DI-heavy constructors to receive more dependencies if each one is an interface,
+  but even then, a constructor with 8+ dependencies signals a god class that should be
+  split. This gate uses the ESLint max-params rule.
+property: Bounded
+tags: [javascript, typescript, eslint]
+phase: pr
+trigger: pull_request
+blocking: true
+check:
+  type: command
+  command: "npx eslint --rule '{\"max-params\": [\"error\", 5]}' 'src/**/*.ts' 'src/**/*.js'"

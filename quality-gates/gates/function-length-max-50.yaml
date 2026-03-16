@@ -1,0 +1,19 @@
+id: function-length-max-50
+name: Function length does not exceed 50 lines
+description: >
+  No function or method body exceeds 50 lines of code. A function longer than 50 lines
+  is doing more than one thing. Single Responsibility applies at the function level:
+  a 200-line function is a module masquerading as a function, with hidden dependencies
+  between its parts and no clean abstraction boundary. Long functions are the primary
+  cause of untestable code — they cannot be unit-tested without also testing everything
+  else they do. The 50-line limit is enforced via the ESLint max-lines-per-function rule,
+  which excludes comment lines and blank lines from the count. Functions that consistently
+  need 60+ lines signal missing helper functions or missing abstractions.
+property: Bounded
+tags: [javascript, typescript, eslint]
+phase: pr
+trigger: pull_request
+blocking: true
+check:
+  type: command
+  command: "npx eslint --rule '{\"max-lines-per-function\": [\"error\", {\"max\": 50, \"skipBlankLines\": true, \"skipComments\": true}]}' 'src/**/*.ts' 'src/**/*.js'"

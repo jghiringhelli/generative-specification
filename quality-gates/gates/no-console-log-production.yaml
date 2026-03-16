@@ -1,0 +1,21 @@
+id: no-console-log-production
+name: No console.log calls in production source
+description: >
+  No console.log, console.warn, or console.error calls appear in non-test production
+  source files. Console statements are debug artifacts. In production code they leak
+  implementation details, add noise to structured log pipelines, and frequently
+  expose sensitive data (request payloads, user IDs, internal state) that should never
+  appear in stdout. Structured logging through an injected logger abstraction (winston,
+  pino, std/log) is the correct pattern: it is configurable, level-filtered, structured
+  (JSON), and replaceable in tests with a null logger. A console.log that survives to
+  production was never cleaned up — it means the developer was debugging and did not
+  finish. This gate makes that visible at commit time rather than in a production log
+  audit.
+property: Executable
+tags: [javascript, typescript, any]
+phase: commit
+trigger: pre-commit
+blocking: true
+check:
+  type: script
+  command: "grep -rn --include='*.ts' --include='*.js' --include='*.tsx' --include='*.jsx' 'console\\.' src/ | grep -v '\\.test\\.' | grep -v '\\.spec\\.' | grep -v '/tests/' | grep -v '/test/' && echo 'console.* calls found in production source — use a structured logger' && exit 1 || exit 0"

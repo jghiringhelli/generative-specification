@@ -1,0 +1,19 @@
+id: no-any-type
+name: No explicit any type in TypeScript source
+description: >
+  No explicit ': any' type annotations appear in non-test TypeScript source files.
+  The 'any' type is a type-system escape hatch that silences the compiler without
+  providing safety. A function typed as returning any, or accepting any as a parameter,
+  cannot be statically verified — its contract is undeclared. This directly violates the
+  Bounded property: a module with any-typed boundaries cannot be fully described by its
+  type signature alone. Use unknown for truly unknown values (forces handling), or a
+  properly defined type or generic. The 'as any' cast in test files is permitted as a
+  last resort for mocking untyped third-party internals, but never in production source.
+property: Bounded
+tags: [typescript]
+phase: commit
+trigger: pre-commit
+blocking: true
+check:
+  type: script
+  command: "grep -rn --include='*.ts' --include='*.tsx' ': any' src/ | grep -v '\\.test\\.' | grep -v '\\.spec\\.' | grep -v '/tests/' && echo 'Explicit :any types found — use a specific type or unknown' && exit 1 || exit 0"
