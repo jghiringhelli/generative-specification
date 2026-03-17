@@ -2,8 +2,8 @@
 
 **Community home for the Generative Specification methodology** — the first programming discipline of the pragmatic dimension, designed for a stateless reader.
 
-→ [White Paper](docs/white-paper/GenerativeSpecification_WhitePaper.md)  
-→ [Experiment Supplement](docs/white-paper/GS_Experiment_Supplement.md)  
+→ [White Paper (Zenodo)](https://doi.org/10.5281/zenodo.19073543) · [genspec.dev](https://genspec.dev)
+→ [Experiment Supplement](docs/white-paper/GS_Experiment_Supplement.md)
 → [Practitioner Protocol](docs/white-paper/GenerativeSpecification_PractitionerProtocol.md)
 
 ---
@@ -18,12 +18,39 @@
 | [**RX**](experiments/rx/) | Replication Experiment. Independent verification: given the committed GS document, any developer with Docker and an Anthropic API key can reproduce 104 passing tests against a live PostgreSQL instance. | ✅ Complete |
 | [**DX**](experiments/dx/) | Human practitioner study. 40 developers. Group A: prompt-driven. Group B: GS + ForgeCraft. Dual rubric. April 2026. | 🔵 April 2026 |
 
+---
+
 ### Quality Gates
 
-The [`quality-gates/`](quality-gates/) directory is a community-maintained library of structured quality constraints mapped to the seven GS properties. Anyone can propose a gate via pull request.
+The [`quality-gates/`](quality-gates/) directory is a community-maintained library of structured quality constraints, each mapped to one of the seven GS properties. Anyone can propose a gate via pull request.
 
-→ [How to contribute a quality gate](quality-gates/CONTRIBUTING.md)  
-→ [Gate schema reference](quality-gates/schema.yaml)
+→ [How to contribute a quality gate](quality-gates/CONTRIBUTING.md) · [Gate schema](quality-gates/schema.yaml)
+
+#### Current Gate Library (17 gates)
+
+| Gate | GS Property | Tags | Phase | Trigger |
+|---|---|---|---|---|
+| [typescript-strict-mode](quality-gates/gates/typescript-strict-mode.yaml) | Self-describing | typescript | development | commit |
+| [no-any-type](quality-gates/gates/no-any-type.yaml) | Self-describing | typescript | development | commit |
+| [file-length-max-300](quality-gates/gates/file-length-max-300.yaml) | Self-describing | any | development | commit |
+| [function-length-max-50](quality-gates/gates/function-length-max-50.yaml) | Self-describing | any | development | commit |
+| [jsdoc-public-functions](quality-gates/gates/jsdoc-public-functions.yaml) | Self-describing | javascript, typescript | development | commit |
+| [max-function-parameters](quality-gates/gates/max-function-parameters.yaml) | Self-describing | any | development | commit |
+| [no-direct-db-in-routes](quality-gates/gates/no-direct-db-in-routes.yaml) | Bounded | any | development | commit |
+| [no-circular-dependencies](quality-gates/gates/no-circular-dependencies.yaml) | Composable | any | development | commit |
+| [coverage-threshold-80](quality-gates/gates/coverage-threshold-80.yaml) | Verifiable | javascript, typescript, jest | development | pr |
+| [jest-no-failed-tests](quality-gates/gates/jest-no-failed-tests.yaml) | Verifiable | javascript, typescript, jest | development | pr |
+| [mutation-score-threshold](quality-gates/gates/mutation-score-threshold.yaml) | Verifiable | javascript, typescript | development | pr |
+| [tsc-no-emit-exits-zero](quality-gates/gates/tsc-no-emit-exits-zero.yaml) | Verifiable | typescript | development | pr |
+| [no-hardcoded-secrets](quality-gates/gates/no-hardcoded-secrets.yaml) | Defended | any | development | commit |
+| [npm-audit-no-high-cve](quality-gates/gates/npm-audit-no-high-cve.yaml) | Defended | javascript, typescript | development | pr |
+| [no-console-log-production](quality-gates/gates/no-console-log-production.yaml) | Executable | any | staging | pr |
+| [adr-files-emitted](quality-gates/gates/adr-files-emitted.yaml) | Auditable | any | development | pr |
+| [conventional-commits](quality-gates/gates/conventional-commits.yaml) | Auditable | any | development | commit |
+
+**The Composable and Executable properties are underrepresented — they are the highest-value contribution targets.** See [CONTRIBUTING.md](quality-gates/CONTRIBUTING.md) for the schema and submission process.
+
+---
 
 ### White Paper
 
@@ -55,9 +82,13 @@ The pre-run evidence (scores, evaluation transcripts, session logs) is in `exper
 
 ## ForgeCraft
 
-[ForgeCraft](https://forgecraft.dev) is the hosted MCP server that implements the GS methodology. It reads from this repository's `quality-gates/` library. It is not open source — it is a service.
+[ForgeCraft](https://github.com/jghiringhelli/forgecraft-mcp) is the tool that implements the GS methodology. It reads from this repository's `quality-gates/` library.
 
-Free tier: 2 active projects. Contribution path: a merged quality gate PR earns an additional project slot.
+**Free tier: 2 active projects.** A merged quality gate PR earns an additional project slot.
+
+```bash
+npx forgecraft-mcp setup .
+```
 
 ---
 
@@ -70,8 +101,8 @@ The structural argument developed in §10 of the white paper: when a practitione
 ## Citation
 
 ```
-Ghiringhelli, J.C. (2026). Generative Specification: A Pragmatic Programming Paradigm
-for the Stateless Reader. Preprint. https://arxiv.org/abs/[TBD]
+Ghiringhelli, J. C. (2026). Generative Specification: A Pragmatic Programming Paradigm
+for the Stateless Reader (1.0). Zenodo. https://doi.org/10.5281/zenodo.19073543
 ```
 
-Contact: jcghiri@gmail.com · [linkedin.com/in/jghiringhelli](https://linkedin.com/in/jghiringhelli)
+Contact: jcghiri@gmail.com · [linkedin.com/in/jghiringhelli](https://linkedin.com/in/jghiringhelli) · [genspec.dev](https://genspec.dev)
