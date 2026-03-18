@@ -2,7 +2,8 @@
 
 **Community home for the Generative Specification methodology** — the first programming discipline of the pragmatic dimension, designed for a stateless reader.
 
-→ [White Paper (Zenodo)](https://doi.org/10.5281/zenodo.19073543) · [genspec.dev](https://genspec.dev)
+→ [White Paper](https://doi.org/10.5281/zenodo.19073543) · [genspec.dev](https://genspec.dev)
+→ [Ambient Engineer — articles and essays](https://ambientengineer.substack.com)
 → [Experiment Supplement](docs/white-paper/GS_Experiment_Supplement.md)
 → [Practitioner Protocol](docs/white-paper/GenerativeSpecification_PractitionerProtocol.md)
 
@@ -14,7 +15,7 @@
 
 | Experiment | Description | Status |
 |---|---|---|
-| [**AX**](experiments/ax/) | Multi-agent adversarial study. Naive → expert prompting → treatment v1–v5 with ForgeCraft. Establishes quality gradient as a function of specification completeness under controlled conditions. Seven conditions. RealWorld Conduit API benchmark. | ✅ Complete |
+| [**AX**](experiments/ax/) | Multi-agent adversarial study. Naive to expert prompting to treatment v1-v5 with ForgeCraft. Establishes quality gradient as a function of specification completeness under controlled conditions. Seven conditions. RealWorld Conduit API benchmark. | ✅ Complete |
 | [**RX**](experiments/rx/) | Replication Experiment. Independent verification: given the committed GS document, any developer with Docker and an Anthropic API key can reproduce 104 passing tests against a live PostgreSQL instance. | ✅ Complete |
 | [**DX**](experiments/dx/) | Human practitioner study. 40 developers. Group A: prompt-driven. Group B: GS + ForgeCraft. Dual rubric. April 2026. | 🔵 April 2026 |
 
@@ -54,7 +55,7 @@ The [`quality-gates/`](quality-gates/) directory is a community-maintained libra
 
 ### White Paper
 
-The paper source is in [`docs/white-paper/`](docs/white-paper/). Community review is open — see [REVIEWING.md](docs/white-paper/REVIEWING.md) for how to challenge a claim, propose a correction, or map an issue to a section.
+The published preprint is at [doi.org/10.5281/zenodo.19073543](https://doi.org/10.5281/zenodo.19073543). The source and ancillary files are in [`docs/white-paper/`](docs/white-paper/). Community review is open — see [REVIEWING.md](docs/white-paper/REVIEWING.md) for how to challenge a claim, propose a correction, or map an issue to a section.
 
 ---
 
@@ -68,11 +69,11 @@ Requirements: Docker, Node.js 20+, Anthropic API key.
 git clone https://github.com/jghiringhelli/generative-specification
 cd generative-specification/experiments/rx
 docker compose up -d postgres
-./runner/run.sh          # generate → build → test
+./runner/run.sh
 cat evidence/jest-output.json   # verify: numFailedTests === 0
 ```
 
-The GS document (`experiments/rx/spec/conduit-gs.md`) is committed verbatim. ForgeCraft produced it, but you do not need ForgeCraft to run this experiment — the document is the reproducible artifact.
+The GS document (`experiments/rx/spec/conduit-gs.md`) is committed verbatim. ForgeCraft produced it, but you do not need ForgeCraft to run this experiment. The document is the reproducible artifact.
 
 ### AX (verify from committed evidence)
 
@@ -105,4 +106,4 @@ Ghiringhelli, J. C. (2026). Generative Specification: A Pragmatic Programming Pa
 for the Stateless Reader (1.0). Zenodo. https://doi.org/10.5281/zenodo.19073543
 ```
 
-Contact: jcghiri@gmail.com · [linkedin.com/in/jghiringhelli](https://linkedin.com/in/jghiringhelli) · [genspec.dev](https://genspec.dev)
+Contact: jcghiri@gmail.com · [linkedin.com/in/jghiringhelli](https://linkedin.com/in/jghiringhelli) · [genspec.dev](https://genspec.dev) · [ambientengineer.substack.com](https://ambientengineer.substack.com)
