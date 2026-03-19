@@ -1,0 +1,20 @@
+id: experimental-design-standards
+name: Experimental claims meet design standards
+description: >
+  Any section presenting experimental results must clearly state: (1) whether
+  conditions were pre-registered or post-hoc; (2) N per condition; (3) whether
+  the auditor/evaluator is independent of the treatment generator (same-family
+  AI auditing same-family AI output is a confound that must be disclosed);
+  (4) whether statistical inference is claimed and if so whether sample size
+  supports it. Post-hoc conditions designed to fix gaps found in prior runs
+  must be labeled as iterative product development, not experimental evidence.
+  Pass: all conditions clearly labeled, confounds disclosed, inference claims
+  calibrated to N. Fail: post-hoc conditions presented as experimental evidence
+  without explicit label.
+property: Verifiable
+tags: [academic-paper]
+phase: staging
+trigger: pr
+blocking: true
+check:
+  type: manual

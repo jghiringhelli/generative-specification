@@ -1,0 +1,18 @@
+id: vocabulary-stability
+name: Technical terms defined once, used consistently
+description: >
+  Every technical term introduced with a definition must be used with that definition
+  throughout. Common failure modes: "stateless" defined as "no prior context" but
+  the model clearly has vast training knowledge (should be "no episodic project memory");
+  "paradigm" defined in Martin's sense but used in Kuhn's sense later; a formula's
+  variable defined abstractly but measured with a different proxy instrument without
+  acknowledging the gap. Pass: each defined term is used consistently with its
+  definition throughout the paper. Fail: a term is defined in one section and used
+  with a shifted meaning in another.
+property: Self-describing
+tags: [academic-paper]
+phase: staging
+trigger: pr
+blocking: true
+check:
+  type: manual

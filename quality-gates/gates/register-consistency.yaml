@@ -1,0 +1,19 @@
+id: register-consistency
+name: Framing claimed in ┬º1 honored throughout
+description: >
+  If the paper disclaims a theoretical frame in its opening (e.g., "paradigm carries
+  Martin's sense, not Kuhn's"), that disclaimer must be honored in every subsequent
+  section. "Kuhnian drift" is the failure mode: the paper disclaims revolution-level
+  claims up front, then reasons using revolution-level vocabulary (e.g., "the revolution
+  is," "becomes necessary," "crisis") in the body or conclusion. Pass: the register
+  established in the abstract and terminological notes is consistent throughout.
+  Fail: vocabulary that belongs to the disclaimed frame appears in later sections
+  without acknowledgment.
+property: Self-describing
+tags: [academic-paper]
+phase: staging
+trigger: pr
+blocking: false
+check:
+  type: script
+  command: "grep -n 'revolution\\|becomes necessary\\|paradigm shift\\|Kuhnian' paper.md || true"

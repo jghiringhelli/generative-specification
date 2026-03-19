@@ -1,0 +1,19 @@
+id: notation-audit
+name: Mathematical notation has derivation support
+description: >
+  Any formula presented in mathematical notation (LaTeX, symbolic expressions)
+  must be accompanied by either (a) a derivation, (b) a citation to a source
+  containing the derivation, or (c) an explicit label as "proposed theoretical
+  model, not yet empirically fitted." Specific numerical predictions derived from
+  unfitted formulas must be removed or labeled "illustrative only." Two-decimal
+  precision in estimates described as "order-of-magnitude" is false precision and
+  must be rounded. Pass: notation level matches derivation level throughout.
+  Fail: LaTeX formula used to make quantitative predictions without derivation or
+  explicit hypothesis labeling.
+property: Verifiable
+tags: [academic-paper]
+phase: staging
+trigger: pr
+blocking: true
+check:
+  type: manual

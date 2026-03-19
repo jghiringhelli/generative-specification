@@ -1,0 +1,17 @@
+id: claim-scope-calibration
+name: Evidence scope matches claim scope
+description: >
+  Every claim in the paper must be supported by evidence of equivalent scope.
+  A claim about a general population requires population-level evidence; a claim
+  about a single domain requires domain-level evidence. A case study of N=6 software
+  projects does not support a claim that the methodology "governs any domain."
+  Non-software extensions must be explicitly labeled as hypotheses. Pass: all
+  broad claims are hedged or have matching evidence. Fail: a general claim is
+  supported only by narrow evidence without explicit qualification.
+property: Bounded
+tags: [academic-paper]
+phase: staging
+trigger: pr
+blocking: true
+check:
+  type: manual

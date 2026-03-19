@@ -1,0 +1,17 @@
+id: internal-consistency
+name: No contradictory claims within paper
+description: >
+  No two claims in the paper may be logically incompatible. Common failure modes:
+  a theoretical frame is declared "analogy only" in one section but used as
+  load-bearing evidence in another; a term is hedged in a footnote but asserted
+  without hedge in the conclusion; a disclaimer in ┬º1 is violated by reasoning
+  in ┬º10. Pass: all claims are mutually consistent and hedges are honored throughout.
+  Fail: a claim in one section contradicts or undermines a claim in another section
+  without acknowledgment.
+property: Self-describing
+tags: [academic-paper]
+phase: staging
+trigger: pr
+blocking: true
+check:
+  type: manual

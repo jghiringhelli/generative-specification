@@ -1,0 +1,20 @@
+id: conflict-of-interest-disclosure
+name: Material conflicts of interest disclosed near abstract
+description: >
+  Any material relationship between the author and tools, products, or organizations
+  central to the paper's claims must be disclosed in a dedicated section near the
+  abstract ΓÇö not buried in a single sentence mid-paper. The disclosure must state:
+  (a) the nature of the relationship; (b) which claims depend on the conflicted
+  tool/product and which are independent of it; (c) what a conflict-free replication
+  would require. A single sentence of disclosure in ┬º6 is insufficient when the
+  conflicted tool is used in all case studies and all experiments. Pass: dedicated
+  COI section present, relationship fully characterized, tool-dependent vs
+  tool-independent claims distinguished. Fail: COI buried in body text, or not
+  present at all.
+property: Auditable
+tags: [academic-paper]
+phase: staging
+trigger: pr
+blocking: true
+check:
+  type: manual
