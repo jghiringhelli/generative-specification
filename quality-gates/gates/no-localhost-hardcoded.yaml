@@ -1,0 +1,15 @@
+﻿id: no-localhost-hardcoded
+name: No hardcoded localhost or 127.0.0.1 in source
+description: >
+  No occurrence of 'localhost' or '127.0.0.1' appears as a string literal in
+  application source code. Hardcoded localhost references make the artifact
+  non-portable: it cannot run in Docker, CI, staging, or production without a
+  source edit. All service hostnames must be read from environment variables.
+property: Executable
+tags: [any]
+phase: development
+trigger: commit
+blocking: true
+check:
+  type: script
+  command: "! grep -rn --include='*.ts' --include='*.js' --include='*.py' 'localhost' src/ 2>/dev/null | grep -v '.test.' | grep -q ."

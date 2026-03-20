@@ -1,0 +1,16 @@
+﻿id: docker-compose-defined
+name: docker-compose.yml committed and services named
+description: >
+  A docker-compose.yml exists at the repository root with at least one named service.
+  Any project that requires external services (database, cache, queue) for local
+  development or testing must declare them as compose services so any developer can
+  run the full stack with a single command. A missing compose file is an undeclared
+  dependency: the project cannot be reproduced without tribal knowledge.
+property: Executable
+tags: [any]
+phase: development
+trigger: pr
+blocking: true
+check:
+  type: script
+  command: "test -f docker-compose.yml && grep -q 'services:' docker-compose.yml"

@@ -28,29 +28,49 @@ The [`quality-gates/`](quality-gates/) directory is a community-maintained libra
 - [How to contribute a quality gate](quality-gates/CONTRIBUTING.md)
 - [Gate schema](quality-gates/schema.yaml)
 
-#### Current Gate Library (17 gates)
+<!-- GATES_TABLE_START -->
 
-| Gate | GS Property | Tags | Phase | Trigger |
-|---|---|---|---|---|
-| [typescript-strict-mode](quality-gates/gates/typescript-strict-mode.yaml) | Self-describing | typescript | development | commit |
-| [no-any-type](quality-gates/gates/no-any-type.yaml) | Self-describing | typescript | development | commit |
-| [file-length-max-300](quality-gates/gates/file-length-max-300.yaml) | Self-describing | any | development | commit |
-| [function-length-max-50](quality-gates/gates/function-length-max-50.yaml) | Self-describing | any | development | commit |
-| [jsdoc-public-functions](quality-gates/gates/jsdoc-public-functions.yaml) | Self-describing | javascript, typescript | development | commit |
-| [max-function-parameters](quality-gates/gates/max-function-parameters.yaml) | Self-describing | any | development | commit |
-| [no-direct-db-in-routes](quality-gates/gates/no-direct-db-in-routes.yaml) | Bounded | any | development | commit |
-| [no-circular-dependencies](quality-gates/gates/no-circular-dependencies.yaml) | Composable | any | development | commit |
-| [coverage-threshold-80](quality-gates/gates/coverage-threshold-80.yaml) | Verifiable | javascript, typescript, jest | development | pr |
-| [jest-no-failed-tests](quality-gates/gates/jest-no-failed-tests.yaml) | Verifiable | javascript, typescript, jest | development | pr |
-| [mutation-score-threshold](quality-gates/gates/mutation-score-threshold.yaml) | Verifiable | javascript, typescript | development | pr |
-| [tsc-no-emit-exits-zero](quality-gates/gates/tsc-no-emit-exits-zero.yaml) | Verifiable | typescript | development | pr |
-| [no-hardcoded-secrets](quality-gates/gates/no-hardcoded-secrets.yaml) | Defended | any | development | commit |
-| [npm-audit-no-high-cve](quality-gates/gates/npm-audit-no-high-cve.yaml) | Defended | javascript, typescript | development | pr |
-| [no-console-log-production](quality-gates/gates/no-console-log-production.yaml) | Executable | any | staging | pr |
-| [adr-files-emitted](quality-gates/gates/adr-files-emitted.yaml) | Auditable | any | development | pr |
-| [conventional-commits](quality-gates/gates/conventional-commits.yaml) | Auditable | any | development | commit |
+#### Current Gate Library (32 gates)
 
-The Composable and Executable properties are underrepresented -- they are the highest-value contribution targets. See [CONTRIBUTING.md](quality-gates/CONTRIBUTING.md) for the schema and submission process.
+| Gate | Description | GS Property | Tags | Phase | Trigger |
+|---|---|---|---|---|---|
+| [internal-consistency](quality-gates/gates/internal-consistency.yaml) | No two claims in the paper may be logically incompatible. | Self-describing | academic-paper | staging | pr |
+| [jsdoc-public-functions](quality-gates/gates/jsdoc-public-functions.yaml) | Every public function and method has a JSDoc comment with a description, typed @param tags, and a @returns tag. | Self-describing | typescript, javascript | development | pr |
+| [readme-setup-section](quality-gates/gates/readme-setup-section.yaml) | The repository README includes a Setup or Getting Started section containing at least one fenced code block with runnable commands sufficient to get the project running locally. | Self-describing | any | development | pr |
+| [register-consistency](quality-gates/gates/register-consistency.yaml) | If the paper disclaims a theoretical frame in its opening (e.g., "paradigm carries Martin's sense, not Kuhn's"), that disclaimer must be honored in every subsequent section. | Self-describing | academic-paper | staging | pr |
+| [vocabulary-stability](quality-gates/gates/vocabulary-stability.yaml) | Every technical term introduced with a definition must be used with that definition throughout. | Self-describing | academic-paper | staging | pr |
+| [claim-scope-calibration](quality-gates/gates/claim-scope-calibration.yaml) | Every claim in the paper must be supported by evidence of equivalent scope. | Bounded | academic-paper | staging | pr |
+| [file-length-max-300](quality-gates/gates/file-length-max-300.yaml) | No TypeScript or JavaScript source file exceeds 300 lines. | Bounded | javascript, typescript, any | commit | pre-commit |
+| [function-length-max-50](quality-gates/gates/function-length-max-50.yaml) | No function or method body exceeds 50 lines of code. | Bounded | javascript, typescript, eslint | pr | pull_request |
+| [max-function-parameters](quality-gates/gates/max-function-parameters.yaml) | No function or constructor accepts more than 5 positional parameters. | Bounded | javascript, typescript, eslint | pr | pull_request |
+| [no-any-type](quality-gates/gates/no-any-type.yaml) | No explicit ': any' type annotations appear in non-test TypeScript source files. | Bounded | typescript | commit | pre-commit |
+| [no-direct-db-in-routes](quality-gates/gates/no-direct-db-in-routes.yaml) | Route handlers do not import or call database clients (Prisma, Sequelize, TypeORM, mongoose, raw SQL) directly. | Bounded | node, typescript, javascript, api, express, fastify | development | commit |
+| [coverage-threshold-80](quality-gates/gates/coverage-threshold-80.yaml) | Test line coverage is at or above 80% for the entire project. | Verifiable | javascript, typescript, jest | development | pr |
+| [experimental-design-standards](quality-gates/gates/experimental-design-standards.yaml) | Any section presenting experimental results must clearly state: (1) whether conditions were pre-registered or post-hoc; (2) N per condition; (3) whether the auditor/evaluator is independent of the treatment generator (same-family AI auditing same-family AI output is a confound that must be disclosed); (4) whether statistical inference is claimed and if so whether sample size supports it. | Verifiable | academic-paper | staging | pr |
+| [mutation-score-threshold](quality-gates/gates/mutation-score-threshold.yaml) | The Stryker mutation testing score (Mutation Score Indicator) is at or above 65% for the full project, and at or above 70% for changed files on a pull request. | Verifiable | javascript, typescript, stryker, mutation-testing | pr | pull_request |
+| [notation-audit](quality-gates/gates/notation-audit.yaml) | Any formula presented in mathematical notation (LaTeX, symbolic expressions) must be accompanied by either (a) a derivation, (b) a citation to a source containing the derivation, or (c) an explicit label as "proposed theoretical model, not yet empirically fitted." Specific numerical predictions derived from unfitted formulas must be removed or labeled "illustrative only." Two-decimal precision in estimates described as "order-of-magnitude" is false precision and must be rounded. | Verifiable | academic-paper | staging | pr |
+| [environment-variables-config](quality-gates/gates/environment-variables-config.yaml) | All environment-specific configuration (URLs, ports, credentials, feature flags, thresholds) is read from environment variables or a config file, not hardcoded in source. | Defended | any | development | commit |
+| [no-hardcoded-secrets](quality-gates/gates/no-hardcoded-secrets.yaml) | No credentials, API keys, JWT secrets, passwords, or connection strings appear as literal values in source files. | Defended | any | development | commit |
+| [npm-audit-no-high-cve](quality-gates/gates/npm-audit-no-high-cve.yaml) | npm audit --audit-level=high exits 0. | Defended | node, npm, javascript, typescript | development | commit |
+| [adr-files-emitted](quality-gates/gates/adr-files-emitted.yaml) | Every Architecture Decision Record referenced in the specification or README must exist as a committed file with substantive content — context, options considered, decision, and consequences. | Auditable | any | development | pr |
+| [conflict-of-interest-disclosure](quality-gates/gates/conflict-of-interest-disclosure.yaml) | Any material relationship between the author and tools, products, or organizations central to the paper's claims must be disclosed in a dedicated section near the abstract ΓÇö not buried in a single sentence mid-paper. | Auditable | academic-paper | staging | pr |
+| [conventional-commits](quality-gates/gates/conventional-commits.yaml) | Commit messages follow the conventional commit format: type(scope): description. | Auditable | any | development | commit |
+| [no-circular-dependencies](quality-gates/gates/no-circular-dependencies.yaml) | The module dependency graph is acyclic. | Composable | any | development | commit |
+| [docker-compose-defined](quality-gates/gates/docker-compose-defined.yaml) | A docker-compose.yml exists at the repository root with at least one named service. | Executable | any | development | pr |
+| [jest-no-failed-tests](quality-gates/gates/jest-no-failed-tests.yaml) | jest --json exits with numFailedTests === 0. | Executable | javascript, typescript, jest | development | commit |
+| [no-console-log-production](quality-gates/gates/no-console-log-production.yaml) | No console.log, console.warn, or console.error calls appear in non-test production source files. | Executable | javascript, typescript, any | commit | pre-commit |
+| [no-localhost-hardcoded](quality-gates/gates/no-localhost-hardcoded.yaml) | No occurrence of 'localhost' or '127.0.0.1' appears as a string literal in application source code. | Executable | any | development | commit |
+| [tsc-no-emit-exits-zero](quality-gates/gates/tsc-no-emit-exits-zero.yaml) | tsc --noEmit exits 0 on every commit. | Executable | typescript | development | commit |
+| [typescript-strict-mode](quality-gates/gates/typescript-strict-mode.yaml) | The project's tsconfig.json has compilerOptions.strict set to true. | Executable | typescript | commit | pre-commit |
+| [docker-service-boundaries](quality-gates/gates/docker-service-boundaries.yaml) | Each application service in docker-compose.yml must reference an explicitly named database service. | — |  | — | — |
+| [extension-manifest-committed](quality-gates/gates/extension-manifest-committed.yaml) | .vscode/extensions.json must exist and be committed to the repository. | — |  | — | — |
+| [python-dependencies-pinned](quality-gates/gates/python-dependencies-pinned.yaml) | Python projects must have a locked dependency file with pinned versions. | — |  | — | — |
+| [runtime-version-pinned](quality-gates/gates/runtime-version-pinned.yaml) | A runtime version pin file must exist: .nvmrc for Node.js projects, .python-version for Python projects, .tool-versions for multi-runtime. | — |  | — | — |
+
+*Underrepresented properties (highest-value contribution targets): Composable.*
+<!-- GATES_TABLE_END -->
+
+See [CONTRIBUTING.md](quality-gates/CONTRIBUTING.md) for the schema and submission process.
 
 ---
 

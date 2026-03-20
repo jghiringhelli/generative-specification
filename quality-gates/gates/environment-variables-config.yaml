@@ -1,0 +1,15 @@
+﻿id: environment-variables-config
+name: No hardcoded configuration values in source
+description: >
+  All environment-specific configuration (URLs, ports, credentials, feature flags,
+  thresholds) is read from environment variables or a config file, not hardcoded in
+  source. Hardcoded configuration values are a deployment hazard: the artifact cannot
+  run in a different environment without a source edit.
+property: Defended
+tags: [any]
+phase: development
+trigger: commit
+blocking: true
+check:
+  type: manual
+  note: Review for string literals that look like URLs, IP addresses, or port numbers not in environment variable reads.

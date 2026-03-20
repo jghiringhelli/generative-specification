@@ -1,0 +1,38 @@
+name: Update Quality Gates Table
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'quality-gates/gates/**.yaml'
+      - 'scripts/generate-gates-table.py'
+
+jobs:
+  update-table:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install pyyaml
+
+      - name: Generate gates table
+        run: python scripts/generate-gates-table.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "Juan Carlos Ghiringhelli"
+          git config user.email "jcghiri@gmail.com"
+          git diff --quiet README.md || (
+            git add README.md &&
+            git commit -m "chore(gates): auto-update quality gates table [skip ci]"  &&
+            git push
+          )
