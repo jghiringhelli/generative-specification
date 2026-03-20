@@ -1082,7 +1082,27 @@ The common failure pattern across all hardening categories mirrors application a
 
 ---
 
-## 9. Discussion
+### 8.12 The Application Gate
+
+The quality gate categories in §8.11 share a structural assumption: the thing being tested is the implementation. There is a complementary gate type where the thing being tested is the *specification artifact itself* — the gate, the template, the prompt, the methodology change. The mechanism is the same: state the acceptance criterion, execute, report divergence. The target is different.
+
+**The application gate** verifies a specification artifact by having the AI apply it to real examples and comparing the output against a known-good reference. If a new quality gate is added to the template, run it against existing governed projects — projects that were already correct — and confirm it fires on nothing. If it fires, either the gate is wrong or the project has a latent issue the gate correctly surfaced. Either outcome is information. If a template change is made, regenerate a benchmark project and compare the output against the prior run. Regressions surface immediately, at the artifact layer, before any production project is affected.
+
+Three benchmark sources compose naturally:
+
+**Existing projects** — the author's own governed codebase, or any project the practitioner has run GS against. These have known-good states and provide an immediate regression surface. A gate that fires on a known-correct project is miscalibrated.
+
+**External benchmarks** — reference implementations published for exactly this purpose. The Conduit specification (RealWorld) was used as the Ax and Rx benchmark in this paper: a known-scope, verifiable target against which derivation quality is measurable. Any domain with a published reference implementation has a ready application gate.
+
+**AI-generated benchmarks** — the AI creates a synthetic project designed to stress the artifact under test. When a gate is designed to catch a specific failure mode, the AI generates a project that exhibits the failure mode and confirms the gate fires, then generates a compliant version and confirms it does not. This is the adversarial posture of the Verifiable property applied one layer up: the gate is the specification; the synthetic project is the test designed to break it.
+
+The AI removes the friction that previously made dogfooding expensive. A methodology change that would have required weeks of manual application to verify across projects now requires a single generation pass. The application gate runs at the speed of a test suite, not a sprint.
+
+The connection to $I \propto (1-S)/S$ is direct. The application gate is a measurement instrument for $S$: if a template change produces lower-divergence output across N benchmark applications, $S$ increased. If it produces higher divergence or new failures, $S$ decreased or a ceiling was hit. The gate operationalizes the theoretical claim rather than asserting it.
+
+---
+
+
 
 The evidence from six production case studies points to four concrete changes this shift requires.
 
