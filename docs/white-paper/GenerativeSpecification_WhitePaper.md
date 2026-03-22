@@ -21,6 +21,10 @@ The paper defines the theoretical principle, presents the artifact grammar throu
 
 ---
 
+**Plain Language Summary.** You describe what you want — clearly and completely. To that description you add a set of quality controls: the accumulated engineering best practices of several decades, plus controls specific to the system being built. An automatic correction cycle then compares what the AI produces against what the specification says should be produced, and closes any gap. Given a sufficiently complete specification and a sufficiently rich control set, the system converges to a correct program. The practical consequence: you no longer need to write code. You need to specify, with enough precision that nothing is left for the AI to invent. The rest of this paper defines what "enough precision" means, how to measure it, and what the empirical record shows when the discipline is applied.
+
+---
+
 ## 1. Introduction
 
 In 1957, Noam Chomsky published *Syntactic Structures*, introducing a formal hierarchy of grammars that would define the theoretical limits of computation. In the same year, John Backus introduced the first high-level programming language, FORTRAN, freeing engineers from the mechanical expression of machine code. The parallel was not coincidence. It was convergence under the same structural pressure, felt independently in two domains.
