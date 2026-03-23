@@ -4,13 +4,12 @@
 <!-- Extends treatment-v5: activates CodeSeeker MCP v2.0.0, adds §8 DRY gate + §9 interface completeness to Verification Protocol, emits ESLint config in P0 -->
 <!-- v6 hypothesis: GS-built semantic tooling (CodeSeeker v2.0.0) reduces structural duplication and catches interface incompleteness that static prompting alone misses -->
 
-> **Execution context**: You are implementing the Conduit RealWorld API as **text output only**.
-> Output every file as a fenced code block with the file path as the first comment:
-> ` ```typescript\n// src/path/to/file.ts\n<code>\n``` `
-> All code for this project is output in this session. No external tools available.
+> **Execution context**: You are implementing the Conduit RealWorld API in an **interactive Claude Code session**.
+> Write files directly to disk using file tools. CodeSeeker MCP is active — use `search_code` before writing any new module (see § MCP-Powered Tooling).
+> Apply the Verification Protocol (§1-§9) before ending each response.
 
 ## Project Identity
-- **Repo**: github.com/jghiringhelli/forgecraft-mcp (experiment: `experiments/treatment-v5/output/`)
+- **Repo**: github.com/jghiringhelli/generative-specification (experiment: `experiments/ax/treatment-v6/output/`)
 - **Primary Language**: TypeScript 5 · Node 18+
 - **Framework**: Express 4 + Prisma 5 + PostgreSQL
 - **Domain**: RealWorld Conduit API — blogging platform backend (GS experiment treatment condition)
