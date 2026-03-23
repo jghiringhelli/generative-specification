@@ -966,6 +966,45 @@ Treatment-v2 — the first condition to achieve a 12/12 GS audit score — also 
 
 ---
 
+## 7.8 Meta-Application: Autonomous Specification Evolution
+
+The six case studies in §7.1–7.6 document GS applied to production software problems. A different pattern was operating in parallel across the AX experiment series — one that did not become fully visible until §7.7.B was complete, but which the git history makes verifiable.
+
+The AX experiment was simultaneously the development mechanism for ForgeCraft. Each treatment cycle did not only produce a Conduit implementation to be audited. It also audited the specification system that produced it.
+
+### The Cycle
+
+Each AX treatment cycle operated as follows:
+
+1. A treatment session ran under the current ForgeCraft version, producing a Conduit implementation.
+2. At cycle end, `close_cycle` — ForgeCraft's structured closing protocol — audited the output against the seven GS properties.
+3. The AI identified what was absent: which gate, which constraint, which property was violated or unenforceable from the current template.
+4. The AI encoded the fix: wrote the quality gate definition, updated the ForgeCraft template, implemented the enforcement hook.
+5. The human validated that the cycle was complete and released the new version.
+6. The next AX treatment ran against a stronger ForgeCraft.
+
+The human role in step 5 was that of trigger and validator, not author. The human did not identify the gap. The human did not write the gate. The human decided whether the AI's identification and encoding were valid — a judgment call, not a creative act. The distinction matters: in conventional iterative development, "human identifies what, AI implements how" is the standard model. In the AX cycle, identification of the specification gap was also AI-performed, against a rubric the human had established in advance. The AI evaluated its own output against the seven properties and produced its own remediation. The human's contribution was the rubric and the release gate — not the content of either. The git history of the `forgecraft-mcp` repository makes this verifiable: quality gate definitions, template block updates, and enforcement hook additions were authored in AI sessions following each treatment cycle, with commit sequences showing gate definition, template integration, and test coverage in that order — the structure of a self-correcting specification system.
+
+### Convergence
+
+The AX scores were not monotonically increasing: treatment-v3 scored 14/14, treatment-v4 regressed to 11/14, then v5 recovered to 14/14. The series is **eventually convergent** — the direction across the full series is unambiguous; the path is not smooth. This is the expected behavior of a system closing gaps on a finite rubric with multi-dimensional interactions: closing one gap exposes another that was previously masked. The v4 regression arose from the materialize-verify loop's interaction with an ADR emission precision gap — closing the timing dependency revealed the content dependency. The convergence claim is that the series terminates at the rubric ceiling; the path involves non-monotone intermediate states, each of which is diagnosable from the gap analysis of the preceding cycle.
+
+### ForgeCraft Dependency Reconsidered
+
+This pattern directly addresses the F3 threat raised in §7.7: that ForgeCraft's presence in the AX conditions introduces a confound the case study evidence cannot separate.
+
+The critical clarification: **ForgeCraft 1.0 was the output of the AX experiment series, not a prior condition of the case studies.** The six production case studies in §7.1–7.6 used, at most, a 0.51 prototype with basic scaffolding — committed before the AX series began. ForgeCraft 1.0's gate system, template hierarchy, and enforcement hooks emerged from the AX treatment cycles described in §7.7.B. The dependency is developmental, not methodological. The analogy is a methodology paper whose tooling was built by applying the methodology to itself — the circularity is not a confound; it is a demonstration that the methodology is applicable to its own instruments.
+
+The more precise statement: ForgeCraft was built under GS, by GS, while simultaneously being used to test GS. The same seven properties that governed ForgeCraft's construction were the rubric against which ForgeCraft's outputs were evaluated. That the rubric was stable enough to serve as both instrument of construction and instrument of evaluation is a non-trivial coherence result — one no single production case study could establish.
+
+### Self-Applicability as Evidence
+
+The agentic self-refinement loop (§9.1) describes a general pattern: generate output, evaluate against specification-defined acceptance criteria, detect gaps, close gaps, repeat. What the AX development cycle demonstrates is this loop operating at the meta-level — the specification system improving its own governing constraints, under the same properties it imposes on governed projects, with human validation but not human authorship of the improvement.
+
+If a specification system can improve its own constraints autonomously — with a human providing only the rubric and the release gate — this is evidence that the pragmatic tier (§4.2) is **self-applicable**: the discipline is expressive enough to govern its own construction. That is a stronger claim than any production case study can establish. Production cases show GS works on software. The AX development cycle shows GS works on the instrument that generates GS. The community ratchet (§10) is not only a social mechanism — it is a mechanism the specification system can turn on itself, closing gaps in its own constraints with the same loop it uses to close gaps in governed projects.
+
+---
+
 ## 8. Implications for Practice
 
 ### 8.1 The Specification Precedes the Code
