@@ -865,6 +865,14 @@ Three repositories are prepared for the workshop. Participants in the brownfield
 
 ### 7.7.B Experiment II: Multi-Agent Adversarial Study — Results Below
 
+Three findings drive everything that follows. First: the boundary that matters is naive vs. structured — unstructured AI deployment produced an internally incoherent project with zero passing tests; both structured conditions produced compilable, layered code. On Executable specifically — tests actually passing against a live database — the control condition outperformed GS v1: the control's full suite passed; GS v1's suite had 6/10 suites blocked by a JWT type narrowing pattern not yet named in the specification. GS v1's single point of advantage over expert prompting was Composable (interface-based dependency injection), traceable directly to a SOLID specification clause the control did not include. Second: 14/14 on the full seven-property rubric is achievable — the post-hoc conditions demonstrate this, with the caveat that treatments v2 through v5 were designed with full knowledge of each prior condition's gaps. This is iterated optimization on a single benchmark, not independent confirmation; the progression from 3→14 is the evidence that each gap is diagnosable and closable, not a statistical demonstration of convergence behavior. Third: the experiment both measured and corrected the methodology — the three template changes confirmed by treatment-v2 were committed to production templates and propagate to every GS-governed project; the gap between experimental finding and production tooling is zero.
+
+*One benchmark (Conduit), one model (claude-sonnet-4-5), one author's specifications: the AX study is N=1 on every structural axis. The empirical claim — a quality gradient observable under controlled conditions — is stated without population-level authority; the paradigm claim does not require it, being a structural argument about what specification completeness permits an executor to derive, not an effect size across benchmarks. The AX findings establish proof-of-concept for the measurability of the GS rubric and the correctness of gap diagnosis: each condition shows a diagnosable, closable gap. External static analysis tools (tsc, ESLint, madge, jscpd) independently corroborate the direction across all 8 conditions without access to the GS property definitions.*
+
+**Benchmark:** RealWorld (Conduit) backend API— a full-featured REST application (authentication, articles, profiles, comments, tags, favourites) implemented in TypeScript/Node.js/Express/Prisma against a live PostgreSQL database. Chosen because it has a published specification, a community Postman collection for conformance testing, and known correct implementation patterns — making automated evaluation straightforward and reviewer replication feasible. All three conditions ran on `claude-sonnet-4-5`, March 13 2026. The experiment design and scoring rubric were prospectively committed in commit `bd2c05b` before any condition was run (verified by timestamp at `https://github.com/jghiringhelli/generative-specification/tree/main/experiments/ax/`).
+
+**Eight conditions** (three prospectively designed, with conditions committed to the public repository before execution — verified by timestamped commits at `https://github.com/jghiringhelli/generative-specification/tree/main/experiments/ax/`; five post-hoc):
+
 A fixed repository and a fixed set of requirements are given to four agentic conditions running in parallel: (1) no specification — session prompts only; (2) partial specification — architectural constitution only, no ADRs, no commit discipline; (3) full generative specification as defined in this paper; (4) full GS with the paper itself as a RAG-accessible source of truth, available to the agent during construction. Each condition produces an artifact set — code, tests, commit history. An adversarial auditor agent — a large language model in a separate session, not a human evaluator — then evaluates each output against the six structural properties active at the time of the experimental runs (Self-describing, Bounded, Verifiable, Defended, Auditable, Composable; the Executable property was identified through this experiment series and formalized subsequently — see §4.3). Critically, the auditor is given these six properties as an independent rubric, not the paper — to avoid the circularity of an agent scoring GS outputs higher because it has read the document that defined the scoring criteria. A second judge agent scores structural coherence, boundary conformance, test quality, and naming signal independently. The comparison is made at the artifact level: not "did the code work" but "does the specification implied by the output match the one it was given, and does it satisfy the derivability criterion for a stateless reader." This design makes the paradigm claim falsifiable in a concrete, reproducible form and establishes the control condition this paper cannot provide from practitioner evidence alone.
 
 Benchmark project selection requires three constraints: representativeness across the five challenge categories established in §7; scope bounded enough to produce comparable artifacts but non-trivial enough that architectural coherence is a meaningful outcome (200–500 source files is the appropriate band); and no prior GS exposure in the codebase used for brownfield and takeover conditions. Independent project selection by a party not affiliated with the experiment's author is the cleanest resolution.
@@ -872,12 +880,6 @@ Benchmark project selection requires three constraints: representativeness acros
 This experiment specification is itself an instance of the principle it tests: stated with sufficient precision that an agentic orchestration system — such as the one described in §7.4 — can execute it without further human elaboration. The chain closes on itself: the methodology proposes the experiment, the tool built under the methodology can run it, and the tool was built using the methodology.
 
 #### 7.7.B.1 Results
-
-Three findings drive everything that follows. First: the boundary that matters is naive vs. structured — unstructured AI deployment produced an internally incoherent project with zero passing tests; both structured conditions produced compilable, layered code. On Executable specifically — tests actually passing against a live database — the control condition outperformed GS v1: the control's full suite passed; GS v1's suite had 6/10 suites blocked by a JWT type narrowing pattern not yet named in the specification. GS v1's single point of advantage over expert prompting was Composable (interface-based dependency injection), traceable directly to a SOLID specification clause the control did not include. Second: 14/14 on the full seven-property rubric is achievable — the post-hoc conditions demonstrate this, with the caveat that treatments v2 through v5 were designed with full knowledge of each prior condition's gaps. This is iterated optimization on a single benchmark, not independent confirmation; the progression from 3→14 is the evidence that each gap is diagnosable and closable, not a statistical demonstration of convergence behavior. Third: the experiment both measured and corrected the methodology — the three template changes confirmed by treatment-v2 were committed to production templates and propagate to every GS-governed project; the gap between experimental finding and production tooling is zero.
-
-**Benchmark:** RealWorld (Conduit) backend API— a full-featured REST application (authentication, articles, profiles, comments, tags, favourites) implemented in TypeScript/Node.js/Express/Prisma against a live PostgreSQL database. Chosen because it has a published specification, a community Postman collection for conformance testing, and known correct implementation patterns — making automated evaluation straightforward and reviewer replication feasible. All three conditions ran on `claude-sonnet-4-5`, March 13 2026. The experiment design and scoring rubric were prospectively committed in commit `bd2c05b` before any condition was run (verified by timestamp at `https://github.com/jghiringhelli/generative-specification/tree/main/experiments/ax/`).
-
-**Eight conditions** (three prospectively designed, with conditions committed to the public repository before execution — verified by timestamped commits at `https://github.com/jghiringhelli/generative-specification/tree/main/experiments/ax/`; five post-hoc):
 
 - **Naive** — 3-line README, prompts averaging 4 lines, no architecture guidance, no error format, no test requirements. Represents the de facto default: AI tools deployed without structured methodology.
 - **Control (expert prompting)** — API spec plus a detailed README (tech stack, layered architecture, error format, naming conventions, coverage target) and 7 prompts averaging 30 lines each with architectural requirements inline. Represents what a skilled senior engineer does today without GS artifacts.
@@ -1320,6 +1322,52 @@ Claude 4.5 changed the gradient noticeably. Default generation quality rose enou
 
 The early practice was to rebuild this structure inside each session prompt. It worked, but required high-interaction overhead: the same architectural context restated at every continuation, every session boundary, every adjacent module. The natural progression was to externalize it — write once, reference permanently, let every session inherit the context without re-specification. That is not an original insight in software engineering. The original move was recognizing that the specification needed to be written against the AI's specific failure modes — statelessness, context boundary degradation, generic-output tendency — rather than against a human reader's assumptions.
 
+```
+                              ▲
+                             / \
+                            /   \
+                           /     \
+                          /  E X  \
+                         /  P A N  \
+                        /  S I O N  \
+                       /  Any domain \
+                      /  named in the \
+                     /  specification  \
+                    /  becomes deriv-  \
+                   /  able by the agent \
+                  /  CHOMSKY  ( ↑ )     \
+                 /  generative reach     \
+                /  expands as the spec   \
+               /  grows more complete    \
+              /___________________________\
+             |                             |
+             |      THE SPECIFICATION      |
+             |  The artifact set that IS   |
+             |  both the restriction and   |
+             |  the enabling condition of  |
+             |  the expansion above it     |
+             |_____________________________|
+              \                           /
+               \  MARTIN  ( ↓ )         /
+                \  restriction          /
+                 \  deepens as each    /
+                  \  constraint closes /
+                   \  a degree of     /
+                    \  programmer     /
+                     \  freedom,     /
+                      \  removing   /
+                       \  surfaces /
+                        \  the    /
+                         \ agent /
+                          \ fill /
+                           \ arb /
+                            \itr/
+                             \a/
+                              ▼
+```
+
+*Figure 2. The Double Pyramid: Restriction Enables Expansion. The upper triangle (Chomsky, pointing up) is the expansion: any domain the specification names becomes derivable by the agent; the more complete the specification, the greater the generative reach above the vertex. The lower triangle (Martin, pointing down) is the restriction: each constraint closes a degree of programmer freedom, removing the surfaces the agent would fill arbitrarily. The shared vertex is the specification itself — the artifact set that is simultaneously the restriction and the enabling condition of everything above it.*
+
 This is where the double pyramid emerged: the restriction is the specification, removing the freedoms the executor fills arbitrarily; the expansion is the derivation chain those freedoms previously consumed. The methodology looks like the old upfront design phase from the outside. The shape is correct and the mechanism is different. In classical waterfall, every post-specification phase required human execution: design handed off to development, development to testing, testing to deployment, each boundary a coordination cost. Here, the specification is the human's primary contribution; every subsequent phase is AI-derived. The upfront investment buys a fully automated derivation chain, not a sequence of human handoffs. Recognizing this distinction is what makes the methodology tractable in practice — it is not a return to heavyweight process but an identification of which part of the process only the human can do, and which part becomes free once that part is done well.
 
 **Two dimensions determine how far the derivation chain reaches.** The first is cross-domain activation: naming a domain in the specification — prosody analysis, formal fallacy classification, RAPTOR indexing, deontic modal logic — calibrates the model's output to that domain's training depth rather than to generalist approximation. The AI carries the depth; the practitioner supplies the name that activates it. This is not a prompting technique; it is an epistemological property of how a specification signals its own domain context to a context-sensitive reader. The second dimension is intra-engineering pattern recognition: knowing that lineage tracking is a graph traversal problem rather than a join problem, or that a key-value store keyed on content hash is the correct instrument for idempotent pipeline processing. When the processor checks both the metadata hash and the binary hash before acting, their presence or absence drives a decision tree that makes the processor re-runnable, extensible to new processing stages, and auditable by construction — without the engineer managing individual file state. *Idempotency* is the word that carries this entire structure. A practitioner who knows it states it; the model derives the implementation. A practitioner who does not will approximate the behavior and receive approximate code.
@@ -1452,10 +1500,11 @@ He is currently building a portfolio of AI-native systems — autonomous code bu
 
 He is the creator of the structured delivery methodology described in this paper. Generative Specification is the theory that grounds it; ForgeCraft is the hosted tool that automates its project setup and scaffolding within coding environments (available at forgecraft.dev); CodeSeeker is the graph-powered semantic search tool built under the same methodology. He can be reached at jcghiri@gmail.com · [linkedin.com/in/jghiringhelli](https://linkedin.com/in/jghiringhelli).
 
-The ideas in this paper are the product of nearly two decades of professional practice and a formal education that crossed two continents: a Computer Engineering degree from the Universidad de la República Uruguay — recognized by the European Union as a postgraduate qualification — and a Master's in Data Science completed in Catalonia. The academic record from those years includes a co-authored paper on transit network optimization — Arizti, Ghiringhelli, Mauttone, and Urquhart, LAND-TRANSLOG III (Santa Cruz, Chile, 2016) — and a master's thesis on NLP-based query expansion for vehicle repair documentation, supervised by Nadjet Bouayad-Agha at the Universitat Pompeu Fabra (UOC, 2020). The first professional line of code was written in 2006. The last one typed by hand was written sometime before June 2025.
+The ideas in this paper are the product of nearly two decades of professional practice and a formal education that crossed two continents: a Computer Engineering degree from the Universidad de la República Uruguay — recognized by the European Union as a postgraduate qualification — and a Master's in Data Science completed in Catalonia. The academic record from those years includes a co-authored paper on transit network optimization — Arizti, Ghiringhelli, Mauttone, and Urquhart, LAND-TRANSLOG III (Santa Cruz, Chile, 2016) — and a master's thesis on NLP-based query expansion for vehicle repair documentation, supervised by Nadjet Bouayad-Agha at the Universitat Pompeu Fabra (UOC, 2020).
 
 One speculative continuation of the ladder this paper describes is whether the gap between intent and its textual articulation could itself be instrumented — through prosody, attention markers, and presence signals, the channels §2 identifies as the ones written specification currently closes by hand. That question sits at the far end of the abstraction ladder and is the territory the author's intended doctoral research explores.
 
+The first professional line of code was written in 2006. The last one typed by hand was written sometime before June 2025.
 
 ---
 
