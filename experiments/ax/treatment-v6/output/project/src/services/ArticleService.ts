@@ -7,6 +7,18 @@ const DEFAULT_LIMIT = 20;
 const DEFAULT_OFFSET = 0;
 const MAX_LIMIT = 100;
 
+/**
+ * Parses and clamps limit/offset from a query object.
+ * @param query - Raw query params from the request
+ * @returns Validated pagination values
+ */
+function parsePagination(query: Record<string, unknown>): { limit: number; offset: number } {
+  return {
+    limit: Math.min(Number(query['limit'] ?? DEFAULT_LIMIT), MAX_LIMIT),
+    offset: Number(query['offset'] ?? DEFAULT_OFFSET),
+  };
+}
+
 /** Zod schema for creating an article. */
 const createArticleSchema = z.object({
   title: z.string().min(1, 'is required'),
@@ -95,8 +107,7 @@ export class ArticleService {
     query: Record<string, unknown>,
     currentUserId?: number,
   ): Promise<{ articles: ArticleResponseItem[]; articlesCount: number }> {
-    const limit = Math.min(Number(query['limit'] ?? DEFAULT_LIMIT), MAX_LIMIT);
-    const offset = Number(query['offset'] ?? DEFAULT_OFFSET);
+    const { limit, offset } = parsePagination(query);
 
     const result = await this.articleRepository.findAll(
       {
@@ -123,8 +134,7 @@ export class ArticleService {
     userId: number,
     query: Record<string, unknown>,
   ): Promise<{ articles: ArticleResponseItem[]; articlesCount: number }> {
-    const limit = Math.min(Number(query['limit'] ?? DEFAULT_LIMIT), MAX_LIMIT);
-    const offset = Number(query['offset'] ?? DEFAULT_OFFSET);
+    const { limit, offset } = parsePagination(query);
 
     const result = await this.articleRepository.findFeed(userId, limit, offset);
     return {
