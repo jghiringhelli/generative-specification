@@ -128,9 +128,7 @@ The pre-run evidence (scores, evaluation transcripts, session logs) is in `exper
 
 **Free tier: 2 active projects.** A merged quality gate PR earns an additional project slot.
 
-```bash
-npx forgecraft-mcp setup .
-```
+Access via the ForgeCraft service at [forgecraft.dev](https://forgecraft.dev) — API key required.
 
 ---
 

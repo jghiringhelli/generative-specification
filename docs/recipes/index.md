@@ -42,23 +42,19 @@ forgecraft_actions({ action: "<action>", project_dir: "/path/to/project" })
 
 ## Prerequisite
 
-ForgeCraft MCP installed and configured:
+ForgeCraft is available as a managed service at [forgecraft.dev](https://forgecraft.dev). An API key is required — see the site for tier options.
 
-```bash
-# Add to Claude Desktop or Copilot CLI MCP config:
+Once you have an API key, add to your Claude Desktop or Copilot CLI MCP config:
+
+```json
 {
   "forgecraft": {
-    "command": "npx",
-    "args": ["-y", "forgecraft-mcp"],
-    "env": {}
+    "command": "forgecraft-mcp",
+    "env": {
+      "FORGECRAFT_API_KEY": "your-api-key-here"
+    }
   }
 }
-```
-
-Or run from source:
-```bash
-git clone https://github.com/jghiringhelli/forgecraft-mcp
-cd forgecraft-mcp && npm install && npm run build
 ```
 
 After initial project setup, you can disable the MCP tool until you need a refresh — it's most useful during setup, loop transitions, and before hardening.
