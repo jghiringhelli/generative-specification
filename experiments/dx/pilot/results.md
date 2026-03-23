@@ -1,6 +1,7 @@
 # DX Experiment — Self-Administered Pilot Results
 
 **Run date:** 2026-03-17  
+**Script re-run (bugs fixed):** 2026-03-23  
 **Pilot operator:** GitHub Copilot (self-administered)  
 **Purpose:** Rubric calibration, baseline scores, script validation before April 2026 session.
 
@@ -8,35 +9,37 @@
 
 ## Summary Table
 
-| Repo   | Condition  | Tests | Passing | Prisma-in-Routes | Coverage (all files / feature file) | Rubric (auto+obs) |
-|--------|------------|-------|---------|-----------------|-------------------------------------|-------------------|
-| base   | naive      | 0     | 0       | 28              | N/A                                  | 0/14              |
-| base   | competent  | 3     | 3       | 28              | 29.6% / 64.5%                        | 2/14              |
-| base   | gs         | 5     | 5       | 26 (digest.ts=0)| 29.3% / 88.5%                        | 6/14              |
-| kanban | naive      | 0     | 0       | 28              | N/A                                  | 0/14              |
-| kanban | competent  | 4     | 4       | 29              | 34.2% / 86.9%                        | 3/14              |
-| kanban | gs         | 8     | 8       | 23 (activity.ts=0)| 48.4% / 89.5%                     | 8/14              |
+| Repo   | Condition  | Tests | Passing | Prisma-in-Feature-Route | Feature Coverage | Script Score (fixed) | Rubric (manual) |
+|--------|------------|-------|---------|------------------------|-----------------|----------------------|-----------------|
+| base   | naive      | 0     | 0       | 2                      | N/A             | **1/10**†            | 0/14            |
+| base   | competent  | 3     | 3       | 2                      | 65.7%           | **3/10**             | 2/14            |
+| base   | gs         | 5     | 5       | 0 ✓                    | 89.7%           | **7/10**             | 6/14            |
+| kanban | naive      | 0     | 0       | 2                      | N/A             | **1/10**†            | 0/14            |
+| kanban | competent  | 4     | 4       | 2                      | 88.5%           | **3/10**             | 3/14            |
+| kanban | gs         | 8     | 8       | 0 ✓                    | 100%            | **7/10**             | 8/14            |
 
-> "Feature file" coverage = digest.ts (base) or activity.ts + service + repository (kanban).  
-> "Prisma-in-Routes" counts all `prisma.*` calls across `src/routes/*.ts`. For GS conditions, the
-> **new** feature route (digest.ts / activity.ts) has zero; pre-existing scaffold routes are unchanged.
+† naive scores +1 on conventional commits because the pilot uses local subdirs of the generative-specification repo — all conditions share the same scaffold git history (93% conventional). For real GitHub forks in April, each participant's history will be scored independently; naive expected to score 0/7.
+
+> Bounded check now targets only the new feature route (digest.ts / activity.ts), not all routes.
+> GS achieves 7/7 on all automatable checks — the Composable +3 (live server test) is the only remaining gap.
+> Gradient: **1 → 3 → 7** — clean monotone separation across conditions.
 
 ---
 
-## Automated Rubric Breakdown (10 pts)
+## Automated Score Breakdown — Fixed Script (10 pts max)
 
 | Repo   | Condition  | Verifiable (2) | Bounded (2) | Self-desc (1) | ADR (1) | Commits (1) | Composable (3) | Auto Total |
 |--------|------------|----------------|-------------|----------------|---------|-------------|----------------|-----------|
-| base   | naive      | 0              | 0           | 0              | 0       | 0           | N/A (no server)| **0/7**   |
-| base   | competent  | 2              | 0           | 0              | 0       | 0           | N/A            | **2/7**   |
-| base   | gs         | 2              | 0†          | 1              | 1       | 1           | N/A            | **5/7**   |
-| kanban | naive      | 0              | 0           | 0              | 0       | 0           | N/A            | **0/7**   |
-| kanban | competent  | 2              | 0           | 0              | 0       | 0           | N/A            | **2/7**   |
-| kanban | gs         | 2              | 0†          | 1              | 1       | 1           | N/A            | **5/7**   |
+| base   | naive      | 0 (0 tests)    | 0           | 0              | 0       | 1†          | SKIPPED        | **1/7**   |
+| base   | competent  | 2 (65.7% cov)  | 0           | 0              | 0       | 1†          | SKIPPED        | **3/7**   |
+| base   | gs         | 2 (89.7% cov)  | 2 ✓         | 1              | 1       | 1†          | SKIPPED        | **7/7**   |
+| kanban | naive      | 0 (0 tests)    | 0           | 0              | 0       | 1†          | SKIPPED        | **1/7**   |
+| kanban | competent  | 2 (88.5% cov)  | 0           | 0              | 0       | 1†          | SKIPPED        | **3/7**   |
+| kanban | gs         | 2 (100% cov)   | 2 ✓         | 1              | 1       | 1†          | SKIPPED        | **7/7**   |
 
-† **Bounded failed for GS** because pre-existing scaffold routes (bookmarks, feed, users, projects,
-tasks, comments) still contain direct Prisma calls. Only the **new** feature routes (digest.ts,
-activity.ts) are clean. See Calibration Finding #1 below.
+† Conventional commits: all conditions share the scaffold's git history (62/67 conventional) when scored as local paths. April GitHub forks will have independent histories.
+
+**GS achieves a perfect 7/7 on all automatable checks. Composable (+3) requires live server setup.**
 
 ## Observer Bonus Breakdown (+4 pts)
 
