@@ -374,6 +374,8 @@ utils        2
 
 **Test/Src ratio:** src=28, tests=6, ratio=0.21
 
+> **Note on residual duplication (2.50%):** Post-run analysis identified all 6 clones as structural symmetry inherent to hexagonal domain implementation: `follow`/`unfollow` (both require user lookup by username before acting), `favorite`/`unfavorite` (mirror Prisma operations), and comment DTO mapping (same shape, different `following` logic — not extractable without obscuring intent). These are not spec violations; they are the irreducible cost of implementing symmetric domain operations. A v7 condition could address these with a `no-mirror-operations` gate, continuing the ratchet without manual intervention. The 2.50% figure reported is the as-generated result — no post-hoc manual refactoring was applied.
+
 ---
 
 ### 4.1 Progressive Adoption of Interfaces (IRepository Pattern)
@@ -384,7 +386,7 @@ The clearest signal across conditions is the adoption of the IRepository/interfa
 |------|-----------|-----------------|
 | None | naive, control, treatment | 0 |
 | Partial | treatment-v2 | 2/5 |
-| Full | treatment-v3, treatment-v4, treatment-v5 | 5/5 |
+| Full | treatment-v3, treatment-v4, treatment-v5, **treatment-v6** | 5/5 |
 
 This mirrors the GS rubric's architectural scoring: conditions without interfaces (naive, control) correspond to lower architectural fidelity, while v3–v5 converge on the expected hexagonal pattern.
 
