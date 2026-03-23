@@ -565,7 +565,7 @@ Brownfield systems do not need to be rewritten to become generative. They need a
 
 ## 7.3 Greenfield — ForgeCraft
 
-**Domain:** Developer tooling. An MCP (Model Context Protocol) server that generates production-grade AI coding assistant instruction files from a library of 112 curated template blocks. Supports six AI assistants, 19 project classification tags, and a tier system. Published as an open-source npm package, distributed via npm, the MCP Registry, and multiple community channels.
+**Domain:** Developer tooling. An MCP (Model Context Protocol) server that generates production-grade AI coding assistant instruction files from a library of 112 curated template blocks. Supports six AI assistants, 19 project classification tags, and a tier system. ForgeCraft-MCP 1.0.0 is distributed freely via npm (`npx forgecraft-mcp@latest`). The tool is open source. The project is monetised through consulting engagements with organisations that want guided convergence cycles, bespoke quality gate authoring, or custom integration work. There is no subscription or per-seat fee.
 
 **Starting condition:** A blank repository. No prior codebase, no inherited debt, no existing architecture. Pure specification-first construction.
 
@@ -580,12 +580,12 @@ The initial release (a single commit) shipped with 14 MCP tools, 18 composable t
 | Metric | Value |
 |---|---|
 | Total commits | 40 |
-| Current version | v0.5.1 |
-| Tests passing | 307 (current; 111 at initial release) |
+| Current version | 1.0.0 (released March 2026) |
+| Tests passing | 1127 (current; 111 at initial release) |
 | Template blocks | 112 |
 | Project classification tags | 19 |
 | Supported AI assistants | 6 (Claude, Cursor, Copilot, Windsurf, Cline, Aider) |
-| Distribution channels | npm, MCP Registry, Homebrew, Snap, Chocolatey |
+| Distribution channels | npm (`npx forgecraft-mcp@latest`). The MCP configuration is declared in `forgecraft.yaml`; developers register it once with their MCP client (VS Code Copilot agent mode, Claude Desktop, or any MCP-compatible host). |
 | Breaking refactor | Full rename from `forgekit` to `forgecraft-mcp` — one commit, zero test regressions |
 
 **The role of the specification:** The breaking rename — package name, configuration file format, type names, environment variables, all documentation — was executed in a single commit with zero regressions. This was only possible because the test suite, defined against interfaces rather than implementations, verified behavior rather than structure. When the names changed, the behavior contracts held. The specification made a breaking change non-breaking in practice.
@@ -968,20 +968,24 @@ Treatment-v2 — the first condition to achieve a 12/12 GS audit score — also 
 
 ## 7.8 Meta-Application: Autonomous Specification Evolution
 
-The six case studies in §7.1–7.6 document GS applied to production software problems. A different pattern was operating in parallel across the AX experiment series — one that did not become fully visible until §7.7.B was complete, but which the git history makes verifiable.
+The six case studies in §7.1–7.6 document GS applied to production software problems. What they do not document — because it was not the primary subject of those cases — is where the tool those cases used came from. SafetyCorePro, BRAD, Invellum, and the early art pipeline cases ran against ForgeCraft v0.5.1: a basic CLAUDE.md scaffold with generic git hooks and no quality gate cascade. ForgeCraft 1.0.0's gate system, enforcement hooks, and template hierarchy did not exist when those cases were conducted. They emerged from the AX experiment series. The AX experiment was simultaneously the development mechanism for ForgeCraft.
 
-The AX experiment was simultaneously the development mechanism for ForgeCraft. Each treatment cycle did not only produce a Conduit implementation to be audited. It also audited the specification system that produced it.
+A different pattern was operating in parallel across the AX experiment series — one that did not become fully visible until §7.7.B was complete, but which the git history makes verifiable.
+
+Each treatment cycle did not only produce a Conduit implementation to be audited. It also audited the specification system that produced it.
 
 ### The Cycle
 
 Each AX treatment cycle operated as follows:
 
-1. A treatment session ran under the current ForgeCraft version, producing a Conduit implementation.
+1. A treatment session ran under the current ForgeCraft version. Critically, the repository being specified was ForgeCraft itself — the tool was simultaneously the specifier and the subject of specification, a self-referential application the methodology makes possible because the pragmatic tier is domain-agnostic.
 2. At cycle end, `close_cycle` — ForgeCraft's structured closing protocol — audited the output against the seven GS properties.
-3. The AI identified what was absent: which gate, which constraint, which property was violated or unenforceable from the current template.
-4. The AI encoded the fix: wrote the quality gate definition, updated the ForgeCraft template, implemented the enforcement hook.
-5. The human validated that the cycle was complete and released the new version.
-6. The next AX treatment ran against a stronger ForgeCraft.
+3. The AI analysed the treatment output: cascade score, test results, gate failures, mutation score, architectural drift.
+4. From that analysis, the AI identified specification gaps — what the framework was not yet capturing, and why.
+5. The AI authored the new quality gate definitions and encoded them into `forgecraft.yaml` and the gate implementation files.
+6. The AI implemented the gate logic: TypeScript, tests, integration.
+7. The human validated that the cycle was complete and released the new version.
+8. The next AX treatment ran against the strengthened specification, producing a higher S_realised, which surfaced the next generation of gaps.
 
 The human role in step 5 was that of trigger and validator, not author. The human did not identify the gap. The human did not write the gate. The human decided whether the AI's identification and encoding were valid — a judgment call, not a creative act. The distinction matters: in conventional iterative development, "human identifies what, AI implements how" is the standard model. In the AX cycle, identification of the specification gap was also AI-performed, against a rubric the human had established in advance. The AI evaluated its own output against the seven properties and produced its own remediation. The human's contribution was the rubric and the release gate — not the content of either. The git history of the `forgecraft-mcp` repository makes this verifiable: quality gate definitions, template block updates, and enforcement hook additions were authored in AI sessions following each treatment cycle, with commit sequences showing gate definition, template integration, and test coverage in that order — the structure of a self-correcting specification system.
 
@@ -1002,6 +1006,8 @@ The more precise statement: ForgeCraft was built under GS, by GS, while simultan
 The agentic self-refinement loop (§9.1) describes a general pattern: generate output, evaluate against specification-defined acceptance criteria, detect gaps, close gaps, repeat. What the AX development cycle demonstrates is this loop operating at the meta-level — the specification system improving its own governing constraints, under the same properties it imposes on governed projects, with human validation but not human authorship of the improvement.
 
 If a specification system can improve its own constraints autonomously — with a human providing only the rubric and the release gate — this is evidence that the pragmatic tier (§4.2) is **self-applicable**: the discipline is expressive enough to govern its own construction. That is a stronger claim than any production case study can establish. Production cases show GS works on software. The AX development cycle shows GS works on the instrument that generates GS. The community ratchet (§10) is not only a social mechanism — it is a mechanism the specification system can turn on itself, closing gaps in its own constraints with the same loop it uses to close gaps in governed projects.
+
+The Specification Completeness Law ($I \propto \frac{1-S}{S}$) was stated in §9.4 as a proposed model with N=3 directional support. The AX self-application cycle provides one additional and qualitatively distinct data point: when the specification system is applied to itself, the series converges to S_realised = 1.0 across the automatable rubric. This does not validate the law's functional form — N remains small — but it establishes that the law is at minimum self-consistent: a specification system that claims S → 1 is achievable was itself brought to S_realised = 1.0 by the mechanism the law describes. The empirical upper bound is not asserted; it is observed in the git history of the instrument.
 
 ---
 
