@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+# Security gate: zero HIGH/CRITICAL CVEs required
+npm audit --audit-level=high
+npx tsc --noEmit && npm run lint && npm test -- --passWithNoTests

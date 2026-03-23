@@ -1,0 +1,51 @@
+# .github/workflows/ci.yml
+name: CI
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: conduit
+          POSTGRES_PASSWORD: conduit
+          POSTGRES_DB: conduit_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - '5432:5432'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      # Security gate: zero HIGH/CRITICAL CVEs required
+      - run: npm audit --audit-level=high
+      - run: npx prisma generate
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://conduit:conduit@localhost:5432/conduit_test
+      - run: npm test -- --coverage
+        env:
+          DATABASE_URL: postgresql://conduit:conduit@localhost:5432/conduit_test
+          JWT_SECRET: ci-test-secret
+          NODE_ENV: test
+      - name: Mutation gate
+        run: npx stryker run
+        env:
+          DATABASE_URL: postgresql://conduit:conduit@localhost:5432/conduit_test
+          JWT_SECRET: ci-test-secret
+          NODE_ENV: test
