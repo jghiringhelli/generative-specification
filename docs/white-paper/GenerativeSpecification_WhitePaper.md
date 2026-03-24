@@ -991,7 +991,7 @@ The human role in step 5 was that of trigger and validator, not author. The huma
 
 ### Convergence
 
-The AX scores were not monotonically increasing: treatment-v3 scored 14/14, treatment-v4 regressed to 11/14, then v5 recovered to 14/14. The series is **eventually convergent** — the direction across the full series is unambiguous; the path is not smooth. This is the expected behavior of a system closing gaps on a finite rubric with multi-dimensional interactions: closing one gap exposes another that was previously masked. The v4 regression arose from the materialize-verify loop's interaction with an ADR emission precision gap — closing the timing dependency revealed the content dependency. The convergence claim is that the series terminates at the rubric ceiling; the path involves non-monotone intermediate states, each of which is diagnosable from the gap analysis of the preceding cycle.
+The AX scores were not monotonically increasing: treatment-v3 scored 14/14, treatment-v4 regressed to 11/14, then v5 recovered to 14/14. The series is **directionally convergent** — the direction across the full series is unambiguous; the path is not smooth. This is the expected behavior of a system closing gaps on a finite rubric with multi-dimensional interactions: closing one gap exposes another that was previously masked. The v4 regression arose from the materialize-verify loop's interaction with an ADR emission precision gap — closing the timing dependency revealed the content dependency. The convergence claim is that the series terminates at the rubric ceiling; the path involves non-monotone intermediate states, each of which is diagnosable from the gap analysis of the preceding cycle.
 
 ### ForgeCraft Dependency Reconsidered
 
@@ -1180,6 +1180,18 @@ Three benchmark sources compose naturally:
 The AI removes the friction that previously made dogfooding expensive. A methodology change that would have required weeks of manual application to verify across projects now requires a single generation pass. The application gate runs at the speed of a test suite, not a sprint.
 
 The connection to $I \propto (1-S)/S$ is direct. The application gate is a measurement instrument for $S$: if a template change produces lower-divergence output across N benchmark applications, $S$ increased. If it produces higher divergence or new failures, $S$ decreased or a ceiling was hit. The gate operationalizes the theoretical claim rather than asserting it.
+
+---
+
+### 8.13 The Engineer Elevated
+
+Generative Specification is a convergence mechanism. Given a complete, correct, and well-maintained specification, the system drives output toward correctness on a finite rubric — the AX series demonstrates this empirically, and the Completeness Law provides the theoretical framing. The natural misreading of that convergence is that engineering judgment is no longer the constraining resource.
+
+The misreading conflates two distinct claims. The mechanism converges, given a correct specification. Writing a correct specification for a complex system is not a mechanical act. It requires decomposing a problem domain the AI did not define, naming the dimensions along which the solution must be evaluated, understanding the interactions between technical, economic, legal, and operational constraints, and distinguishing the constraints that matter from those that appear to. For a complex, novel, or large-scale system, the specification work is where the intellectual effort lives — and it requires practitioners who understand the domain deeply enough to know what must be said, and to recognize the gaps in what they have said.
+
+The analogy to prior transitions in software is precise. Frameworks automated boilerplate code. No framework eliminated the need for engineers who understood the underlying system — it eliminated the need to write the same connection pool, routing table, or serialization layer repeatedly. The productivity gain was real; the craft changed. Engineers spent less time on infrastructure and more on domain logic. The same transition is now underway one abstraction level higher. Standard, well-bounded projects — whose specification is predictable, whose quality gates are established, and whose architecture follows known patterns — will be assembled with decreasing human involvement. Complex projects at novel domain boundaries will require more precisely specified human intent, not less. The scope of what the engineer must know does not shrink; the surface they must defend explicitly expands.
+
+The engineer is not replaced. The engineer is elevated to the layer that was always the harder problem: stating what must be true before any code exists to confirm it. The craft changes — from implementation to specification, from writing to governing — but the need for engineering judgment does not. On the contrary: every degree of freedom the specification leaves implicit is a degree of freedom the AI will exercise without constraint. The most consequential engineering decisions in a GS-governed project are not which library to use or how to structure a module. They are what to include in the specification, what to exclude, and what to make blocking. The practitioner who can make those decisions with precision is more valuable, not less, in a world where implementation is abundant and correct specification is scarce.
 
 ---
 
