@@ -1,11 +1,59 @@
 ﻿# Generative Specification
 
-Community home for the Generative Specification methodology -- the first programming discipline of the pragmatic dimension, designed for a stateless reader.
+Community home for the Generative Specification methodology — the first programming discipline of the pragmatic dimension, designed for a stateless reader.
 
-- [White Paper](https://doi.org/10.5281/zenodo.19073543)
-- [Ambient Engineer -- articles and essays](https://ambientengineer.substack.com)
+- [White Paper (PDF)](docs/white-paper/GenerativeSpecification_WhitePaper.pdf) · [Zenodo preprint](https://doi.org/10.5281/zenodo.19073543)
+- [Ambient Engineer — articles and essays](https://ambientengineer.substack.com)
 - [Experiment Supplement](docs/white-paper/GS_Experiment_Supplement.md)
 - [Practitioner Protocol](docs/white-paper/GenerativeSpecification_PractitionerProtocol.md)
+
+---
+
+## Repository Structure
+
+```
+docs/
+  white-paper/          Primary research documents
+                          GenerativeSpecification_WhitePaper.md   — source (Markdown)
+                          GenerativeSpecification_WhitePaper.pdf  — current release build
+                          GS_Experiment_Supplement.md             — extended experiment data
+                          GenerativeSpecification_PractitionerProtocol.md — how-to guide
+                          REVIEWING.md                            — how to challenge a claim
+  recipes/              Step-by-step guides for common GS scenarios
+                          (brownfield, greenfield, migration, bug-fix, takeover, hardening)
+  templates/            Reusable specification artifacts
+                          project-constitution.md, module-constraints.md, workspace-claude.md
+
+experiments/
+  ax/                   Multi-agent adversarial study (eight conditions, AX series)
+    notes/              Raw source notes and data used to write the paper
+    naive/              Condition 1: no specification, no tooling
+    control/            Condition 2: competent prompting, no GS
+    treatment/          Condition 3: GS v1 (ForgeCraft treatment)
+    treatment-v2..v6/   Conditions 4–8: incremental GS improvements
+    realworld-spec/     RealWorld Conduit API spec (hurl files)
+    EXTERNAL_ANALYSIS.md  Independent external tool validation across all 8 conditions
+    RESULTS.md          Scored results table
+  dx/                   Human practitioner study (April 2026)
+    pilot/              Self-administered calibration run (6 conditions, 2 repos)
+    scoring/            Automated scoring script (score-fork.js)
+    workshops/          Workshop repo links and participant materials
+    design.md           Study design and rubric
+  rx/                   Replication experiment — any reader can reproduce
+    spec/               The committed GS document (conduit-gs.md)
+    runner/             run.sh / run.ps1 — clone, install, run
+    evidence/           Pre-committed output (jest-output.json, build logs)
+    score/              Rubric and scoring logic
+
+quality-gates/          Community-maintained gate library
+  gates/                One YAML file per gate, mapped to a GS property
+  schema.yaml           Gate definition schema
+  CONTRIBUTING.md       How to propose a new gate
+
+domains/                Domain-specific GS guidance (CLI, fintech, game, ML, creative)
+scripts/                Repository utilities
+  generate-gates-table.py  Reads quality-gates/gates/*.yaml, regenerates README table
+```
 
 ---
 
@@ -15,7 +63,7 @@ Community home for the Generative Specification methodology -- the first program
 
 | Experiment | Description | Status |
 |---|---|---|
-| [**AX**](experiments/ax/) | Multi-agent adversarial study. Naive to expert prompting to treatment v1-v5 with ForgeCraft. Establishes quality gradient as a function of specification completeness under controlled conditions. Seven conditions. RealWorld Conduit API benchmark. | Complete |
+| [**AX**](experiments/ax/) | Multi-agent adversarial study. Naive to expert prompting to treatment v1–v6 with ForgeCraft. Establishes quality gradient as a function of specification completeness under controlled conditions. Eight conditions. RealWorld Conduit API benchmark. | Complete |
 | [**RX**](experiments/rx/) | Replication Experiment. Independent verification: given the committed GS document, any developer with Docker and an Anthropic API key can reproduce 104 passing tests against a live PostgreSQL instance. | Complete |
 | [**DX**](experiments/dx/) | Human practitioner study. 40 developers. Group A: prompt-driven. Group B: GS + ForgeCraft. Dual rubric. April 2026. | April 2026 |
 
@@ -115,9 +163,7 @@ The pre-run evidence (scores, evaluation transcripts, session logs) is in `exper
 
 ## ForgeCraft
 
-[ForgeCraft](https://github.com/jghiringhelli/forgecraft-mcp) is the tool that implements the GS methodology. It reads from this repository's `quality-gates/` library.
-
-**Free tier: 2 active projects.** A merged quality gate PR earns an additional project slot.
+[ForgeCraft](https://github.com/jghiringhelli/forgecraft-mcp) implements the GS methodology as a local MCP server. It reads from this repository's `quality-gates/` library. Open source, free to use.
 
 ```bash
 npx forgecraft-mcp setup .
@@ -134,7 +180,7 @@ The structural argument developed in ss10 of the white paper: when a practitione
 ## Citation
 
 ```
-Ghiringhelli, J. C. (2026). Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader (1.0). Zenodo. https://doi.org/10.5281/zenodo.19073543
+Ghiringhelli, J. C. (2026). Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader (1.1). Zenodo. https://doi.org/10.5281/zenodo.19073543
 ```
 
 Contact: jcghiri@gmail.com - [linkedin.com/in/jghiringhelli](https://linkedin.com/in/jghiringhelli) - [genspec.dev](https://genspec.dev) - [ambientengineer.substack.com](https://ambientengineer.substack.com)
