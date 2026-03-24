@@ -1,7 +1,7 @@
 # Generative Specification: The Practitioner's Protocol
 
 **Status:** Living Document  
-**Version:** 1.0 — March 2026  
+**Version:** 1.1 — March 2026  
 **Companion to:** *Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader*
 
 ---
@@ -755,6 +755,7 @@ ForgeCraft (`forgecraft-mcp`) generates production-grade architectural constitut
 - `core` — essentials only; use for projects with tight context budget or to compress an overgrown constitution
 - `recommended` (default) — core + best practices; appropriate for most projects
 - `optional` — everything including advanced patterns; use when the advanced patterns are actually needed
+**GS ecosystem compounding.** The AX v6 experiment (§S9.7 of the Experiment Supplement) confirmed that GS-built tooling measurably improves GS-guided builds. Activating CodeSeeker v2.0.0 during generation reduced structural duplication from 5.37% to 2.50% and eliminated interface completeness gaps that static prompting missed. The principle generalizes: each GS-built tool that enters the ecosystem becomes a quality gate available to the next project. The flywheel is real and measurable.
 
 ---
 

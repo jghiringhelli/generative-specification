@@ -2,7 +2,7 @@
 
 **Companion to:** *Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader*
 **Section:** §7.7.B — Multi-Agent Adversarial Study
-**Supplement version:** 1.3 (unified 7-condition 14-point rubric; runner-verified treatment-v5 results incorporated)
+**Supplement version:** 1.4 (eight-condition; treatment-v6 GS ecosystem compounding results incorporated)
 **Date:** March 14, 2026
 **Repository:** `github.com/jghiringhelli/generative-specification` (experiments/)
 **Contact:** jcghiri@gmail.com
@@ -185,20 +185,20 @@ Automated metric collection via `experiments/runner/evaluate.ts`:
 
 ---
 
-## §S5 GS Property Scores — Unified Seven-Condition Table (14-pt rubric)
+## §S5 GS Property Scores — Unified Eight-Condition Table (14-pt rubric)
 
-All seven conditions re-audited on the 7-property rubric. Earlier conditions originally scored on the 6-property rubric (12/12 max); re-audit scores on the 7-property rubric may differ due to rubric revision and auditor session variance.
+All eight conditions audited on the 7-property rubric. Earlier conditions originally scored on the 6-property rubric (12/12 max); re-audit scores on the 7-property rubric may differ due to rubric revision and auditor session variance.
 
-| Property | Naive | Control | Treatment | T-v2 | T-v3 | T-v4 | T-v5 |
-|---|---|---|---|---|---|---|---|
-| Self-Describing (0–2) | 0 | 2 | 2 | 2 | 2 | 2 | 2 |
-| Bounded (0–2) | 1 | 2 | 2 | 2 | 2 | 2 | 2 |
-| Verifiable (0–2) | 1* | 2 | 2 | 2 | 2 | 2 | 2 |
-| Defended (0–2) | 0 | 0 | 0 | **2** | **2** | 1 | **2** |
-| Auditable (0–2) | 0 | 0 | 0 | 1 | **2** | 1 | **2** |
-| Composable (0–2) | 0 | 1 | 2 | 2 | 2 | 2 | 2 |
-| Executable (0–2) | 1‡ | 2‡ | 2‡ | 2‡ | 2‡ | 1 | **2†** |
-| **Total** | **3/14** | **9/14** | **10/14** | **13/14** | **14/14‡** | **11/14** | **14/14†** |
+| Property | Naive | Control | Treatment | T-v2 | T-v3 | T-v4 | T-v5 | T-v6 |
+|---|---|---|---|---|---|---|---|---|
+| Self-Describing (0–2) | 0 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| Bounded (0–2) | 1 | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| Verifiable (0–2) | 1* | 2 | 2 | 2 | 2 | 2 | 2 | 2 |
+| Defended (0–2) | 0 | 0 | 0 | **2** | **2** | 1 | **2** | **2** |
+| Auditable (0–2) | 0 | 0 | 0 | 1 | **2** | 1 | **2** | 1 |
+| Composable (0–2) | 0 | 1 | 2 | 2 | 2 | 2 | 2 | 2 |
+| Executable (0–2) | 1‡ | 2‡ | 2‡ | 2‡ | 2‡ | 1 | **2†** | **2†** |
+| **Total** | **3/14** | **9/14** | **10/14** | **13/14** | **14/14‡** | **11/14** | **14/14†** | **13/14** |
 
 \* Naive Verifiable: auditor scored test structure and naming present. Real coverage: 0% — all suites fail to compile.
 
@@ -452,6 +452,49 @@ After the auditor scored treatment-v5 at 14/14 based on the model-generated `INT
 
 ---
 
+
+### §S9.7 Treatment-v6: GS Ecosystem Compounding (CodeSeeker v2.0.0) — 13/14
+
+**Hypothesis tested:** A GS-built semantic tool (CodeSeeker) can reduce structural duplication and catch interface incompleteness that static prompting alone misses.
+
+**Conflict of interest:** CodeSeeker v2.0.0 is the author's own tool, built under GS methodology (documented in §7.4 of the white paper). Full COI disclosure committed in `experiments/ax/treatment-v6/README.md`. This condition tests *GS ecosystem compounding* — whether a GS-built tool measurably improves a GS-guided build — not a comparison against v5 specification quality.
+
+**Date:** March 2026  
+**Model:** claude-sonnet-4-5 (same as all prior conditions)
+
+**Changes from v5:**
+
+| Change | Rationale |
+|---|---|
+| CodeSeeker MCP v2.0.0 activated | Semantic search + graph expansion available during generation |
+| §8 DRY gate added to Verification Protocol | Operationalizes search-first rule as a self-check before each response |
+| §9 Interface Completeness gate added | Closes the v3 defect: `IArticleRepository` missing `.favorite()`/`.unfavorite()` with no detection |
+| ESLint config emitted in P0 (infrastructure) | Makes lint a P1 gate from the first commit |
+
+**Scores:**
+
+| Property | Score | Key finding |
+|---|---|---|
+| Self-Describing | 2/2 | ADR quality highest in series; ADR-0002 cites four specific CVE IDs |
+| Bounded | 2/2 | Zero `prisma.` calls in routes or services; composition root wires all |
+| Verifiable | 2/2 | 62/62 tests pass; behavioral contracts explicitly named |
+| Defended | 2/2 | Pre-commit hooks + CI enforced; Stryker mutation gate in CI (first in series) |
+| Auditable | 1/2 | Both ADRs substantive; CHANGELOG present — sole gap: Status.md absent |
+| Composable | 2/2 | All 5 interfaces defined; 26 interface methods fully implemented |
+| Executable | 2/2† | 62/62 session-verified; verify loop converged in 3 fix passes |
+| **Total** | **13/14** | |
+
+† Session-verified via `session-summary.md` Final Results table: 62/62 tests passing, 0 tsc errors, 0 ESLint errors.
+
+**Key findings:**
+
+- **Duplication reduced to 2.50%** (vs v5's 5.37%). Remaining duplication is structural symmetry (`follow`/`unfollow`, `favorite`/`unfavorite` mirror operations) — not specifiable away without changing domain semantics. This is a legitimate domain floor, not a gap.
+- **Zero interface completeness gaps.** The §9 Interface Completeness gate caught what v3's premature interface definition missed. All 26 `IArticleRepository` methods have concrete Prisma implementations.
+- **Zero ESLint errors** (vs v3's 38 post-hoc). ESLint config emitted in P0 as a first-class artifact.
+- **Mutation gate in CI** — `npx stryker run` as a required CI gate appears for the first time in the series. Not scored under current rubric but represents a meaningful increase in quality floor enforced by defended infrastructure.
+- **Auditable 1/2 is a narrow miss.** Both ADRs are substantive, CHANGELOG present, approved-packages.md provides package governance rationale. Adding Status.md would close to 14/14. The v5 → v6 score shift (14→13) is attributable solely to Status.md absence.
+
+**Ecosystem compounding finding.** The v6 hypothesis is confirmed in direction: CodeSeeker's DRY and interface completeness gates produced measurable improvements on exactly the dimensions they targeted (duplication, interface gaps, ESLint discipline). The Auditable regression vs v5 is an artifact of a missing Status.md, not a systematic effect of the tooling change.
 ## §S10 Execution Timing
 
 | Prompt | Naive (s) | Control (s) | Treatment (s) | Treatment-v2 (s) |
@@ -534,7 +577,8 @@ All failed runs are archived with their session logs. The `--strict-mcp-config` 
 | **GS v3 — Dependency Governance** | Does adding explicit package selection constraints and an `npm audit` gate to the GS template eliminate the CVE surface without regressing the GS score? | **Complete: 11/12 (§S9.4). 0 high CVEs confirmed. Auditable −1 from ADR emission precision gap.** |
 | GS v4 — ADR precision fix + dep governance + verify loop | Does applying the three auditable block fixes combined with a post-P6 materialize→tsc→jest→correct loop (max 5 passes) restore 12/12 and demonstrate I(S) convergence under executable feedback? | **Complete: 11/14. Loop exhausted 5 passes without convergence. Fix-prompt context gaps (erroring files and failing test files not provided to model) caused Defended/Auditable regressions vs v3. Root causes documented and fixed in v5.** |
 | **GS v5 — infrastructure-first prompt + JWT type pitfall fix** | Does a dedicated `00-infrastructure.md` prompt (runs before any feature prompt) plus Known Type Pitfalls in CLAUDE.md achieve 14/14 including Executable? | **Complete: 14/14 runner-verified. 109/109 tests, 11 suites, 0 failures, 2 fix passes. Four runner infrastructure bugs fixed before confirmed run (see §S9.6). Key finding: treatment-v3 independently hit 14/14 on the unified rubric via auditor inference; treatment-v5 is the only condition where 14/14 is backed by confirmed test execution.** |
-| GS v6 — novel domain / different model | Does the Composable +1 advantage and the progression 3→9→10→13→14 hold on a domain not in pre-training data, or with a different model? | Pending |
+| GS v6 — GS ecosystem compounding (CodeSeeker v2.0.0) | Does a GS-built semantic tool measurably reduce structural duplication and catch interface incompleteness that static prompting alone misses? | **Complete: 13/14 (§S9.7). Duplication 2.50% (vs v5's 5.37%). Zero interface gaps. Mutation gate added to CI. Auditable −1: Status.md absent.** |
+| GS v7 — novel domain / different model | Does the Composable +1 advantage and the progression 3→9→10→13→14 hold on a domain not in pre-training data, or with a different model? | Pending |
 | Replication (3 independent runs/condition) | Does the 3→9→10→13 progression hold across runs? What is the variance? | Pending |
 | Different model (GPT-4o, Gemini 1.5 Pro) | Is the Composable +1 GS advantage model-specific? | Pending |
 | Verifiable with real coverage gate | What scores result when Verifiable requires ≥ 80% measured coverage? (Expected: 0/2 all conditions) | Pending |
