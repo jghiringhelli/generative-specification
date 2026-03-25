@@ -1484,6 +1484,16 @@ The year 1957 produced two pressuresthat would not fully meet for sixty years: a
 
 ---
 
+## Acknowledgements
+
+**Victoria Herrera** — for patient counsel on the linguistic foundations of this work. Her expertise in classical Latin and Greek, applied with characteristic understatement, sharpened the precision of the language throughout. Any remaining imprecision is mine alone.
+
+**Norman Owens** — Senior Architect, Amazon (Minnesota), for technical review and critical feedback on the architectural claims in this paper. His perspective from large-scale production systems was invaluable in grounding the methodology.
+
+*Additional acknowledgements to follow.*
+
+---
+
 ## References and Further Reading
 
 - Allen, D. (2001). *Getting Things Done: The Art of Stress-Free Productivity.* Viking.
