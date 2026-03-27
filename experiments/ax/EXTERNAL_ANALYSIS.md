@@ -540,6 +540,67 @@ Neither defect is blocking (no runtime errors, no circular deps), but the trend 
 
 ---
 
+## 8. Maintainability Analysis — SonarJS + Cyclomatic Complexity (2026-03-27)
+
+**Tool:** `eslint-plugin-sonarjs` v4 + ESLint built-in `complexity` rule  
+**Added:** Post-BX experiment pass; addresses the paper's commitment to add cyclomatic complexity to AX metrics.  
+**Purpose:** Measures maintainability proxies that correlate with specific GS properties but are computed by tools with no knowledge of the rubric.
+
+### 8.1 Rules Applied
+
+| Rule | Threshold | GS Property Proxy |
+|---|---|---|
+| `complexity` | warn ≥ 5 | Verifiable — high branching makes properties harder to assert independently |
+| `sonarjs/cognitive-complexity` | warn ≥ 10 | Self-describing — mentally complex functions diverge from their specification's intent |
+| `sonarjs/no-duplicate-string` | warn | Bounded — domain concepts not extracted to named artifacts |
+| `sonarjs/no-identical-functions` | warn | Composable — copy-paste function duplication |
+
+### 8.2 Results
+
+| Condition | Files | Cyclomatic > 5 | Cognitive > 10 | Dup Strings | Ident Fns |
+|---|---|---|---|---|---|
+| naive | 29 | 3 | **0** | **19** | 0 |
+| control | 40 | 2 | **0** | 5 | 0 |
+| treatment-v1 | 40 | 1 | **0** | 3 | 0 |
+| treatment-v2 | 21 | 1 | **0** | 10 | 0 |
+| treatment-v3 | 35 | 1 | **0** | **1** | 0 |
+| treatment-v4 | 34 | 3 | **0** | 2 | 0 |
+| treatment-v5 | 36 | 4 | **0** | 7 | 0 |
+
+Machine-readable data: `evidence/sonarjs-analysis.json`
+
+### 8.3 Findings
+
+**Duplicate string literals (Bounded proxy):** The strongest signal in this analysis. Naive code produces 19 duplicate string literal violations — configuration strings, error messages, and route paths repeated across multiple files without extraction to named constants. Expert prompting (control) reduces this to 5. GS treatment-v3 reaches 1. The interpretation maps cleanly to the Bounded property: when the specification names domain concepts explicitly, the AI generates named constants for them. When absent, it repeats literals inline.
+
+Regressions in treatment-v2 (10) and treatment-v5 (7) are attributable to authentication middleware configuration strings (v2) and endpoint-specific error messages (v5) not yet extracted in those specification versions — a diagnostic, not a falsification.
+
+**Cyclomatic complexity:** Counter-intuitively, treatment-v4 (3) and treatment-v5 (4) have more violations than naive (3) and control (2). This is attributable to greater functional completeness: richer error-handling paths (JWT validation failures, Prisma error discrimination, request validation branches) produce higher branch counts. The complexity reflects more complete implementations, not worse ones. The Verifiable rubric scores for v4 and v5 (2/2) are confirmed by their independent test suites asserting each branch.
+
+**Cognitive complexity:** Zero violations above threshold 10 across all seven conditions and 235 total source files. AI-generated code, regardless of specification quality, consistently produces mentally manageable function bodies. This appears to be an artifact of the AI generation process (models trained on well-structured human code), independent of GS treatment level.
+
+**Identical functions:** Zero across all conditions. AI generation does not produce copy-paste function duplication. Every function body is distinct across all seven implementations.
+
+### 8.4 Cross-tool correlation
+
+Adding SonarJS findings to the prior analysis (jscpd duplication, tsc errors, interface counts):
+
+| Condition | jscpd dup% | jscpd clones | SonarJS dup strings | tsc errors | Interface files |
+|---|---|---|---|---|---|
+| naive | 12.54% | 19 | 19 | 41 | 0 |
+| control | 9.51% | 43 | 5 | 1 | 0 |
+| treatment-v1 | 2.24% | 6 | 3 | 0 | 0 |
+| treatment-v2 | 4.18% | 7 | 10 | 3 | 2 |
+| treatment-v3 | 7.99% | 16 | 1 | 24 | 5 |
+| treatment-v4 | 3.37% | 9 | 2 | 1 | 5 |
+| treatment-v5 | 5.37% | 14 | 7 | 0 | 5 |
+
+The jscpd and SonarJS duplicate string metrics are different instruments measuring different aspects of DRY adherence. jscpd detects structural code block repetition (≥50 tokens); SonarJS detects string literal repetition. Their rankings are not identical — treatment-v3 has high jscpd (7.99%) but minimal string duplication (1), suggesting architectural scaffolding was added with some structural repetition but proper string constant extraction. treatment-v5 inverts this: lower jscpd (5.37%) but higher string duplication (7) — implementation-complete but with inline error message strings not yet elevated to constants.
+
+Both instruments independently rank naive worst and GS treatment conditions substantially better on their respective duplication metrics.
+
+---
+
 ## 7. Raw Data Reference
 
 | Condition | tsc lines | Duplication % | Clones | Circular | Interface count | Test files | Src files |

@@ -1,0 +1,76 @@
+{
+  "tool": "eslint + eslint-plugin-sonarjs v4",
+  "conditions": {
+    "treatment-v2": {
+      "identicalFunctionViolations": 0,
+      "eslintVersion": "8.57.1",
+      "files": 21,
+      "duplicateStringViolations": 10,
+      "cognitiveComplexityViolations": 0,
+      "cyclomaticViolations": 1
+    },
+    "control": {
+      "identicalFunctionViolations": 0,
+      "eslintVersion": "10.1.0",
+      "files": 40,
+      "duplicateStringViolations": 5,
+      "cognitiveComplexityViolations": 0,
+      "cyclomaticViolations": 2
+    },
+    "treatment-v3": {
+      "identicalFunctionViolations": 0,
+      "eslintVersion": "9.39.4",
+      "files": 35,
+      "duplicateStringViolations": 1,
+      "cognitiveComplexityViolations": 0,
+      "cyclomaticViolations": 1
+    },
+    "treatment-v5": {
+      "identicalFunctionViolations": 0,
+      "eslintVersion": "8.57.1",
+      "files": 36,
+      "duplicateStringViolations": 7,
+      "cognitiveComplexityViolations": 0,
+      "cyclomaticViolations": 4
+    },
+    "treatment-v1": {
+      "identicalFunctionViolations": 0,
+      "eslintVersion": "8.57.1",
+      "files": 40,
+      "duplicateStringViolations": 3,
+      "cognitiveComplexityViolations": 0,
+      "cyclomaticViolations": 1
+    },
+    "naive": {
+      "identicalFunctionViolations": 0,
+      "eslintVersion": "10.1.0",
+      "files": 29,
+      "duplicateStringViolations": 19,
+      "cognitiveComplexityViolations": 0,
+      "cyclomaticViolations": 3
+    },
+    "treatment-v4": {
+      "identicalFunctionViolations": 0,
+      "eslintVersion": "8.57.1",
+      "files": 34,
+      "duplicateStringViolations": 2,
+      "cognitiveComplexityViolations": 0,
+      "cyclomaticViolations": 3
+    }
+  },
+  "rules": {
+    "sonarjs/cognitive-complexity": "cognitive complexity threshold 10 (warn)",
+    "sonarjs/no-duplicate-string": "duplicate string literals (warn)",
+    "sonarjs/no-identical-functions": "identical function bodies (warn)",
+    "complexity": "cyclomatic complexity threshold 5 (warn)"
+  },
+  "analysisDate": "2026-03-27",
+  "findings": [
+    "Duplicate string literals (DRY / Bounded proxy): naive=19, dropping to 1 at treatment-v3. Control (expert prompting, no GS) achieves only 5 — less than naive, but still 3x higher than GS treatment-v3.",
+    "Cyclomatic complexity does not monotonically track treatment level. v4/v5 have more branch-heavy functions than earlier conditions; this is attributable to greater functional completeness — richer error-handling paths produce higher cyclomatic scores.",
+    "No condition exceeds cognitive complexity threshold 10 in any function. AI-generated code across all conditions produces mentally manageable function bodies regardless of specification quality.",
+    "No identical functions detected in any condition across all 7 implementations. Every function has a distinct body — AI generation does not produce copy-paste duplication.",
+    "treatment-v2 duplicate string regression (10 vs treatment-v1 at 3) warrants investigation; likely attributable to configuration-adjacent string literals introduced in that condition's authentication middleware.",
+    "treatment-v5 duplicate string regression (7 vs treatment-v4 at 2) follows the same pattern — later conditions implement more endpoint-specific error messages not yet extracted to named constants in the specification."
+  ]
+}
