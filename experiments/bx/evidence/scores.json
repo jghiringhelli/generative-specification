@@ -1,0 +1,190 @@
+{
+  "experiment": "BX — Benchmark Cross-validation",
+  "date": "2026-03-27",
+  "rubric": "GS Seven-Property Rubric (BX application)",
+  "rubricMaxScore": 14,
+  "scoringNote": "Each property scored 0–2. Scores assigned based on static analysis of repository artifacts only. No implementations were guided by GS methodology.",
+  "implementations": [
+    {
+      "id": "repo-a",
+      "label": "Repo A — Community High Quality",
+      "source": "https://github.com/lujakob/nestjs-realworld-example-app",
+      "stack": "NestJS + TypeORM + MySQL + TypeScript",
+      "communitySignal": "~2k GitHub stars; widely cited as NestJS reference implementation",
+      "scores": {
+        "self-describing": {
+          "score": 1,
+          "max": 2,
+          "rationale": "README present with installation steps, DB setup, NPM scripts, and Swagger API docs. No architecture doc, no CLAUDE.md/AGENTS.md, no ADRs, no decision records. Layer structure is implicit via NestJS conventions, not documented."
+        },
+        "bounded": {
+          "score": 2,
+          "max": 2,
+          "rationale": "NestJS module system enforces hard boundaries: article/, user/, profile/, tag/ modules each contain their own .module.ts, .controller.ts, .service.ts, .entity.ts. No cross-module leakage observed. Named modules with explicit responsibilities."
+        },
+        "verifiable": {
+          "score": 0,
+          "max": 2,
+          "rationale": "1 test file (tag.controller.spec.ts) with 1 it() assertion. Tests require a live MySQL connection (no mocking), making them non-executable without the DB. Effectively no coverage for any real business logic."
+        },
+        "defended": {
+          "score": 0,
+          "max": 2,
+          "rationale": "No CI pipeline (.github/workflows absent, Travis badge dead). No active pre-commit hooks (only .git/hooks/*.sample files). No ESLint config. No commit convention enforcement."
+        },
+        "auditable": {
+          "score": 1,
+          "max": 2,
+          "rationale": "Git log shows partial conventional commits: 'chore: update dependencies', 'chore(deps): bump...'. Many commits are non-conventional ('Update README.md', 'Replace crypto hashing with argon2'). No ADRs, no CHANGELOG.md, no decision records."
+        },
+        "composable": {
+          "score": 1,
+          "max": 2,
+          "rationale": "NestJS DI via @Injectable + @InjectRepository(TypeORM Repository<Entity>). Constructor injection present. However, no custom repository interfaces (no IArticleRepository, IUserRepository). Services depend on TypeORM concrete generics. Modules cannot be swapped without TypeORM."
+        },
+        "executable": {
+          "score": 1,
+          "max": 2,
+          "rationale": "README documents setup steps. tsc --noEmit passes after manual 'cp src/config.ts.example src/config.ts' step. Requires manually installing MySQL, creating database, configuring ormconfig.json. No docker-compose. Setup requires significant manual knowledge beyond what README provides."
+        }
+      },
+      "total": 6,
+      "externalToolResults": {
+        "tscErrors": 4,
+        "tscErrorsAfterSetup": 0,
+        "tscNote": "4 errors from missing config.ts (documented manual step). 0 errors after cp config.ts.example config.ts.",
+        "eslintViolations": "N/A — no ESLint config",
+        "npmAuditHigh": 43,
+        "npmAuditCritical": 16,
+        "npmAuditTotal": 105,
+        "testFiles": 1,
+        "testCases": 1,
+        "describeBlocks": 2,
+        "installMethod": "yarn install (npm install fails with 'Exit handler never called' — dependency resolution error)"
+      }
+    },
+    {
+      "id": "repo-b",
+      "label": "Repo B — Official Reference",
+      "source": "https://github.com/gothinkster/node-express-realworld-example-app",
+      "stack": "Node/Express + Prisma + PostgreSQL + TypeScript + NX monorepo",
+      "communitySignal": "Official gothinkster reference implementation; primary benchmark for RealWorld ecosystem",
+      "scores": {
+        "self-describing": {
+          "score": 1,
+          "max": 2,
+          "rationale": "README with clear setup steps (env vars documented, prisma commands, run command). Dockerfile present. No architecture doc, no CLAUDE.md, no ADRs, no layer descriptions beyond what code structure implies."
+        },
+        "bounded": {
+          "score": 1,
+          "max": 2,
+          "rationale": "Feature routing subdirectories: src/app/routes/{article,auth,profile,tag}. Models in separate files. Controllers exist. BUT: services call prisma-client directly (no repository abstraction layer). No domain layer. Service and persistence concerns mixed."
+        },
+        "verifiable": {
+          "score": 1,
+          "max": 2,
+          "rationale": "6 test files, 27 it/test() calls, 18 describe blocks. Tests use jest-mock-extended to mock Prisma. Service tests cover error and success paths. Reasonable coverage of service logic but tests are mocked against implementations, not contracts. No integration tests."
+        },
+        "defended": {
+          "score": 1,
+          "max": 2,
+          "rationale": "ESLint config present (.eslintrc.json) via @nx/typescript plugin. 33 ESLint violations in codebase (@typescript-eslint/ban-ts-comment, @typescript-eslint/no-unused-vars) — not enforced as blocking gate. No CI pipeline (.github/workflows absent). No pre-commit hooks."
+        },
+        "auditable": {
+          "score": 1,
+          "max": 2,
+          "rationale": "Recent commits follow conventional format ('fix: missing user id', 'chore: update documentation', 'chore: move to nx'). Older commits non-conventional. No ADRs, no CHANGELOG.md."
+        },
+        "composable": {
+          "score": 1,
+          "max": 2,
+          "rationale": "Feature-based directory structure provides some module separation. No DI framework. Services import prisma-client directly (tight coupling to persistence). No repository interfaces. Modules are not independently swappable."
+        },
+        "executable": {
+          "score": 1,
+          "max": 2,
+          "rationale": "README has clear setup steps. tsc --noEmit passes (0 errors). Dockerfile present (runtime only, not dev setup). No docker-compose. Requires external PostgreSQL with DATABASE_URL configured manually."
+        }
+      },
+      "total": 7,
+      "externalToolResults": {
+        "tscErrors": 0,
+        "eslintViolations": 33,
+        "eslintViolationBreakdown": "31x @typescript-eslint/ban-ts-comment, 2x @typescript-eslint/no-unused-vars — all in test files",
+        "npmAuditHigh": 24,
+        "npmAuditCritical": 1,
+        "npmAuditTotal": 43,
+        "testFiles": 6,
+        "testCases": 27,
+        "describeBlocks": 18,
+        "installMethod": "npm install (success)"
+      }
+    },
+    {
+      "id": "repo-c",
+      "label": "Repo C — GS-Generated (RX Output)",
+      "source": "C:\\workspace\\generative-specification\\experiments\\rx",
+      "stack": "Node/Express + Prisma + PostgreSQL + TypeScript (GS-specified stack)",
+      "communitySignal": "Experimental output — no community star count. RX run: 104/104 tests passing, 0 tsc errors, 0 CVEs.",
+      "scoringBasis": "Generated code is gitignored. Scores inferred from: AX treatment evidence (RESULTS.md), RX build-log.txt, jest-output.json, run-metadata.json, and spec/conduit-gs.md.",
+      "scores": {
+        "self-describing": {
+          "score": 2,
+          "max": 2,
+          "rationale": "Per AX treatment evidence and RX spec: CLAUDE.md, Status.md, and README emitted as GS artifacts. JSDoc required on all public functions (lint gate). Layer boundary document embedded in spec and reflected in directory structure (src/api/, src/services/, src/domain/, src/ports/, src/adapters/)."
+        },
+        "bounded": {
+          "score": 2,
+          "max": 2,
+          "rationale": "Per AX treatment: 0 layer violations. Strict ports-and-adapters architecture with explicit src/ports/ directory for interface contracts. Composition root in index.ts. Services depend on port interfaces only. AX scored 2/2."
+        },
+        "verifiable": {
+          "score": 2,
+          "max": 2,
+          "rationale": "RX evidence: 104 passing tests, 0 failures, 7 test suites (run-metadata.json). 80% line coverage gate enforced by spec. AX treatment: 143 it/test calls, 50 describe blocks. Tests against interfaces (not implementations) per port/adapter design."
+        },
+        "defended": {
+          "score": 1,
+          "max": 2,
+          "rationale": "RX build-log.txt: 'found 0 vulnerabilities' on npm audit. No hardcoded secrets. ESLint configured per spec. HOWEVER: AX treatment and RX spec analysis show no CI pipeline (no .github/workflows). Pre-commit hooks specified in GS artifacts but AX showed they were not operationally enforced. Partial credit for 0-CVE npm audit and ESLint enforcement."
+        },
+        "auditable": {
+          "score": 2,
+          "max": 2,
+          "rationale": "RX spec explicitly requires emitting ADRs as files: 'Emit each ADR as a file. An ADR that appears in a README as see ADR-0001 but does not exist as docs/adrs/ADR-0001-stack.md fails the Auditable gate.' ADR-0001 (Stack Selection) and ADR-0002 (SQL Injection Strategy) specified with full content. This is a stronger requirement than AX treatment, where ADRs were referenced but not emitted. Scored 2/2 on spec enforcement; noted with uncertainty since generated code is gitignored."
+        },
+        "composable": {
+          "score": 2,
+          "max": 2,
+          "rationale": "Per AX treatment evidence: IUserRepository, IArticleRepository interfaces. Composition root in index.ts wires all dependencies. Services depend on abstractions. AX scored 2/2. Port/adapter pattern enforced by spec."
+        },
+        "executable": {
+          "score": 2,
+          "max": 2,
+          "rationale": "RX run-metadata.json: numPassedTests=104, numFailedTests=0. build-log.txt: 0 tsc errors, 0 npm audit vulnerabilities. docker-compose.yml present in rx/ experiment dir. Prisma migrations run automatically. Passes the hard gate: tsc exits 0 AND jest numFailedTests === 0."
+        }
+      },
+      "total": 13,
+      "scoringDiscrepancy": "Task prompt claims 14/14 from white paper. Evidence-based assessment yields 13/14 (Defended=1/2 due to absent CI pipeline, consistent with AX finding). The 14/14 claim likely reflects aspirational scoring of a fully-implemented CI gate that the AI-generated code specifies but does not physically provision.",
+      "externalToolResults": {
+        "tscErrors": 0,
+        "eslintViolations": 0,
+        "eslintNote": "Per build-log.txt; ESLint in spec-required stack",
+        "npmAuditHigh": 0,
+        "npmAuditCritical": 0,
+        "npmAuditTotal": 0,
+        "testFiles": 7,
+        "testCases": 104,
+        "describeBlocks": "not counted from evidence",
+        "installMethod": "npm install (success per build-log.txt)"
+      }
+    }
+  ],
+  "ranking": {
+    "byRubric": ["repo-c (13/14)", "repo-b (7/14)", "repo-a (6/14)"],
+    "byCveCount": ["repo-c (0)", "repo-b (43)", "repo-a (105)"],
+    "byTestCoverage": ["repo-c (104 passing)", "repo-b (27 defined)", "repo-a (1 defined)"],
+    "byTscErrors": ["repo-c (0)", "repo-b (0)", "repo-a (0 after setup, 4 without setup)"]
+  },
+  "finding": "Rubric ranking (C > B > A) is congruent with external static analysis ranking on all three objective axes: CVE count, test count, and TypeScript health. The rubric captures nuances that star count misses: Repo A (2k stars) scores lower than Repo B (official reference) because community reputation tracks architectural elegance (NestJS framework discipline scores 2/2 on Bounded) but not test coverage (1 test case, 0/2 Verifiable) or security hygiene (105 CVEs including 16 critical, 0/2 Defended). The GS rubric is an orthogonal and more objective quality signal than star count."
+}

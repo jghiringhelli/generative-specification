@@ -3,6 +3,30 @@
 **Date:** 2026-03-27
 **Author:** GS Research (Ghiringhelli, 2026)
 **Related experiments:** AX (adversarial AI study), RX (replication), DX (human developer study)
+**Closes:** Layer 1 of the define/build/measure loop (rubric validity)
+**Evidence:** `evidence/scores.json`
+
+## Reproduction
+
+To reproduce this experiment:
+
+```bash
+# Clone the two external implementations
+git clone https://github.com/lujakob/nestjs-realworld-example-app experiments/bx/repo-a
+git clone https://github.com/gothinkster/node-express-realworld-example-app experiments/bx/repo-b
+
+# For each repo, run:
+cd experiments/bx/repo-a && yarn install
+tsc --noEmit
+npx eslint . --ext .ts 2>&1 | wc -l
+npm audit --audit-level=high
+grep -r "it\|test\|describe" --include="*.spec.ts" | wc -l
+
+# Apply the 7-property rubric in evidence/scores.json to each repo
+# Compare rubric ranking with static analysis ranking
+```
+
+Repo C (GS-generated) is the RX output — see `experiments/rx/evidence/` for its verified artifacts.
 
 ---
 
