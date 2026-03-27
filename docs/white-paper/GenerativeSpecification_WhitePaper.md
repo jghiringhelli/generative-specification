@@ -837,9 +837,27 @@ A more demanding variant closes the full vertical slice. A Playwright interactio
 
 ---
 
-## 7.7 Threats to Validity and Proposed Experiments
+## 7.7 Threats to Validity and Experimental Closure
 
-A reader applying standard empirical scrutiny would raise the following objections.
+### The Define/Build/Measure Loop
+
+The primary methodological challenge is not any single threat — it is a structural one that runs through the entire experiment series. GS defines the seven specification properties. GS guides the AI to produce implementations that satisfy those properties. GS scores whether the implementations are good. A discipline that defines "good," builds toward it, and then measures whether it achieved it has a circularity problem that no amount of external checking fully eliminates. This is the load-bearing concern. Every other threat in this section is secondary to it.
+
+The loop has three distinct layers, each requiring a separate closure mechanism:
+
+| Layer | Threat | Closure Mechanism | Status |
+|---|---|---|---|
+| **3 — Output measurement** | External checks use criteria the rubric author defined | `tsc --noEmit`, ESLint (`eslint:recommended` + `@typescript-eslint/recommended`), `npm audit` (supply-chain gate, not code quality), and the Conduit test suite — 104 tests authored by the open-source community, not this paper's author | **Closed** |
+| **1 — Rubric validity** | Rubric rewards GS compliance, not objective quality | BX: three Conduit implementations never built with GS scored blind — rubric ranking (13/14 > 7/14 > 6/14) congruent with CVE count, test count, and TypeScript health on every axis | **Closed** |
+| **2 — Guidance circularity** | GS guided the implementation AND scored it | DX (§7.7.A): blind evaluator, dual rubric (GS properties + external structural battery), 40 practitioners across two conditions | **Open — April 2026** |
+
+The ordering is deliberate: Layer 3 is the weakest mitigation (the tools are independent but the implementations were still GS-guided); Layer 1 is stronger (the rubric is applied to implementations it never guided); Layer 2 is the complete closure (the guidance-plus-measurement loop is broken by human participants and a blind evaluator). The experiment series is complete on two of three layers. The third closes April 10.
+
+One finding from BX merits explicit disclosure: the Defended property reveals a structural ceiling the methodology cannot cross. No implementation across AX, BX, or RX scores 2/2 on Defended. A CI pipeline can be specified in a GS document; it cannot be provisioned by generated code. CI runners require external infrastructure. This is not a gap in the methodology's theory — the specification correctly describes what should exist — but it is a gap in what AI-assisted generation can physically deliver, and it is documented honestly here rather than scored aspirationally.
+
+### Additional Threats
+
+A reader applying standard empirical scrutiny would raise the following objections beyond the primary circularity concern.
 
 **Threat: The single-engineer design introduces selection bias.** If all case studies were executed by the engineer who developed the methodology, the results may reflect personal skill in system design rather than the methodology itself. A practitioner with weaker specification ability might see no benefit.
 
@@ -999,6 +1017,55 @@ Treatment-v2 — the first condition to achieve a 12/12 GS audit score — also 
 **Template fix applied; treatment-v5 complete — 14/14.** Treatment-v2 originally scored 12/12 on the original six-property rubric; the unified re-audit above revised the Auditable dimension to 1/2 (reflecting that ADR emission satisfied the structural requirement but not the behavioral one), yielding 13/14 on the seven-property rubric. The ADR emission precision gap identified through the v3 gap analysis (see §9.3) was patched in `templates/universal/instructions.yaml`. Treatment-v5 — the first condition to score under the seven-property rubric including Executable — achieved 14/14 (12/12 structural + 2/2 Executable) by separating infrastructure emission into a dedicated `00-infrastructure.md` prompt that must complete before any feature prompt, and by documenting the `jsonwebtoken` StringValue type pitfall explicitly in the specification. The root cause of prior Executable failures was not model capability — it was a known type narrowing pattern that the specification had not yet closed. Once named, it became a quality gate. The v4 materialize-verify-correct loop hypothesis is subsumed: v5 reduced correction passes to 2 (from v4's 5-pass exhaustion without convergence). Three simultaneous changes distinguish v5 from v4 — the infrastructure-first prompt, the Known Type Pitfalls entry for `jsonwebtoken`, and the ADR emission precision fix — and causal attribution among them is not isolated. The directional claim is that raising $S$ before generation reduces correction passes; the specific contribution of each change is not separately established by this experiment. The 14/14 result closes the experimental loop. The session-verified result: 109 total tests, 10/11 suites, confirmed against a live PostgreSQL database across 2 fix passes (AI integration response reported 114; runner total of 109 is the source of truth; session run: 0 failures; independent re-run: 3 test-isolation failures in article.test.ts — duplicate user registration in a preceding test leaves token undefined in cleanup, not an implementation error). This session verification resolved the Executable scoring ambiguity that had applied to earlier audits of this condition; the companion supplement documents the resolution (§S13 Limitation 8). The v5 verification was conducted within the audit session; unlike RX, the jest-output.json artifact was not committed separately to the repository. The audit methodology is consistent across conditions. An independent replication — implemented in [`github.com/jghiringhelli/generative-specification`](https://github.com/jghiringhelli/generative-specification) as the **Replication Experiment (RX)** — requires committed `jest --json` output as a standard evidence artifact, making runner verification automatic and externally auditable without depending on the audit session. RX uses a scoped Conduit subset (user management, articles, profiles, and tags; comments and favourites explicitly out of scope per spec §1.1) with the unified seven-property rubric applied to the implemented scope; any reader can reproduce the Executable result against a fresh PostgreSQL instance by running the scripts in [`experiments/rx/`](https://github.com/jghiringhelli/generative-specification/tree/main/experiments/rx/). Because the GS document, the runner, and the scoring script are committed to the public `generative-specification` repository, they carry no proprietary dependency — any researcher with an Anthropic API key can rerun the full pipeline and commit their own evidence artifacts. ForgeCraft produced the GS document used in RX but is not required to reproduce the experiment; the document is the reproducible artifact. Full v5 supplementary data is in the companion supplement.
 
 *Full replication data — session IDs, prompt texts, blind audit transcripts, per-condition metric tables, mutation testing progression, failed runs disclosure, and replication instructions — are in the companion supplement: GS_Experiment_Supplement.md (available at `https://github.com/jghiringhelli/generative-specification/blob/main/docs/white-paper/GS_Experiment_Supplement.md`).*
+
+---
+
+### 7.7.C Experiment III: Benchmark Cross-validation (BX) — Results
+
+**Purpose:** Close Layer 1 of the define/build/measure loop. Score implementations never built with GS against the GS rubric. If rubric ranking correlates with independent static analysis, the rubric measures something that exists outside GS guidance.
+
+**Implementations scored:**
+
+| ID | Repository | Stack | Community Signal |
+|---|---|---|---|
+| A | `lujakob/nestjs-realworld-example-app` | NestJS + TypeORM + MySQL | ~2k stars; cited NestJS reference |
+| B | `gothinkster/node-express-realworld-example-app` | Express + Prisma + NX | Official RealWorld benchmark |
+| C | GS-generated RX output | Express + Prisma (GS-specified) | 104/104 tests; 0 CVEs |
+
+Repos A and B were never exposed to GS methodology. Scoring was conducted blind against the rubric before comparing with external tool results.
+
+**GS Rubric Scores:**
+
+| Property | Repo A (NestJS) | Repo B (Official) | Repo C (GS) |
+|---|---|---|---|
+| Self-Describing | 1 | 1 | 2 |
+| Bounded | **2** | 1 | 2 |
+| Verifiable | 0 | 1 | 2 |
+| Defended | 0 | 1 | 1 |
+| Auditable | 1 | 1 | 2 |
+| Composable | 1 | 1 | 2 |
+| Executable | 1 | 1 | 2 |
+| **Total** | **6/14** | **7/14** | **13/14** |
+
+**External tool alignment:**
+
+| Metric | Repo A | Repo B | Repo C |
+|---|---|---|---|
+| `tsc` errors | 0 (after setup) | **0** | **0** |
+| `npm audit` CVEs (total) | **105** (16 critical) | 43 (1 critical) | **0** |
+| Test cases | 1 | 27 | **104 passing** |
+
+**Ranking congruence:** Rubric order (C > B > A) is identical to CVE rank and test rank. The rubric did not require GS guidance to produce this ordering.
+
+**Principal findings:**
+
+1. *Community reputation is an unreliable quality proxy.* Repo A (2k stars) scores below the official reference (Repo B). NestJS framework discipline yields 2/2 on Bounded — the framework enforces it — while the implementation carries 105 vulnerabilities (16 critical) and 1 test case. The rubric surfaces what star count ignores.
+
+2. *The rubric discriminates on GS-specific contributions.* Both non-GS implementations score 0/2 on Defended (no CI, no pre-commit hooks, no enforced gates) and 1/2 on Auditable (partial conventional commits, no ADRs). These are the properties with no framework analog — the AI cannot emit them from NestJS conventions alone. The GS-generated implementation achieves 2/2 on both. The rubric identifies GS's specific contribution over what a high-quality framework already provides.
+
+3. *The Defended gap is structural, not incidental.* No implementation scores 2/2 on Defended. A CI pipeline requires external infrastructure that generated code cannot provision. This is consistent across AX, BX, and RX and is reported as a permanent limitation, not a scoring anomaly.
+
+Full scores and per-property rationale: `experiments/bx/scores.json`.
 
 ---
 
