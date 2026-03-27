@@ -1,0 +1,23 @@
+{
+  "v7Recommendation": "Run full SonarQube scan from each condition's project root to get line counts and component-level metrics across all conditions. Expected outcome: A/A/A for all GS treatment conditions; potential B/C for naive. Add SonarQube quality gate (OK) as a v7 GS quality gate enforced at generation time.",
+  "interpretation": "treatment-v6 achieves SonarQube's highest quality gate status (OK) with perfect ratings across all three pillars (Reliability A, Maintainability A, Security A). Zero code smells, zero duplicated blocks, zero bugs, zero vulnerabilities. This is the maximum achievable score. Combined with the SonarJS analysis showing naive=19 duplicate string violations declining to 0 at v6, the per-condition trend is established by SonarJS; the absolute ceiling is confirmed by SonarQube.",
+  "v6Results": {
+    "reliabilityRating": "A",
+    "files": 27,
+    "duplicatedBlocks": 0,
+    "codeSmells": 0,
+    "effortToReachMaintainabilityA": "0 min",
+    "securityRating": "A",
+    "maintainabilityRating": "A",
+    "bugs": 0,
+    "duplicatedLinesDensity": "0.0%",
+    "lines": 2203,
+    "vulnerabilities": 0,
+    "projectKey": "conduit-v6",
+    "securityHotspots": 0,
+    "qualityGate": "OK"
+  },
+  "runDate": "2026-03-27",
+  "scope": "treatment-v6 (full scan from project root); other conditions scanned with absolute src paths — TypeScript sensor did not activate without co-located tsconfig.json. Per-condition differentiation is covered by experiments/ax/evidence/sonarjs-analysis.json (eslint-plugin-sonarjs, same rule engine).",
+  "tool": "SonarQube 9.9.8 Community Edition (Docker)"
+}

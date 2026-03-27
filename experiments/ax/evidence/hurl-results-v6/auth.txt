@@ -1,0 +1,32 @@
+* Request can be run with the following curl command:
+* curl --request PUT --header 'Authorization: Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc3NDY0ODIwOCwiZXhwIjoxNzc1MjUzMDA4fQ.WjG7CbLehj90BEyf3HYyRQ5mDRQO7Pg8qoG-HCgBJCs' --header 'Content-Type: application/json' --data $'{\n  "user": {\n    "bio": ""\n  }\n}' 'http://localhost:3001/api/user'
+System.Management.Automation.RemoteException
+HTTP/1.1 200
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 242
+ETag: W/"f2-GAorUTYsaV7K8MsW6cTtZ9N8xm0"
+Date: Fri, 27 Mar 2026 21:50:08 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+System.Management.Automation.RemoteException
+{"user":{"email":"auth_215008@test.com","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc3NDY0ODIwOCwiZXhwIjoxNzc1MjUzMDA4fQ.WjG7CbLehj90BEyf3HYyRQ5mDRQO7Pg8qoG-HCgBJCs","username":"auth_215008","bio":"","image":null}}
+System.Management.Automation.RemoteException
+error: Assert failure
+   --> C:\workspace\generative-specification\experiments\ax\evidence\hurl\auth.hurl:91:0
+    |
+    | PUT {{host}}/api/user
+    | ...
+ 91 | jsonpath "$.user.bio" == null
+    |   actual:   string <>
+    |   expected: null <null>
+    |
+System.Management.Automation.RemoteException
+Failure C:\workspace\generative-specification\experiments\ax\evidence\hurl\auth.hurl (6 request(s) in 157 ms)
+--------------------------------------------------------------------------------
+Executed files:    1
+Executed requests: 6 (37.5/s)
+Succeeded files:   0 (0.0%)
+Failed files:      1 (100.0%)
+Duration:          160 ms (0h:0m:0s:160ms)
+System.Management.Automation.RemoteException

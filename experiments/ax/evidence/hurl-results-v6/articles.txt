@@ -1,0 +1,32 @@
+* Request can be run with the following curl command:
+* curl 'http://localhost:3001/api/articles/test-article-215008-qeuya5'
+System.Management.Automation.RemoteException
+HTTP/1.1 404
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 69
+ETag: W/"45-mt2h3DoQueFqSX7eWyKZfWddWwU"
+Date: Fri, 27 Mar 2026 21:50:09 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+System.Management.Automation.RemoteException
+{"errors":{"body":["Article not found: test-article-215008-qeuya5"]}}
+System.Management.Automation.RemoteException
+error: Assert failure
+   --> C:\workspace\generative-specification\experiments\ax\evidence\hurl\articles.hurl:256:0
+    |
+    | GET {{host}}/api/articles/{{slug}}
+    | ...
+256 | jsonpath "$.errors.article[0]" == "not found"
+    |   actual:   none
+    |   expected: string <not found>
+    |
+System.Management.Automation.RemoteException
+Failure C:\workspace\generative-specification\experiments\ax\evidence\hurl\articles.hurl (17 request(s) in 407 ms)
+--------------------------------------------------------------------------------
+Executed files:    1
+Executed requests: 17 (41.4/s)
+Succeeded files:   0 (0.0%)
+Failed files:      1 (100.0%)
+Duration:          411 ms (0h:0m:0s:411ms)
+System.Management.Automation.RemoteException

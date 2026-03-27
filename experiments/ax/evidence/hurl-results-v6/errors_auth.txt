@@ -1,0 +1,32 @@
+* Request can be run with the following curl command:
+* curl --header 'Content-Type: application/json' --data $'{\n  "user": {\n    "username": "",\n    "email": "ea_blank_215008@test.com",\n    "password": "password123"\n  }\n}' 'http://localhost:3001/api/users'
+System.Management.Automation.RemoteException
+HTTP/1.1 422
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 44
+ETag: W/"2c-5X7UE2W5YTwB2yegfXb4zPhdWRY"
+Date: Fri, 27 Mar 2026 21:50:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+System.Management.Automation.RemoteException
+{"errors":{"body":["username is required"]}}
+System.Management.Automation.RemoteException
+error: Assert failure
+   --> C:\workspace\generative-specification\experiments\ax\evidence\hurl\errors_auth.hurl:12:0
+    |
+    | POST {{host}}/api/users
+    | ...
+ 12 | jsonpath "$.errors.username[0]" == "can't be blank"
+    |   actual:   none
+    |   expected: string <can't be blank>
+    |
+System.Management.Automation.RemoteException
+Failure C:\workspace\generative-specification\experiments\ax\evidence\hurl\errors_auth.hurl (1 request(s) in 5 ms)
+--------------------------------------------------------------------------------
+Executed files:    1
+Executed requests: 1 (125.0/s)
+Succeeded files:   0 (0.0%)
+Failed files:      1 (100.0%)
+Duration:          8 ms (0h:0m:0s:8ms)
+System.Management.Automation.RemoteException

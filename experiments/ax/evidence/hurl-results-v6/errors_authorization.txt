@@ -1,0 +1,32 @@
+* Request can be run with the following curl command:
+* curl --request DELETE --header 'Authorization: Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE3NzQ2NDgyMTAsImV4cCI6MTc3NTI1MzAxMH0.VgxLI9H8ZxGtqIz7SDOGf2fp3sYc-VMR-12qGhZm0XU' 'http://localhost:3001/api/articles/authz-article-215008-zsuz97'
+System.Management.Automation.RemoteException
+HTTP/1.1 403
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 63
+ETag: W/"3f-HR6JAQmeg9BVIr6arIq9aROay1w"
+Date: Fri, 27 Mar 2026 21:50:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+System.Management.Automation.RemoteException
+{"errors":{"body":["Only the author can delete this article"]}}
+System.Management.Automation.RemoteException
+error: Assert failure
+  --> C:\workspace\generative-specification\experiments\ax\evidence\hurl\errors_authorization.hurl:46:0
+   |
+   | DELETE {{host}}/api/articles/{{slug}}
+   | ...
+46 | jsonpath "$.errors.article[0]" == "forbidden"
+   |   actual:   none
+   |   expected: string <forbidden>
+   |
+System.Management.Automation.RemoteException
+Failure C:\workspace\generative-specification\experiments\ax\evidence\hurl\errors_authorization.hurl (4 request(s) in 182 ms)
+--------------------------------------------------------------------------------
+Executed files:    1
+Executed requests: 4 (21.7/s)
+Succeeded files:   0 (0.0%)
+Failed files:      1 (100.0%)
+Duration:          184 ms (0h:0m:0s:184ms)
+System.Management.Automation.RemoteException

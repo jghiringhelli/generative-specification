@@ -1,5 +1,6 @@
 import { hash, verify as verifyHash } from 'argon2';
-import { sign } from 'jsonwebtoken';
+import pkg from 'jsonwebtoken';
+const { sign } = pkg;
 import type { SignOptions } from 'jsonwebtoken';
 import { z } from 'zod';
 import { env } from '../config/env.js';

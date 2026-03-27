@@ -1,0 +1,102 @@
+{
+  "hurlSuite": "gothinkster/realworld specs/api/hurl (13 files, official Conduit contract suite)",
+  "targetDescription": "AX treatment-v6: GS-guided implementation, 13/14 rubric score, 0 tsc errors, 0 ESLint errors",
+  "summary": {
+    "pass": 6,
+    "passRate": "46%",
+    "total": 13,
+    "fail": 7
+  },
+  "runDate": "2026-03-27",
+  "results": {
+    "profiles": {
+      "requests": 7,
+      "pass": true
+    },
+    "feed": {
+      "requests": 12,
+      "pass": true
+    },
+    "comments": {
+      "requests": 13,
+      "pass": true
+    },
+    "errors_profiles": {
+      "pass": false,
+      "rootCause": "Error envelope scoping: profile not-found under errors.body[]; spec expects errors.profile['not found']",
+      "requests": 1
+    },
+    "favorites": {
+      "requests": 9,
+      "pass": true
+    },
+    "tags": {
+      "requests": 4,
+      "pass": true
+    },
+    "errors_auth": {
+      "pass": false,
+      "rootCause": "Error envelope scoping: validation errors under errors.body[]; spec expects errors.username[], errors.email[], etc.",
+      "requests": 1
+    },
+    "errors_articles": {
+      "pass": false,
+      "rootCause": "Error envelope scoping: article errors under errors.body[]; spec expects errors.article[]",
+      "requests": 1
+    },
+    "errors_authorization": {
+      "pass": false,
+      "rootCause": "Error envelope scoping: authorization errors under errors.body[]; spec expects errors.article['forbidden']",
+      "requests": 4
+    },
+    "articles": {
+      "pass": false,
+      "rootCause": "Error envelope scoping: articles endpoint returns errors.body[] for not-found; spec expects errors.article[]",
+      "requests": 17
+    },
+    "pagination": {
+      "requests": 7,
+      "pass": true
+    },
+    "auth": {
+      "pass": false,
+      "rootCause": "Bio null coercion: PUT /api/user with bio=empty-string returns bio='' instead of bio=null. Spec expects null for empty bio.",
+      "requests": 6
+    },
+    "errors_comments": {
+      "pass": false,
+      "rootCause": "Error envelope scoping: comment errors under errors.body[]; spec expects errors.comment[]",
+      "requests": 1
+    }
+  },
+  "hurlVersion": "7.1.0",
+  "serverPort": 3001,
+  "rootCauses": [
+    {
+      "gsGap": "Specification does not document the empty-string-to-null coercion rule for nullable fields. A quality gate on Bounded (named constants + documented coercion rules) would have caught this.",
+      "detail": "PUT /api/user with bio='' (empty string) returns bio='' instead of bio=null. The Conduit spec treats empty bio as null. One test fails.",
+      "id": "RC1",
+      "affectedTests": [
+        "auth"
+      ],
+      "description": "Bio null coercion"
+    },
+    {
+      "gsGap": "Specification does not include the Conduit error envelope format as an explicit contract. A Hurl gate on the API contract would have caught this at generation time.",
+      "detail": "All error responses use errors.body[] (generic). The Conduit spec expects resource-scoped keys: errors.username[], errors.article[], errors.profile[], errors.comment[]. The server returns the correct error messages but under the wrong key.",
+      "id": "RC2",
+      "affectedTests": [
+        "errors_auth",
+        "errors_articles",
+        "errors_authorization",
+        "errors_comments",
+        "errors_profiles",
+        "articles"
+      ],
+      "description": "Error envelope not resource-scoped"
+    }
+  ],
+  "database": "PostgreSQL 16 (Docker, ephemeral)",
+  "target": "treatment-v6",
+  "finding": "Happy-path endpoints: 6/7 pass (tags, profiles, comments, favorites, feed, pagination). All error-handling contract tests fail due to a single root cause: non-resource-scoped error envelopes. Both root causes are specification gaps, not logic errors — the server returns correct data under wrong keys. These are addressable in a v7 GS document update."
+}

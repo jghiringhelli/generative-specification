@@ -1,0 +1,32 @@
+* Request can be run with the following curl command:
+* curl 'http://localhost:3001/api/profiles/unknown-user-215008'
+System.Management.Automation.RemoteException
+HTTP/1.1 404
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 59
+ETag: W/"3b-guWeOjDJ7IS7NpFADm2yToyOhE0"
+Date: Fri, 27 Mar 2026 21:50:11 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+System.Management.Automation.RemoteException
+{"errors":{"body":["User not found: unknown-user-215008"]}}
+System.Management.Automation.RemoteException
+error: Assert failure
+  --> C:\workspace\generative-specification\experiments\ax\evidence\hurl\errors_profiles.hurl:5:0
+   |
+   | GET {{host}}/api/profiles/unknown-user-{{uid}}
+   | ...
+ 5 | jsonpath "$.errors.profile[0]" == "not found"
+   |   actual:   none
+   |   expected: string <not found>
+   |
+System.Management.Automation.RemoteException
+Failure C:\workspace\generative-specification\experiments\ax\evidence\hurl\errors_profiles.hurl (1 request(s) in 7 ms)
+--------------------------------------------------------------------------------
+Executed files:    1
+Executed requests: 1 (111.1/s)
+Succeeded files:   0 (0.0%)
+Failed files:      1 (100.0%)
+Duration:          9 ms (0h:0m:0s:9ms)
+System.Management.Automation.RemoteException

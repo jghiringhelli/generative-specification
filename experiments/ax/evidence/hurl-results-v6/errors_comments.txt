@@ -1,0 +1,32 @@
+* Request can be run with the following curl command:
+* curl --header 'Content-Type: application/json' --data $'{\n  "comment": {\n    "body": "test"\n  }\n}' 'http://localhost:3001/api/articles/some-slug/comments'
+System.Management.Automation.RemoteException
+HTTP/1.1 401
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 65
+ETag: W/"41-5u6hWMnApvozDkxVVve3g23renU"
+Date: Fri, 27 Mar 2026 21:50:10 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+System.Management.Automation.RemoteException
+{"errors":{"body":["Authorization header missing or malformed"]}}
+System.Management.Automation.RemoteException
+error: Assert failure
+  --> C:\workspace\generative-specification\experiments\ax\evidence\hurl\errors_comments.hurl:10:0
+   |
+   | POST {{host}}/api/articles/some-slug/comments
+   | ...
+10 | jsonpath "$.errors.token[0]" == "is missing"
+   |   actual:   none
+   |   expected: string <is missing>
+   |
+System.Management.Automation.RemoteException
+Failure C:\workspace\generative-specification\experiments\ax\evidence\hurl\errors_comments.hurl (1 request(s) in 6 ms)
+--------------------------------------------------------------------------------
+Executed files:    1
+Executed requests: 1 (111.1/s)
+Succeeded files:   0 (0.0%)
+Failed files:      1 (100.0%)
+Duration:          9 ms (0h:0m:0s:9ms)
+System.Management.Automation.RemoteException

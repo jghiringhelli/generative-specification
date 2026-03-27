@@ -2,9 +2,9 @@
 
 **Ax** is a controlled, multi-agent adversarial experiment measuring the effect of
 [Generative Specification (GS)](https://github.com/jghiringhelli/generative-specification)
-artifacts on AI-assisted software development quality. The study runs seven conditions —
-from a completely artifact-free naive baseline through five progressively richer treatment
-levels — all against the same benchmark task.
+artifacts on AI-assisted software development quality. The study runs eight conditions —
+from a completely artifact-free naive baseline through six progressively richer treatment
+levels (v1–v6) — all against the same benchmark task.
 
 ## Conditions
 
@@ -23,7 +23,7 @@ levels — all against the same benchmark task.
 **RealWorld (Conduit) API** — the standard fullstack benchmark used across the industry:
 <https://github.com/realworld-apps/realworld>
 
-All seven conditions implement the same backend API from the same specification
+All eight conditions implement the same backend API from the same specification
 (`REALWORLD_API_SPEC.md`). Evaluation is automated and human-reviewed against a shared
 rubric (`RESULTS.md`).
 
