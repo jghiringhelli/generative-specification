@@ -1,0 +1,30 @@
+All done. Here's a summary of what was implemented:
+
+---
+
+## Profiles ΓÇö Implementation Summary
+
+### Files created
+| File | Purpose |
+|---|---|
+| `src/routes/profiles.ts` | Route handlers for GET/POST/DELETE profile endpoints |
+| `src/services/ProfileService.ts` | Business logic: `getProfile`, `followUser`, `unfollowUser` |
+| `src/repositories/PrismaProfileRepository.ts` | Prisma implementation of `IProfileRepository` |
+| `src/repositories/InMemoryProfileRepository.ts` | In-memory test double with `seed`/`clear` helpers |
+| `src/routes/profiles.test.ts` | 11 integration tests covering all 3 endpoints |
+
+### Files modified
+| File | Change |
+|---|---|
+| `prisma/schema.prisma` | Added `Follow` model (composite PK `[followerId, followingId]`) + relations on `User` |
+| `src/repositories/IProfileRepository.ts` | Updated `follow`/`unfollow` signatures to accept `username: string` instead of `followingId: number` ΓÇö repository handles ID resolution |
+| `src/middleware/auth.ts` | Added `optionalAuth` middleware for GET /profiles/:username |
+| `src/app.ts` | Added `profileService` to `AppDependencies`; registered profile router |
+| `src/server.ts` | Wired `PrismaProfileRepository` and `ProfileService` at composition root |
+| `src/routes/users.test.ts` | Updated to supply `profileService` to `createApp`; added `follow.deleteMany()` before `user.deleteMany()` for FK safety |
+
+### Verification Protocol ΓÇö all 11 checks pass
+- ┬º1 Bounded: no `prisma.` calls in route files
+- ┬º5 Error format: 404 ΓåÆ `{ errors: { profile: [...] } }`, 401 ΓåÆ `{ errors: { user: [...] } }`
+- ┬º9 Interface completeness: all three `IProfileRepository` methods implemented in both concrete classes
+- ┬º11 ESM-safe: no named `jsonwebtoken` imports introduced

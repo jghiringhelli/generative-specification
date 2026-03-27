@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Security gate: zero HIGH/CRITICAL CVEs required
+npm audit --audit-level=high
+
+# Type-check gate
+npx tsc --noEmit
+
+# Lint gate
+npm run lint
+
+# Test gate
+npm test

@@ -1,0 +1,18 @@
+PASS src/routes/articles.test.ts (7.545 s)
+PASS src/routes/comments.test.ts
+PASS src/services/UserService.test.ts
+PASS src/routes/users.test.ts
+PASS src/routes/profiles.test.ts
+PASS src/routes/tags.test.ts
+PASS src/services/ArticleService.test.ts
+PASS src/services/CommentService.test.ts
+PASS src/utils/slugify.test.ts
+PASS src/utils/formatError.test.ts
+
+Test Suites: 10 passed, 10 total
+Tests:       146 passed, 146 total
+Snapshots:   0 total
+Time:        18.429 s, estimated 19 s
+Ran all test suites.
+Test results written to: evidence\jest-output.json
+Force exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?

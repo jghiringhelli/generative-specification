@@ -1,0 +1,123 @@
+// Conduit RealWorld API — Prisma schema
+// Prompt 1: User + Follow models.
+// Prompt 3: Article, Tag, ArticleTag, ArticleFavorite models added.
+// Prompt 4: Comment model added.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  bio          String?
+  image        String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Users who follow this user (this user is the "following" side).
+  followers Follow[] @relation("following")
+  // Users that this user follows (this user is the "follower" side).
+  following Follow[] @relation("follower")
+
+  articles         Article[]
+  articleFavorites ArticleFavorite[]
+  comments         Comment[]
+
+  @@map("users")
+}
+
+// Join table representing a follow relationship between two users.
+// Composite primary key on (followerId, followingId) enforces uniqueness and
+// allows upsert-based idempotent follow creation.
+model Follow {
+  followerId  Int
+  followingId Int
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@map("follows")
+}
+
+// An article authored by a user.
+// Slug is generated from the title at creation and regenerated on title update.
+model Article {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  description String
+  body        String   @db.Text
+  authorId    Int      @map("author_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  author    User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags      ArticleTag[]
+  favorites ArticleFavorite[]
+  comments  Comment[]
+
+  @@map("articles")
+}
+
+// Normalized tag. Shared across articles via the ArticleTag join table.
+model Tag {
+  id       Int          @id @default(autoincrement())
+  name     String       @unique
+  articles ArticleTag[]
+
+  @@map("tags")
+}
+
+// Explicit many-to-many join between Article and Tag.
+// Explicit join model (vs. implicit Prisma @relation) used to support
+// cascade deletes on article removal.
+model ArticleTag {
+  articleId Int @map("article_id")
+  tagId     Int @map("tag_id")
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@map("article_tags")
+}
+
+// A comment authored by a user on a specific article.
+// Both authorId and articleId cascade-delete with their parent records.
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String   @db.Text
+  authorId  Int      @map("author_id")
+  articleId Int      @map("article_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+// Join table recording which users have favorited which articles.
+// Composite primary key enforces one favorite per user per article.
+model ArticleFavorite {
+  userId    Int      @map("user_id")
+  articleId Int      @map("article_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, articleId])
+  @@map("article_favorites")
+}

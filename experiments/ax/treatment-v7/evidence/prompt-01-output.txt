@@ -1,0 +1,59 @@
+Now let me run the Verification Protocol (┬º1ΓÇô┬º11) against the implementation:
+
+**┬º1 Bounded** ΓÇö Route handlers in `src/routes/users.ts` call `userService.*` only. No `prisma.` calls anywhere in routes. Γ£à
+
+**┬º2 Verifiable** ΓÇö Tests cover:
+- `UserService.test.ts`: register (success, duplicate email, duplicate username, hash check), login (success, unknown email, wrong password, error key), getCurrentUser (success, not found), updateUser (email update, bio coercion, image coercion, non-empty bio, conflict, not found)
+- `users.test.ts`: all 4 endpoints with success, 422 validation, 401 unauthorized, 404/409 error paths Γ£à
+
+**┬º3 Composable** ΓÇö `UserService(userRepository: IUserRepository)` ΓÇö no `new PrismaClient()` inside service. Γ£à
+
+**┬º4 Zero Hardcoded Values** ΓÇö `JWT_EXPIRY` cast via `SignOptions['expiresIn']` at module level; `MIN_JWT_SECRET_LENGTH = 32` named constant; pagination N/A here. Γ£à
+
+**┬º5 Error Format Resource-Scoped** ΓÇö `errorHandler` maps `ValidationError.fields` directly (field-level), `AppError` uses `err.resource` key. `ConflictError` constructed with `'email'`/`'username'` resource. Login error uses `'email or password'` field key. Γ£à
+
+**┬º6 Defended** ΓÇö `.husky/pre-commit` and `.github/workflows/ci.yml` are pre-existing (emitted in P0). Γ£à
+
+**┬º7 Auditable** ΓÇö `docs/adrs/ADR-0001` and `ADR-0002` pre-existing. `CHANGELOG.md` pre-existing. Γ£à
+
+**┬º8 DRY** ΓÇö `formatError`, `asyncHandler`, `zodToValidationError` are utilities. No duplicate logic. Γ£à
+
+**┬º9 Interface Completeness** ΓÇö `PrismaUserRepository` implements all 5 `IUserRepository` methods: `findById`, `findByEmail`, `findByUsername`, `create`, `update`. `InMemoryUserRepository` likewise. Γ£à
+
+**┬º10 Nullable Field Coercion** ΓÇö In `UserService.updateUser`: `bio: input.bio === '' ? null : input.bio` and same for `image`. Γ£à
+
+**┬º11 ESM-Safe Imports** ΓÇö `src/middleware/auth.ts`: `import pkg from 'jsonwebtoken'; const { verify } = pkg`. `src/services/UserService.ts`: `import pkg from 'jsonwebtoken'; const { sign } = pkg`. Γ£à
+
+---
+
+**Setup instructions** (run after this response):
+
+```bash
+cd experiments/ax/treatment-v7/output/project
+npm install
+npx prisma generate
+npx prisma migrate dev --name init
+npm test
+```
+
+**What was implemented:**
+
+| File | Role |
+|---|---|
+| `prisma/schema.prisma` | User model with PostgreSQL mapping |
+| `src/utils/formatError.ts` | Resource-scoped error envelope builder |
+| `src/utils/asyncHandler.ts` | Express 4 async error adapter |
+| `src/middleware/auth.ts` | JWT `requireAuth` middleware (ESM-safe) |
+| `src/middleware/errorHandler.ts` | Domain error ΓåÆ HTTP response mapper |
+| `src/repositories/PrismaUserRepository.ts` | `IUserRepository` Prisma adapter |
+| `src/repositories/InMemoryUserRepository.ts` | `IUserRepository` in-memory test double |
+| `src/services/UserService.ts` | register / login / getCurrentUser / updateUser |
+| `src/routes/users.ts` | Route factory with Zod validation |
+| `src/app.ts` | Express app factory (DI-friendly) |
+| `src/server.ts` | Composition root with startup validation |
+| `src/services/UserService.test.ts` | 13 unit tests via InMemoryUserRepository |
+| `src/routes/users.test.ts` | 15 integration tests via supertest + Prisma |
+| `jest.setup.env.ts` | Test env vars (set before module imports) |
+| Updated: `package.json` | Added `supertest`, `@types/supertest` |
+| Updated: `docs/approved-packages.md` | Registered supertest entries |
+| Updated: `jest.config.js` | Added `setupFiles` for env var injection |

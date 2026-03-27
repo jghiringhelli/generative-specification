@@ -1,0 +1,193 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@inquirer/editor": {
+      "name": "@inquirer/editor",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        "external-editor"
+      ],
+      "effects": [
+        "@inquirer/prompts"
+      ],
+      "range": "<=4.2.15",
+      "nodes": [
+        "node_modules/@inquirer/editor"
+      ],
+      "fixAvailable": {
+        "name": "@stryker-mutator/core",
+        "version": "9.6.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@inquirer/prompts": {
+      "name": "@inquirer/prompts",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        "@inquirer/editor"
+      ],
+      "effects": [
+        "@stryker-mutator/core"
+      ],
+      "range": "<=6.0.1",
+      "nodes": [
+        "node_modules/@inquirer/prompts"
+      ],
+      "fixAvailable": {
+        "name": "@stryker-mutator/core",
+        "version": "9.6.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@stryker-mutator/core": {
+      "name": "@stryker-mutator/core",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@inquirer/prompts",
+        "ajv"
+      ],
+      "effects": [
+        "@stryker-mutator/jest-runner"
+      ],
+      "range": "4.4.0 - 9.5.1",
+      "nodes": [
+        "node_modules/@stryker-mutator/core"
+      ],
+      "fixAvailable": {
+        "name": "@stryker-mutator/core",
+        "version": "9.6.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@stryker-mutator/jest-runner": {
+      "name": "@stryker-mutator/jest-runner",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@stryker-mutator/core"
+      ],
+      "effects": [],
+      "range": "4.4.0 - 9.5.1",
+      "nodes": [
+        "node_modules/@stryker-mutator/jest-runner"
+      ],
+      "fixAvailable": {
+        "name": "@stryker-mutator/jest-runner",
+        "version": "9.6.0",
+        "isSemVerMajor": true
+      }
+    },
+    "ajv": {
+      "name": "ajv",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1113715,
+          "name": "ajv",
+          "dependency": "ajv",
+          "title": "ajv has ReDoS when using `$data` option",
+          "url": "https://github.com/advisories/GHSA-2g4f-4pwh-qvx6",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-400",
+            "CWE-1333"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=7.0.0-alpha.0 <8.18.0"
+        }
+      ],
+      "effects": [
+        "@stryker-mutator/core"
+      ],
+      "range": "7.0.0-alpha.0 - 8.17.1",
+      "nodes": [
+        "node_modules/@stryker-mutator/core/node_modules/ajv"
+      ],
+      "fixAvailable": {
+        "name": "@stryker-mutator/core",
+        "version": "9.6.0",
+        "isSemVerMajor": true
+      }
+    },
+    "external-editor": {
+      "name": "external-editor",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        "tmp"
+      ],
+      "effects": [
+        "@inquirer/editor"
+      ],
+      "range": ">=1.1.1",
+      "nodes": [
+        "node_modules/external-editor"
+      ],
+      "fixAvailable": {
+        "name": "@stryker-mutator/core",
+        "version": "9.6.0",
+        "isSemVerMajor": true
+      }
+    },
+    "tmp": {
+      "name": "tmp",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1109537,
+          "name": "tmp",
+          "dependency": "tmp",
+          "title": "tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter",
+          "url": "https://github.com/advisories/GHSA-52f5-9888-hmc6",
+          "severity": "low",
+          "cwe": [
+            "CWE-59"
+          ],
+          "cvss": {
+            "score": 2.5,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": "<=0.2.3"
+        }
+      ],
+      "effects": [
+        "external-editor"
+      ],
+      "range": "<=0.2.3",
+      "nodes": [
+        "node_modules/tmp"
+      ],
+      "fixAvailable": {
+        "name": "@stryker-mutator/core",
+        "version": "9.6.0",
+        "isSemVerMajor": true
+      }
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 4,
+      "moderate": 3,
+      "high": 0,
+      "critical": 0,
+      "total": 7
+    },
+    "dependencies": {
+      "prod": 100,
+      "dev": 651,
+      "optional": 28,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 750
+    }
+  }
+}

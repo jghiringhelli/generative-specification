@@ -1,0 +1,13 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": { "project": "./tsconfig.json", "sourceType": "module" },
+  "plugins": ["@typescript-eslint", "sonarjs"],
+  "rules": {
+    "complexity": ["warn", 5],
+    "sonarjs/cognitive-complexity": ["warn", 10],
+    "sonarjs/no-duplicate-string": "warn",
+    "sonarjs/no-identical-functions": "warn",
+    "sonarjs/no-collapsible-if": "warn"
+  }
+}
+

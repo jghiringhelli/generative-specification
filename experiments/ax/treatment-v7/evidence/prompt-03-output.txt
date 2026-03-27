@@ -1,0 +1,51 @@
+Good. Now let me verify the complete Verification Protocol:
+
+**┬º1 Bounded** ΓÇö No `prisma.` calls in route files: Γ£à  
+**┬º2 Verifiable** ΓÇö `articles.test.ts` has success, 422, 401, 403, 404 for all endpoints: Γ£à  
+**┬º3 Composable** ΓÇö `ArticleService` receives `IArticleRepository` via constructor: Γ£à  
+**┬º4 Zero Hardcoded Values** ΓÇö `DEFAULT_LIMIT=20`, `DEFAULT_OFFSET=0`, `NO_VIEWER=-1` as named constants: Γ£à  
+**┬º5 Error Format** ΓÇö No `errors.body` in response code; all errors are resource-scoped: Γ£à  
+**┬º6 Defended** ΓÇö `.husky/pre-commit` and `.github/workflows/ci.yml` exist: Γ£à  
+**┬º7 Auditable** ΓÇö `ADR-0001` and `ADR-0002` exist: Γ£à  
+**┬º8 DRY** ΓÇö `zodToValidationError` extracted to `src/utils/zodError.ts`, used by both route files: Γ£à  
+**┬º9 Interface Completeness** ΓÇö All 8 `IArticleRepository` methods implemented in `PrismaArticleRepository`: Γ£à  
+**┬º10 Nullable Field Coercion** ΓÇö Articles have no `bio`/`image` fields; `UserService.updateUser` already has coercion: Γ£à  
+**┬º11 ESM-Safe Imports** ΓÇö `jsonwebtoken` uses `import pkg from 'jsonwebtoken'` in both `auth.ts` and `UserService.ts`: Γ£à
+
+All 11 checks pass. Here's a summary of what was implemented:
+
+---
+
+## Summary
+
+### New files created
+
+| File | Purpose |
+|------|---------|
+| `src/utils/slugify.ts` | URL-safe slug generation with random hex suffix for uniqueness |
+| `src/utils/zodError.ts` | Shared `zodToValidationError` (DRY ΓÇö extracted from duplicated route code) |
+| `src/repositories/PrismaArticleRepository.ts` | Full `IArticleRepository` implementation ΓÇö all 8 methods via Prisma + PostgreSQL |
+| `src/repositories/InMemoryArticleRepository.ts` | In-memory test double with `seed()`/`clear()` for unit tests |
+| `src/services/ArticleService.ts` | Article business logic with authorization enforcement (`updateArticle`/`deleteArticle`) |
+| `src/routes/articles.ts` | 8 article endpoints with Zod validation, `body` stripped from list responses |
+| `src/routes/articles.test.ts` | 32 integration tests covering all endpoints ├ù success/401/403/404/422 |
+| `src/services/ArticleService.test.ts` | 18 unit tests covering auth guards, pagination, filtering, favorites |
+| `prisma/migrations/20260101000000_init/migration.sql` | Initial migration ΓÇö users + follows |
+| `prisma/migrations/20260327000000_add_articles/migration.sql` | Articles migration ΓÇö articles, tags, article_tags, article_favorites |
+
+### Modified files
+
+| File | Change |
+|------|--------|
+| `prisma/schema.prisma` | Added `Article`, `Tag`, `ArticleTag`, `ArticleFavorite` models + User back-relations |
+| `src/app.ts` | Added `ArticleService` dep + article router mount |
+| `src/server.ts` | Wired `PrismaArticleRepository` + `ArticleService` at composition root |
+| `src/routes/users.ts` | Replaced local `zodToValidationError` with shared import |
+
+### Key design decisions
+
+- **`GET /api/articles` and `/feed`**: `body` field is stripped at the route layer via `toListItem()` per the 2024-08-16 spec change
+- **Slug uniqueness**: 8-char random hex suffix prevents collisions on identical titles
+- **Viewer context**: Sentinel `NO_VIEWER = -1` used in all Prisma includes ΓÇö avoids conditional include shapes and TypeScript type gymnastics
+- **Authorization order**: `updateArticle`/`deleteArticle` check 404 before 403 (existence before permission)
+- **`update` re-fetch**: After update, service re-fetches with viewer userId to populate correct `favorited`/`following` context, since title changes regenerate the slug

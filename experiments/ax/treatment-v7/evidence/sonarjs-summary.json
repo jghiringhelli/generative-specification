@@ -1,0 +1,11 @@
+{
+  "totalViolations": 29,
+  "byRule": {
+    "@typescript-eslint/explicit-function-return-type": 2,
+    "sonarjs/no-duplicate-string": 5,
+    "no-console": 4,
+    "": 10,
+    "complexity": 6,
+    "sonarjs/cognitive-complexity": 2
+  }
+}

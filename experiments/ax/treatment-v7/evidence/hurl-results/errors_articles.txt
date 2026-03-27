@@ -1,0 +1,8 @@
+Success C:\workspace\generative-specification\experiments\ax\evidence\hurl\errors_articles.hurl (20 request(s) in 176 ms)
+--------------------------------------------------------------------------------
+Executed files:    1
+Executed requests: 20 (111.7/s)
+Succeeded files:   1 (100.0%)
+Failed files:      0 (0.0%)
+Duration:          179 ms (0h:0m:0s:179ms)
+

@@ -1,0 +1,38 @@
+All 4 tests pass. Verification Protocol check:
+
+**┬º1 Bounded** ΓÇö `tags.ts` route calls `tagService.getAllTags()` only. No `prisma.` calls in routes. Γ£à
+
+**┬º2 Verifiable** ΓÇö Tests cover: empty case, populated tags, no-auth required, dedup. Γ£à
+
+**┬º3 Composable** ΓÇö `TagService` receives `ITagRepository` via constructor; `PrismaTagRepository` injected at composition root. Γ£à
+
+**┬º4 Zero Hardcoded Values** ΓÇö No magic numbers/strings. Γ£à
+
+**┬º5 Error Format** ΓÇö GET /api/tags has no error paths (no auth required, returns empty array by default). Γ£à
+
+**┬º6 Defended** ΓÇö Pre-existing commit gates; no new changes required. Γ£à
+
+**┬º7 Auditable** ΓÇö No new packages added; no ADR needed. Γ£à
+
+**┬º8 DRY** ΓÇö No duplicate logic; reused `asyncHandler`, `Router` pattern. Γ£à
+
+**┬º9 Interface Completeness** ΓÇö `ITagRepository.findAll()` implemented in both `PrismaTagRepository` and `InMemoryTagRepository`. Γ£à
+
+**┬º10 Nullable Field Coercion** ΓÇö Not applicable to tags. Γ£à
+
+**┬º11 ESM-Safe Imports** ΓÇö No `jsonwebtoken` usage in new files. Γ£à
+
+---
+
+Implemented `GET /api/tags`:
+
+**New files:**
+- `src/repositories/PrismaTagRepository.ts` ΓÇö production Prisma implementation (filters orphaned tags, orders alphabetically)
+- `src/repositories/InMemoryTagRepository.ts` ΓÇö test double
+- `src/services/TagService.ts` ΓÇö thin business logic wrapper
+- `src/routes/tags.ts` ΓÇö route handler (no auth required)
+- `src/routes/tags.test.ts` ΓÇö 4 integration tests (empty, populated, no-auth, dedup)
+
+**Modified files:**
+- `src/app.ts` ΓÇö added `TagService` to `AppDependencies`, mounted tag router
+- `src/server.ts` ΓÇö wired `PrismaTagRepository` ΓåÆ `TagService` at composition root
