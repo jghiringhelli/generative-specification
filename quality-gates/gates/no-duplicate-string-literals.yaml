@@ -1,0 +1,18 @@
+id: no-duplicate-string-literals
+name: No duplicate string literals
+description: >
+  String values that appear more than three times in the codebase must be extracted into
+  named constants. Duplicate literals are the strongest SonarJS proxy for the Bounded
+  property: a string that appears in nineteen places (observed in the naive Ax condition)
+  means a conceptual boundary is not encoded anywhere — change the string, find the bugs
+  at runtime. The naive Conduit implementation had 19 violations; the v3 treatment had 1.
+  This gate runs eslint-plugin-sonarjs/no-duplicate-string with threshold 3. Named constants
+  make boundaries explicit and statically verifiable.
+property: Bounded
+tags: [javascript, typescript, node, any]
+phase: development
+trigger: commit
+blocking: true
+check:
+  type: lint
+  command: "npx eslint --rule '{\"sonarjs/no-duplicate-string\": [\"error\", {\"threshold\": 3}]}' 'src/**/*.{ts,js}'"

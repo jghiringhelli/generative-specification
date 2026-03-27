@@ -1,0 +1,19 @@
+id: api-error-envelope-resource-scoped
+name: Resource-scoped error envelope
+description: >
+  API validation errors must be returned under a key that names the failing resource, not
+  a generic "body" key. The envelope shape must be { "errors": { "<resource>": ["message"] } }
+  where <resource> is the noun being validated (e.g. "username", "email", "article", "title").
+  A generic errors.body[] response makes error attribution ambiguous for clients and fails
+  OpenAPI contract tests. This gate is derived from Hurl RC2: six of thirteen official Conduit
+  contract tests failed solely because the implementation returned errors.body[] instead of
+  resource-scoped keys. Implement a formatError(resource, messages) utility so the pattern
+  is enforced uniformly across all endpoints.
+property: Verifiable
+tags: [api, rest, node, typescript, javascript]
+phase: development
+trigger: pr
+blocking: true
+check:
+  type: script
+  command: "hurl --test --variable host=http://localhost:3000 specs/api/hurl/register.hurl specs/api/hurl/create-article.hurl"

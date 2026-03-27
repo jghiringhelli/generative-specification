@@ -1,0 +1,18 @@
+id: node-esm-cjs-safe-imports
+name: ESM-safe CommonJS default import pattern
+description: >
+  CommonJS packages (jsonwebtoken, bcrypt, multer, and similar) do not expose named exports
+  under ESM interop. Importing with named destructuring — import { sign } from 'jsonwebtoken'
+  — compiles cleanly under TypeScript but throws "Named export not found" at runtime when the
+  module loader resolves the CommonJS boundary. The safe pattern is: import pkg from 'module';
+  const { method } = pkg. This gate flags any named import from a known CJS-only package
+  in an ESM or "type: module" project. Discovered during v6 server startup: the build passed
+  tsc --noEmit but the server crashed immediately on the first JWT sign operation.
+property: Executable
+tags: [node, typescript, javascript, esm]
+phase: development
+trigger: commit
+blocking: true
+check:
+  type: lint
+  command: "node --input-type=module -e \"import('./src/index.js').catch(e => { process.stderr.write(e.message); process.exit(1); })\" 2>&1 | grep -v 'Named export' && exit 0 || exit 1"

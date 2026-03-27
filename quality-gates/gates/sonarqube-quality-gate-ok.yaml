@@ -1,0 +1,19 @@
+id: sonarqube-quality-gate-ok
+name: SonarQube Quality Gate OK
+description: >
+  SonarQube analysis must return Quality Gate: OK — ratings A on reliability, security,
+  and maintainability, with zero bugs and zero vulnerabilities on new code. SonarQube is
+  independent of the GS rubric: it applies its own quality model derived from industry
+  standards. A system that scores 14/14 on the GS rubric but fails SonarQube has passed
+  a self-referential check but failed an independent one. This gate partially closes
+  Layer 3 of the define/build/measure circularity: the measurement tool has no knowledge
+  of GS and cannot have been influenced by it. Requires a running SonarQube server or
+  SonarCloud account and a sonar-project.properties file committed to the repo root.
+property: Verifiable
+tags: [any, sonarqube, static-analysis, quality]
+phase: staging
+trigger: pr
+blocking: true
+check:
+  type: script
+  command: "sonar-scanner -Dsonar.qualitygate.wait=true"

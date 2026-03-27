@@ -1,0 +1,19 @@
+id: hurl-contract-tests-pass
+name: Hurl contract test suite passes
+description: >
+  The full Hurl test suite for the published API spec must exit 0 against a running
+  server. Hurl tests are authored independently of the implementation — they are the
+  contract between the API and its consumers, not a test of internal structure. A system
+  that passes tsc and Jest but fails Hurl has correctly structured code that violates
+  its own interface. This gate operationalizes the Verifiable property at the HTTP boundary:
+  the specification is executable and the implementation satisfies it. The test files must
+  be committed in specs/api/hurl/ and cover at minimum: registration, login, article CRUD,
+  comments, favorites, follow/unfollow, and pagination. Gate passes when hurl --test exits 0.
+property: Executable
+tags: [api, rest, hurl, contract-testing, any]
+phase: staging
+trigger: pr
+blocking: true
+check:
+  type: script
+  command: "hurl --test --variable host=${API_HOST:-http://localhost:3000} specs/api/hurl/*.hurl"

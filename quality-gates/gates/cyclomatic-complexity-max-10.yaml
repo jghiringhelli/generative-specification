@@ -1,0 +1,19 @@
+id: cyclomatic-complexity-max-10
+name: Cyclomatic complexity max 10 per function
+description: >
+  No function may have a cyclomatic complexity above 10. Cyclomatic complexity counts the
+  number of linearly independent paths through a function; above 10 the function is
+  statistically harder to test completely and harder to understand in isolation. This gate
+  uses eslint complexity rule at threshold 10. Note that higher complexity in well-specified
+  systems is not always degradation: v4/v5 Ax conditions showed higher complexity than the
+  naive condition because they implemented fuller error handling. The gate catches genuine
+  spaghetti, not intentional coverage. Functions exceeding the threshold must be decomposed
+  into named sub-functions with single responsibilities.
+property: Bounded
+tags: [javascript, typescript, node, any]
+phase: development
+trigger: commit
+blocking: true
+check:
+  type: lint
+  command: "npx eslint --rule '{\"complexity\": [\"error\", 10]}' 'src/**/*.{ts,js}'"
