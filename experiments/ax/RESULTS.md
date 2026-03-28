@@ -546,3 +546,25 @@ Treatment-v2 failure mode: 8/9 suites fail with TypeScript missing-module errors
 **The audit score progression is monotonic: 5 → 8 → 9 → 12.** Each structural addition moves the score in the predicted direction. Treatment-v2 confirms that "Emit, Don't Reference" applied to commit hooks and CI pipeline is sufficient to achieve 2/2 on the Defended property — a property that scored 0/2 in all three prior conditions.
 
 **Open question for v3:** Can the same "Emit, Don't Reference" principle applied to test helpers and error classes close the coverage gap? If treatment-v2 explicitly lists `tests/helpers/testDb.ts`, `src/errors/NotFoundError.ts` etc. in its First Response Requirements, would the 1/9 suite pass rate improve?
+
+---
+
+## §15 Treatment-v3 through v7 Progression
+
+| Condition | GS Score | Jest | Hurl | tsc | Key addition |
+|---|---|---|---|---|---|
+| Naive | 5/12 | 0 pass | — | ❌ | — |
+| Control | 8/12 | 52/186 | — | ✅ | — |
+| Treatment (v1) | 9/12 | 33/33 | — | ✅ | Composable |
+| Treatment-v2 | 12/12 | 2/2 | — | ✅ | Defended, Auditable |
+| Treatment-v3 | 12/14 | pass | — | ✅ | Rubric expanded to 14 pts |
+| Treatment-v4 | 12/14 | pass | — | ✅ | External ESLint gate |
+| Treatment-v5 | 13/14 | pass | — | ✅ | Full Conduit suite |
+| Treatment-v6 | 13/14 | pass | 6/13 | ✅ | RX Conduit 104 tests |
+| **Treatment-v7** | **13/14** | **146/146** | **13/13** | **✅** | Resource-scoped errors, nullable coercion, ESM imports |
+
+**The Hurl progression is the primary v7 finding:** 6/13 → 13/13. Two spec gaps discovered by an external contract test suite (RC1: bio null coercion; RC2: error envelope scoping) were codified as quality gates in the v7 spec. The model implemented both correctly from the spec alone, with 2 minor fix passes (credentials HTTP status, no architectural issues).
+
+**GS score plateau at 13/14:** Defended 1/2 is a structural measurement gap — the CI pipeline is emitted and present but cannot be validated end-to-end in the local experiment environment. This is consistent across v5, v6, and v7. It is not a regression.
+
+**Convergence mechanism confirmed:** External tool (Hurl, no GS knowledge) finds spec gap → gap encoded as explicit gate → next generation closes it. This is the flywheel described in §7.7 of the white paper operating in practice.
