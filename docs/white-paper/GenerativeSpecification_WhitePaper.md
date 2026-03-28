@@ -1,6 +1,6 @@
 # Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader
 
-**Author:** Juan Carlos Ghiringhelli (Independent)  
+**Author:** Juan Carlos Ghiringhelli (Pragmaworks)  
 **Version:** 1.2  
 **Date:** March 2026  
 **Status:** Preprint  
