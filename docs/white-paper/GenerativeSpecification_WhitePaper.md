@@ -1,15 +1,17 @@
 # Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader
 
 **Author:** Juan Carlos Ghiringhelli (Independent)  
-**Version:** 1.1  
+**Version:** 1.2  
 **Date:** March 2026  
 **Status:** Preprint  
-## Changes from v1.0
-- External validation gates added (Hurl, SonarJS, SonarQube)
-- BX cross-validation experiment added (three RealWorld implementations)
-- Related work expanded with contemporary empirical grounding
-- Glossary formalized; all neologisms mapped to established equivalents
-- Three-layer validation strategy made explicit
+## Changes from v1.1
+- CX patchability experiment added (5-task SWE-bench-style, v7 vs control)
+- Pedagogical structure grounded (Vygotsky, Collins-Brown-Newman, Dreyfus)
+- Prior paradigm and anomalies section expanded with three-beat argument
+- Nine citations added (Liu 2023, Parnas 1972, Jackson 2001, Sweller 1988, Lehman 1980, Nygard 2011, Martin 2002, Jia & Harman 2011, Meyer & Schvaneveldt 1971)
+- All neologisms mapped to established equivalents; Specification Completeness Law reframed as falsifiable hypothesis
+- Chomsky apparatus reduced; paradigm claim framing unified across abstract, §4, and conclusion
+- Three-tier anchor sentence surfaced to §1
 - Full changelog available at: https://github.com/jghiringhelli/generative-specification
 
 **Contact:** juan@pragmaworks.dev · [linkedin.com/in/jghiringhelli](https://linkedin.com/in/jghiringhelli) · [github.com/jghiringhelli](https://github.com/jghiringhelli)
