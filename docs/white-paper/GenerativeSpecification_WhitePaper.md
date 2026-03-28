@@ -139,7 +139,21 @@ The history of software abstraction is a history of adopted black boxes. Librari
 
 **The Convergent Principle.** The grammar mechanism described above is not unique to software or to large language models. It is specific to the relationship between three elements: a declared specification of desired state, an executor capable of producing outputs from it, and an observation mechanism capable of measuring the gap between actual output and specified intent and triggering correction. Any system where all three elements are present operates under the same discipline: *the correctness of the outcome is a function of the completeness of the specification.* GS is software engineering's first formal instance of this principle applied to the lifecycle layer; its empirical record is in §7, its implications in §8, and its convergent form across other executor domains in §10.
 
-#### 4.1.c A Concrete Illustration: The Art Generation Pipeline
+#### 4.1.c The Pedagogical Structure
+
+GS does not instruct by exhaustion. The specification tells the system what to build and why, at the level of intent and constraint, not at the level of procedure. This is not an economy of effort. It is the correct structure for knowledge transmission.
+
+Vygotsky (1978) establishes that learning advances fastest when the learner receives enough scaffolding to operate at the edge of current capability, not so much scaffolding that the reasoning is done for them. A specification that prescribes every implementation move removes the generation capacity that makes the AI useful. The spec orients. The model derives. That division is not a limitation of the approach; it is the mechanism.
+
+As execution proceeds, correction arrives by exclusion. Quality gates do not say what to do instead. They name what is not acceptable and send the output back. This is how mastery is transmitted in every apprenticeship tradition: the senior practitioner does not rewrite the junior's work; they name the failure mode and return it. Collins, Brown, and Newman (1989) formalize this as cognitive apprenticeship — the expert makes tacit knowledge visible through targeted correction rather than direct instruction. Each gate in GS is a named failure mode. The gate does not explain the right answer. It marks the boundary the output must not cross.
+
+The community convergence mechanism operates at the same structure, scaled. As practitioners contribute gates derived from failures in their own projects, those failure modes propagate to every project that adopts the shared template. The floor rises. The Dreyfus model of skill acquisition (Dreyfus and Dreyfus, 1986) describes how experts operate by pattern recognition rather than rule application — they have internalized enough failure modes that the rules become invisible. Community-contributed gates are the mechanism by which that internalized knowledge becomes structural. Each generation of practitioners stops making the mistakes the previous generation encoded.
+
+The three-stage sequence is therefore not arbitrary. Specification first, because orientation before correction is the correct order for any learner. Gates second, because correction by exclusion is more efficient than correction by prescription once the learner is executing. Convergence third, because institutional knowledge compounds only after enough practitioners have encountered enough failure modes to encode them.
+
+This structure also explains why the validation strategy follows the same shape. The AX experiment is the solo layer: the practitioner learns by doing alone. The BX and RX experiments are the peer layer: calibration against independent work not shaped by the same assumptions. The DX study is the professional layer: expert evaluation against criteria defined before the work was seen. The same pedagogical sequence that explains how GS instructs the AI also explains how GS itself is validated.
+
+#### 4.1.d A Concrete Illustration: The Art Generation Pipeline
 
 A strategy game concept is given to the system as a narrative idea. The precision of that idea is the ceiling of everything that follows: the AI will derive a specification from whatever is stated, and whatever is not stated will be filled with its own defaults, coherent by its standards, arbitrary by the designer's. A vague idea produces a generic game. A precise one, factions with named ideological conflicts, unit archetypes tied to faction doctrine, a color palette grounded in environmental lore, produces a specification the AI can execute with fidelity. The specification layer activates immediately, not prompting in the conversational sense but specifying in the GS sense: the AI derives from the idea a complete creative document covering factions, units, lore, inter-faction relationships, color palettes, and visual identity rules. That document is itself a specification. The infrastructure tier follows entirely from it: the AI identifies the toolchain required (a GPU-accelerated image generation backend, LoRA models matching the established visual language), installs and configures the tools, downloads the models, and validates the setup against acceptance criteria without human direction at any step. The art generation tier then operates under quality constraints stated as specification: viewing angle, bilateral symmetry, background isolation, LoRA weighting for each faction's color schema. The AI identifies candidate post-processing libraries, evaluates them against those constraints, and selects without human involvement. Pixel art conversion, sprite sheet layout, animation frame generation, faction logo derivation, background environments, explosion and effect sequences, character portraits for dialogue and rendezvous scenes, and UI frame art follow as sequential derivations, each step's output fully determined by the specification produced at the previous step, with the list bounded only by what the specification names.
 
@@ -1626,10 +1640,12 @@ The year 1957 produced two pressuresthat would not fully meet for sixty years: a
 - Brooks, F.P. (1987). No Silver Bullet: Essence and Accidents of Software Engineering. *Computer, 20*(4), 10–19.
 - Brown, S. (2018). *The C4 Model for Software Architecture.* leanpub.com.
 - Chomsky, N. (1957). *Syntactic Structures.* Mouton.
+- Collins, A., Brown, J. S., & Newman, S. E. (1989). Cognitive apprenticeship: Teaching the crafts of reading, writing, and mathematics. In L. B. Resnick (Ed.), *Knowing, learning, and instruction: Essays in honor of Robert Glaser* (pp. 453–494). Lawrence Erlbaum Associates.
 - Conway, M. (1968). How Do Committees Invent? *Datamation, 14*(4), 28–31.
-- De Silva, L., & Balasubramaniam, D. (2012). Controlling software architecture erosion: A survey. *Journal of Systems and Software, 85*(1), 132–151.
+- De Silva, L., & Balasubramaniam, D. (2012).Controlling software architecture erosion: A survey. *Journal of Systems and Software, 85*(1), 132–151.
 - Dijkstra, E.W. (1968). Go To Statement Considered Harmful. *Communications of the ACM, 11*(3), 147–148.
-- Evans, E. (2003). *Domain-Driven Design: Tackling Complexity in the Heart of Software.* Addison-Wesley.
+- Dreyfus, H. L., & Dreyfus, S. E. (1986). *Mind over machine: The power of human intuition and expertise in the era of the computer.* Free Press.
+- Evans, E. (2003).*Domain-Driven Design: Tackling Complexity in the Heart of Software.* Addison-Wesley.
 - Fillmore, C.J. (1982). Frame semantics. In *Linguistics in the Morning Calm* (pp. 111–137). Hanshin Publishing.
 - Firth, J.R. (1957). A Synopsis of Linguistic Theory, 1930–1955. *Studies in Linguistic Analysis.*
 - Forsgren, N., Humble, J., & Kim, G. (2018). *Accelerate: The Science of Lean Software and DevOps.* IT Revolution Press.
@@ -1664,7 +1680,8 @@ The year 1957 produced two pressuresthat would not fully meet for sixty years: a
 - van Eemeren, F.H., & Grootendorst, R. (2004). *A Systematic Theory of Argumentation: The Pragma-Dialectical Approach.* Cambridge University Press.
 - Vaswani, A. et al. (2017). Attention Is All You Need. *NeurIPS 2017.*
 - von Wright, G.H. (1951). Deontic Logic. *Mind, 60*(237), 1–15.
-- Chen, M., Tworek, J., Jun, H., Yuan, Q., de Oliveira Pinto, H.P., Kaplan, J., Edwards, H., Burda, Y., Joseph, N., Brockman, G., Ray, A., Puri, R., Krueger, G., Petrov, M., Khlaaf, H., Sastry, G., Mishkin, P., Chan, B., Gray, S., … Zaremba, W. (2021). Evaluating Large Language Models Trained on Code. arXiv:2107.03374.
+- Vygotsky, L. S. (1978). *Mind in society: The development of higher psychological processes.* Harvard University Press.
+- Chen, M.,Tworek, J., Jun, H., Yuan, Q., de Oliveira Pinto, H.P., Kaplan, J., Edwards, H., Burda, Y., Joseph, N., Brockman, G., Ray, A., Puri, R., Krueger, G., Petrov, M., Khlaaf, H., Sastry, G., Mishkin, P., Chan, B., Gray, S., … Zaremba, W. (2021). Evaluating Large Language Models Trained on Code. arXiv:2107.03374.
 - ISO/IEC 25010:2011. *Systems and Software Engineering, Systems and Software Quality Requirements and Evaluation (SQuaRE), System and Software Quality Models.* International Organization for Standardization.
 - Jimenez, C.E., Yang, J., Wettig, A., Yao, S., Pei, K., Press, O., & Narasimhan, K. (2024). SWE-bench: Can Language Models Resolve Real-World GitHub Issues? *International Conference on Learning Representations (ICLR 2024).* https://arxiv.org/abs/2310.06770
 - Peng, S., Kalliamvakou, E., Cihon, P., & Demirer, M. (2023). The Impact of AI on Developer Productivity: Evidence from GitHub Copilot. arXiv:2302.06590.
