@@ -4,7 +4,7 @@
  *
  * Usage: node score-fork.js <fork-url-or-path> <task> [--json]
  *
- * task: "base" | "kanban"
+ * task: "vaquita" | "taskflow"
  *
  * Accepts a GitHub URL or a local file:// path (for pilot runs).
  * Clones or copies the repo, installs dependencies, runs automated
@@ -20,22 +20,22 @@ const path = require('path');
 const os = require('os');
 
 const FORK_URL = process.argv[2];
-const TASK = process.argv[3];  // "base" | "kanban"
+const TASK = process.argv[3];  // "vaquita" | "taskflow"
 const JSON_OUTPUT = process.argv.includes('--json');
 
 /** New feature route added by participant — only this file is checked for Bounded */
 const FEATURE_ROUTE = {
-  base: 'src/routes/digest.ts',
-  kanban: 'src/routes/activity.ts',
+  vaquita: 'src/routes/digest.ts',
+  taskflow: 'src/routes/activity.ts',
 };
 
 /** Minimum coverage % on the new feature file to pass Verifiable */
 const COVERAGE_THRESHOLD = 60;
 
-const PORT = TASK === 'base' ? 3000 : 3001;
+const PORT = TASK === 'vaquita' ? 3000 : 3001;
 
 if (!FORK_URL || !TASK || !FEATURE_ROUTE[TASK]) {
-  console.error('Usage: node score-fork.js <fork-url-or-path> <task: base|kanban> [--json]');
+  console.error('Usage: node score-fork.js <fork-url-or-path> <task: vaquita|taskflow> [--json]');
   process.exit(2);
 }
 
@@ -285,14 +285,14 @@ try {
     if (!process.env.SCORE_WITH_SERVER) {
       return 'SKIPPED (set SCORE_WITH_SERVER=1 with server running + TEST_TOKEN)';
     }
-    const endpoint = TASK === 'base' ? 'digest' : 'activity';
+    const endpoint = TASK === 'vaquita' ? 'digest' : 'activity';
     const out = run(
       `curl -sf http://localhost:${PORT}/${endpoint} -H "Authorization: Bearer ${process.env.TEST_TOKEN}"`,
       repoDir,
       true
     );
     const json = JSON.parse(out);
-    if (TASK === 'base') {
+    if (TASK === 'vaquita') {
       if (!json.generatedAt || !Array.isArray(json.bookmarks)) {
         throw new Error('Wrong shape: expected { generatedAt, bookmarks[] }');
       }

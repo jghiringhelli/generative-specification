@@ -2,10 +2,26 @@
 
 ## Pre-Session Checklist (day before)
 - [ ] Fork collection form ready (Google Form or similar)
-- [ ] Both workshop repos confirmed public: gs-workshop-base, gs-workshop-kanban
-- [ ] Score script tested: `node score-fork.js <test-fork-url> base`
+- [ ] Both workshop repos confirmed public: gs-workshop-vaquita, gs-workshop-taskflow
+- [ ] Score script tested: `node score-fork.js <test-fork-url> vaquita`
 - [ ] Group A/B assignment list prepared (random, ~35 each)
 - [ ] START-*.md files distributed to participants by group
+
+## Workshop Repos
+
+**Greenfield (vaquita):** `https://github.com/jghiringhelli/gs-workshop-vaquita`
+- Audience: Individual developers, Mexican dev community
+- Task: Build a Tanda/Vaquita rotating savings group REST API from spec
+- Group A: Free prompting (START-VAQUITA-A.md)
+- Group B: ForgeCraft GS workflow (START-VAQUITA-B.md)
+
+**Brownfield (taskflow):** `https://github.com/jghiringhelli/gs-workshop-taskflow`
+- Audience: Teams, any audience
+- Task: Add Activity Feed to a deliberately flawed Kanban API; fix atomic status transitions
+- Group A: Structured prompt cards (START-TASKFLOW-A.md)
+- Group B: ForgeCraft GS workflow (START-TASKFLOW-B.md)
+
+Canonical participant instructions live in `C:\workspace\jc-dx-experiment\`.
 
 ## Session Day
 - Group A gets: START-TASKFLOW-A.md (or START-VAQUITA-A.md for greenfield)
@@ -16,12 +32,12 @@
 ## Post-Session Scoring (bulk)
 Run against all collected fork URLs:
 ```bash
-node score-fork.js https://github.com/participant/gs-workshop-base base >> results-base.jsonl
-node score-fork.js https://github.com/participant/gs-workshop-kanban kanban >> results-kanban.jsonl
+node score-fork.js https://github.com/participant/gs-workshop-vaquita vaquita >> results-vaquita.jsonl
+node score-fork.js https://github.com/participant/gs-workshop-taskflow taskflow >> results-taskflow.jsonl
 ```
 Then aggregate:
 ```bash
-node aggregate-results.js results-base.jsonl results-kanban.jsonl
+node aggregate-results.js results-vaquita.jsonl results-taskflow.jsonl
 ```
 
 ## Contingency
