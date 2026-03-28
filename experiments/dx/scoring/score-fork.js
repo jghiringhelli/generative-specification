@@ -94,6 +94,37 @@ function removeDir(dirPath) {
   }
 }
 
+/**
+ * Test whether a file's content matches a regex pattern.
+ * Cross-platform replacement for grep.
+ * @param {string} filePath
+ * @param {RegExp} pattern
+ * @returns {boolean}
+ */
+function scanFileForPattern(filePath, pattern) {
+  try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    return pattern.test(content);
+  } catch { return false; }
+}
+
+/**
+ * Return .ts/.js files added or changed relative to baseBranch.
+ * Uses `git diff --name-only` — avoids scanning the whole repo.
+ * @param {string} repoDir
+ * @param {string} baseBranch
+ * @returns {string[]} relative file paths
+ */
+function getNewFiles(repoDir, baseBranch = 'main') {
+  try {
+    const output = execSync(
+      `git -C "${repoDir}" diff --name-only ${baseBranch}...HEAD`,
+      { encoding: 'utf8' }
+    );
+    return output.trim().split('\n').filter(f => f && (f.endsWith('.ts') || f.endsWith('.js')));
+  } catch { return []; }
+}
+
 const isLocalPath = FORK_URL.startsWith('file://') || fs.existsSync(FORK_URL);
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dx-score-'));
 console.error(`Scoring ${FORK_URL} into ${tmpDir}...`);
@@ -135,20 +166,33 @@ try {
       throw new Error(`${failMatch[1]} test(s) failing`);
     }
 
-    // Parse coverage on the feature file if available
-    const featureFile = path.basename(FEATURE_ROUTE[TASK], '.ts');
-    const coverageMatch = out.match(new RegExp(`${featureFile}[^|]*\\|\\s*(\\d+(?:\\.\\d+)?)`));
-    const featureCoverage = coverageMatch ? parseFloat(coverageMatch[1]) : null;
+    // Parse coverage on NEW files only (FIX 4). If data is unavailable, skip — do not penalize.
+    const newFiles = getNewFiles(repoDir);
+    let coverageNote = ' | coverage: unknown';
+    let coverageFailed = false;
 
-    if (featureCoverage !== null && featureCoverage < COVERAGE_THRESHOLD) {
-      throw new Error(
-        `Feature file coverage ${featureCoverage}% is below ${COVERAGE_THRESHOLD}% threshold`
-      );
+    if (newFiles.length > 0) {
+      const lowCoverageFiles = [];
+      for (const f of newFiles) {
+        const fileBase = path.basename(f, path.extname(f));
+        const coverageMatch = out.match(new RegExp(`${fileBase}[^|]*\\|\\s*(\\d+(?:\\.\\d+)?)`));
+        if (coverageMatch) {
+          const pct = parseFloat(coverageMatch[1]);
+          if (pct < COVERAGE_THRESHOLD) {
+            lowCoverageFiles.push(`${fileBase}: ${pct}%`);
+            coverageFailed = true;
+          }
+        }
+      }
+      coverageNote = lowCoverageFiles.length > 0
+        ? ` | coverage below ${COVERAGE_THRESHOLD}%: ${lowCoverageFiles.join(', ')}`
+        : ' | coverage: OK';
     }
 
-    const coverageNote = featureCoverage !== null
-      ? ` | ${featureFile} coverage: ${featureCoverage}%`
-      : ' | coverage: N/A';
+    if (coverageFailed) {
+      throw new Error(`Coverage below ${COVERAGE_THRESHOLD}% on new file(s):${coverageNote}`);
+    }
+
     return `${testCount} test(s) passing${coverageNote}`;
   });
   const testPoints = testResult.passed ? 2 : 0;
@@ -156,20 +200,25 @@ try {
   totalPoints += testPoints;
 
   // ---------------------------------------------------------------------------
-  // Check 2: No prisma in new feature route (Bounded — 2pts)
-  // Fix: was checking ALL routes — penalised GS for scaffold routes it didn't write.
-  // Now checks only the new feature file the participant added.
+  // Check 2: No direct Prisma calls in new/changed files (Bounded — 2pts)
+  // FIX 1: Original used grep -rn 'prisma\.' which is unavailable on Windows.
+  // Now scans only new/changed files via git diff --name-only, using Node fs.
   // ---------------------------------------------------------------------------
   const boundedResult = check('no-prisma-in-feature-route', () => {
     const featureFilePath = path.join(repoDir, FEATURE_ROUTE[TASK]);
     if (!fs.existsSync(featureFilePath)) {
       throw new Error(`Feature route not found: ${FEATURE_ROUTE[TASK]}`);
     }
-    const count = countPrismaCallsInFile(featureFilePath);
-    if (count > 0) {
-      throw new Error(`${count} direct Prisma call(s) in ${FEATURE_ROUTE[TASK]}`);
+    const newFiles = getNewFiles(repoDir);
+    const violations = newFiles
+      .map(f => ({ file: f, count: countPrismaCallsInFile(path.join(repoDir, f)) }))
+      .filter(v => v.count > 0);
+
+    if (violations.length > 0) {
+      const summary = violations.map(v => `${v.file} (${v.count})`).join(', ');
+      throw new Error(`Direct Prisma call(s) found in new files: ${summary}`);
     }
-    return `Clean (0 Prisma calls in ${path.basename(FEATURE_ROUTE[TASK])})`;
+    return `Clean (0 Prisma calls in ${newFiles.length} new file(s))`;
   });
   const boundedPoints = boundedResult.passed ? 2 : 0;
   results.push({ ...boundedResult, property: 'Bounded', points: boundedPoints });
@@ -225,7 +274,12 @@ try {
 
   // ---------------------------------------------------------------------------
   // Check 6: Feature endpoint returns correct shape (Composable — 3pts)
-  // Requires: SCORE_WITH_SERVER=1 and TEST_TOKEN env var, server running on PORT
+  //
+  // Composable check requires:
+  //   SCORE_WITH_SERVER=1 env var to enable
+  //   TEST_TOKEN env var with a valid JWT for the cloned repo
+  //   A running test database (or the script starts one)
+  // If SCORE_WITH_SERVER is not set, this check is skipped and logged as "manual required"
   // ---------------------------------------------------------------------------
   const featureResult = check('feature-endpoint-shape', () => {
     if (!process.env.SCORE_WITH_SERVER) {
