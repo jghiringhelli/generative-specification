@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR-0002 — Authentication Strategy
 
 **Status**: Accepted  

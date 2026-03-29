@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Prompt 1 — Setup & Authentication
 
 Set up the project and implement user authentication.

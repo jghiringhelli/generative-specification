@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the tags endpoint to return all unique tags from articles.
 
 ## Service Layer

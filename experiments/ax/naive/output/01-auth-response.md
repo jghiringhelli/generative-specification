@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I notice I don't have access to basic file creation tools in this environment - only the ForgeCraft MCP tools are available. To build this project, I have two options:
 
 **Option 1:** Use ForgeCraft's `scaffold_project` to generate the full project structure with proper architecture, then I'll implement the authentication logic.

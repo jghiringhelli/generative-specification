@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Changelog
 
 All notable changes to the Conduit RealWorld API will be documented in this file.

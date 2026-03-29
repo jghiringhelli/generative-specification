@@ -2,45 +2,45 @@
 layout: default
 title: Experiments
 nav_order: 2
-has_children: false
-description: "GS methodology experiments — adversarial, replication, and human practitioner studies"
+has_children: true
+description: "GS methodology experiments — adversarial, benchmark, patchability, replication, and human practitioner studies"
 ---
 
 # Experiments
 
-Three studies establish the quality gradient produced by GS methodology under controlled and field conditions.
+Five studies establish the validity and generalizability of the GS methodology.
 
-| Experiment | Description | Status |
+| Experiment | What It Tests | Status |
 |---|---|---|
-| [**AX — Adversarial**](ax/) | Seven prompting conditions from naive to ForgeCraft treatment v5. RealWorld Conduit API benchmark. Establishes quality as a function of specification completeness. | Complete |
-| [**RX — Replication**](rx/) | Any reader can independently reproduce 104 passing tests against a live PostgreSQL instance using only the committed GS document and Docker. | Complete |
-| [**DX — Human Practitioner**](dx/) | 40 developers. Group A: prompt-driven. Group B: GS + ForgeCraft. Dual rubric evaluation. | April 2026 |
+| [**AX — Adversarial**](ax/) | Quality as a function of specification completeness. Eight conditions, naive through ForgeCraft treatment v7. RealWorld Conduit benchmark. | ✅ Complete |
+| [**BX — Benchmark**](bx/) | Rubric validity. Three Conduit implementations scored blind against the GS rubric — two never exposed to GS. Establishes the rubric captures real quality. | ✅ Complete |
+| [**CX — Patchability**](cx/) | GS-specified codebases are more patchable. SWE-bench-style patch tasks on two quality tiers characterized by BX. | ✅ Complete |
+| [**RX — Replication**](rx/) | Any reader can reproduce 104 passing tests against a live PostgreSQL instance from a GS document alone. No ForgeCraft required. | ✅ Complete |
+| [**DX — Human Practitioner**](dx/) | 40 developers, two conditions. Tests between-practitioner replication across engineers of varying GS skill. Crossover design. | 🗓 April 2026 |
+
+---
+
+## Validation Structure
+
+The five experiments address a three-layer validity problem:
+
+| Layer | Threat | Closed By |
+|---|---|---|
+| **Output measurement** | External checks use criteria the author defined | BX: rubric applied to non-GS implementations |
+| **Rubric validity** | Rubric rewards GS compliance, not objective quality | BX + CX: congruent with CVE count, test count, patchability |
+| **Guidance circularity** | GS guided the implementation AND scored it | DX: blind evaluator, 40 external practitioners |
+
+Layers 1 and 2 are closed. Layer 3 closes April 2026.
 
 ---
 
 ## Pre-Registration Policy
 
-AX and DX rubrics, hypotheses, and evaluation criteria were committed to this repository before any experimental run. Commit timestamps are cryptographically signed by GitHub. This prevents post-hoc rubric adjustment — a standard confound in AI evaluation studies.
+AX and DX rubrics, hypotheses, and evaluation criteria were committed to this repository before any experimental run. Commit timestamps are cryptographically signed by GitHub. This prevents post-hoc rubric adjustment.
 
 ---
 
-## AX Summary
-
-The adversarial experiment varied specification completeness across seven conditions:
-
-| Condition | Description |
-|---|---|
-| Naive | Free-form prompting, no methodology |
-| Control | Expert prompt engineering, no GS document |
-| Treatment v1–v5 | Progressive GS document completeness under ForgeCraft |
-
-Key finding: quality score is a monotonic function of specification completeness. The gap between expert prompt engineering (control) and ForgeCraft treatment v5 was statistically significant on the RealWorld Conduit rubric.
-
-Full evidence: [`experiments/ax/`](ax/)
-
----
-
-## RX: Reproduce It Yourself
+## Reproduce RX Yourself
 
 ```bash
 git clone https://github.com/jghiringhelli/generative-specification
@@ -49,13 +49,3 @@ docker compose up -d postgres
 ./runner/run.sh
 cat evidence/jest-output.json   # numFailedTests === 0
 ```
-
-The GS document (`experiments/rx/spec/conduit-gs.md`) is the reproducible artifact. ForgeCraft produced it, but you do not need ForgeCraft to run this experiment.
-
----
-
-## DX: What to Expect
-
-40 developers split into two groups. Both groups implement the same feature from the same requirements document. Group B receives the GS methodology and ForgeCraft tooling. Evaluation uses the same dual rubric as AX.
-
-If you are a developer interested in participating, contact [jcghiri@gmail.com](mailto:jcghiri@gmail.com).

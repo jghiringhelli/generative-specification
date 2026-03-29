@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll perform a comprehensive integration check and produce a summary. Let me create verification scripts and audit the codebase.
 
 ## Verification Script

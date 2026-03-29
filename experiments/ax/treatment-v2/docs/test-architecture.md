@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Test Architecture — Conduit API
 
 ## Philosophy

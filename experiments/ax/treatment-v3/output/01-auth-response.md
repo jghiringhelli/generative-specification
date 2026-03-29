@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll begin by emitting the **P1 infrastructure files** (required before any feature implementation), then implement the authentication endpoints.
 
 ---

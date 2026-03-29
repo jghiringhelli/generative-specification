@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 You are implementing a project from a Generative Specification document. Read the entire spec below before writing any code.
 
 Your task for this session (P1 — Infrastructure) is to emit every file in §12 of the spec. Nothing else. Do not implement any routes, services, or business logic yet. The P1 gate is: all files in §12 exist, `tsc --noEmit` exits 0, and the app starts and connects to the database.

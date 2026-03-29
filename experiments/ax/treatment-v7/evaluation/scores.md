@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Treatment-v7 Evaluation Scores
 
 ## Run metadata

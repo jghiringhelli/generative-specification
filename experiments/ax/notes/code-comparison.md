@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Code Quality Comparison
 
 *Side-by-side analysis of generated code across conditions.*

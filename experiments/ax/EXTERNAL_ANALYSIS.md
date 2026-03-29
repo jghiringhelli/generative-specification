@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # AX Experiment — External Static Analysis
 
 **Generated:** 2026-03-23 10:43 UTC (v1–v5); updated 2026-03-23 19:30 UTC (v6 added)  

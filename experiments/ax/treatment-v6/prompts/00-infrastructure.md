@@ -1,4 +1,8 @@
-﻿
+---
+nav_exclude: true
+---
+
+
 # Prompt 0 — Project Infrastructure
 
 This is the **infrastructure pass**. Emit infrastructure files only.

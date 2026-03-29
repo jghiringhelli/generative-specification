@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Adversarial Audit Scores — treatment-v3
 
 *Generated: 2026-03-15T00:38:47.194Z*

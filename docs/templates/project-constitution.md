@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CLAUDE.md — [Project Name] Architectural Constitution
 #
 # TIER: Project root

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I've designed the complete comments implementation following the layered architecture. Since I can't write files directly, here's the full implementation you can create:
 
 ## **1. Domain Layer** — `src/domain/comment.ts`

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Status — Conduit API (Treatment-v3 Condition)
 
 **Project:** RealWorld (Conduit) Backend API

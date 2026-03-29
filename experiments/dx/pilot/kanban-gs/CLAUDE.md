@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Kanban API — Architectural Constitution
 
 ## Project

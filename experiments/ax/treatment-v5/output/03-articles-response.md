@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the article endpoints following the layered architecture and all requirements.
 
 ```typescript

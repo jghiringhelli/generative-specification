@@ -1,4 +1,8 @@
-﻿# CLAUDE.md
+---
+nav_exclude: true
+---
+
+# CLAUDE.md
 
 <!-- Conduit RealWorld API — GS Treatment-v6 Condition -->
 <!-- Extends treatment-v5: activates CodeSeeker MCP v2.0.0, adds §8 DRY gate + §9 interface completeness to Verification Protocol, emits ESLint config in P0 -->

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll perform a comprehensive integration and hardening pass, checking all code, fixing issues, and providing a detailed summary.
 
 ## Issue 1: Repository Interface Mismatches

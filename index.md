@@ -19,7 +19,7 @@ Community home for the Generative Specification methodology — the first progra
 
 | Section | Contents |
 |---|---|
-| [Experiments](experiments/) | AX (complete) · RX (complete) · DX (April 2026) |
+| [Experiments](experiments/) | AX · BX · CX · RX (all complete) · DX (April 2026) |
 | [Quality Gates](quality-gates/) | 32-gate community library · contribute via PR |
 | [Workflow Recipes](docs/recipes/) | Step-by-step guides for all 8 practitioner scenarios |
 | [Domain Guides](domains/) | FINTECH · ML · GAME · Creative · CLI |
@@ -31,9 +31,11 @@ Community home for the Generative Specification methodology — the first progra
 
 | Experiment | Description | Status |
 |---|---|---|
-| [**AX**](experiments/ax/) | Multi-agent adversarial study. Naive to expert prompting to ForgeCraft treatment v1–v5. Seven conditions. RealWorld Conduit API benchmark. | Complete |
-| [**RX**](experiments/rx/) | Replication experiment. Any developer with Docker and an Anthropic API key can reproduce 104 passing tests against a live PostgreSQL instance. | Complete |
-| [**DX**](experiments/dx/) | Human practitioner study. 40 developers. Group A: prompt-driven. Group B: GS + ForgeCraft. Dual rubric. | April 2026 |
+| [**AX**](experiments/ax/) | Multi-agent adversarial study. Naive to ForgeCraft treatment v7. Eight conditions. RealWorld Conduit API benchmark. Quality is a monotonic function of specification completeness. | ✅ Complete |
+| [**BX**](experiments/bx/) | Benchmark cross-validation. Three Conduit implementations scored blind. Rubric ranking congruent with CVE count, test count, and TypeScript health. | ✅ Complete |
+| [**CX**](experiments/cx/) | Patchability study. SWE-bench-style patch tasks on two quality tiers. GS-specified codebase resolves 5/5 tasks; reference implementation resolves 1/5. | ✅ Complete |
+| [**RX**](experiments/rx/) | Replication experiment. Any developer with Docker and an Anthropic API key can reproduce 104 passing tests against a live PostgreSQL instance. | ✅ Complete |
+| [**DX**](experiments/dx/) | Human practitioner study. 40 developers. Group A: prompt-driven. Group B: GS + ForgeCraft. Dual rubric. Crossover design. | 🗓 April 2026 |
 
 ---
 
@@ -145,4 +147,4 @@ Ghiringhelli, J. C. (2026). Generative Specification: A Pragmatic Programming Pa
 for the Stateless Reader (1.0). Zenodo. https://doi.org/10.5281/zenodo.19073543
 ```
 
-Contact: [jcghiri@gmail.com](mailto:jcghiri@gmail.com) · [LinkedIn](https://linkedin.com/in/jghiringhelli) · [genspec.dev](https://genspec.dev) · [Ambient Engineer](https://ambientengineer.substack.com)
+Contact: [juan@pragmaworks.dev](mailto:juan@pragmaworks.dev) · [LinkedIn](https://linkedin.com/in/jghiringhelli) · [genspec.dev](https://genspec.dev) · [Ambient Engineer](https://ambientengineer.substack.com)

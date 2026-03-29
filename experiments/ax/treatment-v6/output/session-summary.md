@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Session Summary — AX Treatment-v6 Experiment
 
 **Condition**: treatment-v6 (GS v6 specification — adds §8 DRY gate, §9 interface completeness gate, ESLint in P0)  

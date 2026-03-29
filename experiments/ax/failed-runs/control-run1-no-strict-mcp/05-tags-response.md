@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I don't have access to file reading/writing tools in the current session. The only tools available to me are ForgeCraft MCP tools for project scaffolding and management.
 
 To implement the tags functionality, I would need tools to:

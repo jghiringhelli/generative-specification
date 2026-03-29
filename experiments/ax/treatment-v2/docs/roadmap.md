@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Roadmap — Conduit API (Treatment Condition)
 
 Each milestone corresponds to one implementation prompt. Run `npx forgecraft-mcp verify .` after each.

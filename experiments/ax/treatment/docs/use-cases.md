@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Use Cases — Conduit API
 
 ## UC-01: Register User

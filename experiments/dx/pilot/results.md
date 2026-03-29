@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # DX Experiment — Self-Administered Pilot Results
 
 **Run date:** 2026-03-17  

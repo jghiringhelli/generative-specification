@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll provide the complete code implementation for authentication and profiles. Since I don't have file creation tools enabled, I'll give you all the files to create:
 
 ## Project Structure

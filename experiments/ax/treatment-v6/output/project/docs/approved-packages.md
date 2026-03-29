@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Approved Package Registry
 
 This registry documents every dependency added to the project. Each entry must be completed before the dependency is committed to `package.json`. Zero HIGH/CRITICAL CVEs are permitted without a corresponding ADR security exception.

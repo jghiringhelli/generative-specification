@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the tags endpoint. The tag persistence and filtering were already implemented in Prompt 3, so I just need to add the GET endpoint.
 
 ## Repository Layer

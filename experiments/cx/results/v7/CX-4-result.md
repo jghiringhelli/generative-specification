@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX-4 Result — v7
 
 **Verdict:** PASS

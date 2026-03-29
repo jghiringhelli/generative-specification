@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR 001: Digest Feature Uses Service Layer
 
 **Date:** 2026-03-17

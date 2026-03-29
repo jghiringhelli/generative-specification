@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the comment endpoints following the layered architecture.
 
 ```typescript

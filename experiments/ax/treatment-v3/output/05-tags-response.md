@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the tags endpoint with a minimal repository and service layer.
 
 ---

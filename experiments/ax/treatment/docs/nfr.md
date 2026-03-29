@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Non-Functional Requirements — Conduit API
 # Source: ForgeCraft get_nfr [UNIVERSAL] [API]
 

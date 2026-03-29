@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR-002: JWT Authentication Strategy
 
 **Date:** 2026-03-11

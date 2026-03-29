@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CLAUDE.md — Workspace Engineering Standards
 #
 # TIER: Workspace root

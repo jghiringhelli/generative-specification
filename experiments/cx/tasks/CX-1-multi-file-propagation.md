@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX-1: Multi-file propagation
 
 **SWE-bench class:** Multi-file propagation

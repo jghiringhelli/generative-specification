@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 ## Option 2: Manual Setup (Complete Code Below)
 
 I'll provide all files as code blocks. Create these files in your project directory:

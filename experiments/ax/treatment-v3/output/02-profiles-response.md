@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the profile endpoints with service layer, repository implementation, routes, and comprehensive tests.
 
 ---

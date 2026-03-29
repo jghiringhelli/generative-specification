@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Conduit RealWorld API - Treatment-v3 (Dependency Registry)
 
 Backend implementation of the [RealWorld](https://realworld-docs.netlify.app/) API specification.

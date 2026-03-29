@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR-0001 — Stack Selection
 
 **Status**: Accepted  

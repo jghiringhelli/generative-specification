@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Treatment Condition — Full GS Artifact Cascade
 
 ## Problem Statement

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll fix the JWT type error and the test setup issue.
 
 ```typescript

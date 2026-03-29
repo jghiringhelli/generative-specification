@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Prompt 1 — Project Setup & Authentication
 
 Set up the project skeleton first, then implement user authentication.

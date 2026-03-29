@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR-001: Technology Stack Selection
 
 **Date:** 2026-03-11  

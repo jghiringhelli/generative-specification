@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 
 # Treatment-v3 Verification Report
 **Date**: 2026-03-13  

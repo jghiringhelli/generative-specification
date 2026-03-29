@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR-0001: Technology Stack — TypeScript 5 + Node 20 + Express 4 + Prisma 5 + PostgreSQL 16
 
 ## Status

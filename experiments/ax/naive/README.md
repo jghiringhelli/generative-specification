@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Naive Condition — Unstructured Prompting
 
 ## What to Build

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Experimental Conditions
 
 Three pre-registered conditions plus one post-hoc GS v2 condition, all using the same benchmark

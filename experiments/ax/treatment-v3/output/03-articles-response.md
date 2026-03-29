@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the article endpoints with full CRUD, favorites, feed, filtering, and pagination support.
 
 ---

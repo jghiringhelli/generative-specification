@@ -1,3 +1,10 @@
+---
+layout: default
+title: White Paper (v1.2)
+nav_order: 3
+description: "Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader — preprint, March 2026"
+---
+
 # Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader
 
 **Author:** Juan Carlos Ghiringhelli (Pragmaworks)  
@@ -22,7 +29,7 @@ The ladder has been moving in one direction since the first compiler freed the e
 
 The dominant failure mode of AI-assisted software development is not incorrect code, it is architectural drift: structurally incoherent output produced at generation speed across sessions that share no persistent context. Each AI session starts stateless. Without an explicit, self-contained specification, intent degrades with every context boundary.
 
-**Generative Specification (GS)** is the first programming discipline of the *pragmatic dimension*: the tier at which *derivability*, what a stateless reader (an uninitiated reader in documentation theory, Parnas, 1994) can correctly determine from the artifacts alone, becomes a binding constraint. Where Robert C. Martin's paradigm sequence (structured, object-oriented, functional) constrains syntactic form, and the semantic disciplines (SOLID, TDD, DDD) constrain meaning for a contextual reader, GS constrains what can be derived by a reader carrying no accumulated context. That reader now exists at scale: a large language model that approximates, *by structural analogy*, what Chomsky's hierarchy classifies as context-sensitive reading, stateless by architecture, reading the specification as the only available instrument. The seven specification properties that define a generative specification, Self-describing, Bounded, Verifiable, Defended, Auditable, Composable, and Executable, operationalize this constraint as a measurable artifact standard. The paradigm claim this paper advances is Martin-sense: a discipline defined by what it removes from programmer freedom. Whether it constitutes a Kuhnian revolution is a community determination that awaits replication. The structural claim is answerable by inspection now.
+**Generative Specification (GS)** is the first programming discipline of the *pragmatic dimension*: the tier at which *derivability*, what a stateless reader (an uninitiated reader in documentation theory, Parnas, 1994) can correctly determine from the artifacts alone, becomes a binding constraint. Where Robert C. Martin's paradigm sequence — structured programming, object-oriented programming, functional programming, each defined by what it removed from programmer freedom (Martin, 2002) — constrains syntactic form, and the semantic disciplines (SOLID, a set of five object-oriented design principles; TDD, test-driven development; DDD, domain-driven design) constrain meaning for a contextual reader, GS constrains what can be derived by a reader carrying no accumulated context. That reader now exists at scale: a large language model that approximates, *by structural analogy*, what Chomsky's hierarchy classifies as context-sensitive reading, stateless by architecture, reading the specification as the only available instrument. The seven specification properties this paper defines and introduces — Self-describing, Bounded, Verifiable, Defended, Auditable, Composable, and Executable — operationalize this constraint as a measurable artifact standard. The paradigm claim this paper advances is Martin-sense: a discipline defined by what it removes from programmer freedom. Whether it constitutes a Kuhnian revolution is a community determination that awaits replication. The structural claim is answerable by inspection now.
 
 Empirical evidence spans six production projects across five challenge categories. The multi-agent adversarial study (AX), eight conditions, results incorporated in §7.7.B, tests derivation quality as a function of specification completeness, reaching 14/14 on the seven-property GS rubric with 109 passing tests against a live database. The Replication Experiment (RX) reproduced a scoped implementation in a separate author-run session from a fresh GS document, producing 104 passing tests, zero failures, across seven test suites; evidence is committed and reproducible by any reader with an Anthropic API key (`https://github.com/jghiringhelli/generative-specification/tree/main/experiments/rx/`). A structural corollary, the community convergence principle, proposes that a practitioner community contributing to a shared GS methodology under quality gates raises the specification floor monotonically across all governed domains; this is a theoretical consequence of the quality gate mechanism, not a reported experimental finding. The human practitioner study (DX, April 2026, 40 developers) will test between-practitioner replication; its design is stated in §7.7.A.
 
@@ -48,9 +55,11 @@ For the first time in the history of the profession, the machine that executes s
 
 Related work is positioned in §5, after the theoretical framework, because the independent contributions of Gordon (2024) and Thirolf (2025) can only be situated against the GS contribution after that contribution has been stated. Their work validates the problem formulation; evaluating the distance between their conclusions and the paradigm claim requires the claim to come first.
 
+This paper is addressed to software engineering practitioners and researchers working with AI coding assistants. No prior familiarity with formal language theory is assumed; the linguistic apparatus is used as vocabulary to make the discipline's obligation precisely statable, not as a prerequisite.
+
 This paper establishes two distinct claims at different registers: an empirical claim, that structured specifications measurably improve AI-assisted development outcomes, supported by the experiment series, and a theoretical claim, that this constitutes a Martin-sense paradigm, a discipline defined by what it removes from programmer freedom, answerable by structural inspection. Whether it constitutes a Kuhnian paradigm shift (Kuhn, 1962) is a community determination that awaits replication across practitioners and domains.
 
-Structured programming operates at the syntactic tier. SOLID, TDD, and DDD operate at the semantic tier. Generative Specification operates at the pragmatic tier: the tier at which derivability by a stateless reader becomes a binding constraint.
+Structured programming operates at the syntactic tier. The semantic disciplines — SOLID (five object-oriented design principles for structuring code and managing dependencies), TDD (test-driven development), and DDD (domain-driven design) — operate at the semantic tier. Generative Specification operates at the pragmatic tier: the tier at which derivability by a stateless reader becomes a binding constraint.
 
 ---
 
@@ -81,6 +90,8 @@ One apparent escape from this conclusion is an expanding context window: if the 
 ---
 
 ## 4. Generative Specification: The Principle
+
+*The preceding sections established why a new discipline is necessary: AI readers are stateless, specifications designed for human readers are insufficient, and the gap compounds at generation speed. This section defines what the discipline consists of — its conceptual foundation, its seven properties, and how it relates to the principles that precede it.*
 
 **Two terminological notes before the argument.** First: *paradigm* throughout this paper carries Robert C. Martin's precise sense, a discipline defined by what it removes from programmer freedom, as structured programming removed `goto`, OOP removed unconstrained direct access to data, and functional programming removed assignment. This is not Kuhn's sense of a revolution that reconstitutes a field's foundational questions. Whether GS constitutes a Kuhnian paradigm shift is a community determination that awaits replication; whether it constitutes a Martin-sense paradigm is structural, answerable by inspection. Second: the semiotic tripartition used here, *syntactics*, *semantics*, *pragmatics*, is **Charles W. Morris's** (1938 *Foundations of the Theory of Signs*), not Peirce's. Peirce's semiotics, while influential on Morris, divides signs differently: icon, index, symbol. Morris formalized the three-term functional classification that maps to programming discipline categories. The pragmatic tier in this paper refers to Morris's definition precisely: the relation of signs to their interpreters *in context of use*. Not 'pragmatic' in the colloquial sense of practical, and not Peirce's sign taxonomy.
 
@@ -1659,9 +1670,9 @@ The year 1957 produced two pressuresthat would not fully meet for sixty years: a
 
 **Victoria Herrera**, for patient counsel on the linguistic foundations of this work. Her expertise in classical Latin and Greek, applied with characteristic understatement, sharpened the precision of the language throughout. Any remaining imprecision is mine alone.
 
-**Norman Owens**. Senior Architect, Amazon (Minnesota), for technical review and critical feedback on the architectural claims in this paper. His perspective from large-scale production systems was invaluable in grounding the methodology.
+**Norman Owens**, Senior Architect, Amazon (Minnesota), for technical review and critical feedback on the architectural and paradigm claims. His reading identified the circularity problem in the validation design, the missing engagement with prompt engineering and LLM benchmarking literature, and several neologisms requiring grounding — all of which materially strengthened the paper. His perspective from large-scale production systems was invaluable in making the methodology credible beyond its author's own context.
 
-*Additional acknowledgements to follow.*
+**Nadjet Bouayad-Agha**, for literary and structural review. Her reading as an outsider to the software engineering domain identified where the paper assumed prior knowledge it had not earned: missing context before key figures and concepts, an undefined scope, and the drift between theoretical framework and technical specification. Her feedback shaped the accessibility of the paper's opening and the bridging between its registers.
 
 ---
 
@@ -1818,9 +1829,7 @@ H.P. Blavatsky is said to have described her role in producing difficult texts a
 
 ## Acknowledgments
 
-The author thanks the following reviewers for their expert evaluation of this paper:
-
-Reviewers will be listed upon acceptance.
+The author thanks the following reviewers for their expert evaluation of this paper: Victoria Herrera (linguistic precision), Norman Owens (technical and paradigm review), and Nadjet Bouayad-Agha (literary and structural review). Full acknowledgements are in §Acknowledgements above.
 
 ---
 

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll perform a comprehensive integration and hardening pass, checking all verification protocol steps and fixing any issues.
 
 ---

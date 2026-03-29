@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Blind GS Audit Scores — treatment-v6
 
 **Auditor**: AI agent (blind session — no prior context of authoring conditions)  

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 
 All notable changes to the Conduit API project will be documented in this file.
 

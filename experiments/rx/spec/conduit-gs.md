@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Generative Specification — Conduit API (RX Subset)
 
 **Version:** 1.0  

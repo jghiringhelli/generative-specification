@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # RealWorld (Conduit) Backend API Specification
 
 **Source:** https://docs.realworld.show/specifications/backend  

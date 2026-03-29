@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Approved Package Registry
 
 All dependencies are audited before addition per the project policy: zero HIGH/CRITICAL CVEs permitted without a named ADR security exception (`docs/adrs/ADR-XXXX-security-exception.md`).

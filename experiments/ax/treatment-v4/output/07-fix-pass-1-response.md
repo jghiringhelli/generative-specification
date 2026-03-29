@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll fix all compilation errors and the Jest configuration conflict.
 
 ## Missing Repository Interface Files

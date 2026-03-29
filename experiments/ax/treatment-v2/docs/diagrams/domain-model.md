@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Domain Model — Conduit
 
 ```mermaid

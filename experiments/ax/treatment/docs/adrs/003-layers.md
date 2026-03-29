@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR-003: Layered Architecture
 
 **Date:** 2026-03-11

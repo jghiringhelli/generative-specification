@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX-4: Config/constant extraction
 
 **SWE-bench class:** Config/constant extraction

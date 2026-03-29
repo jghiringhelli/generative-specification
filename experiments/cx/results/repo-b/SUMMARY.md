@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX repo-b Summary
 
 | Task | Verdict | Files changed | Notes |

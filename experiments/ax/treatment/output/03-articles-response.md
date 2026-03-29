@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the articles feature with all 8 endpoints, following the layered architecture and verification protocol.
 
 ---

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # C4 Context Diagram — Conduit API
 
 ```mermaid

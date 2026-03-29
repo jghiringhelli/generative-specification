@@ -1,3 +1,11 @@
+---
+layout: default
+title: "AX — Adversarial Study"
+parent: Experiments
+nav_order: 1
+description: "Multi-agent adversarial study. Eight conditions, naive to ForgeCraft treatment v7. RealWorld Conduit API benchmark."
+---
+
 # Ax Experiment — Multi-Agent Adversarial Study
 
 **Ax** is a controlled, multi-agent adversarial experiment measuring the effect of

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the profiles feature following the same strict layered architecture. Here are all the files needed:
 
 ## Database Schema Update

@@ -1,4 +1,10 @@
-# CLAUDE.md Templates
+---
+layout: default
+title: Templates
+nav_order: 6
+has_children: false
+description: "CLAUDE.md three-tier template hierarchy for GS projects"
+---
 
 These templates implement the three-tier CLAUDE.md hierarchy described in the Generative Specification methodology.
 

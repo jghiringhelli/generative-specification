@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX-5: Validation rule addition
 
 **SWE-bench class:** Validation rule addition

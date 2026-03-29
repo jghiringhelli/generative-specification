@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'm encountering tool access limitations. Let me provide structured guidance for the integration verification that you can execute, or grant permission for the audit tool and I'll analyze programmatically.
 
 ## Manual Verification Steps

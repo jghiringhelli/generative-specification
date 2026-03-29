@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the authentication system with all infrastructure files first, then the auth endpoints. This is a comprehensive first response following CLAUDE.md's requirements.
 
 ## Infrastructure Files (Required First)

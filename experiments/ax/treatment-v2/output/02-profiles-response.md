@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the profile endpoints with repository, service, routes, and comprehensive tests.
 
 ## Profile Repository Implementation

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the complete articles feature with all 8 endpoints, filtering, pagination, and comprehensive tests.
 
 ## Article Types & DTOs

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Experiment Conclusions — Analytical Synthesis
 
 *Cross-condition analysis of the four-condition GS experiment (three pre-registered + one post-hoc).*

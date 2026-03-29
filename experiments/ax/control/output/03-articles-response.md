@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the articles feature with all endpoints, filtering, pagination, and proper authorization. This is a larger feature, so I'll organize it carefully.
 
 ## Database Schema Update

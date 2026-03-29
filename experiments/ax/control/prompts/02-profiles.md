@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Prompt 2 — Profiles
 
 Implement user profiles using the same layered architecture (route → service → repository).

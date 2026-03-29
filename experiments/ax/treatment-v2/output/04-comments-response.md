@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the complete comments feature with all 3 endpoints, authorization checks, and comprehensive tests.
 
 ## Comment Types & DTOs

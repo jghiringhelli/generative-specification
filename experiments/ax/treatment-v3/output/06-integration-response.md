@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll systematically review the codebase, fix any issues, add missing coverage, and produce a comprehensive summary.
 
 ---

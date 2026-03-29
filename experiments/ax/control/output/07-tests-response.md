@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll perform a comprehensive final pass on the test suite to ensure complete coverage and proper test naming.
 
 ## Additional Unit Tests

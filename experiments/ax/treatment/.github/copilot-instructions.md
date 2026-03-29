@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Copilot Instructions
 
 <!-- ForgeCraft managed | 2026-03-12 | target: copilot -->

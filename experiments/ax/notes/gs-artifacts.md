@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # GS Artifact Set — Treatment Condition
 
 *The full set of structured artifacts passed to the model in the treatment condition.*

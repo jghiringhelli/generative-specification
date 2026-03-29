@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX Experiment — Comparative Analysis
 
 ## Setup

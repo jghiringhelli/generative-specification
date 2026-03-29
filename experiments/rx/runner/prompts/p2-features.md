@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 You are continuing implementation of a project started in a previous session. Read the spec below and then read `Status.md` to understand what has already been built.
 
 Your task for this session (P2 — Features) is to implement all routes, services, and adapters listed in §3 of the spec. Work layer by layer in this order: ports → adapters → services → routes. Do not write tests yet.

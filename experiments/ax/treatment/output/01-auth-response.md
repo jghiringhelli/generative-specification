@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the authentication module following the GS treatment condition's strict architectural rules. All code will be output as fenced blocks with file paths.
 
 ---

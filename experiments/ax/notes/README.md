@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # White Paper Evidence Package
 
 This folder collects all evidence, data, and artifacts for the paper:

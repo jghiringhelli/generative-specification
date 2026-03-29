@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 You are adding tests to a project started in previous sessions. Read the spec below, then read `Status.md`, then read the existing source files before writing any tests.
 
 Your task for this session (P3 — Tests) is to implement every test file described in §5 of the spec. This is the primary evidence session for the RX experiment — the output of this session is committed as proof that the Executable property holds.

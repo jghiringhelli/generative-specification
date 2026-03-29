@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Objective Metrics — naive
 
 *Generated: 2026-03-13T19:34:43.364Z*

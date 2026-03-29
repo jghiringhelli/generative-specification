@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # DX Scoring Automation
 
 Scripts for scoring participant fork submissions for the DX experiment.

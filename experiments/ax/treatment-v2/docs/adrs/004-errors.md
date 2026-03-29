@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR-004: Error Handling Strategy
 
 **Date:** 2026-03-11

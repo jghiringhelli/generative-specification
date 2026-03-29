@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll add the comments feature for articles. Here are the new and updated files:
 
 ## Updated Database Schema

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Treatment-v3 Condition — Dependency Registry (AI-Maintained, Audit-Before-Add)
 
 ## Hypothesis

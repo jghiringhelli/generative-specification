@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the tags endpoint following the layered architecture and verification protocol.
 
 ---

@@ -1,3 +1,11 @@
+---
+layout: default
+title: "DX — Human Practitioner"
+parent: Experiments
+nav_order: 5
+description: "40 developers, two conditions. Tests between-practitioner replication of GS methodology. Crossover design, dual rubric, automated scoring."
+---
+
 # DX — Human Practitioner Experiment
 
 **Status:** Scheduled — April 2026  

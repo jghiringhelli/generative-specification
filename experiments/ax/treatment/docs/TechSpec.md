@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Technical Specification — Conduit API
 
 **Status:** Living document — updated after each implementation milestone  

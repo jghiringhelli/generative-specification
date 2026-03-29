@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Contributing Quality Gates
 
 Quality gates are structured constraints on software development work, mapped to one of the seven GS properties. This library is community-maintained. Anyone can propose a gate.

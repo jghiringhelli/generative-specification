@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Prompt 7 — Test Completion & Coverage Gate
 
 You have been writing tests alongside each feature. This is the final pass to complete the test suite and reach the coverage target.

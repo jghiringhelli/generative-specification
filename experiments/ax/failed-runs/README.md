@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Failed / Aborted Experiment Runs
 
 All runs are preserved here for full transparency and disclosed in RESULTS.md §11.

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Adversarial Audit Scores — control
 
 *Generated: 2026-03-15T00:33:24.801Z*

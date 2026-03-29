@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Evidence Artifacts
 
 This directory contains committed evidence from each RX run.

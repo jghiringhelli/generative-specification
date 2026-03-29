@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the comments feature with all three endpoints, authorization checks, and comprehensive tests.
 
 ## Comment Repository Implementation

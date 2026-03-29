@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Reviewing the White Paper
 
 The white paper source is in this directory. Community review is open.

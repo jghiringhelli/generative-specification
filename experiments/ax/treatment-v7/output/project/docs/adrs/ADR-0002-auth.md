@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR-0002: Authentication — JWT (Stateless) + Argon2 Password Hashing
 
 ## Status

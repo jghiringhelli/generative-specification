@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR 001: Service-Repository Pattern for All Features
 
 **Date:** 2026-03-17

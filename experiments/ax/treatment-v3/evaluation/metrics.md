@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Metrics — treatment-v3
 
 *Generated: 2026-03-13*

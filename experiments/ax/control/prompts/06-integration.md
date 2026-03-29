@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Prompt 6 — Integration & Hardening
 
 Now:

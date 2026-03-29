@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll perform the integration and hardening pass, fixing any issues and verifying compliance.
 
 ## Issue Found and Fixed

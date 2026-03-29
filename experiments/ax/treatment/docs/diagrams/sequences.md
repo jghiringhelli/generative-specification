@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Sequence Diagrams — Conduit API
 
 ## 1. User Registration

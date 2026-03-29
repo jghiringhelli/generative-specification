@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX-2: Contract mismatch
 
 **SWE-bench class:** Contract mismatch

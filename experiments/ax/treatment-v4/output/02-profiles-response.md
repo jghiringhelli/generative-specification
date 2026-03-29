@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the profile endpoints following the layered architecture with comprehensive tests.
 
 ## Repository Implementation

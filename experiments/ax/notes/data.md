@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Experiment Data — All Numbers
 
 *Pre-formatted for citation in the white paper. All values are measured, not estimated,

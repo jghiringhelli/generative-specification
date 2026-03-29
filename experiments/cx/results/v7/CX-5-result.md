@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX-5 Result — v7
 
 **Verdict:** PASS

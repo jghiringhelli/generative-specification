@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Adversarial Audit Scores — naive
 
 *Generated: 2026-03-15T00:30:57.538Z*

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX v7 Summary
 
 | Task | Verdict | Files changed | Notes |

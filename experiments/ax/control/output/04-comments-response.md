@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the comments feature following the same strict layered architecture.
 
 ## Database Schema Update

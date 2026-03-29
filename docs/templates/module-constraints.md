@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CLAUDE.md — [Module Name] Module Constraints
 #
 # TIER: Module directory (e.g., src/payments/, src/auth/, src/repositories/)

@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I don't have access to the standard file system and shell tools in this session - only the ForgeCraft MCP tools are available. To complete this test coverage audit, I would need:
 
 - **Bash** tool to run `npm test` and `npm run coverage`

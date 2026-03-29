@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Treatment-v2 Condition — Updated GS Artifact Cascade (Hooks + CI + IRepository Emit)
 
 ## Problem Statement

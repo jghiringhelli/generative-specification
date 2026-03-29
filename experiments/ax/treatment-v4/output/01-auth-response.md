@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the authentication endpoints following the layered architecture with repository interfaces, comprehensive tests, and the dependency registry enforcement.
 
 ## Configuration Files

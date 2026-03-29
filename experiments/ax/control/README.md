@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Control Condition — Expert Prompting (No GS Artifacts)
 
 ## Problem Statement

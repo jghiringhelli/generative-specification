@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # ADR 002: Atomic Status Change via Prisma Transaction
 
 **Date:** 2026-03-17

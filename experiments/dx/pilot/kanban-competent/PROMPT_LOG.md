@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Prompt Log
 
 ## Prompt 1

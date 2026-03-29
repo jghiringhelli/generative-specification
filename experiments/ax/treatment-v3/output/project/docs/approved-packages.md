@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Approved Package Registry
 
 This registry enforces audit-before-add. Every dependency must pass `npm audit --audit-level=high` before being added to `package.json`.

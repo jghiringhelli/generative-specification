@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll provide all the code for Prompt 1. Since I don't have direct file creation tools available in this session, I'll output the complete file contents in a structured format that you can create:
 
 ## Project Setup Files

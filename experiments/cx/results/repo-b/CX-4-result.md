@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX-4 Result — repo-b
 
 **Verdict:** PASS

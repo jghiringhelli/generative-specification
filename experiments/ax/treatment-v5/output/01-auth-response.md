@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll implement the authentication endpoints following the layered architecture and all verification protocol requirements.
 
 ```typescript

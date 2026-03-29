@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Objective Metrics — treatment-v4
 
 *Generated: 2026-03-14T04:09:43.226Z*

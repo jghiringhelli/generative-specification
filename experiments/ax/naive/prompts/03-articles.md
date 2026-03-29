@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Prompt 3 — Articles
 
 Add articles. Users can create, read, update, and delete articles. Articles have a title, description, body, and tags. They can be favorited.

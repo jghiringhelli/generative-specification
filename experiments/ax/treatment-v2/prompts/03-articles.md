@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Prompt 3 — Articles
 
 Implement articles:

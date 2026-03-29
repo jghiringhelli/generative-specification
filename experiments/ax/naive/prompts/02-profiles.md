@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # Prompt 2 — Profiles
 
 Add user profiles.

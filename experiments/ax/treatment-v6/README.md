@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # AX Condition: treatment-v6
 
 **Hypothesis**: GS-built semantic tooling (CodeSeeker v2.0.0) reduces structural duplication and catches interface incompleteness that static prompting alone misses.

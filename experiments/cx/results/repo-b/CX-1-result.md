@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX-1 Result — repo-b
 
 **Verdict:** PASS

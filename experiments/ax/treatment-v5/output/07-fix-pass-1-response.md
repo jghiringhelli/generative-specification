@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll fix all TypeScript compilation errors by prefixing unused parameters with `_`.
 
 ```typescript

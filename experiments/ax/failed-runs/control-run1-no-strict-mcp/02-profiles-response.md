@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'm encountering an issue where the standard file manipulation tools (Read, Write, Edit, Glob, Grep, Bash) aren't available in this session. This is preventing me from:
 
 1. Reading the existing project structure to understand patterns

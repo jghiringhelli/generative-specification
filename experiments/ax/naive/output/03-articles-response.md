@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 I'll add the articles feature with all the required endpoints. Here are the new and updated files:
 
 ## Updated Database Schema

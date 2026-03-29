@@ -1,4 +1,8 @@
-﻿# CLAUDE.md
+---
+nav_exclude: true
+---
+
+# CLAUDE.md
 
 <!-- Conduit RealWorld API — GS Treatment-v7 Condition -->
 <!-- Extends treatment-v6: adds §10 Hurl contract conformance gate (resource-scoped error envelope + nullable field coercion), §11 SonarQube quality gate, and enforces ESM-safe jsonwebtoken import pattern -->

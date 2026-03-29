@@ -1,3 +1,7 @@
+---
+nav_exclude: true
+---
+
 # CX-3: Missing error case
 
 **SWE-bench class:** Missing error case
