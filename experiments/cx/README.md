@@ -1,6 +1,6 @@
----
+﻿---
 layout: default
-title: "CX — Patchability Study"
+title: "CX - Patchability Study"
 parent: Experiments
 nav_order: 3
 description: "Cross-validation of GS patchability claim. SWE-bench-style patch tasks on two quality tiers. GS-specified codebase shows higher patch success rate."

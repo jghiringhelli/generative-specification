@@ -1,6 +1,6 @@
----
+﻿---
 layout: default
-title: "AX — Adversarial Study"
+title: "AX - Adversarial Study"
 parent: Experiments
 nav_order: 1
 description: "Multi-agent adversarial study. Eight conditions, naive to ForgeCraft treatment v7. RealWorld Conduit API benchmark."

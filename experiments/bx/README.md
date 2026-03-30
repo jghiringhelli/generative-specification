@@ -1,6 +1,6 @@
----
+﻿---
 layout: default
-title: "BX — Benchmark Cross-validation"
+title: "BX - Benchmark Cross-validation"
 parent: Experiments
 nav_order: 2
 description: "Rubric validity cross-check. Three Conduit implementations scored blind. Establishes that the GS rubric captures quality dimensions independent of GS guidance."

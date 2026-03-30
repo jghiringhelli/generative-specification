@@ -1,6 +1,6 @@
----
+﻿---
 layout: default
-title: "RX — Replication"
+title: "RX - Replication"
 parent: Experiments
 nav_order: 4
 description: "Any reader can reproduce 104 passing tests against a live PostgreSQL instance from a GS document alone."

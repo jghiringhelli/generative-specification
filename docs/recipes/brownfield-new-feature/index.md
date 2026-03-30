@@ -1,6 +1,6 @@
----
+﻿---
 layout: default
-title: Brownfield — New Feature
+title: Brownfield - New Feature
 parent: Workflow Recipes
 nav_order: 4
 description: "Add a new feature to an existing ForgeCraft project without breaking the GS contract"
