@@ -1765,7 +1765,27 @@ That closure extends one step further. The Executable property, that a GS-compli
 
 The paradigm claim this paper advances is Martin-sense: a discipline defined by what it removes from programmer freedom. Whether it constitutes a Kuhnian revolution is a community determination that awaits replication. The structural claim is answerable by inspection now.
 
-The year 1957 produced two pressuresthat would not fully meet for sixty years: a formal hierarchy of grammars, and the first high-level language that freed the engineer from machine code. Their meeting is the discipline this paper names. The direction was never accidental. The ladder moved.
+The year 1957 produced two pressures that would not fully meet for sixty years: a formal hierarchy of grammars, and the first high-level language that freed the engineer from machine code. Their meeting is the discipline this paper names. The direction was never accidental. The ladder moved.
+
+---
+
+## Onwards
+
+**On the irreducible value of the expert.**
+
+In 1985, the Therac-25 radiation therapy machine began administering fatal overdoses to cancer patients. Six confirmed deaths, several more serious injuries, before the cause was identified. The machine had been redesigned: a hardware safety interlock was replaced by a software equivalent. The software was written by a single engineer, without documentation, without concurrent testing, and without formal specification of the failure modes the hardware interlock had previously prevented mechanically. The race condition that killed patients could only be triggered by an experienced operator who had learned to enter commands rapidly enough to hit a narrow timing window, a pattern that emerged precisely from competence, not from error. The operators who triggered the fault were the best operators. The machine's error display showed a message so cryptic that trained staff dismissed it as routine. The patients reported burning sensations and were told the machine was functioning correctly. The specification that should have governed the software-hardware boundary, the one that would have made the fault mode visible before deployment, did not exist.
+
+The lesson usually drawn from Therac-25 is about software testing, concurrency safety, and regulatory oversight. Those lessons are correct. But there is a prior lesson, relevant to this paper and to everything that follows from it.
+
+The specification gap killed people not because the software was written by bad engineers. It killed people because the human experts who should have caught the deviation were not equipped to recognize it. The operators had been trained on the hardware interlock's behavior. The radiologists trusted the machine's error messages. The regulatory review examined what the software claimed to do, not what it could do under conditions the specification had not modeled. Every human in the chain between the machine and the patient was operating against an implicit specification that was no longer accurate.
+
+This is the forward-looking obligation GS does not dissolve. Raising S reduces I, but S approaching 1 is a bound, not an achievement, and in domains where the feedback loop does not compress to seconds, where the cost of a correction iteration is not a failed test but a clinical outcome, the distance between S_actual and S_complete is the space the expert human must permanently inhabit. The surgeon who monitors a robotic procedure is not redundant to the procedure's specification. The surgeon is the correction mechanism for the dimensions the specification has not yet closed. The radiologist who reviews an AI diagnostic flag is not a bottleneck. The radiologist is the quality gate at the boundary between the specification's completeness ceiling and the domain's true complexity.
+
+Autonomous executors entering critical domains do not reduce the value of domain expertise. They relocate it. The surgeon stops managing the instrument; the surgeon governs the outcome. The radiologist stops reading every film; the radiologist reviews every flag. The engineer stops writing every line; the engineer specifies the system. The craft does not disappear. It moves upstream, to the tier that the executor cannot reach alone, the tier where the specification's gaps are still filled by a person who understands what is at stake.
+
+Therac-25 is the clearest warning about what happens when that relocation is not managed: when the human expert is removed from the loop before the specification is complete enough to justify the removal. The hardware interlock was a specification, written in metal and physics, that made a class of failure structurally impossible. The software that replaced it was not wrong in isolation. At the boundary between the software's implicit model of operator behavior and the actual behavior of experienced operators, the specification had a gap. The patients paid for it.
+
+The obligation this places on GS practitioners is not theoretical. As the specification discipline extends into robotics, medical AI, autonomous systems, and infrastructure automation, the correctness of the specification is not an engineering metric. It is a precondition of safe deployment, and the humans most capable of identifying specification gaps are precisely the domain experts whose work the executor is being asked to perform. Their value does not decrease as the executor improves. It concentrates at the residual gap, which is the hardest part of the domain, the part no specification has yet formalized, and the part where the cost of being wrong is highest.
 
 ---
 
