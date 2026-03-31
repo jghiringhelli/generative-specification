@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-03-31T20:43:09.049Z",
+  "generatedAt": "2026-03-31T21:01:11.032Z",
   "version": "1",
-  "gateCount": 41,
+  "gateCount": 42,
   "tags": [
     "ACADEMIC-PAPER",
     "ANY",
@@ -484,6 +484,19 @@
       "tags": [
         "ANY"
       ],
+      "status": "approved"
+    },
+    {
+      "id": "no-redundant-deploy-pipelines",
+      "title": "No Redundant Deploy Pipelines",
+      "description": "Warns when a project has both a platform deploy config (railway.toml, vercel.json, fly.toml, render.yaml) and a .github/workflows/ directory. Both pipelines trigger on push, creating duplicate CI/CD runs and conflicting deployments.",
+      "category": "convergence",
+      "gsProperty": "convergence",
+      "phase": "development",
+      "hook": "pr",
+      "check": "|",
+      "passCriterion": "Warns when a project has both a platform deploy config (railway.",
+      "tags": [],
       "status": "approved"
     },
     {

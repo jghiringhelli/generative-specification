@@ -1,0 +1,36 @@
+id: no-redundant-deploy-pipelines
+name: No Redundant Deploy Pipelines
+description: >
+  Warns when a project has both a platform deploy config (railway.toml,
+  vercel.json, fly.toml, render.yaml) and a .github/workflows/ directory.
+  Both pipelines trigger on push, creating duplicate CI/CD runs and
+  conflicting deployments.
+property: convergence
+phase: development
+trigger: pr
+check:
+  type: script
+  command: |
+    PLATFORM_FILES="railway.toml railway.json vercel.json fly.toml render.yaml render.yml"
+    HAS_PLATFORM=false
+    for f in $PLATFORM_FILES; do
+      if [ -f "$f" ]; then HAS_PLATFORM=true; break; fi
+    done
+    if $HAS_PLATFORM && [ -d ".github/workflows" ]; then
+      echo "WARNING: Platform deploy config and .github/workflows/ both exist."
+      echo "Only one CI/CD pipeline should trigger on push."
+      exit 1
+    fi
+    exit 0
+pass_criterion: No platform deploy config alongside .github/workflows/
+tags:
+  - any
+status: active
+tools:
+  any:
+    - bash
+    - sh
+remediation: >
+  Remove .github/workflows/ if deploying via Railway/Vercel/Fly/Render,
+  or remove the platform deploy config if deploying via GitHub Actions.
+  Document the chosen deployment strategy in README.md.
