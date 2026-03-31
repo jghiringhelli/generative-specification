@@ -38,7 +38,7 @@ But the reframe is available. It has been demonstrated at least once before, in 
 
 ---
 
-The new golden century does not require slavery. It requires robots.
+The new golden century does not require slavery. It requires robots — machines that do the labor, with no consciousness to oppress and no dignity to violate.
 
 More precisely: it requires that the robots doing the work that the Prussian system trained us to do not simply be owned by a small number of people who capture the productivity gains while the rest of the population becomes economically irrelevant. That is the dystopian path and it is a real risk. The question of how the gains from automation are distributed is a political question, a hard one, and this essay is not the place to resolve it. What this essay is about is the other question — the one that comes after: if most people are not needed to do most of the economy's labor, what do they do with their lives?
 
