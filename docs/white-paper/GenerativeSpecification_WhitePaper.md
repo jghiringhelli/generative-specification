@@ -1,6 +1,6 @@
 ---
 layout: default
-title: White Paper (v1.3)
+title: White Paper (v1.4)
 nav_order: 3
 description: "Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader — preprint, March 2026"
 ---
@@ -8,9 +8,15 @@ description: "Generative Specification: A Pragmatic Programming Paradigm for the
 # Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader
 
 **Author:** Juan Carlos Ghiringhelli (Pragmaworks)  
-**Version:** 1.3  
-**Date:** March 2026  
+**Version:** 1.4  
+**Date:** March 2026
 **Status:** Preprint  
+
+## Changes from v1.3
+- Prologue replaced: Mars Climate Orbiter story (1999, $327.6M, pound-force vs newton-seconds) replaces OAuth/DNS week
+- Orbiter framing connects directly to the paper's core argument: contract failure at an interface boundary
+- OAuth/DNS story relocated to §8.6.1 where it belongs (API/CLI automation argument)
+- Therac-25 held in reserve for §3 escalation
 
 ## Changes from v1.2
 - Narrative restructured: prologue opens with the felt problem before naming the solution
@@ -25,19 +31,29 @@ description: "Generative Specification: A Pragmatic Programming Paradigm for the
 
 ---
 
-## Prologue: The Week That Should Not Have Taken a Week
+## Prologue: The $327 Million Contract That Was Never Written
 
-In the weeks before this paper was completed, the author spent four days doing configuration work: registering OAuth applications on LinkedIn, GitHub, Facebook, and Google, copying client IDs and secrets from developer consoles, setting DNS records by hand, one at a time, and registering redirect URIs across each platform's settings pages. It was careful, sequential, error-prone work. One wrong character in a redirect URI and the entire authentication flow fails silently.
+On September 23, 1999, the Mars Climate Orbiter completed a nine-month, 416-million-mile crossing of interplanetary space. It arrived within 26 kilometers of its intended trajectory — a feat of precision that represented the combined work of thousands of engineers, two years of mission planning, and $327.6 million in public investment. Then it entered the Martian atmosphere at the wrong angle and was destroyed in 57 seconds.
 
-Every one of those operations is exposed through an API. LinkedIn's OAuth application management has an endpoint. GitHub's app registration is scriptable. DNS records are settable via API on every major provider. The operations that consumed four days were, in principle, a single well-specified configuration file away from being executed in four minutes. The intent existed. The executor capability existed. The bridge between them, a specification precise enough for a stateless executor to act on, did not exist. So a human did it by hand, at the speed of a human, with the error rate of a human.
+The cause was not a bug in any individual system. Lockheed Martin's navigation software reported thruster force in pound-force seconds. NASA's flight computer expected newton-seconds. Both teams had implemented their components correctly, according to their own assumptions. The interface between the two systems had no explicit unit specification. The contract had been assumed, not written.
 
-This is the same story the Jacquard loom told in 1804. The loom did not move at the speed of a human weaver. It moved at the speed of a loom. But every complex pattern first had to be encoded in a punch card. The card was the specification. The loom was the executor. The craft did not disappear — it moved upstream, from the shuttle to the card. The complexity became a property of the specification, not of the labor.
+No test caught it. The code compiled cleanly. Individual modules passed validation. The failure was invisible everywhere except at the boundary — at the seam where two systems, each internally coherent, had to agree on a shared language. They did not agree, because the agreement had never been formalized.
 
-Software engineering is undergoing the same relocation. But the relocation is not finishing itself automatically. It requires a discipline: a way of writing specifications precise enough that a stateless executor — one with no memory of your intentions, no shared context from prior sessions, no ability to ask a clarifying question — can derive correct output from them alone.
+That was 1999. That interface took two years to build.
+
+Today, an AI assistant produces an equivalent interface in thirty seconds. It generates clean code. Types check. Unit tests pass. And embedded in that output, invisible, is a set of implicit assumptions — about units, about field ordering, about what a null means, about which layer owns which concern — that the generating model resolved silently, drawing on everything it has ever read about how such systems are usually built. The code is correct in isolation. At the boundary, when two AI-generated systems meet across a session boundary or a team boundary or a service boundary, the implicit assumptions do not automatically agree.
+
+The Orbiter problem did not go away. The velocity of producing it increased by a factor of one hundred.
+
+This is not an argument against AI-assisted development. It is an argument for what that development requires. The Jacquard loom, introduced in 1804, did not eliminate weaving craft — it relocated it. The weaver stopped managing the shuttle. The weaver started managing the card. The complexity moved upstream, into the specification, where it could be expressed once and executed at machine speed. The loom was capable. The card made that capability directed.
+
+Software engineering is undergoing the same relocation, at a speed the loom's inventors could not have imagined. An AI agent with CLI access can read your codebase, write tests, execute migrations, commit to git, and iterate on a running system, all within a single session, starting from nothing. The executor is extraordinarily capable. The question is what governs it across the session boundaries it cannot see, the team context it was never given, and the architectural decisions that were made in conversations it was not part of.
+
+The answer is the same as it was in 1804. The answer is the same as it was in 1999. A specification precise enough that a stateless reader — one with no memory of your intentions, no shared context, no ability to ask a clarifying question — can derive correct output from it alone.
 
 That discipline is what this paper defines.
 
-**This paper requires an AI agent with direct CLI access** — not a chat assistant, but an agent that can read files, write files, run tests, commit to git, and execute commands. Claude Code, Cursor, and VS Code agents in agentic mode meet this requirement. The methodology is not applicable to chat-based interfaces. If you are using a web chat window, the approach described here will not transfer directly. §8.6 develops the runtime requirements in full.
+**This paper requires an AI agent with direct CLI access** — not a chat assistant, but an agent that can read files, write files, run tests, commit to git, and execute commands. Claude Code, Cursor, and VS Code agents in agentic mode meet this requirement. The methodology is not applicable to chat-based interfaces. §8.6 develops the runtime requirements in full.
 
 ---
 
