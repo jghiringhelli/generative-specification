@@ -78,7 +78,7 @@ The [`quality-gates/`](quality-gates/) directory is a community-maintained libra
 
 <!-- GATES_TABLE_START -->
 
-#### Current Gate Library (48 gates)
+#### Current Gate Library (49 gates)
 
 | Gate | Description | GS Property | Tags | Phase | Trigger |
 |---|---|---|---|---|---|
@@ -130,6 +130,7 @@ The [`quality-gates/`](quality-gates/) directory is a community-maintained libra
 | [smoke-test-passes](quality-gates/gates/smoke-test-passes.yaml) | A minimal smoke test suite (at minimum: health check, authentication, and one core user journey) must exit 0 against the target environment before promotion is considered complete. | Executable | any | staging | release |
 | [tsc-no-emit-exits-zero](quality-gates/gates/tsc-no-emit-exits-zero.yaml) | tsc --noEmit exits 0 on every commit. | Executable | typescript | development | commit |
 | [typescript-strict-mode](quality-gates/gates/typescript-strict-mode.yaml) | The project's tsconfig.json has compilerOptions.strict set to true. | Executable | typescript | development | commit |
+| [no-redundant-deploy-pipelines](quality-gates/gates/no-redundant-deploy-pipelines.yaml) | Warns when a project has both a platform deploy config (railway.toml, vercel.json, fly.toml, render.yaml) and a .github/workflows/ directory. | convergence | any | development | pr |
 
 *Underrepresented properties (highest-value contribution targets): Composable.*
 <!-- GATES_TABLE_END -->
