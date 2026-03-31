@@ -1,6 +1,6 @@
 ---
 layout: default
-title: White Paper (v1.5)
+title: White Paper (v1.2)
 nav_order: 3
 description: "Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader — preprint, March 2026"
 ---
@@ -8,54 +8,38 @@ description: "Generative Specification: A Pragmatic Programming Paradigm for the
 # Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader
 
 **Author:** Juan Carlos Ghiringhelli (Pragmaworks)  
-**Version:** 1.6  
+**Version:** 1.2  
 **Date:** March 2026
 **Status:** Preprint  
 
-## Changes from v1.5
-- §3.5: Added mechanistic account of trajectory-level deterioration (context compaction)
-  - Explains the mechanism behind SlopCodeBench's 80% erosion finding
-  - GS spec artifacts are compaction-resistant; session memory is not
-- §4.3 Bounded: added mechanical justification for 300-line limit
-  - AI tool reads are capped at a fixed budget; files over that threshold are silently truncated
-  - The spec limit and the tool limit are the same constraint at two layers
-- §4.3 Verifiable: added tooling-layer justification
-  - Current AI agents report write-success at bytes-hit-disk, not compile success
-  - Verifiable exists to supply the verification signal the tooling omits
-- §4.3 Composable: added grep ≠ AST argument and semantic code intelligence rationale
-  - Text-pattern search tools are not AST-aware; safe cross-cutting changes require module boundaries
-  - Structural justification for semantic code intelligence (graph-aware tooling) as first-class GS component
+## Changes from v1.1
 
-
-- SlopCodeBench (Orlanski et al., arXiv:2603.24755, March 2026) added to §3.5 Related Work
-  - Strongest independent empirical validation of the drift claim to date
-  - 80% structural erosion rate, 89.8% verbosity rise, 2.2× verbosity vs humans
-  - Prompt-intervention finding directly corroborates GS's core claim: prompting alone insufficient
-  - Added to §4.2 derivability obligation paragraph and References
-- Acronym/concept hard walls fixed throughout §4 (Nadjet pass):
-  - Martin's three paradigms: each now explained with its significance, not just named
-  - ADR defined in Figure 1 caption
-  - CLAUDE.md sentinel design explained at first use
-  - Chomsky hierarchy given a 2-sentence gloss at first use in §4.1.a
-  - AX/BX/RX/DX expanded at first use in §4.1.c
-  - SOLID, TDD, CI all defined at first use in §4.2
-  - IDL defined at first use in §4.2 pragmatic tier section
-  - Clean architecture defined at first use in §4.2
-
-## Changes from v1.3
+**Narrative and structure:**
 - Prologue replaced: Mars Climate Orbiter story (1999, $327.6M, pound-force vs newton-seconds) replaces OAuth/DNS week
 - Orbiter framing connects directly to the paper's core argument: contract failure at an interface boundary
-- OAuth/DNS story relocated to §8.6.1 where it belongs (API/CLI automation argument)
-- Therac-25 held in reserve for §3 escalation
-
-## Changes from v1.2
-- Narrative restructured: prologue opens with the felt problem before naming the solution
+- OAuth/DNS story relocated to §8.6.1 where it belongs
 - Abstract rewritten as empowerment promise; methodology definition follows from earned context
 - Related work moved to §3 (after the problem, before the solution)
 - Seven properties derivation added: each property names a specific failure mode
-- §10 expanded with API/CLI automation argument
-- Winston's 5 S's applied throughout: Symbol (loom/mold), Slogan ("specification is the mold"), Surprise (programming languages as historical accident), Salient (drift at AI speed), Story (prologue)
-- CLI agent requirement surfaced to abstract
+- Winston's 5 S's applied: Symbol (loom/mold), Slogan ("specification is the mold"), Surprise, Salient, Story
+- §10 expanded with API/CLI automation argument and Onwards section (Therac-25)
+
+**Related Work (§3.5):**
+- SlopCodeBench (Orlanski et al., arXiv:2603.24755, March 2026) added as third independent validation thread
+  - 80% structural erosion rate, 89.8% verbosity rise, 2.2× verbosity vs humans
+  - Prompt-intervention finding corroborates GS's core claim: prompting alone insufficient
+- Context compaction added as mechanistic account of trajectory-level deterioration
+  - Explains the mechanism behind SlopCodeBench's erosion finding
+  - GS spec artifacts are compaction-resistant; session memory is not
+
+**Property definitions (§4.3):**
+- Bounded: added mechanical justification for 300-line limit (AI tool read budget = same constraint at two layers)
+- Verifiable: added tooling-layer justification (write-completion ≠ compile-success)
+- Composable: added grep ≠ AST argument; structural case for semantic code intelligence as first-class GS tooling
+
+**Accessibility (Nadjet pass):**
+- Martin's three paradigms explained with significance, not just named
+- ADR, CLAUDE.md sentinel, Chomsky hierarchy, AX/BX/RX/DX, SOLID/TDD/CI, IDL, clean architecture all defined at first use
 
 **Contact:** juan@pragmaworks.dev · [linkedin.com/in/jghiringhelli](https://linkedin.com/in/jghiringhelli) · [github.com/jghiringhelli](https://github.com/jghiringhelli)
 
