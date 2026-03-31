@@ -1790,11 +1790,11 @@ That closure extends one step further. The Executable property, that a GS-compli
 
 The paradigm claim this paper advances is Martin-sense: a discipline defined by what it removes from programmer freedom. Whether it constitutes a Kuhnian revolution is a community determination that awaits replication. The structural claim is answerable by inspection now.
 
-The year 1957 produced two pressures that would not fully meet for sixty years: a formal hierarchy of grammars, and the first high-level language that freed the engineer from machine code. Their meeting is the discipline this paper names. The direction was never accidental. The ladder moved.
+The year 1957 produced two pressures that would not fully meet for sixty years: a formal hierarchy of grammars, and the first high-level language that freed the engineer from machine code. Their meeting is the discipline this paper names. The direction was never accidental. The ladder moved. The section that follows addresses what the ladder's movement requires of the humans who govern the boundary it has not yet reached.
 
 ---
 
-## Onwards
+## 11. Onwards
 
 **On the irreducible value of the expert.**
 
