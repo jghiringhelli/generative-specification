@@ -11,8 +11,8 @@ description: >
   silence errors defers type unsafety to runtime.
 property: Executable
 tags: [typescript]
-phase: commit
-trigger: pre-commit
+phase: development
+trigger: commit
 blocking: true
 check:
   type: script

@@ -1,31 +1,23 @@
 id: python-dependencies-pinned
-tier: core
-tag: ENVIRONMENT
-title: Python Dependencies Pinned
-description: |
+name: Python dependencies are pinned to exact versions
+description: >
   Python projects must have a locked dependency file with pinned versions.
-  requirements.txt without pins, or pyproject.toml without a lockfile,
-  resolves to whatever is current at install time ΓÇö producing environment
-  drift across machines, containers, and AI sessions.
+  A requirements.txt without version pins, or a pyproject.toml without a lockfile,
+  resolves to whatever is current at install time — producing environment drift across
+  machines, containers, and AI sessions. The exact versions in the lockfile are the
+  specification: they are the versions that passed tests, not a range of versions that
+  might. Gate passes when: requirements.txt exists with all entries pinned (==), OR
+  pyproject.toml exists alongside poetry.lock, uv.lock, or pdm.lock.
+property: Executable
+tags: [python, any]
+phase: development
+trigger: pr
+blocking: true
 check:
   type: script
-  language: shell
-  script: |
-    if [ -f "requirements.txt" ]; then
-      if grep -E "^[a-zA-Z].*[^=><~!]$" requirements.txt | grep -v "^#" | grep -v "^$" > /dev/null 2>&1; then
-        echo "FAIL: requirements.txt contains unpinned dependencies."
-        exit 1
-      fi
-    elif [ -f "pyproject.toml" ]; then
-      if [ ! -f "poetry.lock" ] && [ ! -f "uv.lock" ] && [ ! -f "pdm.lock" ]; then
-        echo "FAIL: pyproject.toml exists but no lockfile found (poetry.lock, uv.lock, pdm.lock)."
-        exit 1
-      fi
-    else
-      echo "FAIL: No Python dependency file found."
-      exit 1
-    fi
-    echo "PASS"
-fix: |
-  Pin all versions in requirements.txt (use pip-compile or pip freeze > requirements.txt).
-  Or use poetry/uv/pdm and commit the lockfile.
+  command: >
+    if [ -f requirements.txt ]; then
+      grep -vE "^#|^$|==" requirements.txt && echo "FAIL: unpinned deps in requirements.txt" && exit 1 || exit 0;
+    elif [ -f pyproject.toml ]; then
+      ([ -f poetry.lock ] || [ -f uv.lock ] || [ -f pdm.lock ]) || { echo "FAIL: no lockfile found"; exit 1; };
+    else echo "FAIL: no Python dependency file"; exit 1; fi

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-03-31T20:09:37.290Z",
+  "generatedAt": "2026-03-31T20:43:09.049Z",
   "version": "1",
-  "gateCount": 44,
+  "gateCount": 41,
   "tags": [
     "ACADEMIC-PAPER",
     "ANY",
@@ -9,21 +9,19 @@
     "CONTRACT-TESTING",
     "DATABASE",
     "DOCKER",
-    "ESLINT",
     "ESM",
     "EXPRESS",
     "FASTIFY",
     "HURL",
     "JAVASCRIPT",
     "JEST",
-    "MUTATION-TESTING",
     "NODE",
     "NPM",
+    "PYTHON",
     "QUALITY",
     "REST",
     "SONARQUBE",
     "STATIC-ANALYSIS",
-    "STRYKER",
     "TYPESCRIPT"
   ],
   "gates": [
@@ -212,15 +210,18 @@
     },
     {
       "id": "docker-service-boundaries",
-      "title": "docker-service-boundaries",
-      "description": "|",
-      "category": "Verifiable",
-      "gsProperty": "Verifiable",
+      "title": "Docker service database references are explicitly named",
+      "description": "Each application service in docker-compose.yml that depends on a database must reference an explicitly named database service rather than a generic name (db, database, postgres). Generic shared service names create topological ambiguity: multiple services coupling to the same generic name makes the dependency graph unreadable and the compose file not self-describing. A stateless reader cannot determine service ownership from the file alone. Gate passes when no service in docker-compose.yml declares a depends_on entry whose value is exactly 'db', 'database', or 'postgres' without a service-scoped prefix.",
+      "category": "Self-describing",
+      "gsProperty": "Self-describing",
       "phase": "development",
-      "hook": "commit",
-      "check": "",
-      "passCriterion": "|.",
-      "tags": [],
+      "hook": "pr",
+      "check": "! grep -E \"^\\s+- (db|database|postgres)$\" docker-compose.yml 2>/dev/null || { echo \"FAIL: Generic DB service name in docker-compose.yml. Use scoped names (api-db, analytics-db).\"; exit 1; }",
+      "passCriterion": "Gate passes when no service in docker-compose.",
+      "tags": [
+        "DOCKER",
+        "ANY"
+      ],
       "status": "approved"
     },
     {
@@ -255,15 +256,17 @@
     },
     {
       "id": "extension-manifest-committed",
-      "title": "extension-manifest-committed",
-      "description": "|",
-      "category": "Verifiable",
-      "gsProperty": "Verifiable",
+      "title": "VS Code extension manifest committed",
+      "description": ".vscode/extensions.json must exist and be committed to the repository. Without it, AI agents and developers reinstall extensions session after session: the development environment is underspecified and the toolchain is not reproducible. A committed extensions manifest ensures every contributor and every AI session starts with the same editor toolchain. Gate passes when .vscode/extensions.json exists and contains a non-empty recommendations array.",
+      "category": "Self-describing",
+      "gsProperty": "Self-describing",
       "phase": "development",
       "hook": "commit",
-      "check": "",
-      "passCriterion": "|.",
-      "tags": [],
+      "check": "test -f .vscode/extensions.json && node -e \"const e=JSON.parse(require('fs').readFileSync('.vscode/extensions.json')); if(!e.recommendations||!e.recommendations.length){process.exit(1)}\"",
+      "passCriterion": "Gate passes when .",
+      "tags": [
+        "ANY"
+      ],
       "status": "approved"
     },
     {
@@ -272,31 +275,14 @@
       "description": "No TypeScript or JavaScript source file exceeds 300 lines. File length is a proxy for single-responsibility compliance: a 500-line file almost certainly contains multiple conceptual concerns. At 300 lines, a human reader can hold the entire file in working memory without paging — above that, the cognitive overhead of understanding the module increases non-linearly. The 300-line limit applies to production source only; test files are excluded since comprehensive test suites are legitimately verbose. Files that approach the limit are a signal to split by responsibility: model from service, handler from controller, pure functions from side-effecting orchestration.",
       "category": "Bounded",
       "gsProperty": "Bounded",
-      "phase": "commit",
-      "hook": "pre-commit",
+      "phase": "development",
+      "hook": "commit",
       "check": "node -e \\\"const fs=require('fs'),path=require('path');function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)])}const files=walk('src').filter(f=>/\\\\.(ts|js|tsx|jsx)$/.test(f)&&!/\\\\.(test|spec)\\\\.(ts|js|tsx|jsx)$/.test(f));let fail=false;files.forEach(f=>{const lines=fs.readFileSync(f,'utf8').split('\\\\n').length;if(lines>300){console.error(f+': '+lines+' lines (max 300)');fail=true;}});process.exit(fail?1:0)\\\"",
       "passCriterion": "No TypeScript or JavaScript source file exceeds 300 lines.",
       "tags": [
         "JAVASCRIPT",
         "TYPESCRIPT",
         "ANY"
-      ],
-      "status": "approved"
-    },
-    {
-      "id": "function-length-max-50",
-      "title": "Function length does not exceed 50 lines",
-      "description": "No function or method body exceeds 50 lines of code. A function longer than 50 lines is doing more than one thing. Single Responsibility applies at the function level: a 200-line function is a module masquerading as a function, with hidden dependencies between its parts and no clean abstraction boundary. Long functions are the primary cause of untestable code — they cannot be unit-tested without also testing everything else they do. The 50-line limit is enforced via the ESLint max-lines-per-function rule, which excludes comment lines and blank lines from the count. Functions that consistently need 60+ lines signal missing helper functions or missing abstractions.",
-      "category": "Bounded",
-      "gsProperty": "Bounded",
-      "phase": "pr",
-      "hook": "pull_request",
-      "check": "npx eslint --rule '{\\\"max-lines-per-function\\\": [\\\"error\\\", {\\\"max\\\": 50, \\\"skipBlankLines\\\": true, \\\"skipComments\\\": true}]}' 'src/**/*.ts' 'src/**/*.js'",
-      "passCriterion": "No function or method body exceeds 50 lines of code.",
-      "tags": [
-        "JAVASCRIPT",
-        "TYPESCRIPT",
-        "ESLINT"
       ],
       "status": "approved"
     },
@@ -384,48 +370,13 @@
       "status": "approved"
     },
     {
-      "id": "max-function-parameters",
-      "title": "Function parameter count does not exceed 5",
-      "description": "No function or constructor accepts more than 5 positional parameters. Functions with many parameters are a code smell for two problems: the function is doing too much (should be decomposed), or the parameters form a natural object that has not yet been named (should be a DTO or parameter object). A six-parameter function call at the call site is unreadable — the reader must map each positional value back to its semantic meaning. A parameter object gives each argument a name at the call site, makes the signature extensible without breaking callers, and allows partial construction. Constructor injection of dependencies is the primary exception pattern: it is acceptable for DI-heavy constructors to receive more dependencies if each one is an interface, but even then, a constructor with 8+ dependencies signals a god class that should be split. This gate uses the ESLint max-params rule.",
-      "category": "Bounded",
-      "gsProperty": "Bounded",
-      "phase": "pr",
-      "hook": "pull_request",
-      "check": "npx eslint --rule '{\\\"max-params\\\": [\\\"error\\\", 5]}' 'src/**/*.ts' 'src/**/*.js'",
-      "passCriterion": "No function or constructor accepts more than 5 positional parameters.",
-      "tags": [
-        "JAVASCRIPT",
-        "TYPESCRIPT",
-        "ESLINT"
-      ],
-      "status": "approved"
-    },
-    {
-      "id": "mutation-score-threshold",
-      "title": "Mutation score (MSI) at or above 65%",
-      "description": "The Stryker mutation testing score (Mutation Score Indicator) is at or above 65% for the full project, and at or above 70% for changed files on a pull request. Line coverage measures whether tests run through code; mutation score measures whether tests verify behavior. An 80% covered codebase can have a 40% mutation score — tests execute the code but assert nothing meaningful about it. Surviving mutants are missing assertions: the code was changed (operator flipped, boundary shifted, branch inverted) and no test failed. This gate is the definitive check for test quality, not just test quantity. 65% is the minimum viable threshold; critical paths (auth, financial logic, data pipelines) must be enforced separately at 90%+ via per-module stryker configuration.",
-      "category": "Verifiable",
-      "gsProperty": "Verifiable",
-      "phase": "pr",
-      "hook": "pull_request",
-      "check": "npx stryker run",
-      "passCriterion": "The Stryker mutation testing score (Mutation Score Indicator) is at or above 65% for the full project, and at or above 70% for changed files on a pull request.",
-      "tags": [
-        "JAVASCRIPT",
-        "TYPESCRIPT",
-        "STRYKER",
-        "MUTATION-TESTING"
-      ],
-      "status": "approved"
-    },
-    {
       "id": "no-any-type",
       "title": "No explicit any type in TypeScript source",
       "description": "No explicit ': any' type annotations appear in non-test TypeScript source files. The 'any' type is a type-system escape hatch that silences the compiler without providing safety. A function typed as returning any, or accepting any as a parameter, cannot be statically verified — its contract is undeclared. This directly violates the Bounded property: a module with any-typed boundaries cannot be fully described by its type signature alone. Use unknown for truly unknown values (forces handling), or a properly defined type or generic. The 'as any' cast in test files is permitted as a last resort for mocking untyped third-party internals, but never in production source.",
       "category": "Bounded",
       "gsProperty": "Bounded",
-      "phase": "commit",
-      "hook": "pre-commit",
+      "phase": "development",
+      "hook": "commit",
       "check": "grep -rn --include='*.ts' --include='*.tsx' ': any' src/ | grep -v '\\\\.test\\\\.' | grep -v '\\\\.spec\\\\.' | grep -v '/tests/' && echo 'Explicit :any types found — use a specific type or unknown' && exit 1 || exit 0",
       "passCriterion": "No explicit ': any' type annotations appear in non-test TypeScript source files.",
       "tags": [
@@ -454,8 +405,8 @@
       "description": "No console.log, console.warn, or console.error calls appear in non-test production source files. Console statements are debug artifacts. In production code they leak implementation details, add noise to structured log pipelines, and frequently expose sensitive data (request payloads, user IDs, internal state) that should never appear in stdout. Structured logging through an injected logger abstraction (winston, pino, std/log) is the correct pattern: it is configurable, level-filtered, structured (JSON), and replaceable in tests with a null logger. A console.log that survives to production was never cleaned up — it means the developer was debugging and did not finish. This gate makes that visible at commit time rather than in a production log audit.",
       "category": "Executable",
       "gsProperty": "Executable",
-      "phase": "commit",
-      "hook": "pre-commit",
+      "phase": "development",
+      "hook": "commit",
       "check": "grep -rn --include='*.ts' --include='*.js' --include='*.tsx' --include='*.jsx' 'console\\\\.' src/ | grep -v '\\\\.test\\\\.' | grep -v '\\\\.spec\\\\.' | grep -v '/tests/' | grep -v '/test/' && echo 'console.* calls found in production source — use a structured logger' && exit 1 || exit 0",
       "passCriterion": "No console.",
       "tags": [
@@ -588,15 +539,18 @@
     },
     {
       "id": "python-dependencies-pinned",
-      "title": "python-dependencies-pinned",
-      "description": "|",
-      "category": "Verifiable",
-      "gsProperty": "Verifiable",
+      "title": "Python dependencies are pinned to exact versions",
+      "description": "Python projects must have a locked dependency file with pinned versions. A requirements.txt without version pins, or a pyproject.toml without a lockfile, resolves to whatever is current at install time — producing environment drift across machines, containers, and AI sessions. The exact versions in the lockfile are the specification: they are the versions that passed tests, not a range of versions that might. Gate passes when: requirements.txt exists with all entries pinned (==), OR pyproject.toml exists alongside poetry.lock, uv.lock, or pdm.lock.",
+      "category": "Executable",
+      "gsProperty": "Executable",
       "phase": "development",
-      "hook": "commit",
-      "check": "",
-      "passCriterion": "|.",
-      "tags": [],
+      "hook": "pr",
+      "check": "if [ -f requirements.txt ]; then grep -vE \"^#|^$|==\" requirements.txt && echo \"FAIL: unpinned deps in requirements.txt\" && exit 1 || exit 0; elif [ -f pyproject.toml ]; then ([ -f poetry.lock ] || [ -f uv.lock ] || [ -f pdm.lock ]) || { echo \"FAIL: no lockfile found\"; exit 1; }; else echo \"FAIL: no Python dependency file\"; exit 1; fi",
+      "passCriterion": "Gate passes when: requirements.",
+      "tags": [
+        "PYTHON",
+        "ANY"
+      ],
       "status": "approved"
     },
     {
@@ -631,15 +585,17 @@
     },
     {
       "id": "runtime-version-pinned",
-      "title": "runtime-version-pinned",
-      "description": "|",
-      "category": "Verifiable",
-      "gsProperty": "Verifiable",
+      "title": "Runtime version is pinned via a version file",
+      "description": "A runtime version pin file must exist in the repository root: .nvmrc for Node.js, .python-version for Python, .tool-versions for multi-runtime projects. Without a version pin, the runtime resolves from whatever the local system or CI image provides — different machines produce different outcomes. This is the most common source of works-on-my-machine failures. Gate passes when at least one of .nvmrc, .python-version, .tool-versions, or .ruby-version exists in the root.",
+      "category": "Executable",
+      "gsProperty": "Executable",
       "phase": "development",
       "hook": "commit",
-      "check": "",
-      "passCriterion": "|.",
-      "tags": [],
+      "check": "test -f .nvmrc || test -f .python-version || test -f .tool-versions || test -f .ruby-version || { echo \"FAIL: No runtime version pin file found (.nvmrc, .python-version, .tool-versions)\"; exit 1; }",
+      "passCriterion": "Gate passes when at least one of .",
+      "tags": [
+        "ANY"
+      ],
       "status": "approved"
     },
     {
@@ -711,8 +667,8 @@
       "description": "The project's tsconfig.json has compilerOptions.strict set to true. Strict mode enables a family of compiler checks — noImplicitAny, strictNullChecks, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, and alwaysStrict — that collectively eliminate the most common sources of runtime type errors. A TypeScript codebase without strict mode enabled is structurally equivalent to a JavaScript codebase with optional type hints. The Executable property requires that the artifact compiles under the strongest type constraints the toolchain offers. Turning off strict mode to silence errors defers type unsafety to runtime.",
       "category": "Executable",
       "gsProperty": "Executable",
-      "phase": "commit",
-      "hook": "pre-commit",
+      "phase": "development",
+      "hook": "commit",
       "check": "node -e \\\"const c=JSON.parse(require('fs').readFileSync('./tsconfig.json','utf8')); if(!c.compilerOptions || c.compilerOptions.strict !== true){console.error('tsconfig.json must have compilerOptions.strict: true');process.exit(1)}\\\"",
       "passCriterion": "The project's tsconfig.",
       "tags": [

@@ -1,4 +1,4 @@
-id: mutation-score-threshold
+﻿id: mutation-score-threshold
 name: Mutation score (MSI) at or above 65%
 description: >
   The Stryker mutation testing score (Mutation Score Indicator) is at or above 65% for
@@ -12,9 +12,9 @@ description: >
   must be enforced separately at 90%+ via per-module stryker configuration.
 property: Verifiable
 tags: [javascript, typescript, stryker, mutation-testing]
-phase: pr
-trigger: pull_request
+phase: development
+trigger: pr
 blocking: true
 check:
-  type: command
+  type: script
   command: "npx stryker run"

@@ -1,23 +1,21 @@
 id: docker-service-boundaries
-tier: recommended
-tag: ENVIRONMENT
-title: Docker Service DB Boundaries Explicit
-description: |
-  Each application service in docker-compose.yml must reference an explicitly
-  named database service. Generic names (db, database, postgres) shared across
-  multiple services create ambiguity ΓÇö AI agents assume a topology that may not
-  match intent, and service boundaries become implicit rather than specified.
+name: Docker service database references are explicitly named
+description: >
+  Each application service in docker-compose.yml that depends on a database must
+  reference an explicitly named database service rather than a generic name (db,
+  database, postgres). Generic shared service names create topological ambiguity:
+  multiple services coupling to the same generic name makes the dependency graph
+  unreadable and the compose file not self-describing. A stateless reader cannot
+  determine service ownership from the file alone. Gate passes when no service
+  in docker-compose.yml declares a depends_on entry whose value is exactly 'db',
+  'database', or 'postgres' without a service-scoped prefix.
+property: Self-describing
+tags: [docker, any]
+phase: development
+trigger: pr
+blocking: false
 check:
   type: script
-  language: shell
-  script: |
-    # Warn if any service uses a db dependency named only 'db' or 'database'
-    if grep -E "^\s+- (db|database)$" docker-compose.yml > /dev/null 2>&1; then
-      echo "FAIL: Generic DB service name detected. Use explicit names (e.g., users-db, orders-db)."
-      exit 1
-    fi
-    echo "PASS"
-fix: |
-  Rename generic database services to service-scoped names:
-  'db' ΓåÆ 'api-db', 'analytics-db', etc.
-  Each service that owns a database gets a uniquely named service in compose.
+  command: >
+    ! grep -E "^\s+- (db|database|postgres)$" docker-compose.yml 2>/dev/null ||
+    { echo "FAIL: Generic DB service name in docker-compose.yml. Use scoped names (api-db, analytics-db)."; exit 1; }

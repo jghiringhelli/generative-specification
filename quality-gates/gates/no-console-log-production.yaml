@@ -13,8 +13,8 @@ description: >
   audit.
 property: Executable
 tags: [javascript, typescript, any]
-phase: commit
-trigger: pre-commit
+phase: development
+trigger: commit
 blocking: true
 check:
   type: script

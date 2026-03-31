@@ -1,4 +1,4 @@
-id: function-length-max-50
+﻿id: function-length-max-50
 name: Function length does not exceed 50 lines
 description: >
   No function or method body exceeds 50 lines of code. A function longer than 50 lines
@@ -11,9 +11,9 @@ description: >
   need 60+ lines signal missing helper functions or missing abstractions.
 property: Bounded
 tags: [javascript, typescript, eslint]
-phase: pr
-trigger: pull_request
+phase: development
+trigger: pr
 blocking: true
 check:
-  type: command
+  type: script
   command: "npx eslint --rule '{\"max-lines-per-function\": [\"error\", {\"max\": 50, \"skipBlankLines\": true, \"skipComments\": true}]}' 'src/**/*.ts' 'src/**/*.js'"

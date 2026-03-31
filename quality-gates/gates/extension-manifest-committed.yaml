@@ -1,21 +1,20 @@
 id: extension-manifest-committed
-tier: recommended
-tag: ENVIRONMENT
-title: VS Code Extension Manifest Committed
-description: |
+name: VS Code extension manifest committed
+description: >
   .vscode/extensions.json must exist and be committed to the repository.
-  Without it, AI agents and developers reinstall extensions session after session
-  ΓÇö the environment is underspecified and the toolchain is not reproducible.
+  Without it, AI agents and developers reinstall extensions session after session:
+  the development environment is underspecified and the toolchain is not reproducible.
+  A committed extensions manifest ensures every contributor and every AI session starts
+  with the same editor toolchain. Gate passes when .vscode/extensions.json exists and
+  contains a non-empty recommendations array.
+property: Self-describing
+tags: [any]
+phase: development
+trigger: commit
+blocking: false
 check:
-  type: file_exists
-  path: .vscode/extensions.json
-fix: |
-  Create .vscode/extensions.json listing all required extensions by ID.
-  Example:
-  {
-    "recommendations": [
-      "esbenp.prettier-vscode",
-      "dbaeumer.vscode-eslint"
-    ]
-  }
-  Commit and push.
+  type: script
+  command: >
+    test -f .vscode/extensions.json &&
+    node -e "const e=JSON.parse(require('fs').readFileSync('.vscode/extensions.json'));
+    if(!e.recommendations||!e.recommendations.length){process.exit(1)}"

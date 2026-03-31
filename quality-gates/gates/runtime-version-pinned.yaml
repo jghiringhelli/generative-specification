@@ -1,21 +1,19 @@
 id: runtime-version-pinned
-tier: core
-tag: ENVIRONMENT
-title: Runtime Version Pinned
-description: |
-  A runtime version pin file must exist: .nvmrc for Node.js projects,
-  .python-version for Python projects, .tool-versions for multi-runtime.
-  Without it, the AI and developers resolve the interpreter from whatever
-  the local system provides ΓÇö different machines produce different outcomes.
+name: Runtime version is pinned via a version file
+description: >
+  A runtime version pin file must exist in the repository root: .nvmrc for Node.js,
+  .python-version for Python, .tool-versions for multi-runtime projects.
+  Without a version pin, the runtime resolves from whatever the local system or CI
+  image provides — different machines produce different outcomes. This is the most
+  common source of works-on-my-machine failures. Gate passes when at least one of
+  .nvmrc, .python-version, .tool-versions, or .ruby-version exists in the root.
+property: Executable
+tags: [any]
+phase: development
+trigger: commit
+blocking: true
 check:
-  type: file_exists_one_of
-  paths:
-    - .nvmrc
-    - .python-version
-    - .tool-versions
-    - .ruby-version
-fix: |
-  For Node.js:  echo "20.11.0" > .nvmrc
-  For Python:   echo "3.11.8" > .python-version
-  For multi:    create .tool-versions with 'nodejs 20.11.0' etc.
-  Commit and push.
+  type: script
+  command: >
+    test -f .nvmrc || test -f .python-version || test -f .tool-versions || test -f .ruby-version ||
+    { echo "FAIL: No runtime version pin file found (.nvmrc, .python-version, .tool-versions)"; exit 1; }

@@ -11,8 +11,8 @@ description: >
   last resort for mocking untyped third-party internals, but never in production source.
 property: Bounded
 tags: [typescript]
-phase: commit
-trigger: pre-commit
+phase: development
+trigger: commit
 blocking: true
 check:
   type: script

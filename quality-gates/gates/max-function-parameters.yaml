@@ -1,4 +1,4 @@
-id: max-function-parameters
+﻿id: max-function-parameters
 name: Function parameter count does not exceed 5
 description: >
   No function or constructor accepts more than 5 positional parameters. Functions with
@@ -14,9 +14,9 @@ description: >
   split. This gate uses the ESLint max-params rule.
 property: Bounded
 tags: [javascript, typescript, eslint]
-phase: pr
-trigger: pull_request
+phase: development
+trigger: pr
 blocking: true
 check:
-  type: command
+  type: script
   command: "npx eslint --rule '{\"max-params\": [\"error\", 5]}' 'src/**/*.ts' 'src/**/*.js'"
