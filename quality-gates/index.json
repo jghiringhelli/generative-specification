@@ -1,0 +1,739 @@
+{
+  "generatedAt": "2026-03-31T20:09:37.290Z",
+  "version": "1",
+  "gateCount": 44,
+  "tags": [
+    "ACADEMIC-PAPER",
+    "ANY",
+    "API",
+    "CONTRACT-TESTING",
+    "DATABASE",
+    "DOCKER",
+    "ESLINT",
+    "ESM",
+    "EXPRESS",
+    "FASTIFY",
+    "HURL",
+    "JAVASCRIPT",
+    "JEST",
+    "MUTATION-TESTING",
+    "NODE",
+    "NPM",
+    "QUALITY",
+    "REST",
+    "SONARQUBE",
+    "STATIC-ANALYSIS",
+    "STRYKER",
+    "TYPESCRIPT"
+  ],
+  "gates": [
+    {
+      "id": "adr-files-emitted",
+      "title": "ADRs exist as committed files",
+      "description": "Every Architecture Decision Record referenced in the specification or README must exist as a committed file with substantive content — context, options considered, decision, and consequences. An ADR that is referenced in prose (\"see ADR-0001\") but does not exist as a file fails the Auditable gate. An ADR that exists as an empty stub or contains only a title also fails. The decision trail must be readable by a stateless agent with no prior context.",
+      "category": "Auditable",
+      "gsProperty": "Auditable",
+      "phase": "development",
+      "hook": "pr",
+      "check": "",
+      "passCriterion": "Every Architecture Decision Record referenced in the specification or README must exist as a committed file with substantive content — context, options considered, decision, and consequences.",
+      "tags": [
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "api-error-envelope-resource-scoped",
+      "title": "Resource-scoped error envelope",
+      "description": "API validation errors must be returned under a key that names the failing resource, not a generic \"body\" key. The envelope shape must be { \"errors\": { \"<resource>\": [\"message\"] } } where <resource> is the noun being validated (e.g. \"username\", \"email\", \"article\", \"title\"). A generic errors.body[] response makes error attribution ambiguous for clients and fails OpenAPI contract tests. This gate is derived from Hurl RC2: six of thirteen official Conduit contract tests failed solely because the implementation returned errors.body[] instead of resource-scoped keys. Implement a formatError(resource, messages) utility so the pattern is enforced uniformly across all endpoints.",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "development",
+      "hook": "pr",
+      "check": "hurl --test --variable host=http://localhost:3000 specs/api/hurl/register.hurl specs/api/hurl/create-article.hurl",
+      "passCriterion": "API validation errors must be returned under a key that names the failing resource, not a generic \"body\" key.",
+      "tags": [
+        "API",
+        "REST",
+        "NODE",
+        "TYPESCRIPT",
+        "JAVASCRIPT"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "api-nullable-field-coercion",
+      "title": "Nullable field coercion on empty strings",
+      "description": "Optional profile fields (bio, image) must be stored and returned as null when the client sends an empty string. Storing \"\" produces a type inconsistency: the API spec declares the field nullable, but an empty string is truthy and semantically different from \"not set\". This gate is derived from Hurl RC1: the Conduit contract test for PUT /api/user sent bio=\"\" and asserted the response contained null — the implementation returned \"\" and the test failed. Apply the coercion at the service layer: bio === '' ? null : bio.",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "hurl --test --variable host=http://localhost:3000 specs/api/hurl/update-user.hurl",
+      "passCriterion": "Optional profile fields (bio, image) must be stored and returned as null when the client sends an empty string.",
+      "tags": [
+        "API",
+        "REST",
+        "NODE",
+        "TYPESCRIPT",
+        "JAVASCRIPT",
+        "DATABASE"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "claim-scope-calibration",
+      "title": "Evidence scope matches claim scope",
+      "description": "Every claim in the paper must be supported by evidence of equivalent scope. A claim about a general population requires population-level evidence; a claim about a single domain requires domain-level evidence. A case study of N=6 software projects does not support a claim that the methodology \"governs any domain.\" Non-software extensions must be explicitly labeled as hypotheses. Pass: all broad claims are hedged or have matching evidence. Fail: a general claim is supported only by narrow evidence without explicit qualification.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "",
+      "passCriterion": "Every claim in the paper must be supported by evidence of equivalent scope.",
+      "tags": [
+        "ACADEMIC-PAPER"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "conflict-of-interest-disclosure",
+      "title": "Material conflicts of interest disclosed near abstract",
+      "description": "Any material relationship between the author and tools, products, or organizations central to the paper's claims must be disclosed in a dedicated section near the abstract ΓÇö not buried in a single sentence mid-paper. The disclosure must state: (a) the nature of the relationship; (b) which claims depend on the conflicted tool/product and which are independent of it; (c) what a conflict-free replication would require. A single sentence of disclosure in ┬º6 is insufficient when the conflicted tool is used in all case studies and all experiments. Pass: dedicated COI section present, relationship fully characterized, tool-dependent vs tool-independent claims distinguished. Fail: COI buried in body text, or not present at all.",
+      "category": "Auditable",
+      "gsProperty": "Auditable",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "",
+      "passCriterion": "Any material relationship between the author and tools, products, or organizations central to the paper's claims must be disclosed in a dedicated section near the abstract ΓÇö not buried in a single sentence mid-paper.",
+      "tags": [
+        "ACADEMIC-PAPER"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "container-image-no-critical-cve",
+      "title": "Container image has no critical or high CVEs",
+      "description": "The production container image must pass a CVE scan (Trivy, Grype, or Docker Scout) with no critical or high severity vulnerabilities before deployment. Base image vulnerabilities are inherited attack surface — a clean application layer over a vulnerable base image is not a secure deployment. This gate enforces the Defended property at the infrastructure boundary: the artifact being deployed must be scanned, not just the application dependencies. Gate passes when the scanner exits 0 at --severity CRITICAL,HIGH threshold. Image must be the same artifact that will be deployed (not rebuilt after scan). Use a pinned digest for the base image in the Dockerfile to prevent silent base image changes between scan and deploy.",
+      "category": "Defended",
+      "gsProperty": "Defended",
+      "phase": "staging",
+      "hook": "release",
+      "check": "trivy image --exit-code 1 --severity CRITICAL,HIGH ${IMAGE_TAG:-$(cat .image-tag)}",
+      "passCriterion": "Gate passes when the scanner exits 0 at --severity CRITICAL,HIGH threshold.",
+      "tags": [
+        "DOCKER",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "contract-tests-against-live-env",
+      "title": "API contract tests pass against live environment",
+      "description": "The committed API contract test suite must pass against the live target environment (staging, CAE, or production candidate) before promotion. This is distinct from running contract tests against a local server: the live environment exercises the full deployment stack including authentication middleware, database connections, environment-specific configuration, and any infrastructure-level routing. A service that passes contract tests locally but fails against its own staging environment has an environment configuration gap, not a test gap. Gate passes when the contract test runner (Hurl, Postman/Newman, Pact, or equivalent) exits 0 against the environment URL supplied via DEPLOY_URL. The test suite must be parameterized by URL and must not require production data — it must function against a seeded or empty environment.",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "staging",
+      "hook": "release",
+      "check": "DEPLOY_URL=${DEPLOY_URL} ./scripts/run-contract-tests.sh",
+      "passCriterion": "Gate passes when the contract test runner (Hurl, Postman/Newman, Pact, or equivalent) exits 0 against the environment URL supplied via DEPLOY_URL.",
+      "tags": [
+        "API",
+        "REST",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "conventional-commits",
+      "title": "Conventional commit format",
+      "description": "Commit messages follow the conventional commit format: type(scope): description. Valid types: feat, fix, refactor, docs, test, chore, perf, ci. Conventional commits are not a style preference — they are an auditable trail. A commit log that mixes \"wip\", \"fix stuff\", and \"more changes\" is unreadable to a stateless agent and provides no evidence of what changed and why. The Auditable property requires that every commit is interpretable without external context.",
+      "category": "Auditable",
+      "gsProperty": "Auditable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "echo \\\"$1\\\" | grep -Eq '^(feat|fix|refactor|docs|test|chore|perf|ci)(\\\\(.+\\\\))?: .{1,72}$' || exit 1",
+      "passCriterion": "Commit messages follow the conventional commit format: type(scope): description.",
+      "tags": [
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "coverage-threshold-80",
+      "title": "Line coverage ≥ 80%",
+      "description": "Test line coverage is at or above 80% for the entire project. Coverage is not a quality metric — it is a derivability metric. Code that has no tests cannot be verified; behavior that cannot be verified cannot be specified; a specification with unverifiable behavior is incomplete. 80% is the minimum threshold at which the Verifiable property can be claimed. Critical paths (auth, financial calculations, data pipelines) require 95%+ coverage enforced separately. This gate blocks merge when the overall threshold is not met.",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "development",
+      "hook": "pr",
+      "check": "jest --coverage --coverageThreshold '{\\\"global\\\":{\\\"lines\\\":80}}'",
+      "passCriterion": "Test line coverage is at or above 80% for the entire project.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "JEST"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "cyclomatic-complexity-max-10",
+      "title": "Cyclomatic complexity max 10 per function",
+      "description": "No function may have a cyclomatic complexity above 10. Cyclomatic complexity counts the number of linearly independent paths through a function; above 10 the function is statistically harder to test completely and harder to understand in isolation. This gate uses eslint complexity rule at threshold 10. Note that higher complexity in well-specified systems is not always degradation: v4/v5 Ax conditions showed higher complexity than the naive condition because they implemented fuller error handling. The gate catches genuine spaghetti, not intentional coverage. Functions exceeding the threshold must be decomposed into named sub-functions with single responsibilities.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "development",
+      "hook": "commit",
+      "check": "npx eslint --rule '{\\\"complexity\\\": [\\\"error\\\", 10]}' 'src/**/*.{ts,js}'",
+      "passCriterion": "No function may have a cyclomatic complexity above 10.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "NODE",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "db-migrations-reversible",
+      "title": "Database migrations have a rollback path",
+      "description": "Every database migration file must include a rollback or down function alongside the up migration. An irreversible migration is a deployment risk: if a release must be rolled back, schema changes without a rollback path can leave the database in a state incompatible with the previous application version. Applies to all migration systems: Flyway (V and U scripts paired), Knex/TypeORM (exports.down), Alembic (downgrade function), Prisma (migration with shadow database validation). Gate passes when every migration file that has an up path also has a corresponding down/rollback path, or is explicitly annotated as intentionally irreversible with a documented justification. Irreversible gates without justification are a hard block.",
+      "category": "Defended",
+      "gsProperty": "Defended",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "./scripts/check-migration-rollbacks.sh",
+      "passCriterion": "Gate passes when every migration file that has an up path also has a corresponding down/rollback path, or is explicitly annotated as intentionally irreversible with a documented justification.",
+      "tags": [
+        "DATABASE",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "docker-service-boundaries",
+      "title": "docker-service-boundaries",
+      "description": "|",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "",
+      "passCriterion": "|.",
+      "tags": [],
+      "status": "approved"
+    },
+    {
+      "id": "env-vars-documented",
+      "title": "All environment variables documented",
+      "description": "Every environment variable consumed by the application must appear in a committed documentation file (e.g., .env.example, docs/configuration.md, or a table in the README). Undocumented environment variables are hidden configuration: they cannot be audited, rotated, or reproduced across environments. A stateless reader deploying this application to a new environment must be able to derive the complete configuration surface from the repository alone. Gate passes when a env-doc check script finds no variable references in source code that are absent from the documented file. Applies to all environment types: development, staging, and production.",
+      "category": "Self-describing",
+      "gsProperty": "Self-describing",
+      "phase": "development",
+      "hook": "pr",
+      "check": "./scripts/check-env-docs.sh",
+      "passCriterion": "Gate passes when a env-doc check script finds no variable references in source code that are absent from the documented file.",
+      "tags": [
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "experimental-design-standards",
+      "title": "Experimental claims meet design standards",
+      "description": "Any section presenting experimental results must clearly state: (1) whether conditions were pre-registered or post-hoc; (2) N per condition; (3) whether the auditor/evaluator is independent of the treatment generator (same-family AI auditing same-family AI output is a confound that must be disclosed); (4) whether statistical inference is claimed and if so whether sample size supports it. Post-hoc conditions designed to fix gaps found in prior runs must be labeled as iterative product development, not experimental evidence. Pass: all conditions clearly labeled, confounds disclosed, inference claims calibrated to N. Fail: post-hoc conditions presented as experimental evidence without explicit label.",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "",
+      "passCriterion": "Any section presenting experimental results must clearly state: (1) whether conditions were pre-registered or post-hoc; (2) N per condition; (3) whether the auditor/evaluator is independent of the treatment generator (same-family AI auditing same-family AI output is a confound that must be disclosed); (4) whether statistical inference is claimed and if so whether sample size supports it.",
+      "tags": [
+        "ACADEMIC-PAPER"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "extension-manifest-committed",
+      "title": "extension-manifest-committed",
+      "description": "|",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "",
+      "passCriterion": "|.",
+      "tags": [],
+      "status": "approved"
+    },
+    {
+      "id": "file-length-max-300",
+      "title": "Source file length does not exceed 300 lines",
+      "description": "No TypeScript or JavaScript source file exceeds 300 lines. File length is a proxy for single-responsibility compliance: a 500-line file almost certainly contains multiple conceptual concerns. At 300 lines, a human reader can hold the entire file in working memory without paging — above that, the cognitive overhead of understanding the module increases non-linearly. The 300-line limit applies to production source only; test files are excluded since comprehensive test suites are legitimately verbose. Files that approach the limit are a signal to split by responsibility: model from service, handler from controller, pure functions from side-effecting orchestration.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "commit",
+      "hook": "pre-commit",
+      "check": "node -e \\\"const fs=require('fs'),path=require('path');function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)])}const files=walk('src').filter(f=>/\\\\.(ts|js|tsx|jsx)$/.test(f)&&!/\\\\.(test|spec)\\\\.(ts|js|tsx|jsx)$/.test(f));let fail=false;files.forEach(f=>{const lines=fs.readFileSync(f,'utf8').split('\\\\n').length;if(lines>300){console.error(f+': '+lines+' lines (max 300)');fail=true;}});process.exit(fail?1:0)\\\"",
+      "passCriterion": "No TypeScript or JavaScript source file exceeds 300 lines.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "function-length-max-50",
+      "title": "Function length does not exceed 50 lines",
+      "description": "No function or method body exceeds 50 lines of code. A function longer than 50 lines is doing more than one thing. Single Responsibility applies at the function level: a 200-line function is a module masquerading as a function, with hidden dependencies between its parts and no clean abstraction boundary. Long functions are the primary cause of untestable code — they cannot be unit-tested without also testing everything else they do. The 50-line limit is enforced via the ESLint max-lines-per-function rule, which excludes comment lines and blank lines from the count. Functions that consistently need 60+ lines signal missing helper functions or missing abstractions.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "pr",
+      "hook": "pull_request",
+      "check": "npx eslint --rule '{\\\"max-lines-per-function\\\": [\\\"error\\\", {\\\"max\\\": 50, \\\"skipBlankLines\\\": true, \\\"skipComments\\\": true}]}' 'src/**/*.ts' 'src/**/*.js'",
+      "passCriterion": "No function or method body exceeds 50 lines of code.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "ESLINT"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "health-endpoint-responds",
+      "title": "Health endpoint returns 200 with status payload",
+      "description": "The application must expose a /health endpoint (or equivalent per platform convention) that returns HTTP 200 with a JSON body containing at minimum: status, version, and uptime. This endpoint is the machine-readable signal that a deployed instance is operational and self-identifying. Without it, deployment pipelines cannot distinguish a running-but-broken instance from a healthy one. Liveness and readiness probes in Kubernetes, Railway health checks, and canary routing all depend on this endpoint. Gate passes when the endpoint returns 200 and the response body parses as JSON with the required fields. The endpoint must not require authentication.",
+      "category": "Executable",
+      "gsProperty": "Executable",
+      "phase": "staging",
+      "hook": "release",
+      "check": "curl -sf ${HEALTH_URL:-http://localhost:3000/health} | jq -e '.status and .version'",
+      "passCriterion": "Gate passes when the endpoint returns 200 and the response body parses as JSON with the required fields.",
+      "tags": [
+        "API",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "hurl-contract-tests-pass",
+      "title": "Hurl contract test suite passes",
+      "description": "The full Hurl test suite for the published API spec must exit 0 against a running server. Hurl tests are authored independently of the implementation — they are the contract between the API and its consumers, not a test of internal structure. A system that passes tsc and Jest but fails Hurl has correctly structured code that violates its own interface. This gate operationalizes the Verifiable property at the HTTP boundary: the specification is executable and the implementation satisfies it. The test files must be committed in specs/api/hurl/ and cover at minimum: registration, login, article CRUD, comments, favorites, follow/unfollow, and pagination. Gate passes when hurl --test exits 0.",
+      "category": "Executable",
+      "gsProperty": "Executable",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "hurl --test --variable host=${API_HOST:-http://localhost:3000} specs/api/hurl/*.hurl",
+      "passCriterion": "Gate passes when hurl --test exits 0.",
+      "tags": [
+        "API",
+        "REST",
+        "HURL",
+        "CONTRACT-TESTING",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "internal-consistency",
+      "title": "No contradictory claims within paper",
+      "description": "No two claims in the paper may be logically incompatible. Common failure modes: a theoretical frame is declared \"analogy only\" in one section but used as load-bearing evidence in another; a term is hedged in a footnote but asserted without hedge in the conclusion; a disclaimer in ┬º1 is violated by reasoning in ┬º10. Pass: all claims are mutually consistent and hedges are honored throughout. Fail: a claim in one section contradicts or undermines a claim in another section without acknowledgment.",
+      "category": "Self-describing",
+      "gsProperty": "Self-describing",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "",
+      "passCriterion": "No two claims in the paper may be logically incompatible.",
+      "tags": [
+        "ACADEMIC-PAPER"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "jest-no-failed-tests",
+      "title": "All tests pass",
+      "description": "jest --json exits with numFailedTests === 0. A test failure is not a code quality warning — it is a specification violation. The test suite encodes the behavioral contracts; a failing test means the implementation diverges from those contracts. No further implementation work proceeds until the test suite is green. This is the primary evidence artifact for the Executable property.",
+      "category": "Executable",
+      "gsProperty": "Executable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "jest --json --outputFile=evidence/jest-output.json",
+      "passCriterion": "jest --json exits with numFailedTests === 0.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "JEST"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "jsdoc-public-functions",
+      "title": "Public functions have JSDoc",
+      "description": "Every public function and method has a JSDoc comment with a description, typed @param tags, and a @returns tag. A function without a docstring forces the reader to infer its purpose, inputs, and outputs from implementation details. The Self-describing property requires that the specification artifacts are readable without execution context. A public function is part of the module's contract; its documentation is part of the specification. This gate applies to TypeScript and JavaScript. For other languages, use equivalent documentation standards (Python docstrings, Go doc comments, etc.).",
+      "category": "Self-describing",
+      "gsProperty": "Self-describing",
+      "phase": "development",
+      "hook": "pr",
+      "check": "eslint --rule 'jsdoc/require-jsdoc: [error, {publicOnly: true}]' src/**/*.ts",
+      "passCriterion": "Every public function and method has a JSDoc comment with a description, typed @param tags, and a @returns tag.",
+      "tags": [
+        "TYPESCRIPT",
+        "JAVASCRIPT"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "max-function-parameters",
+      "title": "Function parameter count does not exceed 5",
+      "description": "No function or constructor accepts more than 5 positional parameters. Functions with many parameters are a code smell for two problems: the function is doing too much (should be decomposed), or the parameters form a natural object that has not yet been named (should be a DTO or parameter object). A six-parameter function call at the call site is unreadable — the reader must map each positional value back to its semantic meaning. A parameter object gives each argument a name at the call site, makes the signature extensible without breaking callers, and allows partial construction. Constructor injection of dependencies is the primary exception pattern: it is acceptable for DI-heavy constructors to receive more dependencies if each one is an interface, but even then, a constructor with 8+ dependencies signals a god class that should be split. This gate uses the ESLint max-params rule.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "pr",
+      "hook": "pull_request",
+      "check": "npx eslint --rule '{\\\"max-params\\\": [\\\"error\\\", 5]}' 'src/**/*.ts' 'src/**/*.js'",
+      "passCriterion": "No function or constructor accepts more than 5 positional parameters.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "ESLINT"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "mutation-score-threshold",
+      "title": "Mutation score (MSI) at or above 65%",
+      "description": "The Stryker mutation testing score (Mutation Score Indicator) is at or above 65% for the full project, and at or above 70% for changed files on a pull request. Line coverage measures whether tests run through code; mutation score measures whether tests verify behavior. An 80% covered codebase can have a 40% mutation score — tests execute the code but assert nothing meaningful about it. Surviving mutants are missing assertions: the code was changed (operator flipped, boundary shifted, branch inverted) and no test failed. This gate is the definitive check for test quality, not just test quantity. 65% is the minimum viable threshold; critical paths (auth, financial logic, data pipelines) must be enforced separately at 90%+ via per-module stryker configuration.",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "pr",
+      "hook": "pull_request",
+      "check": "npx stryker run",
+      "passCriterion": "The Stryker mutation testing score (Mutation Score Indicator) is at or above 65% for the full project, and at or above 70% for changed files on a pull request.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "STRYKER",
+        "MUTATION-TESTING"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "no-any-type",
+      "title": "No explicit any type in TypeScript source",
+      "description": "No explicit ': any' type annotations appear in non-test TypeScript source files. The 'any' type is a type-system escape hatch that silences the compiler without providing safety. A function typed as returning any, or accepting any as a parameter, cannot be statically verified — its contract is undeclared. This directly violates the Bounded property: a module with any-typed boundaries cannot be fully described by its type signature alone. Use unknown for truly unknown values (forces handling), or a properly defined type or generic. The 'as any' cast in test files is permitted as a last resort for mocking untyped third-party internals, but never in production source.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "commit",
+      "hook": "pre-commit",
+      "check": "grep -rn --include='*.ts' --include='*.tsx' ': any' src/ | grep -v '\\\\.test\\\\.' | grep -v '\\\\.spec\\\\.' | grep -v '/tests/' && echo 'Explicit :any types found — use a specific type or unknown' && exit 1 || exit 0",
+      "passCriterion": "No explicit ': any' type annotations appear in non-test TypeScript source files.",
+      "tags": [
+        "TYPESCRIPT"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "no-circular-dependencies",
+      "title": "No circular module dependencies",
+      "description": "The module dependency graph is acyclic. Circular dependencies mean module A's behavior depends on module B, which depends on module A — neither can be understood without the other. A stateless reader cannot correctly derive the behavior of either module from either alone. This is a direct violation of the Composable property: modules must have clean boundaries and be independently derivable. In TypeScript projects, tsc --noEmit catches circular imports. For other languages, use madge (Node) or equivalents.",
+      "category": "Composable",
+      "gsProperty": "Composable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "npx madge --circular --extensions ts src/ && exit 0 || exit 1",
+      "passCriterion": "The module dependency graph is acyclic.",
+      "tags": [
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "no-console-log-production",
+      "title": "No console.log calls in production source",
+      "description": "No console.log, console.warn, or console.error calls appear in non-test production source files. Console statements are debug artifacts. In production code they leak implementation details, add noise to structured log pipelines, and frequently expose sensitive data (request payloads, user IDs, internal state) that should never appear in stdout. Structured logging through an injected logger abstraction (winston, pino, std/log) is the correct pattern: it is configurable, level-filtered, structured (JSON), and replaceable in tests with a null logger. A console.log that survives to production was never cleaned up — it means the developer was debugging and did not finish. This gate makes that visible at commit time rather than in a production log audit.",
+      "category": "Executable",
+      "gsProperty": "Executable",
+      "phase": "commit",
+      "hook": "pre-commit",
+      "check": "grep -rn --include='*.ts' --include='*.js' --include='*.tsx' --include='*.jsx' 'console\\\\.' src/ | grep -v '\\\\.test\\\\.' | grep -v '\\\\.spec\\\\.' | grep -v '/tests/' | grep -v '/test/' && echo 'console.* calls found in production source — use a structured logger' && exit 1 || exit 0",
+      "passCriterion": "No console.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "no-debug-routes-in-production",
+      "title": "No debug or admin routes exposed without authentication",
+      "description": "Routes matching debug, test, internal, or admin path prefixes must either not exist in the production build or require authenticated access with role enforcement. Debug endpoints leak implementation details, enable unauthorized state inspection, and violate the Defended property. A common failure mode is a /debug or /admin route added during development and never guarded before production. Gate passes when a static scan of route registrations finds no unprotected debug-pattern routes, or when all such routes are annotated with an authentication middleware that is verified to run. Static check only — does not require a running server.",
+      "category": "Defended",
+      "gsProperty": "Defended",
+      "phase": "production",
+      "hook": "release",
+      "check": "./scripts/check-debug-routes.sh",
+      "passCriterion": "Gate passes when a static scan of route registrations finds no unprotected debug-pattern routes, or when all such routes are annotated with an authentication middleware that is verified to run.",
+      "tags": [
+        "API",
+        "REST",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "no-direct-db-in-routes",
+      "title": "No direct database calls in route handlers",
+      "description": "Route handlers do not import or call database clients (Prisma, Sequelize, TypeORM, mongoose, raw SQL) directly. All database operations are delegated to a service or repository layer. Route handlers are driving adapters — they translate HTTP requests into service calls and HTTP responses. A route handler that calls the database directly has violated the layer boundary, making the database dependency invisible to the stateless reader reading only the route file. The Bounded property requires that each module's responsibilities and dependencies are derivable from its contents alone.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "development",
+      "hook": "commit",
+      "check": "! grep -rn 'prisma\\\\.' src/routes/ --include='*.ts' | grep -v '//' && ! grep -rn 'prisma\\\\.' src/controllers/ --include='*.ts' | grep -v '//'",
+      "passCriterion": "Route handlers do not import or call database clients (Prisma, Sequelize, TypeORM, mongoose, raw SQL) directly.",
+      "tags": [
+        "NODE",
+        "TYPESCRIPT",
+        "JAVASCRIPT",
+        "API",
+        "EXPRESS",
+        "FASTIFY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "no-duplicate-string-literals",
+      "title": "No duplicate string literals",
+      "description": "String values that appear more than three times in the codebase must be extracted into named constants. Duplicate literals are the strongest SonarJS proxy for the Bounded property: a string that appears in nineteen places (observed in the naive Ax condition) means a conceptual boundary is not encoded anywhere — change the string, find the bugs at runtime. The naive Conduit implementation had 19 violations; the v3 treatment had 1. This gate runs eslint-plugin-sonarjs/no-duplicate-string with threshold 3. Named constants make boundaries explicit and statically verifiable.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "development",
+      "hook": "commit",
+      "check": "npx eslint --rule '{\\\"sonarjs/no-duplicate-string\\\": [\\\"error\\\", {\\\"threshold\\\": 3}]}' 'src/**/*.{ts,js}'",
+      "passCriterion": "String values that appear more than three times in the codebase must be extracted into named constants.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "NODE",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "no-hardcoded-secrets",
+      "title": "No hardcoded secrets in source",
+      "description": "No credentials, API keys, JWT secrets, passwords, or connection strings appear as literal values in source files. Secret detection runs on every commit. Hardcoded secrets are not a code smell — they are a security boundary violation. Any secret committed to version control is compromised by definition. Secrets must be injected via environment variables validated at startup, never embedded in code or committed config files.",
+      "category": "Defended",
+      "gsProperty": "Defended",
+      "phase": "development",
+      "hook": "commit",
+      "check": "git diff --staged | grep -qE '(password|secret|api_key|apikey|token|credential)\\s*=\\s*[^$\\s]{5,}' && exit 1 || exit 0",
+      "passCriterion": "No credentials, API keys, JWT secrets, passwords, or connection strings appear as literal values in source files.",
+      "tags": [
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "node-esm-cjs-safe-imports",
+      "title": "ESM-safe CommonJS default import pattern",
+      "description": "CommonJS packages (jsonwebtoken, bcrypt, multer, and similar) do not expose named exports under ESM interop. Importing with named destructuring — import { sign } from 'jsonwebtoken' — compiles cleanly under TypeScript but throws \"Named export not found\" at runtime when the module loader resolves the CommonJS boundary. The safe pattern is: import pkg from 'module'; const { method } = pkg. This gate flags any named import from a known CJS-only package in an ESM or \"type: module\" project. Discovered during v6 server startup: the build passed tsc --noEmit but the server crashed immediately on the first JWT sign operation.",
+      "category": "Executable",
+      "gsProperty": "Executable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "node --input-type=module -e \\\"import('./src/index.js').catch(e => { process.stderr.write(e.message); process.exit(1); })\\\" 2>&1 | grep -v 'Named export' && exit 0 || exit 1",
+      "passCriterion": "CommonJS packages (jsonwebtoken, bcrypt, multer, and similar) do not expose named exports under ESM interop.",
+      "tags": [
+        "NODE",
+        "TYPESCRIPT",
+        "JAVASCRIPT",
+        "ESM"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "notation-audit",
+      "title": "Mathematical notation has derivation support",
+      "description": "Any formula presented in mathematical notation (LaTeX, symbolic expressions) must be accompanied by either (a) a derivation, (b) a citation to a source containing the derivation, or (c) an explicit label as \"proposed theoretical model, not yet empirically fitted.\" Specific numerical predictions derived from unfitted formulas must be removed or labeled \"illustrative only.\" Two-decimal precision in estimates described as \"order-of-magnitude\" is false precision and must be rounded. Pass: notation level matches derivation level throughout. Fail: LaTeX formula used to make quantitative predictions without derivation or explicit hypothesis labeling.",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "",
+      "passCriterion": "Any formula presented in mathematical notation (LaTeX, symbolic expressions) must be accompanied by either (a) a derivation, (b) a citation to a source containing the derivation, or (c) an explicit label as \"proposed theoretical model, not yet empirically fitted.",
+      "tags": [
+        "ACADEMIC-PAPER"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "npm-audit-no-high-cve",
+      "title": "No high-severity CVEs",
+      "description": "npm audit --audit-level=high exits 0. A high-severity CVE in a dependency is a security boundary violation that exists regardless of whether it has been exploited. The Defended property requires that security gates are present and passing — not advisory. This gate blocks the commit until the vulnerability is resolved or explicitly overridden with documented justification.",
+      "category": "Defended",
+      "gsProperty": "Defended",
+      "phase": "development",
+      "hook": "commit",
+      "check": "npm audit --audit-level=high",
+      "passCriterion": "npm audit --audit-level=high exits 0.",
+      "tags": [
+        "NODE",
+        "NPM",
+        "JAVASCRIPT",
+        "TYPESCRIPT"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "python-dependencies-pinned",
+      "title": "python-dependencies-pinned",
+      "description": "|",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "",
+      "passCriterion": "|.",
+      "tags": [],
+      "status": "approved"
+    },
+    {
+      "id": "register-consistency",
+      "title": "Framing claimed in ┬º1 honored throughout",
+      "description": "If the paper disclaims a theoretical frame in its opening (e.g., \"paradigm carries Martin's sense, not Kuhn's\"), that disclaimer must be honored in every subsequent section. \"Kuhnian drift\" is the failure mode: the paper disclaims revolution-level claims up front, then reasons using revolution-level vocabulary (e.g., \"the revolution is,\" \"becomes necessary,\" \"crisis\") in the body or conclusion. Pass: the register established in the abstract and terminological notes is consistent throughout. Fail: vocabulary that belongs to the disclaimed frame appears in later sections without acknowledgment.",
+      "category": "Self-describing",
+      "gsProperty": "Self-describing",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "grep -n 'revolution\\\\|becomes necessary\\\\|paradigm shift\\\\|Kuhnian' paper.md || true",
+      "passCriterion": "If the paper disclaims a theoretical frame in its opening (e.",
+      "tags": [
+        "ACADEMIC-PAPER"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "rollback-plan-documented",
+      "title": "Rollback procedure is documented and tested",
+      "description": "A ROLLBACK.md file (or equivalent runbook section) must exist and describe: the rollback command or procedure, the expected rollback time, any data migration considerations, and the person or role responsible for executing it. A deployment without a documented rollback plan is an undeclared gamble on zero defects in production. The rollback procedure must be executable by a team member who was not involved in the release. Gate passes when ROLLBACK.md exists in the repository root or docs/ and contains the required sections: Procedure, Expected Duration, and Data Considerations. For projects using automated rollback (blue/green, canary with automatic revert), the gate passes when the rollback trigger criteria are documented in the same file.",
+      "category": "Auditable",
+      "gsProperty": "Auditable",
+      "phase": "production",
+      "hook": "release",
+      "check": "test -f ROLLBACK.md || test -f docs/ROLLBACK.md && grep -q \"Procedure\" ${ROLLBACK_FILE:-ROLLBACK.md} && grep -q \"Duration\" ${ROLLBACK_FILE:-ROLLBACK.md}",
+      "passCriterion": "Gate passes when ROLLBACK.",
+      "tags": [
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "runtime-version-pinned",
+      "title": "runtime-version-pinned",
+      "description": "|",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "",
+      "passCriterion": "|.",
+      "tags": [],
+      "status": "approved"
+    },
+    {
+      "id": "smoke-test-passes",
+      "title": "Smoke test suite passes against deployed environment",
+      "description": "A minimal smoke test suite (at minimum: health check, authentication, and one core user journey) must exit 0 against the target environment before promotion is considered complete. Smoke tests verify that the deployment artifact is live and serving expected responses — they are not a substitute for unit or integration tests. A deployment that passes CI but fails its own smoke suite has delivered untested code to a live environment. Gate passes when all smoke tests return expected status codes and response shapes. The suite must be committed to the repository (not run manually) and parameterized by environment URL via an environment variable.",
+      "category": "Executable",
+      "gsProperty": "Executable",
+      "phase": "staging",
+      "hook": "release",
+      "check": "SMOKE_TARGET=${DEPLOY_URL:-http://localhost:3000} ./scripts/smoke-test.sh",
+      "passCriterion": "Gate passes when all smoke tests return expected status codes and response shapes.",
+      "tags": [
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "sonarqube-quality-gate-ok",
+      "title": "SonarQube Quality Gate OK",
+      "description": "SonarQube analysis must return Quality Gate: OK — ratings A on reliability, security, and maintainability, with zero bugs and zero vulnerabilities on new code. SonarQube is independent of the GS rubric: it applies its own quality model derived from industry standards. A system that scores 14/14 on the GS rubric but fails SonarQube has passed a self-referential check but failed an independent one. This gate partially closes Layer 3 of the define/build/measure circularity: the measurement tool has no knowledge of GS and cannot have been influenced by it. Requires a running SonarQube server or SonarCloud account and a sonar-project.properties file committed to the repo root.",
+      "category": "Verifiable",
+      "gsProperty": "Verifiable",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "sonar-scanner -Dsonar.qualitygate.wait=true",
+      "passCriterion": "SonarQube analysis must return Quality Gate: OK — ratings A on reliability, security, and maintainability, with zero bugs and zero vulnerabilities on new code.",
+      "tags": [
+        "ANY",
+        "SONARQUBE",
+        "STATIC-ANALYSIS",
+        "QUALITY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "tls-enforced",
+      "title": "TLS enforced — no plaintext HTTP accepted in production",
+      "description": "The production deployment must redirect HTTP to HTTPS or refuse HTTP connections entirely. Plaintext HTTP in production exposes credentials, session tokens, and user data to network interception. This gate verifies TLS enforcement at the application or reverse proxy layer — not assumed from the hosting provider. Gate passes when an HTTP request to the production endpoint either returns 301/302 to the HTTPS equivalent or is refused (connection refused or timeout on port 80). Platforms that terminate TLS at the load balancer (Railway, Heroku, Render) satisfy this gate when HTTP-to-HTTPS redirect is confirmed active in platform settings and verified by probe. A comment in the configuration documenting the redirect is required for platforms where redirect is implicit.",
+      "category": "Defended",
+      "gsProperty": "Defended",
+      "phase": "production",
+      "hook": "release",
+      "check": "RESPONSE=$(curl -s -o /dev/null -w \"%{http_code}\" http://${PROD_HOST} --max-time 5) && ([ \"$RESPONSE\" = \"301\" ] || [ \"$RESPONSE\" = \"302\" ] || [ \"$RESPONSE\" = \"000\" ])",
+      "passCriterion": "Gate passes when an HTTP request to the production endpoint either returns 301/302 to the HTTPS equivalent or is refused (connection refused or timeout on port 80).",
+      "tags": [
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "tsc-no-emit-exits-zero",
+      "title": "TypeScript type-check passes",
+      "description": "tsc --noEmit exits 0 on every commit. Type errors are not warnings — they are architectural failures visible to a stateless reader. A codebase with type errors cannot be correctly derived from its specification because the derivation has already produced something the type system rejects. This gate enforces that the derivation is valid before any further work proceeds.",
+      "category": "Executable",
+      "gsProperty": "Executable",
+      "phase": "development",
+      "hook": "commit",
+      "check": "tsc --noEmit",
+      "passCriterion": "tsc --noEmit exits 0 on every commit.",
+      "tags": [
+        "TYPESCRIPT"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "typescript-strict-mode",
+      "title": "TypeScript strict mode enabled",
+      "description": "The project's tsconfig.json has compilerOptions.strict set to true. Strict mode enables a family of compiler checks — noImplicitAny, strictNullChecks, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, and alwaysStrict — that collectively eliminate the most common sources of runtime type errors. A TypeScript codebase without strict mode enabled is structurally equivalent to a JavaScript codebase with optional type hints. The Executable property requires that the artifact compiles under the strongest type constraints the toolchain offers. Turning off strict mode to silence errors defers type unsafety to runtime.",
+      "category": "Executable",
+      "gsProperty": "Executable",
+      "phase": "commit",
+      "hook": "pre-commit",
+      "check": "node -e \\\"const c=JSON.parse(require('fs').readFileSync('./tsconfig.json','utf8')); if(!c.compilerOptions || c.compilerOptions.strict !== true){console.error('tsconfig.json must have compilerOptions.strict: true');process.exit(1)}\\\"",
+      "passCriterion": "The project's tsconfig.",
+      "tags": [
+        "TYPESCRIPT"
+      ],
+      "status": "approved"
+    },
+    {
+      "id": "vocabulary-stability",
+      "title": "Technical terms defined once, used consistently",
+      "description": "Every technical term introduced with a definition must be used with that definition throughout. Common failure modes: \"stateless\" defined as \"no prior context\" but the model clearly has vast training knowledge (should be \"no episodic project memory\"); \"paradigm\" defined in Martin's sense but used in Kuhn's sense later; a formula's variable defined abstractly but measured with a different proxy instrument without acknowledging the gap. Pass: each defined term is used consistently with its definition throughout the paper. Fail: a term is defined in one section and used with a shifted meaning in another.",
+      "category": "Self-describing",
+      "gsProperty": "Self-describing",
+      "phase": "staging",
+      "hook": "pr",
+      "check": "",
+      "passCriterion": "Every technical term introduced with a definition must be used with that definition throughout.",
+      "tags": [
+        "ACADEMIC-PAPER"
+      ],
+      "status": "approved"
+    }
+  ]
+}
