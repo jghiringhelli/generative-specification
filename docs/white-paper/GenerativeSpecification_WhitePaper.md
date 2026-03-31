@@ -50,11 +50,11 @@ description: "Generative Specification: A Pragmatic Programming Paradigm for the
 
 On September 23, 1999, the Mars Climate Orbiter completed a nine-month, 416-million-mile crossing of interplanetary space. It arrived within 26 kilometers of its intended trajectory — a feat of precision that represented the combined work of thousands of engineers, two years of mission planning, and $327.6 million in public investment. Then it entered the Martian atmosphere at the wrong angle and was destroyed in 57 seconds.
 
-The cause was not a bug in any individual system. Lockheed Martin's navigation software reported thruster force in pound-force seconds. NASA's flight computer expected newton-seconds. Both teams had implemented their components correctly, according to their own assumptions. The interface between the two systems had no explicit unit specification. The contract had been assumed, not written.
+The cause was not a bug in any individual system. Lockheed Martin's navigation software reported thruster force in pound-force seconds. NASA's flight computer expected newton-seconds. Both teams had implemented their components correctly, according to their own assumptions. The interface between the two systems had no explicit unit specification. The contract had been assumed, not written. *(NASA MCO Mishap Investigation Board, Final Report, November 1999; analysis confirmed in the Columbia Accident Investigation Board framework as a category of organizational interface failure.)*
 
 No test caught it. The code compiled cleanly. Individual modules passed validation. The failure was invisible everywhere except at the boundary — at the seam where two systems, each internally coherent, had to agree on a shared language. They did not agree, because the agreement had never been formalized.
 
-That was 1999. That interface took two years to build.
+That was 1999. That contract failure took two years and $327.6 million to produce.
 
 Today, an AI assistant produces an equivalent interface in thirty seconds. It generates clean code. Types check. Unit tests pass. And embedded in that output, invisible, is a set of implicit assumptions — about units, about field ordering, about what a null means, about which layer owns which concern — that the generating model resolved silently, drawing on everything it has ever read about how such systems are usually built. The code is correct in isolation. At the boundary, when two AI-generated systems meet across a session boundary or a team boundary or a service boundary, the implicit assumptions do not automatically agree.
 
