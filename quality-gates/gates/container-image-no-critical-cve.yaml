@@ -1,0 +1,20 @@
+id: container-image-no-critical-cve
+name: Container image has no critical or high CVEs
+description: >
+  The production container image must pass a CVE scan (Trivy, Grype, or Docker Scout)
+  with no critical or high severity vulnerabilities before deployment. Base image
+  vulnerabilities are inherited attack surface — a clean application layer over a
+  vulnerable base image is not a secure deployment. This gate enforces the Defended
+  property at the infrastructure boundary: the artifact being deployed must be scanned,
+  not just the application dependencies. Gate passes when the scanner exits 0 at
+  --severity CRITICAL,HIGH threshold. Image must be the same artifact that will be
+  deployed (not rebuilt after scan). Use a pinned digest for the base image in the
+  Dockerfile to prevent silent base image changes between scan and deploy.
+property: Defended
+tags: [docker, any]
+phase: staging
+trigger: release
+blocking: true
+check:
+  type: script
+  command: "trivy image --exit-code 1 --severity CRITICAL,HIGH ${IMAGE_TAG:-$(cat .image-tag)}"

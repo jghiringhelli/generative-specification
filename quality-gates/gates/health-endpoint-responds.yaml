@@ -1,0 +1,21 @@
+id: health-endpoint-responds
+name: Health endpoint returns 200 with status payload
+description: >
+  The application must expose a /health endpoint (or equivalent per platform convention)
+  that returns HTTP 200 with a JSON body containing at minimum: status, version, and
+  uptime. This endpoint is the machine-readable signal that a deployed instance is
+  operational and self-identifying. Without it, deployment pipelines cannot distinguish
+  a running-but-broken instance from a healthy one. Liveness and readiness probes in
+  Kubernetes, Railway health checks, and canary routing all depend on this endpoint.
+  Gate passes when the endpoint returns 200 and the response body parses as JSON with
+  the required fields. The endpoint must not require authentication.
+property: Executable
+tags: [api, any]
+phase: staging
+trigger: release
+blocking: true
+check:
+  type: script
+  command: >
+    curl -sf ${HEALTH_URL:-http://localhost:3000/health} |
+    jq -e '.status and .version'

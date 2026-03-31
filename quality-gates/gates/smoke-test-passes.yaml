@@ -1,0 +1,19 @@
+id: smoke-test-passes
+name: Smoke test suite passes against deployed environment
+description: >
+  A minimal smoke test suite (at minimum: health check, authentication, and one core
+  user journey) must exit 0 against the target environment before promotion is
+  considered complete. Smoke tests verify that the deployment artifact is live and
+  serving expected responses — they are not a substitute for unit or integration tests.
+  A deployment that passes CI but fails its own smoke suite has delivered untested code
+  to a live environment. Gate passes when all smoke tests return expected status codes
+  and response shapes. The suite must be committed to the repository (not run manually)
+  and parameterized by environment URL via an environment variable.
+property: Executable
+tags: [any]
+phase: staging
+trigger: release
+blocking: true
+check:
+  type: script
+  command: "SMOKE_TARGET=${DEPLOY_URL:-http://localhost:3000} ./scripts/smoke-test.sh"

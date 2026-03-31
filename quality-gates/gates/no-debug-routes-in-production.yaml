@@ -1,0 +1,19 @@
+id: no-debug-routes-in-production
+name: No debug or admin routes exposed without authentication
+description: >
+  Routes matching debug, test, internal, or admin path prefixes must either not exist
+  in the production build or require authenticated access with role enforcement.
+  Debug endpoints leak implementation details, enable unauthorized state inspection,
+  and violate the Defended property. A common failure mode is a /debug or /admin route
+  added during development and never guarded before production. Gate passes when a
+  static scan of route registrations finds no unprotected debug-pattern routes, or
+  when all such routes are annotated with an authentication middleware that is verified
+  to run. Static check only — does not require a running server.
+property: Defended
+tags: [api, rest, any]
+phase: production
+trigger: release
+blocking: true
+check:
+  type: script
+  command: "./scripts/check-debug-routes.sh"

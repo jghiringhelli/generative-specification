@@ -1,0 +1,23 @@
+id: tls-enforced
+name: TLS enforced — no plaintext HTTP accepted in production
+description: >
+  The production deployment must redirect HTTP to HTTPS or refuse HTTP connections
+  entirely. Plaintext HTTP in production exposes credentials, session tokens, and
+  user data to network interception. This gate verifies TLS enforcement at the
+  application or reverse proxy layer — not assumed from the hosting provider.
+  Gate passes when an HTTP request to the production endpoint either returns 301/302
+  to the HTTPS equivalent or is refused (connection refused or timeout on port 80).
+  Platforms that terminate TLS at the load balancer (Railway, Heroku, Render) satisfy
+  this gate when HTTP-to-HTTPS redirect is confirmed active in platform settings and
+  verified by probe. A comment in the configuration documenting the redirect is
+  required for platforms where redirect is implicit.
+property: Defended
+tags: [any]
+phase: production
+trigger: release
+blocking: true
+check:
+  type: script
+  command: >
+    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://${PROD_HOST} --max-time 5) &&
+    ([ "$RESPONSE" = "301" ] || [ "$RESPONSE" = "302" ] || [ "$RESPONSE" = "000" ])

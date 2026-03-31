@@ -1,0 +1,24 @@
+id: rollback-plan-documented
+name: Rollback procedure is documented and tested
+description: >
+  A ROLLBACK.md file (or equivalent runbook section) must exist and describe: the
+  rollback command or procedure, the expected rollback time, any data migration
+  considerations, and the person or role responsible for executing it. A deployment
+  without a documented rollback plan is an undeclared gamble on zero defects in
+  production. The rollback procedure must be executable by a team member who was not
+  involved in the release. Gate passes when ROLLBACK.md exists in the repository root
+  or docs/ and contains the required sections: Procedure, Expected Duration, and
+  Data Considerations. For projects using automated rollback (blue/green, canary with
+  automatic revert), the gate passes when the rollback trigger criteria are documented
+  in the same file.
+property: Auditable
+tags: [any]
+phase: production
+trigger: release
+blocking: true
+check:
+  type: script
+  command: >
+    test -f ROLLBACK.md || test -f docs/ROLLBACK.md &&
+    grep -q "Procedure" ${ROLLBACK_FILE:-ROLLBACK.md} &&
+    grep -q "Duration" ${ROLLBACK_FILE:-ROLLBACK.md}

@@ -1,0 +1,20 @@
+id: db-migrations-reversible
+name: Database migrations have a rollback path
+description: >
+  Every database migration file must include a rollback or down function alongside
+  the up migration. An irreversible migration is a deployment risk: if a release must
+  be rolled back, schema changes without a rollback path can leave the database in a
+  state incompatible with the previous application version. Applies to all migration
+  systems: Flyway (V and U scripts paired), Knex/TypeORM (exports.down), Alembic
+  (downgrade function), Prisma (migration with shadow database validation). Gate passes
+  when every migration file that has an up path also has a corresponding down/rollback
+  path, or is explicitly annotated as intentionally irreversible with a documented
+  justification. Irreversible gates without justification are a hard block.
+property: Defended
+tags: [database, any]
+phase: staging
+trigger: pr
+blocking: true
+check:
+  type: script
+  command: "./scripts/check-migration-rollbacks.sh"
