@@ -1,7 +1,7 @@
 # Generative Specification: The Practitioner's Protocol
 
 **Status:** Living Document  
-**Version:** 1.1 — March 2026  
+**Version:** 1.2 — April 2026  
 **Companion to:** *Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader*
 
 ---
@@ -539,6 +539,10 @@ The order in which artifacts are loaded at session start determines what the AI 
 
 **MCP server budget.** A maximum of three active MCP servers in any session: the built-in file/search/terminal tools, optionally one semantic search tool (CodeSeeker) for large codebases, and optionally one specification-management tool (ForgeCraft). Each declared tool is read by the model on every turn whether invoked or not. Beyond three servers, tooling overhead begins to compete with the specification for context attention.
 
+**The 300-line file read budget.** AI coding tools enforce a hard read limit per file invocation — approximately 2,000 lines / 25,000 tokens, after which content is silently truncated. Any file over 300 lines risks partial reads on any single invocation. The implication: the 300-line maximum on CLAUDE.md and spec files is not an aesthetic preference. It is calibrated to the tool's read budget. A 600-line constitution is not read in full; its lower half is invisible. This is the same constraint that makes the pointer architecture in §16 necessary: the spec is a skeleton with on-demand references, not a monolith the tool may or may not finish reading.
+
+**Context compaction and specification artifacts.** When token pressure approaches the working limit, AI tools run an automatic compaction routine that retains a small number of recently active files and compresses all prior file reads and reasoning chains into a summary. Architectural decisions, constraint rationale, and prior session context are the first things lost. GS specification artifacts survive this because they are short, structured, and loaded at session start as priority context — they fit within the retained file budget compaction preserves. A README buried in session history does not. This is the structural reason GS artifacts outperform ad hoc documentation under sustained session pressure, not convention.
+
 **Rationale: the token budget pressure that produced this pattern.** The pointer architecture described above was not designed top-down — it was forced by a concrete constraint encountered during ForgeCraft's own development. The original approach inlined all five GS procedure blocks (session loop, context loading, incremental cascade, bound roadmap, diagnostic checklist) directly into `CLAUDE.md`. Combined with three MCP servers' tool manifests and the session artifacts, the effective context window became mostly infrastructure and very little work. The model's attention degraded measurably: instructions near the bottom of a 400-line constitution were effectively invisible by turn 50.
 
 The fix was architectural. `CLAUDE.md` was compressed to a skeleton with pointers (<200 lines). The detailed procedures moved to `reference.yaml`, fetched on-demand via `get_reference(resource: guidance)`. The procedures still exist at full fidelity, but they are loaded when *needed*, not on every turn. This in turn elevated the session prompt to the primary vehicle for task-specific working memory — because the constitution is deliberately minimal and the procedures are fetched rather than ambient. The bound prompt format (§5) emerged from this pressure: if the constitution is a skeleton, the prompt must carry everything the session needs.
@@ -734,7 +738,11 @@ The multi-agent experiment's dependency governance condition (GS v3) confirmed t
 
 ### 24. ForgeCraft — Specification Scaffolding
 
-ForgeCraft (`forgecraft-mcp`) generates production-grade architectural constitutions from a library of 112 curated template blocks covering 19 project classification tags and six AI assistants.
+ForgeCraft (`forgecraft-mcp@1.1.0`) generates production-grade architectural constitutions from a library of 112 curated template blocks covering 19 project classification tags and six AI assistants.
+
+**Install:** `npx forgecraft-mcp@1.1.0`
+
+**CodeSeeker is bundled by default.** ForgeCraft 1.1.0 includes CodeSeeker as a recommended companion. CodeSeeker provides graph-based code intelligence (imports, calls, extends) that fills the gap grep cannot: re-exports, dynamic imports, type references vs value references, and barrel file entries. The rationale is structural — grep is text pattern matching, not an AST; any rename or interface change that relies on grep alone will miss these cases. Projects initialized with ForgeCraft get the CodeSeeker recommendation automatically.
 
 **When to run:**
 
@@ -744,6 +752,7 @@ ForgeCraft (`forgecraft-mcp`) generates production-grade architectural constitut
 | `refresh_project` | Scope has drifted (new framework, new tag category) — detects drift and regenerates cleanly |
 | `audit_project` | Before a major release or external review — scores compliance and identifies gaps |
 | `review_project` | Pre-merge review — structured checklist across architecture, quality, tests, performance |
+| `scaffold_project` | Generate folder structure, hook skeletons, and documentation scaffolding for a new module |
 
 **Tag selection.** Tags activate domain-specific standards. `UNIVERSAL` applies to all projects. Common additions:
 - `API` — adds REST/GraphQL constraints, API versioning discipline, contract testing
