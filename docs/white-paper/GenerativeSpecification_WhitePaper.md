@@ -33,7 +33,6 @@ description: "Generative Specification: A Pragmatic Programming Paradigm for the
   - GS spec artifacts are compaction-resistant; session memory is not
 
 - §6 Tooling: CodeSeeker named explicitly as the structural fix to the grep ≠ AST gap; ForgeCraft bundles it from setup because governance and navigation are designed to operate together
-**
 - Bounded: added mechanical justification for 300-line limit (AI tool read budget = same constraint at two layers)
 - Verifiable: added tooling-layer justification (write-completion ≠ compile-success)
 - Composable: added grep ≠ AST argument; structural case for semantic code intelligence as first-class GS tooling
