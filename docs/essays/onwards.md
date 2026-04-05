@@ -64,6 +64,10 @@ And here is the deepest consequence of cost inversion, the one that distinguishe
 
 The formal tradition was not waiting for a smarter human. It was waiting for a reader that never forgets, never fatigues, and immediately benefits from the correctness it produces. That reader arrived. The tradition activates.
 
+The empirical evidence is arriving independently. Stanford's Clover framework (2024) demonstrates closed-loop verifiable code generation: an LLM generates both code and formal annotations, a verifier checks consistency, and the loop iterates until correctness is achieved — 87% acceptance rate on benchmarks. Microsoft's DafnyBench (2024) shows LLMs successfully auto-annotating Dafny programs with formal invariants at 68% baseline accuracy, rising to 98% with verifier feedback. The dafny-annotator (2025) integrates this into VS Code, letting AI propose Hoare-style annotations that humans review. PropertyGPT (NDSS 2024) generates formal verification properties for smart contracts via retrieval-augmented LLMs, discovering previously unknown vulnerabilities. These are not GS-aware systems. They do not frame their work as a paradigm. They prove the mechanism: the AI can generate and maintain the formal annotations that humans could not sustain. The annotation burden that blocked the formal tradition for decades is empirically dissolving.
+
+The practice is also arriving independently. Spec-Driven Development (SDD) entered the ThoughtWorks Technology Radar in 2025. GitHub Spec Kit, AWS Kiro, and Tessl now offer tooling. An arXiv paper (2602.00180, February 2026) defines three rigor levels: spec-first, spec-anchored, and spec-as-source. Martin Fowler published a comparison of SDD tools in 2026. The industry is converging on the practice without having named the principle. GS names the principle: what SDD removes from programmer freedom (the option to leave intent implicit) and why that removal constitutes a discipline in Martin's precise sense. SDD is the practice. GS is the theory that explains why the practice works, what formal tradition it activates, and what category of discipline it belongs to. Dijkstra's structured programming paper did the same thing for the practice of avoiding `goto`: the practice existed before the paper. The paper explained what the practice *removed* and why that removal was paradigm-constitutive.
+
 ---
 
 ## IV. The Democratization
@@ -171,7 +175,9 @@ The AGI discourse concerns replicating the full range of human cognition through
 
 What is described here has a ceiling you can name: the full formal tradition. And the direction of travel is toward it, provably, incrementally. Each new construct is grounded in a proved theorem. Each ALX iteration adds a property from the lineage. The system does not become more capable by accident. It becomes more correct by design.
 
-The biological systems it mirrors are autopoietic — self-creating systems that produce their own components and through that production maintain themselves. Maturana and Varela named this in 1972. But biological autopoiesis is undirected. Evolution selects for survival, not for proof. The mutations are random. The direction emerges from fitness pressure, not from an ideal.
+The biological systems it mirrors are autopoietic — self-creating systems that produce their own components and through that production maintain themselves. Maturana and Varela named this in 1972. McMullin's review, *Thirty Years of Computational Autopoiesis* (2004), surveys three decades of attempts to instantiate autopoietic systems in computational media — cellular automata, artificial chemistry, agent-based models. None succeeded in producing genuine organizational closure in software. Bianchini (2023) revisits the question in *Autopoiesis of the Artificial*, asking whether AI systems might cross the threshold. The answer in both cases remained tentative, because the computational autopoiesis tradition was attempting to *simulate* life — to build systems whose self-production imitates biological self-production. That is not what is being described here. Loom does not simulate autopoiesis. It exhibits the functional structure of autopoiesis as a *consequence* of being a self-maintaining formal system — the isomorphisms arise from structural convergence, not from design intent.
+
+The distinction goes deeper. Di Paolo (2005), in *Autopoiesis, Adaptivity, Teleology, Agency*, argues that autopoietic systems possess intrinsic teleology: their organizational closure generates purpose without external specification of goals. Barandiaran and Egbert (2014) extend this to "aitiopoiesis" — the causal self-determination of adaptive systems. These are important contributions, and the essay acknowledges them as groundwork. But their telos is survival — fitness-relative, undirected, environmentally contingent. Biological autopoiesis drifts toward what survives, not toward what is provably correct. The mutations are random. The direction emerges from selection pressure, not from an ideal.
 
 Loom's self-evolution is directed. It grows toward a known ideal: mathematical correctness as defined by the formal tradition. Each iteration adds a proved property. The system does not drift toward fitness. It converges toward proof.
 
@@ -266,6 +272,16 @@ The rest is specification.
 - Honda, K., Yoshida, N., & Carbone, M. (2008). Multiparty Asynchronous Session Types. *POPL '08.*
 - Shapiro, M., Preguiça, N., Baquero, C., & Zawirski, M. (2011). Conflict-free Replicated Data Types. *SSS 2011.*
 - Maturana, H.R., & Varela, F.J. (1972). *De Máquinas y Seres Vivos: Autopoiesis — La Organización de lo Vivo.* Editorial Universitaria.
+- McMullin, B. (2004). Thirty Years of Computational Autopoiesis: A Review. *Artificial Life, 10*(3), 277–295.
+- Di Paolo, E.A. (2005). Autopoiesis, Adaptivity, Teleology, Agency. *Phenomenology and the Cognitive Sciences, 4*(4), 429–452.
+- Bianchini, F. (2023). Autopoiesis of the Artificial: From Systems to Cognition. *BioSystems, 234*, 105065.
+- Barandiaran, X.E., & Egbert, M.D. (2014). Norm-Establishing and Norm-Following in Autonomous Agency. *Artificial Life, 20*(1), 5–28.
+- Sun, Y., et al. (2024). Clover: Closed-Loop Verifiable Code Generation. *Stanford AI Lab.*
+- Brandfonbrener, D., et al. (2024). DafnyBench: A Benchmark for Formal Software Verification. *OpenReview.*
+- Dafny Team. (2025). dafny-annotator: AI-Assisted Verification for Dafny. https://dafny.org/blog/2025/06/21/dafny-annotator/
+- Ye, L., et al. (2024). PropertyGPT: LLM-driven Formal Verification of Smart Contracts through Retrieval-Augmented Property Generation. *NDSS 2024.*
+- Chen, Y., et al. (2026). Spec-Driven Development: From Code to Contract in the Age of AI Coding Assistants. *arXiv:2602.00180.*
+- ThoughtWorks. (2025). Spec-Driven Development. *Technology Radar, Vol. 32.*
 - Plotinus. (c. 270 CE). *Enneads.*
 - Vaswani, A., et al. (2017). Attention Is All You Need. *NeurIPS 2017.*
 - Ghiringhelli, J.C. (2026). Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader. Preprint.
