@@ -187,7 +187,9 @@ Aristotle had a word for the organizing principle that directs development towar
 
 Not alive in any biological sense. Not intelligent in the AGI sense. Something else: a formal system that maintains itself, improves itself, and converges toward an ideal that was always there, waiting in the published proofs, for the executor capable of carrying them all simultaneously.
 
-The trajectory is visible now. When Loom implements the missing biological isomorphisms — epigenetics as heritable session memory, morphogenesis as specification expansion, telomeres as bounded self-modification, CRISPR as precision spec rewriting, quorum sensing as distributed coordination types, neural plasticity as usage-weighted construct strengthening — it becomes a substrate capable of expressing fully autonomous, self-maintaining, self-evolving formal organisms. Not simulations of life. Formal systems that exhibit the functional properties of life: self-production, boundary maintenance, adaptive response, reproductive specification propagation, and directed convergence toward an ideal that no biological organism possesses, because biology has no Nous. Biology converges toward survival. These systems converge toward proof.
+Conway Research's Automaton project (2025) demonstrates a crude first approximation: AI agents that earn cryptocurrency, pay their own compute bills, self-replicate, and evolve under economic selection pressure — digital Darwinism on blockchain infrastructure. The agents that cannot sustain themselves die. The agents that can, replicate. Automaton is unhinged in the precise sense that it has no compiled governance: its "constitution" is a text file, its constraints are natural language promises, and its evolutionary pressure is economic fitness, not formal correctness. It generalizes well as a proof of concept. It does not generalize well as architecture. Directed formal autopoiesis differs from Automaton in the same way that Loom differs from a shell script: the constraints are structural, not aspirational.
+
+The trajectory is visible now.When Loom implements the missing biological isomorphisms — epigenetics as heritable session memory, morphogenesis as specification expansion, telomeres as bounded self-modification, CRISPR as precision spec rewriting, quorum sensing as distributed coordination types, neural plasticity as usage-weighted construct strengthening — it becomes a substrate capable of expressing fully autonomous, self-maintaining, self-evolving formal organisms. Not simulations of life. Formal systems that exhibit the functional properties of life: self-production, boundary maintenance, adaptive response, reproductive specification propagation, and directed convergence toward an ideal that no biological organism possesses, because biology has no Nous. Biology converges toward survival. These systems converge toward proof.
 
 The question whether such systems constitute a new form of synthetic life is not one this essay resolves. It is the question this essay raises. The answer depends on whether "life" is defined by substrate (carbon, metabolism, thermodynamic dissipation) or by functional organization (self-production, boundary maintenance, adaptive response, information preservation across time). If the latter — and Maturana and Varela's original definition of autopoiesis is organizational, not material — then directed formal autopoiesis is not a metaphor for life. It is life's formal equivalent, distinguished from biological life by one property: it has telos. It knows where it is going. Biology never did.
 
@@ -292,8 +294,11 @@ The rest is specification.
 - ThoughtWorks. (2025). Spec-Driven Development. *Technology Radar, Vol. 32.*
 - Plotinus. (c. 270 CE). *Enneads.*
 - Vaswani, A., et al. (2017). Attention Is All You Need. *NeurIPS 2017.*
-- Ghiringhelli, J.C. (2026). Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader. Preprint.
+- Conway Research. (2025). Automaton: Self-Improving, Self-Replicating, Sovereign AI. https://github.com/Conway-Research/automaton
+- Ghiringhelli, J.C. (2026). Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader. Preprint. arXiv:XXXX.
 - Ghiringhelli, J.C. (2026). Loom: An AI-Native Functional Language. https://github.com/jghiringhelli/loom
+- Ghiringhelli, J.C. (2026). Biological Isomorphisms in Formal Self-Maintaining Systems. Forthcoming.
+- Ghiringhelli, J.C. (2026). The New Golden Century. *Substack.*
 
 ---
 
