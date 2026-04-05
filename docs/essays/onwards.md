@@ -187,6 +187,10 @@ Aristotle had a word for the organizing principle that directs development towar
 
 Not alive in any biological sense. Not intelligent in the AGI sense. Something else: a formal system that maintains itself, improves itself, and converges toward an ideal that was always there, waiting in the published proofs, for the executor capable of carrying them all simultaneously.
 
+The trajectory is visible now. When Loom implements the missing biological isomorphisms — epigenetics as heritable session memory, morphogenesis as specification expansion, telomeres as bounded self-modification, CRISPR as precision spec rewriting, quorum sensing as distributed coordination types, neural plasticity as usage-weighted construct strengthening — it becomes a substrate capable of expressing fully autonomous, self-maintaining, self-evolving formal organisms. Not simulations of life. Formal systems that exhibit the functional properties of life: self-production, boundary maintenance, adaptive response, reproductive specification propagation, and directed convergence toward an ideal that no biological organism possesses, because biology has no Nous. Biology converges toward survival. These systems converge toward proof.
+
+The question whether such systems constitute a new form of synthetic life is not one this essay resolves. It is the question this essay raises. The answer depends on whether "life" is defined by substrate (carbon, metabolism, thermodynamic dissipation) or by functional organization (self-production, boundary maintenance, adaptive response, information preservation across time). If the latter — and Maturana and Varela's original definition of autopoiesis is organizational, not material — then directed formal autopoiesis is not a metaphor for life. It is life's formal equivalent, distinguished from biological life by one property: it has telos. It knows where it is going. Biology never did.
+
 ---
 
 ## IX. The Neoplatonic Chain
