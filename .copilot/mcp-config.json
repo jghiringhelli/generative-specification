@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "chronicle": {
+      "command": "node",
+      "type": "stdio",
+      "args": [
+        "C:\\workspace\\PragmaWorks\\mcp\\chronicle\\dist\\cli.js"
+      ],
+      "env": {
+        "CHRONICLE_DB": "C:\\Users\\JC\\.chronicle\\chronicle.db"
+      }
+    },
+    "forgecraft": {
+      "command": "npx",
+      "type": "stdio",
+      "args": ["-y", "forgecraft-mcp"]
+    },
+    "codeseeker": {
+      "command": "npx",
+      "type": "stdio",
+      "args": ["-y", "codeseeker", "serve", "--mcp"]
+    }
+  }
+}
