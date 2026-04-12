@@ -1,15 +1,15 @@
 ---
 layout: default
-title: White Paper (v1.2)
+title: White Paper (v1.4)
 nav_order: 3
-description: "Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader — preprint, March 2026"
+description: "Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader — preprint, April 2026"
 ---
 
 # Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader
 
 **Author:** Juan Carlos Ghiringhelli (Pragmaworks)  
-**Version:** 1.2  
-**Date:** March 2026
+**Version:** 1.4  
+**Date:** April 2026
 **Status:** Preprint  
 
 ## Changes from v1.1
@@ -85,7 +85,7 @@ The dominant failure mode of this new reader is not incorrect code. It is **arch
 
 The seven specification properties this paper introduces — Self-describing, Bounded, Verifiable, Defended, Auditable, Composable, and Executable — are not a taxonomy constructed in advance. Each names a specific failure mode observed across six production projects: an agent that did not know the system's own conventions (Self-describing failure), one that modified code outside the feature's scope (Bounded failure), one whose output was untestable (Verifiable failure), one that could commit broken code (Defended failure), one whose decisions left no trace (Auditable failure), one that coupled modules that should have been independent (Composable failure), one that generated code that never ran (Executable failure). The seven properties operationalize the discipline's obligation: make each class of failure structurally unreachable.
 
-Empirical evidence spans six production projects and one controlled adversarial study. The six projects are existence proofs: one practitioner's production systems, documenting the mechanism at scale across five challenge categories (takeover, brownfield, greenfield, extension, migration). The controlled adversarial study (AX) ran eight conditions against a fixed benchmark under prospectively committed evaluation criteria. The multi-agent adversarial study (AX) reached 14/14 on the seven-property rubric with 109 passing tests against a live database. The Replication Experiment (RX) reproduced a scoped implementation from a fresh GS document, producing 104 passing tests across seven suites, reproducible by any reader with an Anthropic API key. The human practitioner study (DX, April 2026, approximately 70 developers, crossover design) provides the first between-practitioner replication test; its design is in §7.7.A and results are not yet available at submission.
+Empirical evidence spans six production projects and one controlled adversarial study. The six projects are existence proofs: one practitioner's production systems, documenting the mechanism at scale across five challenge categories (takeover, brownfield, greenfield, extension, migration). The controlled adversarial study (AX) ran eight conditions against a fixed benchmark under prospectively committed evaluation criteria. The multi-agent adversarial study (AX) reached 14/14 on the seven-property rubric with 109 passing tests against a live database. The Replication Experiment (RX) reproduced a scoped implementation from a fresh GS document, producing 104 passing tests across seven suites, reproducible by any reader with an Anthropic API key. The human practitioner study (DX, April 2026, 58 developers, two-project crossover design) provides the first between-practitioner replication test; its design and results are in §7.7.A. A follow-up transfer study (Study 2, May 2026) is in progress; results will be integrated upon completion.
 
 The economic consequence of this structure has a name: **cost inversion** (coined here, §4.1.b). When the executor is stateless and regeneration is near-free, iteration cost approaches zero and specification becomes the scarce resource — the bottleneck that determines what a practitioner can build and how fast, not execution capacity. The portfolio implications and the new constraint — specification bandwidth — are developed in §4.1.b and §8.2.1.
 
@@ -160,6 +160,8 @@ Two independent research threads validate the problem formulation, neither arriv
 **Thirolf (2025, KIT/KASTEL)** independently identifies, in *Analysis of Project-Intrinsic Context for Automated Traceability Between Documentation and Code*, the exact failure mode described in §3: architectural drift caused by implicit context that AI tools cannot access, observed empirically through documentation-code traceability gaps in AI-assisted development sessions. The problem statement matches without coordination. Thirolf proposes automated traceability tooling as a structural response — complementary to but narrower than the full generative specification methodology.
 
 **Orlanski et al. (2026)** introduce **SlopCodeBench** (arXiv:2603.24755), a language-agnostic benchmark of 20 problems and 93 checkpoints in which agents repeatedly extend their own prior solutions under evolving specifications. The benchmark tracks two trajectory-level signals: *verbosity* (redundant or duplicated code) and *structural erosion* (complexity mass concentrated in high-complexity functions). Findings: no agent solves any problem end-to-end across 11 evaluated models; structural erosion rises in 80% of trajectories and verbosity in 89.8%; agent code is 2.2× more verbose than matched human-authored code; human code stays flat across iterations while agent code deteriorates with each one. A prompt-intervention study shows that initial quality can be improved through better prompting, but degradation is not halted. The authors conclude that "current agents lack the design discipline iterative software development demands." This is an independent empirical measurement of the failure mode §3 names — architectural drift at generation speed — using trajectory-level instrumentation the GS experiments do not employ. The prompt-intervention finding directly corroborates GS's methodological claim: prompting discipline alone is insufficient; structural specification discipline is required.
+
+**Pan et al. (2026)** introduce **Natural-Language Agent Harnesses (NLAH)** (arXiv:2603.25723, Tsinghua University), which externalize agent control logic — tool selection, task sequencing, error recovery — into portable natural-language artifacts rather than code. **Lee et al. (2026)** introduce **Meta-Harness** (Stanford, preprint), which treats the harness itself as an optimization target: an outer-loop search over harness configurations uses full execution history to improve agent performance end to end. Both works operate at the orchestration layer — the question is how to externalize and optimize the control logic that governs agent behavior. Neither addresses the specification layer. NLAH demonstrates precisely the limitation GS is designed to resolve: natural-language artifacts are portable, but they remain implicit and interpretation-dependent — a stateless reader cannot verify conformance against them. Meta-Harness presupposes a working specification for the system under test; it optimizes harness code without producing the architectural constitution that makes that system's behavioral obligations derivable. Together they establish that the research community recognizes control logic must be externalized — the problem space is real — while stopping short of GS's structural claim that externalization is paradigm-constitutive only when the resulting artifacts are compilable and verifiable, not merely readable.
 
 **A mechanistic account of trajectory-level deterioration** is available from tooling implementation details, independently of SlopCodeBench's empirical trajectory. AI coding tools operate within a finite context window. When token pressure approaches the working limit, an automatic compaction routine fires: it retains a small number of recently active files and compresses all prior file reads, reasoning chains, and architectural decisions into a summary. The decisions themselves, which pattern was selected and why, which constraint ruled out an alternative, are not retained. The agent continues from the summary, editing against a lossy representation of the state it built. Structural erosion is the observable consequence: each compaction cycle introduces a context that lacks the session's architectural memory and applies the same token-pressure pattern from a degraded baseline. This is the mechanism SlopCodeBench's trajectory-level instrumentation measures. GS's specification artifacts are structurally resistant to this dynamic for a specific mechanical reason: the architectural constitution, ADRs, and property constraints are short (the representative example in §6.1 is 155 lines), structured, and loaded at session start as priority context before any implementation file is read. They fit within the file budget the compaction routine preserves. Session memory, accumulated file reads and reasoning chains, does not fit; it is what the summary replaces. The specification is not compacted; only the session memory is.
 
@@ -378,6 +380,22 @@ Executable is scored conditional on specification availability: a formal contrac
 Executable was implicit in the methodology from the beginning, the case studies all included verify-and-correct loops as a natural part of the session workflow, applied manually when automated gates did not catch runtime failures. The adversarial experiment series (§7.7.B) articulated it as a distinct formal property by measuring the gap across controlled conditions: treatment-v2 achieved 12/12 on the six structural properties while only 1/9 test suites passed materialization. The Executable dimension formalizes what the practitioner was already doing, so it can be specified, gated, and tracked.
 
 The seven specification properties are universal, they apply to every project regardless of type or domain. Their concrete artifact expression, however, is project-type-parameterized: the specific quality gates, constraint vocabulary, and required artifact types that satisfy each property vary by what the project is. A healthcare system satisfying Defended requires PII redaction rules and audit logging constraints that a CLI tool does not; a real-time system satisfying Bounded requires latency contracts that a batch pipeline does not. §6 develops the artifact grammar and describes how the universal base and project-type overlays compose.
+
+### 4.4 Contract Sufficiency: The What-How Distinction
+
+Generative Specification governs two things: what the system must do — behavioral contracts, acceptance obligations, architectural boundaries, non-functional requirements — and why the non-obvious decisions were made — Architecture Decision Records and rationale records. It does not govern how those obligations are fulfilled. This is not an oversight. It is the structural property that makes the methodology productive.
+
+Multiple valid implementations can satisfy the same contract. A function that retrieves a user by email may accomplish that obligation by an indexed SQL query, an in-memory cache lookup, or a distributed key-value store — each conforming to the behavioral contract, each differing in its internal mechanism. Some implementations will be further constrained by non-functional requirements: a latency contract rules out implementations that cannot satisfy it; a memory constraint rules out implementations that exceed it. NFRs narrow the valid implementation space but do not determine a single path. The contract surface — the *what* — remains the correctness criterion. The implementation space — the *how* — remains the generative domain.
+
+This separation is the same principle that test-driven development operationalizes at the function level. A test specifies what a function must do: given this input, produce this output, raise this exception, trigger this side effect. It does not specify how the function achieves that obligation. Dozens of implementations can satisfy a given test suite; some simpler, some more complex, some better-suited to surrounding constraints. The test certifies all of them. The TDD practitioner does not care which implementation the developer chose; the contract does not care either. GS applies the same separation at the system level: the specification certifies what a valid implementation state is; the AI generates the *how* within that certified boundary.
+
+The correctness criterion is therefore convergence, not inspection. When an AI session produces output that satisfies all behavioral contracts, all architectural rules, and all non-functional obligations stated in the specification, the system has converged to a valid state. The internal mechanism by which it reached that state — the precise algorithm chosen, the data structure selected, the optimization applied — is not the object of the correctness claim. The contract surface is. This is not a relaxed standard. It is the standard that has always applied to correct software, now made explicit rather than left to informal judgment.
+
+This will produce defects. No method produces zero defects; the question is the defect rate and its structural source. The defect modes of contract-governed AI generation differ structurally from those of traditional development: they arise primarily from incompleteness or ambiguity in the specification — the AI generated a valid response to the specified grammar, but the grammar did not capture the full intent — rather than from the coordination failure modes that dominate current practice. The comparison baseline is not a theoretical ideal. It is the observable reality of software development under current conditions: teams of practitioners with heterogeneous preparation collaborating on disjoint modules under architectures that were never fully specified, whose rationale is distributed across conversations and institutional memory that turns over with every personnel change, under deadline pressure that converts formal discipline into an optional nicety. The accumulated effect is visible everywhere practitioners look: multi-generational codebases running on technology stacks far behind their current release, patches that address symptoms because structural repair requires time that was never allocated, technical debt that accumulates faster than it is repaid because the team exists to ship features and debt repayment ships nothing.
+
+The defect rate of generative specification, in that comparison, is not a theoretical estimate. It is a structural argument: the primary failure modes — specification drift, coordination gap, knowledge loss at team boundary, informal intent that diverges silently from formal artifact — are removed by construction. The residual is specification error. Specification error is auditable, correctable, and does not compound silently across team rotations.
+
+Crucially, it also does not plateau. The Ratchet property — every defect resolved produces a test that becomes a permanent production rule, every ambiguity resolved produces an ADR that closes an open decision forever — means the specification becomes more complete with each iteration. The system converges directionally: not toward zero defects as an unreachable asymptote, but toward a fully-contracted surface where each remaining failure corresponds to an explicit gap the practitioner has not yet specified. The defect is not evidence that the method failed. It is a specification query: *what constraint, had it been present, would have ruled this out?* When that constraint is written, the grammar expands, and the class of output that produced the defect becomes unreachable. The ratchet does not reverse.
 
 ---
 
@@ -1126,7 +1144,93 @@ Three repositories are prepared for the workshop. Participants in the brownfield
 
 A result in which all four predictions confirm would constitute the strongest available independent evidence for the paradigm claim before a full multi-lab replication. A mixed or disconfirming result would require revision of the claim's scope or strength. Either outcome advances the field. The pre-registration is what makes either answer credible.
 
-*Result (post-April 10):* [To be updated after DX runs.]
+---
+
+### 7.7.A.1 DX Results: April 10, 2026 — Mitikah, Mexico City
+
+#### Design as executed
+
+The workshop ran on April 10, 2026 at the Mitikah campus of a Mexican technology company, with 58 developers participating in person. The executed design differed from the pre-registered design in three respects:
+
+1. **Both projects were greenfield, not brownfield.** The pre-registered brownfield repository (`gs-workshop-linkboard`) was replaced by two independent greenfield projects — Vaquita (a cooperative payment API) and Taskflow (a Kanban board API) — to reduce baseline familiarity effects and increase measurement surface. This change was made before data collection began.
+
+2. **Most participants completed two tasks, not one.** The workshop was structured as two successive coding sessions with the methodology reveal between them. Vaquita ran in the morning (pre-reveal); Taskflow ran in the afternoon (post-reveal). Each participant was assigned one condition (A or B) governing both projects.
+
+3. **The condition labels are inverted from the pre-registered description.** In the executed study, Condition A is the *control* (free prompting, no specification artifacts) and Condition B is the *treatment* (ForgeCraft pre-generated artifact set). This corrects an inversion in the pre-registration text, which named the treatment group "Group A."
+
+**Critical design note — the two sessions are not equivalent experiments.** The reveal between sessions changed the experimental conditions for the afternoon:
+
+- **Vaquita (morning, pre-reveal):** Neither group had knowledge of GS. Condition A used free prompting; Condition B followed the ForgeCraft artifact roadmap. This is a clean tool-effectiveness comparison.
+- **Taskflow (afternoon, post-reveal):** All participants were instructed to apply GS following the reveal. Condition A applied it freely without tooling. Condition B was specifically asked to continue following the ForgeCraft-generated roadmap — the same artifact set produced before the reveal session. Several Condition B participants explicitly asked during the session whether they were still supposed to follow the roadmap after learning the methodology; they were told yes and complied. This is a critical distinction: the ForgeCraft roadmap was generated when neither group knew GS, making it a pre-knowledge artifact that Condition B participants were instructed to follow with post-knowledge understanding. This session does not measure GS-aware vs. tool-guided — it measures *free GS application* (A) versus *compliance with a pre-reveal artifact* (B), with the transcript record as evidence of the compliance constraint.
+
+The two sessions therefore answer two distinct questions and must be interpreted separately.
+
+Of 116 total participant-project submissions, 83 met the analyzable threshold; 33 were excluded as unsubmitted or structurally empty. Condition A: 44 submissions (20 Taskflow, 24 Vaquita). Condition B: 39 submissions (16 Taskflow, 23 Vaquita).
+
+#### Measurement
+
+Each of the 83 analyzable branches was processed through an automated pipeline: static complexity analysis (Lizard), live API test scoring (Hurl, 10-step test suites against running servers), and the GS rubric battery. The executable score (0–3 points, derived from Hurl pass rate) serves as the primary paradigm-independent functional completion metric.
+
+#### Quantitative results
+
+**Table 1: Executable score by session and condition**
+
+| Session | Condition | N | Mean executable | % Perfect (3/3) | Zero scores |
+|---------|-----------|---|-----------------|-----------------|-------------|
+| Vaquita (pre-reveal, pure tool test) | A — free prompting | 24 | 2.00 | 38% | 3 (12%) |
+| Vaquita (pre-reveal, pure tool test) | B — ForgeCraft | 23 | 1.52 | 13% | 4 (17%) |
+| Taskflow (post-reveal, GS-informed) | A — manual GS | 20 | 2.65 | 75% | 1 (5%) |
+| Taskflow (post-reveal, GS-informed) | B — ForgeCraft | 16 | 2.12 | 62% | 4 (25%) |
+
+**Table 2: GS rubric and process metrics by condition (all sessions combined)**
+
+| Metric | Condition A | Condition B | Δ |
+|--------|-------------|-------------|---|
+| Executable score (0–3) | 2.30 | 1.77 | **−0.53** |
+| GS total (0–14) | 6.07 | 6.46 | **+0.39** |
+| GS auditable (0–2) | 1.56 | 2.00 | **+0.44** |
+| Commit count | 46.5 | 59.9 | **+13.4** |
+| Test coverage (%) | 74.5 | 73.3 | ≈ |
+
+#### Interpretation: two findings, not one
+
+**Finding 1 — Vaquita (pre-reveal, pure tool effectiveness).** Before any knowledge of GS, ForgeCraft artifacts produced measurably better process discipline (higher GS rubric scores, more commits, better auditable properties) at a cost to functional completion. Condition B practitioners who engaged with the pre-generation sequence produced well-structured projects with 13% achieving full functional completion versus 38% for unconstrained practitioners. The tool works for discipline; it costs implementation time in a constrained setting.
+
+This is a real finding with a structural explanation. ForgeCraft front-loads cognitive and time investment into specification. A practitioner who engages fully with the artifact sequence and then runs out of time produces a well-specified project that was never built. A practitioner who skips specification and codes immediately may produce structurally weaker output but produces *something runnable*. This is the non-starter failure mode: ForgeCraft without execution guidance. The pre-generation sequence produces artifacts; it does not yet include scaffolded implementation prompts that guide the practitioner from specification to running code. This is a product gap, not a methodology gap.
+
+**Finding 2 — Taskflow (post-reveal, free application vs. pre-reveal artifact compliance).** After the reveal, both conditions were instructed to apply GS. Condition A applied it freely; Condition B followed the ForgeCraft-generated roadmap produced hours earlier, before either group knew the methodology. Condition A significantly outperformed on functional completion (75% perfect vs. 62%; mean 2.65 vs. 2.12; zero-score rate 5% vs. 25%). Condition B maintained better process metrics (auditable, commit count) — the artifact's discipline held — but the completion gap and non-starter rate both worsened relative to Vaquita.
+
+The interpretation is not that free prompting beats ForgeCraft, nor that Condition A practitioners understood or applied GS more skillfully. The critical variable is *artifact temporal mismatch*: the ForgeCraft roadmap was optimized for pre-knowledge practitioners. When Condition B participants gained GS understanding and could see a more direct path to completion, they were nonetheless instructed to comply with the pre-generated sequence. Several asked explicitly whether they should deviate; they were told no. They followed a map drawn before they knew the territory.
+
+Condition A practitioners, unconstrained, applied GS-informed judgment directly to the problem at hand. Their better completion scores reflect not superior skill but freedom from a stale artifact. This has a direct product implication: ForgeCraft's pre-generation produces artifacts that are optimized for the moment of generation. In contexts where the practitioner's understanding advances beyond the artifact — as happens naturally in any learning session — the artifact should adapt or step back. ForgeCraft needs a practitioner mode: once methodology understanding is acquired, the roadmap should serve as reference, not prescription.
+
+**The combined picture.** GS as a methodology and ForgeCraft as a tool are not the same thing, and the workshop measured both in different sessions. In the pre-reveal session, the tool is effective at instilling process discipline in practitioners with no methodology knowledge. In the post-reveal session, the tool's pre-generated artifact became a constraint when practitioners acquired the knowledge to apply the methodology directly. The pattern is consistent with the expected maturation curve of any structured practice: scaffolding is necessary for learning; it becomes overhead — or worse, a ceiling — for the practitioner who has internalized what the scaffold was teaching.
+
+#### Interpretation of pre-registered predictions
+
+**P1. Discipline is transferable in one session.** *Confirmed with qualification.* The Taskflow session — where Condition A practitioners applied GS freely after one reveal session — produced meaningfully better functional outcomes than Condition B practitioners who followed the pre-generated ForgeCraft roadmap. This is evidence of rapid practical transfer: enough was transferred in one session to apply GS productively and independently. The qualification: the comparison is not symmetrical. Condition A had freedom; Condition B had a pre-reveal artifact and a compliance instruction. What the session demonstrates is that one session of GS exposure produces practitioners capable of applying it effectively when unconstrained — not a head-to-head comparison of GS knowledge levels between groups.
+
+**P2. Effect is independent of GS's own rubric.** *Partially confirmed.* In the Vaquita (pre-reveal) session, the GS rubric and the functional completion metric diverged — B scored higher on GS properties, lower on Hurl. In the Taskflow (post-reveal) session, the direction aligned: A outperformed B on both functional completion and GS-quality behavior observed in practice. The divergence in Vaquita is attributable to the tool's time cost rather than a fundamental opposition between process discipline and functional output.
+
+**P3. Control failures are consistent and predictable.** *Confirmed.* Condition A (pre-reveal, Vaquita) outputs exhibited systematic variation consistent with the failure taxonomy: lower auditable scores, fewer commits, architecturally inconsistent outputs. The structural failures concentrated in the same properties across practitioners, providing evidence that the failure taxonomy is structural.
+
+**P4. Without the discipline, AI output is arbitrary.** *Confirmed in Vaquita, partially disconfirmed in Taskflow.* Pre-reveal Condition A showed higher structural variance and more architectural inconsistency. Post-reveal Condition A — having internalized the discipline — showed more consistent and higher-quality output despite no tooling support.
+
+#### Confounds and limitations
+
+Timestamp analysis of participant commit histories confirms that the reveal (3:00–4:00 PM local time) overlapped with the start of the Taskflow session. Condition A practitioners in Taskflow had less coding time than Condition A practitioners in Vaquita, yet still achieved a higher perfect-score rate. This strengthens rather than weakens the Taskflow finding: the informed-manual practitioners outperformed ForgeCraft-guided practitioners even with a time deficit from the reveal itself.
+
+The study measures first-session exposure, not trained practitioners. Study 2 is designed to test sustained independent application over a three-to-five week interval.
+
+#### Study 2: Follow-up Transfer Study (pending, May 2026)
+
+The workshop was designed as a pedagogical intervention: participants experienced unstructured AI development before the methodology was named, making the problem concrete before the solution was presented. The primary research question — whether GS remains applicable and beneficial when practitioners use it independently in real work contexts — requires longitudinal follow-up.
+
+Study 2 proceeds in two phases. Phase 1 (approximately May 1, 2026): a structured survey sent to all 58 participants measuring adoption rates, usage contexts, confidence, and barriers three weeks post-workshop. The survey specifically asks whether participants have applied GS-inspired thinking to non-software tasks, as several participants spontaneously reported such applications during the workshop — configuration management, generative art pipelines with automated quality gates, music generation, and AI workflow automation — suggesting the discipline generalizes beyond software development. Phase 2 (approximately May 15, 2026): a voluntary follow-up coding session (Lektur, a reading club API — same stack and endpoint count as the workshop tasks, new domain) scored with the same automated pipeline. Participants who self-reported applying the methodology (Group 1) are compared against those who did not (Group 2), with no GS artifacts provided and no methodology mentioned. GS rubric scores produced spontaneously by Group 1 on a novel task without tooling would constitute direct transfer evidence.
+
+*Study 2 results will be integrated into this section upon completion.*
+
+---
 
 ### 7.7.B Experiment II: Multi-Agent Adversarial Study: Results
 
@@ -1366,6 +1470,24 @@ Generative Specification inverts the cost curve, a structural shift this paper n
 [^fowler-flaccid]: Fowler, M. (2009). FlaccidScrum. martinfowler.com. https://martinfowler.com/bliki/FlaccidScrum.html. Fowler coined the term for teams that adopted agile's ceremonies, sprints, standups, retrospectives, while abandoning its technical disciplines: continuous integration, test-driven development, sustained refactoring. The result was organizational responsiveness layered over accumulating structural debt. The pattern is the specific failure mode identified here: iterative delivery adopted without the structural discipline it was designed alongside.
 
 [^parnas-aging]: Parnas, D.L. (1994). Software Aging. *Proceedings of the 16th International Conference on Software Engineering (ICSE-16)*, 279–287. IEEE Computer Society. Parnas identifies two causes of software aging, failure to adapt to changing requirements, and "ignorant surgery" that degrades internal structure over time. He argues that aging systems reach a threshold at which the cost of continued maintenance exceeds the benefit of change and replacement becomes the rational economic decision, the same threshold that generative specification's cost inversion disrupts by making regeneration cheaper than repair.
+
+### 8.2.2 The Industrial Threshold
+
+The textile industry before mechanical looms was a craft industry. Production was constrained by the speed and skill of individual weavers. Quality varied with the practitioner. Throughput was bounded by human capacity. The knowledge required to produce a correct result resided in years of accumulated skill that could not be transferred except through apprenticeship. When Hargreaves, Arkwright, and Cartwright introduced the mechanical loom, the effect was not merely an improvement in efficiency. It was a threshold crossing: the industrialization of cloth production. Consistent quality became a floor, not an achievement. Throughput scaled independently of artisan population. Artisanal weaving survived the transition — it survives today — but in a fundamentally different position: reserved for the work that demands it, exceptional cases where the industrial floor is insufficient, while industrial production handles everything the market requires at scale.
+
+Software construction is approaching the same threshold.
+
+The baseline from which the comparison must be made is not the ideal case — small teams with clear architecture, stable requirements, aligned technical vision. The baseline is the modal case: engineering teams of heterogeneous preparation collaborating on disjoint modules under architectural documents that were never completed, governed by requirements that drift because the business changed and nobody updated the specification, accumulating technical debt because the team exists to ship and debt repayment ships nothing. Monolithic applications running multiple major versions behind their dependency stacks because migration requires time the project has never had. Patches out of architectural structure because the correct solution requires refactoring no sprint has ever prioritized. Systems whose behavior is partially understood by each team member and fully understood by nobody, because the knowledge that would make it fully understandable has never been written down.
+
+In this context, the productivity jump from GS and Loom is not an incremental efficiency gain. It is a structural change in the cost function of correct software construction. The specification replaces informal intent. The AI executor replaces the coordination overhead of multi-person implementation. The commit discipline replaces the institutional memory that walks out the door with each engineer who leaves. The formal properties compiled into Loom's type system — eighteen in the current specification, drawn predominantly from Turing Award-winning research in type theory, session types, information flow security, and temporal logic — represent the industrial standard: the guaranteed floor of correctness the method provides, rather than a ceiling that only the most skilled practitioners can reach under ideal conditions.
+
+Artisanal software will survive this threshold crossing. It is already defined by where it will survive: the extreme constraint envelopes where the industrial floor is structurally insufficient and the cost of failure is human life. Radiation treatment firmware that must be provably correct against every possible input state. Military drone flight controllers whose failure modes are enumerated in adversarial environments. Nuclear plant control systems where formal verification at the specification level is a regulatory prerequisite, not a quality aspiration. These domains will continue to demand the full range of formal verification methods, proof assistants, exhaustive test campaigns, and hand-audited implementations that exceed what any generation-based method can guarantee. They will constitute a smaller and smaller fraction of all software construction.
+
+Everything else — the enterprise systems, the web applications, the data pipelines, the mobile products, the embedded firmware in consumer devices, the internal tooling, the analytics infrastructure — will cross the industrial threshold. Not because the method is perfect, but because its structural floor exceeds the practical ceiling of what coordination-dependent, knowledge-distributed, deadline-compressed human teams have historically been able to sustain.
+
+The specification discipline is the loom. The practitioners who develop it are not replaced. Their role changes: from implementation artisans to specification architects. The cognitive work moves upstream, from *how do I build this?* to *what must this be?* That is a higher-order question. It requires clearer thinking, better judgment, and more deliberate intent. It also requires less of the accumulated skill in the mechanics of implementation — the frameworks, the toolchain idioms, the language-specific patterns — that currently defines professional identity for large numbers of practitioners. That transition will not be comfortable for everyone it displaces. But the claim that the transition will not occur because it is uncomfortable has not been a winning argument against industrialization at any previous threshold.
+
+---
 
 ### 8.3 Commit Discipline as Corpus Quality
 
@@ -1876,6 +1998,10 @@ The paradigm claim this paper advances is Martin-sense: a discipline defined by 
 
 The year 1957 produced two pressures that would not fully meet for sixty years: a formal hierarchy of grammars, and the first high-level language that freed the engineer from machine code. Their meeting is the discipline this paper names. The direction was never accidental. The ladder moved. The section that follows addresses what the ladder's movement requires of the humans who govern the boundary it has not yet reached.
 
+**Loom: the language-layer proof.** The first language designed from the ground up under the principles this paper names is Loom: a formally-specified language in which units of measure, information-flow security, typestate protocols, algebraic properties, and compliance labels are type-system primitives, not documentation conventions. It compiles to five targets simultaneously from a single generative specification. ALX — a Loom compiler deriving itself from its own generative specification — is the self-referential proof of the derivability claim: if the most complex artifact in a system can maintain architectural integrity through self-modification under GS governance, the methodology holds at the hardest case. $S_{\text{realized}}$ is a public, versioned, continuously improving measurement of that claim.
+
+The application frontier this language opens is **Biological Isomorphisms** (BIOISO): software no longer specified as a deployed artifact but as a living system — with telos, homeostasis, and corrigibility as compiled type-system constraints rather than behavioral promises. A system whose goal boundary, death mechanism, and external authority are enforced at the type level does not merely behave correctly; it cannot be specified otherwise. The formal development is at [bioiso.dev](https://bioiso.dev).
+
 ---
 
 ## 11. Onwards
@@ -1941,6 +2067,7 @@ The obligation this places on GS practitioners is not theoretical. As the specif
 - Kluev, A. et al. (2022). Automated API Testing with Schemathesis. *Proceedings of ISSTA 2022.*
 - Kuhn, T.S. (1962). *The Structure of Scientific Revolutions.* University of Chicago Press.
 - Lehman, M. M. (1980). Programs, life cycles, and laws of software evolution. *Proceedings of the IEEE, 68*(9), 1060–1076.
+- Lee, Y., et al. (2026). *Meta-Harness: End-to-End Optimization of Model Harnesses.* Stanford University, preprint. https://yoonholee.com/meta-harness/paper.pdf
 - Liu, N. F., Lin, K., Hewitt, J., Paranjape, A., Hopkins, M., Liang, P., & Manning, C. D. (2023). Lost in the middle: How language models use long contexts. *Transactions of the Association for Computational Linguistics, 12,* 157–173.
 - Martin, R.C. (2002). *Agile Software Development, Principles, Patterns, and Practices.* Prentice Hall.
 - Martin, R.C. (2017). *Clean Architecture: A Craftsman's Guide to Software Structure and Design.* Prentice Hall.
@@ -1949,6 +2076,7 @@ The obligation this places on GS practitioners is not theoretical. As the specif
 - Nygard, M. T. (2011). Documenting architecture decisions. https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
 - OWASP Foundation. (2023).*Web Security Testing Guide v4.2.* https://owasp.org/www-project-web-security-testing-guide/
 - Orlanski, G., et al. (2026). *SlopCodeBench: Benchmarking Agentic Code Quality Under Iterative Extension.* arXiv:2603.24755 [cs.SE]. https://doi.org/10.48550/arXiv.2603.24755
+- Pan, R., et al. (2026). *Natural-Language Agent Harnesses.* Tsinghua University. arXiv:2603.25723. https://arxiv.org/html/2603.25723v1
 - Parnas, D.L. (1972). On the Criteria To Be Used in Decomposing Systems into Modules. *Communications of the ACM, 15*(12), 1053–1058.
 - Parnas, D.L. (1994). Software aging. *Proceedings of the 16th International Conference on Software Engineering* (ICSE 1994), 279–287.
 - Royce, W.W. (1970). Managing the Development of Large Software Systems. *Proceedings of IEEE WESCON, 26.* 1–9.
