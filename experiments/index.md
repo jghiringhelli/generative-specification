@@ -8,7 +8,7 @@ description: "GS methodology experiments — adversarial, benchmark, patchabilit
 
 # Experiments
 
-Five studies establish the validity and generalizability of the GS methodology.
+Six studies establish the validity and generalizability of the GS methodology.
 
 | Experiment | What It Tests | Status |
 |---|---|---|
@@ -17,6 +17,7 @@ Five studies establish the validity and generalizability of the GS methodology.
 | [**CX — Patchability**](cx/) | GS-specified codebases are more patchable. SWE-bench-style patch tasks on two quality tiers characterized by BX. | ✅ Complete |
 | [**RX — Replication**](rx/) | Any reader can reproduce 104 passing tests against a live PostgreSQL instance from a GS document alone. No ForgeCraft required. | ✅ Complete |
 | [**DX — Human Practitioner**](dx/) | 40 developers, two conditions. Tests between-practitioner replication across engineers of varying GS skill. Crossover design. | 🗓 April 2026 |
+| [**EX — Executable Sprint**](ex/) | Full L1–L4 tier proof on the live RealWorld Conduit benchmark. 13/13 behavioral probes, 3/3 env probes, k6 ramp — all green on Railway production. Single session. | ✅ Complete |
 
 ---
 
@@ -31,6 +32,8 @@ The five experiments address a three-layer validity problem:
 | **Guidance circularity** | GS guided the implementation AND scored it | DX: blind evaluator, 40 external practitioners |
 
 Layers 1 and 2 are closed. Layer 3 closes April 2026.
+
+EX addresses a complementary validity question: **does the methodology produce working, deployable software at all four tiers?** AX proves quality increases with specification completeness — EX proves the toolchain closes the loop from specification to production-verified behavior.
 
 ---
 

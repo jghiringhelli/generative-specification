@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-04-17T23:01:27.087Z",
+  "passed": 3,
+  "failed": 0,
+  "errors": 0,
+  "notFound": 0,
+  "results": [
+    {
+      "service": "env-vars",
+      "probeId": "unknown",
+      "status": "pass",
+      "durationMs": 135
+    },
+    {
+      "service": "health",
+      "probeId": "unknown",
+      "status": "pass",
+      "durationMs": 1106
+    },
+    {
+      "service": "jwt",
+      "probeId": "unknown",
+      "status": "pass",
+      "durationMs": 2563
+    }
+  ]
+}

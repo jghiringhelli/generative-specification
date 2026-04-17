@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-04-17T20:30:31.228Z",
+  "passed": 13,
+  "failed": 0,
+  "errors": 0,
+  "notFound": 0,
+  "results": [
+    {
+      "ucId": "UC-001",
+      "status": "pass",
+      "durationMs": 3017
+    },
+    {
+      "ucId": "UC-001",
+      "status": "pass",
+      "durationMs": 1759
+    },
+    {
+      "ucId": "UC-001",
+      "status": "pass",
+      "durationMs": 3519
+    },
+    {
+      "ucId": "UC-002",
+      "status": "pass",
+      "durationMs": 1253
+    },
+    {
+      "ucId": "UC-002",
+      "status": "pass",
+      "durationMs": 1603
+    },
+    {
+      "ucId": "UC-003",
+      "status": "pass",
+      "durationMs": 3002
+    },
+    {
+      "ucId": "UC-003",
+      "status": "pass",
+      "durationMs": 2600
+    },
+    {
+      "ucId": "UC-004",
+      "status": "pass",
+      "durationMs": 2308
+    },
+    {
+      "ucId": "UC-005",
+      "status": "pass",
+      "durationMs": 1790
+    },
+    {
+      "ucId": "UC-005",
+      "status": "pass",
+      "durationMs": 2065
+    },
+    {
+      "ucId": "UC-006",
+      "status": "pass",
+      "durationMs": 928
+    },
+    {
+      "ucId": "UC-007",
+      "status": "pass",
+      "durationMs": 1748
+    },
+    {
+      "ucId": "UC-008",
+      "status": "pass",
+      "durationMs": 1449
+    }
+  ]
+}

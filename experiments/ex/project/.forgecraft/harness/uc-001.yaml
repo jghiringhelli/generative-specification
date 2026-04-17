@@ -1,0 +1,4 @@
+ucId: UC-001
+title: User Registration and Authentication
+type: hurl
+variables_file: tests/harness/hurl.env

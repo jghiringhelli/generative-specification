@@ -1,0 +1,17 @@
+type: slo_contract
+description: "Conduit API SLOs — Railway single-replica, 10 VU ramp scenario"
+target_url: "${API_URL:-https://conduit-api-production-b94f.up.railway.app}"
+
+thresholds:
+  p95_latency_ms: 2000
+  p99_latency_ms: 4000
+  read_p95_latency_ms: 1000
+  write_p95_latency_ms: 2000
+  error_rate_max: 0.01
+  sustained_vus: 10
+  ramp_duration_s: 180
+
+probes:
+  - name: slo_ramp
+    file: tests/harness/slo-ramp.k6.js
+    description: "Mixed read/write ramp — 0→10→0 VUs over 3 min"

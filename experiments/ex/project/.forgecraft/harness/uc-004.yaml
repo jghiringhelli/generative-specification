@@ -1,0 +1,4 @@
+ucId: UC-004
+title: Article Feed
+type: hurl
+variables_file: tests/harness/hurl.env

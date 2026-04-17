@@ -1,0 +1,4 @@
+ucId: UC-003
+title: Article Management
+type: hurl
+variables_file: tests/harness/hurl.env

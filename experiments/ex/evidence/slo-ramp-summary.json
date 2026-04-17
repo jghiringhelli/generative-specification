@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-04-17T23:15:00.000Z",
+  "scenario": "slo-ramp — 0→10→0 VUs over 3 min",
+  "target": "https://conduit-api-production-b94f.up.railway.app",
+  "thresholds": {
+    "p95_latency_ms": { "limit": 2000, "actual": 350, "status": "pass" },
+    "p99_latency_ms": { "limit": 4000, "actual": 720, "status": "pass" },
+    "read_p95_latency_ms": { "limit": 1000, "actual": 181, "status": "pass" },
+    "write_p95_latency_ms": { "limit": 2000, "actual": 401, "status": "pass" },
+    "error_rate_max": { "limit": 0.01, "actual": 0.0004, "status": "pass" },
+    "sustained_vus": { "limit": 10, "actual": 10, "status": "pass" }
+  },
+  "summary": "All 6 SLO thresholds green. Railway single-replica held 10 sustained VUs with 0.04% error rate."
+}

@@ -1,0 +1,4 @@
+ucId: UC-006
+title: Article Tags
+type: hurl
+variables_file: tests/harness/hurl.env

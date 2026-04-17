@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+reports/
+jest-results.json
+*.local
+.env
+.env.*
+!.env.example

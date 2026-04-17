@@ -1,0 +1,4 @@
+type: auth_check
+description: "JWT_SECRET configured — register, token issued, protected endpoint works, invalid token rejected"
+probe: tests/env/jwt.sh
+expected_exit: 0

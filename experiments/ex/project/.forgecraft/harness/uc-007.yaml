@@ -1,0 +1,4 @@
+ucId: UC-007
+title: Article Favorites
+type: hurl
+variables_file: tests/harness/hurl.env

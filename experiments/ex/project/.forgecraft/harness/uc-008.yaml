@@ -1,0 +1,4 @@
+ucId: UC-008
+title: Article List and Pagination
+type: hurl
+variables_file: tests/harness/hurl.env

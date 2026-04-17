@@ -1,0 +1,4 @@
+ucId: UC-005
+title: Article Comments
+type: hurl
+variables_file: tests/harness/hurl.env

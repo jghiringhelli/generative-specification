@@ -1,0 +1,4 @@
+ucId: UC-002
+title: User Profile and Follow
+type: hurl
+variables_file: tests/harness/hurl.env
