@@ -1,7 +1,7 @@
 # Generative Specification: The Practitioner's Protocol
 
 **Status:** Living Document  
-**Version:** 1.2 — April 2026  
+**Version:** 1.3 — April 2026  
 **Companion to:** *Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader*
 
 ---
@@ -16,7 +16,33 @@ Everything here is procedural. If a claim belongs in a paradigm argument rather 
 
 The document is organized around a single cognitive model: the **five memory types** that a generative specification system must provide for its stateless reader. Use the taxonomy to diagnose a project's artifact set. A project with no episodic record is working from amnesia. A project with no relationship memory will drift into incoherence at every boundary. The taxonomy tells you what's missing and what it costs.
 
+**On practitioner evolution.** Expect heavy AI dialogue early — especially on your first few GS projects. You are learning the domain while writing the spec; the AI helps surface what you don't yet know to ask. This is correct practice, not a sign of inadequate specification. As your fluency builds, the dialogue contracts: later projects require only course corrections and directed expansions. The AI's role shifts from collaborator to executor. If you are still having the same kind of conversations after ten projects that you had on your first, the spec is incomplete — the dialogue is compensating for a gap that should be in the artifact set. The direction of expertise is: prompt less, specify more exactly.
+
 > **Paper reference:** This document is the companion methodology documentation explicitly referenced in §§6.5, 6.6, and 6.7 of the white paper (`GenerativeSpecification_WhitePaper.md`). The paper establishes the structural argument; this document provides the execution protocol.
+
+---
+
+## Part I: The Obligation Cascade
+
+### 0. What GS Removes — and What It Adds
+
+Every tier of GS operates on two axes simultaneously: it adds a restriction to the system and removes an obligation from the practitioner. These are the same move stated from two directions. Understanding both axes is what distinguishes a practitioner applying the discipline from one merely following procedures.
+
+| Tier | Restriction added | Obligation removed | Status |
+|---|---|---|---|
+| **T1 — Specification** | All valid implementations must be derivable from the spec | You do not write code | Demonstrated in production + DX study |
+| **T2 — Harness** | No output is accepted without passing the behavioral harness | You do not read generated code | Demonstrated: AX adversarial series + DX study |
+| **T3 — Infrastructure** | All infrastructure state must be in the spec | You do not touch infrastructure manually | Demonstrated: production regulated platform (COMPASS ETL) |
+| **T4 — Monitoring** | Runtime drift is a specification violation | You do not diagnose bugs | Demonstrated: COMPASS/The Eye diagnostic agent |
+| **T5 — Evolution** | All system evolution must stay within the telos | You do not maintain the system | Demonstrated: Loom colony, governed genome mutation running ([github.com/jghiringhelli/loom](https://github.com/jghiringhelli/loom)) |
+| **T6 — Synthesis** | The entire architecture must derive from the problem statement | You do not design the system | Conclave architecture; research frontier |
+| **T7 — Meta-telos** | A system observing the practitioner infers what is needed | You do not initiate the process | Research agenda; governance prerequisite |
+
+**The cascade is not a checklist to reach the end of.** T1 and T2 are the entry point for every practitioner. T3 is achievable without specialized tooling — it requires complete NFRs at T1. T4 requires T3 to be complete. **T3 and T4 failures almost always trace to T1 gaps: an NFR not stated, a data flow label missing, a contract left implicit.** The cascade is conceptually hierarchical; the correction loop is recursive. When something breaks at T3 or T4, the fix is in the spec, not in the infrastructure.
+
+**On the harness.** The specification establishes intent. The harness certifies the derivation was faithful. A specification without a T2 harness is an assertion, not a guarantee — "spec is the program" holds only when the behavioral contracts are continuously verified against the running system. T2 is not optional scaffolding. It is constitutive of the GS guarantee.
+
+**Starting at T1 is correct.** Most practitioners run T1 and T2 indefinitely and reach excellent results. T3 becomes relevant when infrastructure state is complex enough to drift. T4 becomes relevant when the system is in production long enough to accumulate observable behavior. Do not force the cascade depth — let the project's failure modes tell you which tier to activate next.
 
 ---
 
@@ -81,7 +107,7 @@ The architectural constitution (`CLAUDE.md`) is the primary semantic artifact. I
 **Constitution hygiene — the compression protocol.** A constitution that grows without discipline defeats itself. The AI reads it in full on every turn; at depth, attention distributes less precisely and relevant rules are diluted by bulk. The threshold is approximately 250–300 lines. When the document approaches this ceiling:
 
 1. Run `setup_project` with `tier: core` to compress to essentials — ForgeCraft preserves custom sections and the Corrections Log.
-2. Alternatively, audit manually: every section that repeats general best practices (rather than project-specific constraints) is a candidate for removal. SOLID principles belong in CLAUDE.md only as project-specific rules, not as tutorial content.
+2. Alternatively, audit manually: every section that repeats general best practices (rather than project-specific constraints) is a candidate for removal. SOLID principles belong in CLAUDE.md only as project-specific rules, not as tutorial content. (GS is a pragmatic-tier discipline; SOLID and TDD are semantic-tier disciplines that operate at a different altitude — they govern how code is structured, not whether the spec is the primary artifact. A constitution that tutorializes semantic-tier disciplines is doing it wrong: the AI already knows them. Name them in the Techniques subsection as activation keys; do not explain them.)
 3. If scope has drifted (new tag category added, framework changed), run `refresh_project` first; it detects tag drift and regenerates cleanly before compressing.
 
 **The self-healing hook.** An architectural constitution without enforcement is advisory. The pre-commit hook is the enforcement mechanism: it runs the full lint + type-check + unit test suite before every commit, blocking on failure. The AI maintains the hook as part of the constitution; it cannot remove or weaken the gate without a documented ADR.
@@ -184,29 +210,39 @@ Generate with ForgeCraft (`setup_project`), then review and customize. ForgeCraf
 
 **The sentinel workflow.** ForgeCraft exposes a single MCP tool — the sentinel — that reads three artifacts (project configuration, constitution, hooks), derives the correct next action, and returns one CLI command. Its token cost is approximately 200 tokens of context per turn, compared to ~1,500 tokens per tool in a conventional multi-tool surface. The recommended workflow: add the sentinel at project initialization, run `setup_project` to generate the constitution and hooks, then optionally remove the sentinel from the active MCP server list to reclaim context budget for the implementation phase. The sentinel can be re-enabled at any time as a lightweight drift detector — it reads the current artifact state and diagnoses what is missing or misconfigured. The "add → setup → remove" cycle is itself a GS hygiene rule: load only what the current session needs.
 
+**The sentinel navigational tree — completeness requirement.** The sentinel reads `CLAUDE.md` to derive the project's governing context. For the sentinel to function correctly — and for any AI session to inherit a complete grammar — the architectural constitution must provide coverage across five categories. A constitution missing any category will produce sessions that drift in the corresponding dimension:
+
+| Category | What it provides | Drift when absent |
+|---|---|---|
+| **Architectural identity** | What the system is, its boundaries, its primary purpose, its tech stack | AI treats each session as a blank-slate design problem |
+| **Standards** | Named patterns, disciplines, and protocols the project follows (SOLID, conventional commits, RAPTOR, BM25+vector) | Sessions vary technique application; named disciplines are not activated |
+| **Constraints and prohibitions** | Explicit forbidden patterns (`goto`-equivalents, direct DB calls from routes, bare exception throws, hardcoded values) | AI optimizes locally, violates boundary rules without prompting |
+| **Tool sequencing** | Ordered tooling instructions — what to install, what to run, in what order, what each failure means | Sessions reinvent setup; tool failure cascades misdiagnosed |
+| **Routing** | Which artifact to consult for which class of decision — spec for contracts, ADR for architecture history, use cases for behavior | AI ignores available context; makes decisions already recorded elsewhere |
+
+Audit a `CLAUDE.md` against this five-category grid before the first implementation session. Missing categories are not style choices — they are specification gaps with predictable failure modes.
+
 **Step 4: ADR initialization.** For every non-obvious decision made in steps 1–3 — technology selection, architectural pattern, exclusion of scope — write an ADR before any implementation begins. An ADR at initialization is the rationale record for decisions whose alternatives were considered and rejected. Without it, the AI will "optimize" these decisions in a future session.
 
-Minimum ADR format:
+Minimum ADR format (canonical template in §9):
 
 ```
 # ADR-NNN: Title
-
-**Status:** Accepted | Superseded by ADR-NNN
-**Date:** YYYY-MM-DD
-
-## Decision
-One sentence.
-
-## Context
-What problem this addresses and what alternatives were considered.
-
-## Consequences
-What this decision enables and what it forecloses.
+**Status:** Accepted  **Date:** YYYY-MM-DD
+## Decision — one sentence.
+## Context — problem addressed; alternatives considered and rejected.
+## Consequences — what this enables; what it forecloses.
 ```
 
 **Step 5: Use cases and session-scoped prompts.** From the functional specification and architecture, derive the use cases (actor, precondition, trigger, postcondition, error cases) and the bound roadmap. Each roadmap item receives a session-scoped prompt before any implementation session begins (see §5 for bound prompt format).
 
 **Derivability gate.** The initialization cascade is complete when a stateless agent given the five artifact sets — functional spec, architecture diagrams, architectural constitution, ADRs, use cases+prompts — can derive any valid implementation state without further human direction. Apply this test before proceeding to implementation: if you would need to narrate something that isn't in the artifacts, the cascade is not complete.
+
+**Scoping the initialization cascade — the MVP entry path.** The initialization cascade does not require the full system to be specified before the first session begins. It requires the *current session's scope* to be completely specified before generation starts. A complete specification for the minimum viable system is still a complete specification. "Complete" means: every element within the declared scope is specified; every element outside it is explicitly excluded or deferred in an ADR.
+
+The sequence for incremental entry: (1) Define the smallest scope that produces observable value. (2) Run the full initialization cascade for that scope. (3) Implement. (4) When the scope expands — new feature area, new integration, new data flow — write the expansion ADR first, then extend the specification, then open the implementation session. Each scope expansion is a mini-cascade: spec update → ADR → implementation. Never expand scope within an implementation session without closing the previous scope first.
+
+This pattern is not a compromise on discipline — it is the discipline applied correctly. The cascade gates ensure that every tier is complete for whatever scope is in flight. A practitioner who "will write the spec later" has not applied incremental entry; they have applied deferred specification, which is the failure mode the discipline exists to prevent.
 
 ---
 
@@ -576,7 +612,7 @@ The generative loop: token budget constraint → forced the constitution into a 
 
 1. Create the repository. Initialize git. Make the first commit: `.gitignore` only.
 2. Run `setup_project` (ForgeCraft) with the project description. This generates the architectural constitution, selects relevant tags, and populates the initial `CLAUDE.md`. Review and customize.
-3. Write the functional specification in `docs/specs/[project-name].md`. This is the human document; it does not need to be exhaustive before step 4 — it needs to be precise about scope.
+3. Write the functional specification in `docs/specs/[project-name].md`. This is the human document; it does not need to cover the full system before step 4 — it needs to be precise and complete about the *current scope*. If you are applying the MVP entry path (§4), declare the scope boundary explicitly: what is in, what is deferred, and why.
 4. Write the C4 context and container diagrams. Use a Mermaid block in the tech spec, or a dedicated diagram file. Commit.
 5. Write initialization ADRs for every non-obvious decision made in steps 2–4.
 6. Write use cases for the primary flows.
@@ -633,6 +669,10 @@ The portfolio size is bounded not by execution capacity but by specification ban
 ### 21. Test Architecture by Layer
 
 The test architecture is a first-class specification artifact. State it in the architectural constitution or a dedicated test architecture document. The AI generates tests from it; the agent defends regression with it; the commit pipeline enforces it.
+
+**The harness as constitutive of the GS guarantee.** GS's core claim — "the specification is the program" — holds only when the derivation is verified. The test harness is that verification. A specification without a harness is an assertion about intent; it is not a guarantee about behavior. An AI-generated codebase that is not continuously verified against the behavioral contracts in its specification may drift from those contracts silently — at generation speed, across sessions, without the practitioner noticing until integration. The T2 harness is not optional scaffolding that can be added later. It is structurally constitutive: removing it degrades the GS paradigm from a guarantee to a discipline preference.
+
+In practice this means: the test architecture must be specified *before* any implementation session begins (it belongs in the initialization cascade, not the pre-release loop), and the gate conditions below are blocking acceptance criteria, not guidelines.
 
 **Pipeline placement:**
 
@@ -738,11 +778,11 @@ The multi-agent experiment's dependency governance condition (GS v3) confirmed t
 
 ### 24. ForgeCraft — Specification Scaffolding
 
-ForgeCraft (`forgecraft-mcp@1.1.0`) generates production-grade architectural constitutions from a library of 112 curated template blocks covering 19 project classification tags and six AI assistants.
+ForgeCraft (`forgecraft-mcp@1.5.0`) generates production-grade architectural constitutions from a library of 116 curated template blocks covering 24 project classification tags and six AI assistants. The 1.4.0 release added five-phase quality gates (T1–T4 cascade enforcement), ADR sequencing, live documentation hooks, and guided practitioner feedback at each phase close. The 1.5.0 release added agent-agnostic session advising, pre-implementation impact assessment, spec consistency scanning, and postcondition coverage scoring.
 
-**Install:** `npx forgecraft-mcp@1.1.0`
+**Install:** `npx forgecraft-mcp@1.5.0`
 
-**CodeSeeker is bundled by default.** ForgeCraft 1.1.0 includes CodeSeeker as a recommended companion. CodeSeeker provides graph-based code intelligence (imports, calls, extends) that fills the gap grep cannot: re-exports, dynamic imports, type references vs value references, and barrel file entries. The rationale is structural — grep is text pattern matching, not an AST; any rename or interface change that relies on grep alone will miss these cases. Projects initialized with ForgeCraft get the CodeSeeker recommendation automatically.
+**CodeSeeker is bundled by default.** ForgeCraft 1.5.0 includes CodeSeeker as a recommended companion. CodeSeeker provides graph-based code intelligence (imports, calls, extends) that fills the gap grep cannot: re-exports, dynamic imports, type references vs value references, and barrel file entries. The rationale is structural — grep is text pattern matching, not an AST; any rename or interface change that relies on grep alone will miss these cases. Projects initialized with ForgeCraft get the CodeSeeker recommendation automatically.
 
 **When to run:**
 
@@ -750,6 +790,9 @@ ForgeCraft (`forgecraft-mcp@1.1.0`) generates production-grade architectural con
 |---|---|
 | `setup_project` | New project or complete specification rebuild |
 | `refresh_project` | Scope has drifted (new framework, new tag category) — detects drift and regenerates cleanly |
+| `advise_session` | Session start — reads project signals and returns a prioritised advisor block. Works on any project; no `forgecraft.yaml` required. Install the companion `session-advisor.sh` UserPromptSubmit hook to inject state automatically before every prompt. |
+| `propose_session` | Before starting implementation — runs pre-implementation impact assessment, produces `proposal.md` with spec delta, layer readiness per UC, and open clarifications |
+| `check_spec_consistency` | Before a major feature or release — scans all spec artifacts for gaps, orphan probes, hollow probes, stale ADRs, and unresolved `[NEEDS CLARIFICATION]` markers |
 | `audit_project` | Before a major release or external review — scores compliance and identifies gaps |
 | `review_project` | Pre-merge review — structured checklist across architecture, quality, tests, performance |
 | `scaffold_project` | Generate folder structure, hook skeletons, and documentation scaffolding for a new module |
@@ -879,6 +922,29 @@ These are testable. Run the blind adversarial audit from the companion supplemen
 **This will change — and the methodology improves with it.** Model capability and GS practice are complementary, not competing. Every generation that improves instruction-following fidelity, emit discipline, or architectural reasoning makes a complete specification more productive: a better reader executes the same grammar more faithfully. Some of the most explicit directives in current templates — emit this file in P1, do not leave this field as TBD, name the files you reference — exist because today's models require that level of precision. As models improve, that surface area shrinks. A directive necessary at sonnet-4-5 may be redundant at whatever comes next. That is not the methodology becoming obsolete — it is the compliance scaffolding thinning as the reader requires less of it. The core does not thin: architectural decisions, domain contracts, behavioral boundaries, decision rationales. Those are system-level artifacts; a model that never forgets still needs to be told what the system is.
 
 The right practice is periodic re-evaluation against a fixed benchmark — not loyalty to a named model. Run the blind adversarial audit from the companion supplement against any new model on a known benchmark before switching. What changed and in which direction is the question; the answer updates the practitioner's infrastructure, not their methodology.
+
+---
+
+### 30. Change Governance by Construction
+
+Enterprise change management frameworks — ITIL, ITSM, COBIT — require that changes to production systems be initiated through a formal request, reviewed by a change advisory body, traceable to a decision record, and auditable after the fact. Teams that adopt AI-assisted development typically face a version of this objection: *if the AI generates code, who approved the change? Where is the audit trail?*
+
+GS resolves this structurally rather than procedurally. The artifact grammar satisfies the change governance requirement by construction. There is no separate documentation step because the governance artifacts *are* the development artifacts:
+
+| ITIL/ITSM concept | GS artifact | Location |
+|---|---|---|
+| **Request for Change (RFC)** | ADR — the decision record that precedes any architecture-level change | `docs/decisions/ADR-NNN.md` |
+| **Change Advisory Board (CAB) review** | ForgeCraft gate stack — the gate conditions that must pass before a merge | Enforced at PR time via quality gates |
+| **Change record** | Commit log (conventional commits, scoped, typed) | Git history — every merge is a typed, scoped record |
+| **Audit trail** | ADR lineage + git log + Status.md | Queryable from version control; no separate system required |
+| **Post-implementation review** | Documentation cascade closure — artifacts updated after every increment | Session close protocol (§17) |
+| **Configuration item (CI)** | Every named artifact in the GS cascade — spec, ADRs, diagrams, constitution | Version-controlled alongside code |
+
+The practical consequence for regulated environments (HIPAA, SOC 2, CMS, PCI-DSS): the compliance artifact is not produced separately from the build artifact. It is the same artifact, read from two directions. An auditor asking "what changed, when, and who approved it?" receives the answer from `git log` and the ADR index. An engineer asking "what should I build next?" receives the answer from the same ADR index and the current specification.
+
+COMPASS (the multi-tier regulated data platform case study in the companion white paper) demonstrates this at scale: the specification that governs the ETL architecture is simultaneously the change control record for every data flow, schema contract, and monitoring threshold in the system. The lineage graph — T1 spec → T2 harness → T3 infrastructure → T4 monitoring — is the audit-ready change history. Adding a new data source requires an ADR (the RFC), passes ForgeCraft gates (the CAB), lands in the git log (the change record), and updates Status.md (the post-implementation review). The process is identical for one practitioner on a greenfield project. The formality is inherent in the methodology, not added by the organization.
+
+**What this means in practice:** When adopting GS in an organization with existing change management processes, map the GS artifact grammar onto the ITSM vocabulary before writing the first spec. Identify which artifact plays which ITSM role. Resistance from process owners almost always dissolves at this mapping — not because GS bypasses governance, but because it makes governance inseparable from the act of building.
 
 ---
 

@@ -72,7 +72,7 @@ The implication is this: a self-maintaining formal system, governed not by natur
 
 If such systems enter robotics — and they will, because the specification discipline applies to any domain the practitioner can name — the vision the science fiction writers of the mid-twentieth century expressed in literature becomes expressible in formalism. Asimov the biochemist, Clarke the physicist, Lem the cybernetics polymath — they were not writing fiction. They were writing specifications for a future they could not yet compile. The compiler is here. The formal tradition that makes it possible has been published and proved across 2,376 years. The AI executor that carries it all arrived in 2017.
 
-What remains is the question this essay opened with: what do people do when the machines do the work? The answer Athens gave still holds. They think. They converse. They create. They raise their children with the time and attention that children require. They care for the people around them. They make music and tell stories. They learn things for the reason the word *school* implies.
+What remains is the question this essay opened with: what do people do when the machines do the work? The answer Athens gave — *scholē*, available to everyone — is the answer this technology makes structurally possible for the first time.
 
 The difference between Athens and what is now possible is scale. Athens required slaves. The new golden century requires robots — formal systems that maintain themselves, improve themselves, and carry their governance in their type systems. No consciousness to oppress. No dignity to violate. No natural language rules to misinterpret.
 
