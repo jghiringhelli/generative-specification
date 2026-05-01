@@ -42,6 +42,10 @@ Every tier of GS operates on two axes simultaneously: it adds a restriction to t
 
 **On the harness.** The specification establishes intent. The harness certifies the derivation was faithful. A specification without a T2 harness is an assertion, not a guarantee — "spec is the program" holds only when the behavioral contracts are continuously verified against the running system. T2 is not optional scaffolding. It is constitutive of the GS guarantee.
 
+T2 is **executable specification**: T1 contracts expressed as running validations against the live application. The harness does what a manual QA practitioner would do — drive the application through each use case, observe behavior at every boundary (UI, service, database, API), and compare against postconditions declared in the spec. The test cases are derived from T1 contracts, not written by hand. Existing tools (Playwright, Cypress, Supertest, visual regression runners) execute them.
+
+What some frameworks call "Harness Engineering" — the AI behavioral guardrails, CLAUDE.md rules, prompt constraints — are **T1 artifacts**: they specify how the AI should behave. T2 is the running-application layer. The distinction matters: T1 tells the AI what to do; T2 verifies the live system did it.
+
 **Starting at T1 is correct.** Most practitioners run T1 and T2 indefinitely and reach excellent results. T3 becomes relevant when infrastructure state is complex enough to drift. T4 becomes relevant when the system is in production long enough to accumulate observable behavior. Do not force the cascade depth — let the project's failure modes tell you which tier to activate next.
 
 ---
@@ -606,6 +610,43 @@ The generative loop: token budget constraint → forced the constitution into a 
 
 ## Part VII: Operating Protocols
 
+### Project Type Assessment
+
+Before selecting a protocol, classify the engagement. The classification determines the entry path, the expected effort, and the tools required. Use this decision tree:
+
+```
+Does working code already exist?
+├── No → Greenfield (§18)
+└── Yes → Is the goal to keep the existing tech stack and impose GS discipline?
+           ├── Yes → Brownfield (§19)
+           │          └── Note: if you are inheriting from another team with no
+           │                     institutional knowledge, see Takeover variant (§19, end)
+           └── No → Is the tech stack changing, or is the codebase beyond salvage?
+                      ├── Yes → Migration (§20)
+                      └── Unclear → Run Phase 1 of Brownfield first.
+                                    After reading the system, reassess.
+                                    If the spec you would write is fundamentally
+                                    incompatible with the existing structure,
+                                    reclassify as Migration.
+```
+
+**Effort orientation (rough, for planning):**
+
+| Type | Spec effort | Implementation effort | Total |
+|------|-------------|----------------------|-------|
+| Greenfield | High upfront, zero recovery | Low — derives cleanly | Medium |
+| Brownfield | Medium (reverse-spec existing) | High — close gap incrementally | High |
+| Migration | High — extract intent + sanitize | Low — greenfield from clean spec | High |
+| Takeover | High — oracle tests + reverse-spec | High — unknown gap | Very high |
+
+**CodeSeeker role by type:**
+- Greenfield: not needed at project start; useful after significant growth
+- Brownfield: critical for Phase 1 (map existing structure before writing spec)
+- Migration: critical for Phase 1 (extract domain intent from old codebase)
+- Takeover: essential from hour one (no institutional knowledge to substitute)
+
+---
+
 ### 18. Initialization Protocol — New Greenfield Project
 
 **Ceremony, step by step:**
@@ -639,9 +680,35 @@ A brownfield system is one that exists, works, and lacks any specification. The 
 
 **Phase 5 — Retire oracle tests.** As proper unit and integration tests cover the extracted modules, oracle tests covering the same behavior are retired. The oracle test suite should be empty when the onboarding is complete.
 
+**Takeover variant.** A takeover engagement applies the brownfield protocol to a system whose original authors are unavailable — an acquisition, a consulting engagement, a team handoff with no overlap. The protocol is identical; the starting conditions are worse. Three adjustments apply: (1) Phase 1 takes longer — CodeSeeker is the primary reading tool, not conversations with the team; (2) oracle test coverage in Phase 3 must be more comprehensive before any changes, because there is no institutional memory to catch regressions the tests miss; (3) the gap between "what it does" and "what it should do" is unknown at the start and should be estimated conservatively. The specification written in Phase 2 must be validated against observable system behavior, not assumed to be correct. Treat every undocumented behavior as intentional until proven otherwise.
+
 ---
 
-### 20. Portfolio Management — The Cycling Model
+### 20. Migration Protocol
+
+A migration engagement extracts the domain intent from an existing system and rebuilds it cleanly under a new specification. The existing codebase is the source of domain knowledge, not the source of implementation patterns. The migration is complete when the new system satisfies the extracted spec and the old system is decommissioned.
+
+**When migration is the right choice over brownfield:**
+- The tech stack is changing (legacy language, end-of-life framework, cloud migration)
+- The architecture is fundamentally incompatible with the target structure
+- The codebase has accumulated enough tech debt that closing the gap incrementally would cost more than rebuilding from a clean spec
+- A brownfield Phase 1 reading session concluded that the gap between current and target is wider than the codebase itself
+
+**Phase 1 — Extract intent, not code.** Spend one or two sessions reading the old system with one goal: understand what it does in domain terms, not how it does it. Every data model, every business rule, every integration, every constraint. Document findings in plain language. CodeSeeker is the primary tool. The output is not a specification — it is a domain inventory: what exists, what it does, what the known exceptions and edge cases are. Do not describe implementation details.
+
+**Phase 2 — Write the sanitized specification.** From the domain inventory, write the new system's specification as if the old system did not exist. This is the key move of a migration: the spec is forward-looking. Drop features that are obsolete or unused (document explicitly that they are dropped). Drop patterns that were implementation accidents. Resolve inconsistencies by making a deliberate decision (capture in an ADR). The resulting spec should read like a greenfield — it describes what the system must be, not what the old system was. Use the greenfield initialization protocol (§18) from this point forward.
+
+**Phase 3 — Greenfield from the extracted spec.** Apply §18 in full. The specification already exists from Phase 2. Begin implementation from the first bound prompt. The old system runs in parallel throughout this phase. Do not cross-reference the old implementation during building — the spec is the source of truth. If the spec is silent on something the old system did, stop and make a decision: add it to the spec, or explicitly drop it. Never copy behavior from the old system that is not in the spec.
+
+**Phase 4 — Behavioral equivalence validation.** Before decommissioning the old system, validate that the new system satisfies the behavioral contracts extracted in Phase 1. This is not regression testing against the old implementation — it is verification that the extracted domain intent is satisfied. Write a migration acceptance harness: one test per major domain behavior documented in Phase 1. Discrepancies between Phase 1 inventory and new system behavior are either bugs in the new system or deliberate scope changes that need to be documented.
+
+**Phase 5 — Decommission.** Retire the old system only after the migration acceptance harness passes completely and the new system has operated in production for a stabilization period appropriate to the risk profile of the system. Document the decommission decision in an ADR. Archive, do not delete — the old system is a historical record of domain decisions.
+
+**On token cost.** Migration Phase 1 is the most token-intensive operation in GS practice. Reading a large legacy codebase with CodeSeeker — mapping modules, extracting domain entities, tracing flows — can consume significant context. Budget for multiple sessions. Use CodeSeeker's module map and dependency analysis before reading individual files. Prioritize entry points, data models, and the most frequently modified modules (git log by file change frequency is a useful heuristic). Do not attempt to read the full codebase in a single session.
+
+---
+
+### 21. Portfolio Management — The Cycling Model
 
 A practitioner carrying multiple projects simultaneously is not context-switching between them in the session-execution sense. The model is cycling: at any given session, one or two projects are active (being executed); the others are in a waiting state (execution paused at a clean boundary).
 
