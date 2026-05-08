@@ -256,7 +256,87 @@ The seven tiers are not independent. T2 validation requires T1 use cases be form
 
 **On the judgment layer.** The cascade removes obligations the practitioner previously executed; it does not remove the obligations that depend irreducibly on human judgment. Domain expert validation (does the AI's interpretation of finance, law, medicine, game design, music match what a real expert would do?), edge-case discovery from lived experience, aesthetic and quality judgment, strategic and business decisions about what should exist at all, compliance and legal sign-off, real user research with real humans, and performance tuning at production scale — these constitute the **judgment layer**. They are not a tier within the cascade because they are not a tool layer; they are the irreducible human work that runs at human pace because it must. Practitioners working under GS report that the judgment layer feels slow only by contrast to the AI-paced work that precedes it. This is a perception artifact, not a methodological gap: 90% of work that previously consumed weeks now resolves in hours, leaving the 10% that has always required judgment to occupy proportionally more of the practitioner's attention. GS is honest about this: the discipline does not claim to replace human judgment. It claims to ensure everything before the judgment layer is correct, so that judgment is spent on what it alone can decide.
 
-### 4.2 The Three-Tier Taxonomy
+### 4.2 The Closed-Loop Cascade
+
+*The seven tiers describe what GS dissolves; the closed-loop cascade describes how it stays dissolved. The tier hierarchy is the obligation map; the cascade is the enforcement substrate that prevents the map from drifting away from the territory between sessions. Without the cascade, the seven properties are aspirations. With it, they are admissibility conditions on every change that enters the repository.*
+
+A working GS project is not a sequence of separate practices stitched together; it is a single closed loop in which every layer derives from the layer above and feeds observations back into the layer above. The substrate the loop runs on is the cascade, and the cascade runs on a single operative rule:
+
+> **A change is admissible if and only if the layer immediately above it in the cascade has been amended to explain it.**
+
+The rule is biconditional. A code change unaccompanied by a corresponding upper-layer amendment is inadmissible; an upper-layer amendment without an immediate downstream change is permitted, because the spec is the only artifact whose change requires no further upstream explanation — it is the cascade's apex, governed by judgment rather than by another layer. This produces the asymmetry the paradigm depends on: specification leads, implementation follows, and the loop closes only when judgment ratifies the result.
+
+#### Conventional commits as the trigger surface
+
+The cascade requires a parsing surface — a place at which the system can mechanically determine which subset of the rule applies to a given change. Conventional Commits provides it. Each commit message of the form `<type>(<scope>): <description>` carries a type that maps deterministically to a layer obligation:
+
+| Commit type | Required upper-layer touch | Encouraged additional touch |
+|---|---|---|
+| `feat:` | spec amendment | use case, schema, ADR if architectural |
+| `fix:` | regression test | decision record if behavior was intentionally redefined |
+| `refactor:` | — | ADR or decision if an architectural choice was made |
+| `perf:` | — | decision and benchmark |
+| `revert:` | — | decision |
+| `docs:`, `test:`, `chore:`, `ci:` | — | — |
+
+The mapping is enforced at two boundaries: at commit time by a hook that inspects the staged diff against the declared type, and at integration time by a continuous-integration gate that re-runs the same logic against the full pull-request diff against base. Severity ramps from advisory (warning) on day one of brownfield adoption to blocking (error) once the project's baseline is clean. The progression is structural — the same rule, applied at increasing rigor as the specification stabilizes.
+
+The commit type is therefore not an annotation on history; it is a declaration the cascade reads to determine which subset of the rule to apply. A `feat:` commit declares "this change has spec implications," and the cascade gate verifies that declaration by inspecting whether spec artifacts are part of the same commit. A misclassified commit — a feature labeled `chore:` to evade the rule — is detectable at the public-surface layer (below) regardless of the type the practitioner chose.
+
+#### The three-layer recording architecture
+
+The cascade operates on a substrate of three independent recording layers, each with declared ownership and formal propagation rules:
+
+| Layer | Owner | Holds | Persists across |
+|---|---|---|---|
+| Project | the project-layer record-keeper (repository state) | specs, ADRs, decisions, use cases, roadmaps, schemas, contracts, hooks, gates | sessions, developer turnover, calendar |
+| Individual | the individual-layer memory (per-developer store) | session-local prompts, findings, work patterns, personal preferences | sessions for one practitioner |
+| Team | the team-layer aggregator (shared store) | shared findings, ticket-to-spec mapping, cross-project patterns, prompt analytics | the whole organisation, all projects, all practitioners |
+
+The layers are independent in implementation — no SDK couples them — but they propagate at every boundary. A finding at the individual layer can promote to the project layer (as an ADR or decision in the repository); a project-layer pattern observed across multiple projects can promote to the team layer; a structural change at the team layer cascades downward to every project that inherits the policy. The propagation is asymmetric: useful patterns surface upward through judgment one at a time; team-layer policy descends uniformly.
+
+The integration contract between the three layers is a single per-project file: the **manifest** (`docs/manifest.yaml`). It declares which document types live in which paths, which commit types require which layer touches, what the public-surface detection rules are, and which tool owns which recording layer. Every other tool — gates, hooks, dashboards, analytics — reads the manifest. The manifest is the only required contract; the rest is implementation. The narrative form of the three-layer architecture, with its biological framing, is developed in the companion book; the white paper version is the formal one above.
+
+#### The public-surface diff rule
+
+A change to exports, public types, command-line flags, or tool schemas exposed across an inter-process boundary requires a spec or ADR touch *regardless of commit type*. This rule closes a loophole the type-driven cascade alone leaves open: a `chore:` or `refactor:` commit can carry a behavior change in disguise, smuggled across the type-to-layer map by mislabeling. The public-surface rule is a second classifier — a structural one — that operates on the diff itself rather than on the practitioner's declared type. It triggers on a small set of declared globs (the project's API-surface block in the manifest) and demands an upper-layer touch whenever any path in that block is modified.
+
+The result is a redundant gate: the commit type names what the practitioner intends; the public-surface rule names what the change actually does. When the two disagree, the cascade flags it. The loophole becomes structurally unreachable, not merely discouraged.
+
+#### The judgment layer as the cascade's terminus
+
+The cascade is the substrate the AI executor operates within; the terminus where it discharges is the judgment layer named in the previous note. The cascade preserves judgment by routing every change through it: no merge to a protected branch is admissible without (a) the cascade firing cleanly, (b) all gates green, and (c) explicit human ratification recorded as a review, comment, or approval. Branch protection enforces this at the version-control layer; a manifest-driven gate validates it at the project layer. Together they form a redundant checkpoint that an AI cannot route around — an AI cannot create approvals on its own pull requests, and the protected branch refuses merge without them.
+
+The cascade's design is to ensure human judgment enters at this terminus and only here. Everything before — specification reading, use-case decomposition, schema authoring, code generation, test execution, harness measurement, observation structuring — runs at AI speed. The decision is what cannot be automated, and the cascade is the mechanism by which everything else gets out of the way of the decision.
+
+#### Anti-drift formalized
+
+The anti-drift property the cascade enforces can be stated as a single formal claim:
+
+> **A published specification is admissible if and only if every code path it claims to govern is reachable through the cascade from the specification itself.**
+
+This is a stronger statement than "the specification governs the code." It requires that the path from spec to code is *closed*: every executing module is traceable to a spec artifact through the cascade chain (spec → use case → schema/contract → code → test → harness), and every spec assertion has a downstream realization the cascade can reach. A specification that claims to govern a module unreachable through the cascade is, to that extent, fictional — its claim is unverifiable by the substrate that would have enforced it. The closure property is what distinguishes a generative specification from documentation: documentation can describe code it has no path to; a generative specification cannot, by construction.
+
+The reachability test is implementable in both directions. Walk the cascade forward from each spec assertion and verify the chain terminates at executing code; walk it backward from each module and verify the chain terminates at a spec assertion. Gaps in either direction are drift made visible. The cascade does not eliminate drift — it converts drift into the kind of failure a check can catch, rather than the kind that surfaces as an incident months later.
+
+#### The closed-loop diagram
+
+The shape of the loop, stated minimally:
+
+```
+   ┌─────────────────────────────────────────────────────────────────────────┐
+   │                                                                         │
+   ▼                                                                         │
+ SPEC ─→ USE-CASE ─→ SCHEMA/CONTRACT ─→ CODE ─→ TEST ─→ HARNESS ─→ OBSERVATION ─→ DECISION
+```
+
+Each downward arrow is a derivation governed by the admissibility rule above; the closing arrow from decision to spec is judgment ratifying direction. The diagram is not a sequence of stages to be executed once; it is the topology the cascade enforces on every change. A change enters at the layer its commit type names and propagates downward; the observation feeds back into the next decision, which becomes the next spec amendment.
+
+The operational details — the precise hook chain, the manifest schema fields, the severity-ramp policy, the brownfield-override mechanism — are matters of implementation. They are documented in the **Practitioner Protocol** companion document, not the white paper. The white paper's claim is the structure above: that GS is enforced as a closed loop, that the loop's substrate is a cascade, that the cascade's substrate is a three-layer recording architecture with a manifest as integration contract, and that judgment is the terminus the cascade is designed to preserve attention for.
+
+---
+
+### 4.3 The Three-Tier Taxonomy
 
 *Throughout this section, syntactic and semantic are used in the programming-language sense: syntactic = pertaining to the form and structure of source artifacts; semantic = pertaining to the meaning those artifacts communicate to a reader who brings interpretive context. This is consistent with the Morris semiotic tripartition cited in §4 and with standard usage in programming language theory, but differs from the technical senses these terms carry in formal linguistics.*
 
@@ -264,7 +344,7 @@ The seven tiers are not independent. T2 validation requires T1 use cases be form
 
 **Syntactic disciplines** (Martin's three paradigms — structured programming, object-oriented programming, and functional programming, described above — and structural schema such as clean architecture, a layered design pattern that separates concerns into concentric rings: domain entities at the center, application logic surrounding them, infrastructure at the outermost edge) constrain the *form* of source artifacts: what constructs are permitted, what dependency directions are allowed. Whether every principle widely discussed as a paradigm falls neatly into this tier is a taxonomy debate this paper notes for completeness and takes no part in; the productive claim is directional: these disciplines constrain *what is permitted in the artifact*.
 
-**Semantic disciplines** (SOLID — five principles for structuring object-oriented code: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion — test-driven development, domain-driven design, behavior-driven development, conventional commits) constrain the *meaning* that structure communicates to a human reader who brings context to the interpretation. A SOLID-violating codebase compiles; its cost is paid by engineers who recognize the deficit. TDD (Test-Driven Development — the discipline of writing a failing test before writing the code that satisfies it) makes a codebase *certifiable*: it removes the option of shipping unproven code, and the enforcement layer that makes it a discipline rather than a preference is real (CI — Continuous Integration — gates that automatically run tests on every commit, coverage requirements, deployment blocks). These disciplines assume a reader with state: colleagues, institutional memory, interpretive context built over shared history. TDD occupies the boundary between this tier and the pragmatic: a test suite is the closest prior art to a stateless, machine-readable behavioral contract, and TDD's verification posture is carried directly into GS as its Verifiable property (§4.3). What places TDD in the semantic tier is its incompleteness as a derivation grammar, tests certify behavior but leave architecture, naming, decision history, and rationale implicit. GS subsumes TDD rather than extending it.
+**Semantic disciplines** (SOLID — five principles for structuring object-oriented code: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion — test-driven development, domain-driven design, behavior-driven development, conventional commits) constrain the *meaning* that structure communicates to a human reader who brings context to the interpretation. A SOLID-violating codebase compiles; its cost is paid by engineers who recognize the deficit. TDD (Test-Driven Development — the discipline of writing a failing test before writing the code that satisfies it) makes a codebase *certifiable*: it removes the option of shipping unproven code, and the enforcement layer that makes it a discipline rather than a preference is real (CI — Continuous Integration — gates that automatically run tests on every commit, coverage requirements, deployment blocks). These disciplines assume a reader with state: colleagues, institutional memory, interpretive context built over shared history. TDD occupies the boundary between this tier and the pragmatic: a test suite is the closest prior art to a stateless, machine-readable behavioral contract, and TDD's verification posture is carried directly into GS as its Verifiable property (§4.4). What places TDD in the semantic tier is its incompleteness as a derivation grammar, tests certify behavior but leave architecture, naming, decision history, and rationale implicit. GS subsumes TDD rather than extending it.
 
 #### The Pragmatic Tier
 
@@ -297,9 +377,9 @@ Whether a given AI model succeeds in practice is an empirical question about the
 
 Generative specification is a stronger property than "well-documented code." Documentation can be narrative and passive: it can exist in a README that three people have read and that the AI session will never be given. Generative specification is active: the artifacts are themselves executable, verifiable, and self-correcting. The distinction is operational: a system cannot violate a generative specification without a mechanism triggering.
 
-### 4.3 The Seven Specification Properties
+### 4.4 The Seven Specification Properties
 
-The seven properties below are to Generative Specification what SOLID is to object-oriented programming: a named, teachable set of obligations that makes the discipline concrete, inspectable, and transferable. SOLID tells a developer how to structure objects for a human reader who brings context and judgment. These seven properties tell a practitioner how to structure specifications for a stateless reader who brings neither. Each property names a specific failure mode observed in production across six projects — not a taxonomy constructed in advance, but a record of what breaks and why. Together they operationalize the derivability obligation (§4.2): make each class of failure structurally unreachable. The rubric derived from them — 0/1/2 per property, 14 points total — is the primary measurement instrument of the validation experiments in §7.
+The seven properties below are to Generative Specification what SOLID is to object-oriented programming: a named, teachable set of obligations that makes the discipline concrete, inspectable, and transferable. SOLID tells a developer how to structure objects for a human reader who brings context and judgment. These seven properties tell a practitioner how to structure specifications for a stateless reader who brings neither. Each property names a specific failure mode observed in production across six projects — not a taxonomy constructed in advance, but a record of what breaks and why. Together they operationalize the derivability obligation (§4.3): make each class of failure structurally unreachable. The rubric derived from them — 0/1/2 per property, 14 points total — is the primary measurement instrument of the validation experiments in §7. The rubric's reproducibility — that two independent assessors arrive at the same score given the same artifact set — is grounded by **calibration anchors**: per-property reference exemplars at each scoring level (0, 1, 2) that fix the rubric's interpretation through shared cases rather than abstract definitions. A score is admissible only when the assessor can name the anchor it is closest to. The anchors are the mechanism that makes the rubric transferable across projects, evaluators, and time.
 
 **Self-describing.**The system explains its own architecture, decisions, and conventions from its own artifacts. No external knowledge is required. Self-describing addresses the *rationale layer*: not just what the structure is, but why it is that way and what rules govern it. It extends the Single Responsibility Principle (Martin, 2002) from runtime modules to the full artifact surface: specification, tests, and architecture documents are each responsible for one concern and contain what a reader carrying no prior session history needs to understand that concern. Automatable checks: (1) presence of an explicit intent statement; (2) presence of a scope boundary statement. A specification lacking either fails regardless of prose quality.
 
@@ -342,7 +422,7 @@ Executable is scored conditional on specification availability: a formal contrac
 
 The seven specification properties are universal, they apply to every project regardless of type or domain. Their concrete artifact expression, however, is project-type-parameterized: the specific quality gates, constraint vocabulary, and required artifact types that satisfy each property vary by what the project is. A healthcare system satisfying Defended requires PII redaction rules and audit logging constraints that a CLI tool does not; a real-time system satisfying Bounded requires latency contracts that a batch pipeline does not. §6 develops the artifact grammar and describes how the universal base and project-type overlays compose.
 
-### 4.4 Contract Sufficiency: The What-How Distinction
+### 4.5 Contract Sufficiency: The What-How Distinction
 
 Generative Specification governs *what* the system must do — behavioral contracts, acceptance obligations, architectural boundaries, non-functional requirements — and *why* the non-obvious decisions were made. It does not govern *how* those obligations are fulfilled. Multiple valid implementations can satisfy the same contract. A function that retrieves a user by email may use an indexed SQL query, a cache lookup, or a key-value store — each conforming to the behavioral contract, each differing in its mechanism.
 
@@ -382,7 +462,7 @@ The practical implication: a codebase that follows SOLID and clean architecture 
 
 GS's four new contributions — the properties no prior discipline named — are worth stating plainly. **Self-describing**: the system must externalize its complete architectural identity in artifacts a stateless reader can inspect without asking a colleague. **Defended**: the process must have structural guards that make certain failures unreachable, not merely discouraged. **Auditable**: every architectural decision must be recorded as a required production rule, not a recommended practice. **Executable**: the implementation must be measured against a real runtime environment, not only against static test assertions. Together these four close the derivability gap the prior disciplines leave open.
 
-GS is categorically distinct from prompt engineering — HOW-layer techniques that guide model behavior toward a particular implementation path. The full distinction is in §4.4.
+GS is categorically distinct from prompt engineering — HOW-layer techniques that guide model behavior toward a particular implementation path. The full distinction is in §4.5.
 
 ### Industry Prior Art: Spec-Driven Development
 
@@ -434,7 +514,7 @@ A system built to generative specification consists of the following artifact ty
 
 | Artifact | Linguistic Analog | Function in the System |
 |---|---|---|
-| Architectural constitution[^4] | Grammar rules | Defines what is and is not a valid sentence in this system. Every AI interaction is governed by this document. Agent-specific filenames: `CLAUDE.md` (Anthropic Claude), `AGENTS.md` (OpenAI), `.cursorrules` / `.cursor/rules/` (Cursor), `.github/copilot-instructions.md` (GitHub Copilot), `.windsurfrules` (Windsurf). The concept is agent-agnostic; the filename is not. In projects large enough to exceed a single bounded file, the architectural constitution is the root node of a sentinel navigational tree (§4.3 Bounded). |
+| Architectural constitution[^4] | Grammar rules | Defines what is and is not a valid sentence in this system. Every AI interaction is governed by this document. Agent-specific filenames: `CLAUDE.md` (Anthropic Claude), `AGENTS.md` (OpenAI), `.cursorrules` / `.cursor/rules/` (Cursor), `.github/copilot-instructions.md` (GitHub Copilot), `.windsurfrules` (Windsurf). The concept is agent-agnostic; the filename is not. In projects large enough to exceed a single bounded file, the architectural constitution is the root node of a sentinel navigational tree (§4.4 Bounded). |
 | Sentinel navigational tree | Grammar index with lazy derivation | A hierarchy of scoped specification files. The root is always loaded; each child node declares its own domain and routing condition; the AI descends only the path relevant to the current task. Joining all leaf nodes yields the complete specification. Five categories must be collectively present across the tree: architectural identity, standards, constraints and prohibitions, tool sequencing (when to use which tool under which condition), and routing. The root node must stay within the bounded line limit precisely because it is always loaded. A tree that omits any category from its leaves forces the AI to infer that category — which is a derivability failure at the navigation layer. |
 | Architecture Decision Records (ADRs) | Etymology and rule changelog | Documents why the grammar evolved. Prevents the AI from "correcting" intentional decisions that appear suboptimal without context. |
 | C4 diagrams / structural diagrams (PlantUML, Mermaid) | Syntax tree | The parsed structural representation of the system. Context at a glance for any agent entering the codebase. |
@@ -448,7 +528,7 @@ A system built to generative specification consists of the following artifact ty
 | Commit hooks and quality gates | Parser rejection rules | Malformed input is structurally rejected before it enters the system. The architecture makes certain mistakes unreachable. |
 | MCP tools and environment tooling | Runtime environment | The tools available to the agent define what operations are possible. Bounded tool access is bounded agency. |
 
-The artifact grammar above is the universal base; a complete generative specification composes it with a project-type overlay (healthcare adds PII rules and audit trails; real-time adds latency contracts; a game adds asset quality gates). ForgeCraft-MCP implements this through its tag system: every project receives `UNIVERSAL`, and each active tag (`API`, `WEB-REACT`, `GAME`, `FINTECH`, etc.) applies its overlay. ForgeCraft is **transitional scaffolding** — it enforces at the governance layer what Loom will eventually enforce at the language and compiler layers; its ADRs become verified contracts, its commit hooks become type-checker passes. ForgeCraft bundles CodeSeeker as a first-class component because the grep-versus-AST limitation (§4.3 Composable) makes agent-driven refactoring unsafe without graph-level navigation; governance and navigation are designed to operate together.
+The artifact grammar above is the universal base; a complete generative specification composes it with a project-type overlay (healthcare adds PII rules and audit trails; real-time adds latency contracts; a game adds asset quality gates). ForgeCraft-MCP implements this through its tag system: every project receives `UNIVERSAL`, and each active tag (`API`, `WEB-REACT`, `GAME`, `FINTECH`, etc.) applies its overlay. ForgeCraft is **transitional scaffolding** — it enforces at the governance layer what Loom will eventually enforce at the language and compiler layers; its ADRs become verified contracts, its commit hooks become type-checker passes. ForgeCraft bundles CodeSeeker as a first-class component because the grep-versus-AST limitation (§4.4 Composable) makes agent-driven refactoring unsafe without graph-level navigation; governance and navigation are designed to operate together.
 
 ---
 
@@ -530,7 +610,7 @@ The artifact types above are not produced in parallel or in arbitrary order. Eac
 
 5. **Use cases, sequence diagrams, and state machines**, the behavioral contracts between components, specified with enough precision that each diagram is simultaneously a test specification. A Mermaid sequence diagram naming a payment flow generates both the service interface contract and the acceptance test skeleton. A state machine diagram for a subscription entity enumerates valid states and valid transitions, and any implementation that permits an unlisted transition is wrong by the specification.
 
-The cascade closes when a stateless agent given these five artifact sets can derive any valid implementation state without further human direction. That is the derivability criterion of §4.3, and it is the test the practitioner should apply before calling the specification complete. Generating diagrams after the code is written is documentation; generating them in this order is the specification act itself.
+The cascade closes when a stateless agent given these five artifact sets can derive any valid implementation state without further human direction. That is the derivability criterion of §4.4, and it is the test the practitioner should apply before calling the specification complete. Generating diagrams after the code is written is documentation; generating them in this order is the specification act itself.
 
 ---
 
@@ -1277,7 +1357,7 @@ The paradigm's contribution across all domains is the same insistence: externali
 
 ### 8.9 The Prompt Engineering Objection
 
-The full distinction between GS and prompt engineering is in §4.4. In brief: a prompt is a session artifact, it exists for one interaction and disappears when the context window closes. The specification is the grammar the model reads *before* any session prompt, and it persists across every session. Architectural drift accumulated over thirty sessions is not the product of thirty bad prompts — it is the product of a context that degrades faster than any individual prompt can repair. The Shattered Stars case (§7.6) is the direct demonstration: the same session prompts produce structurally coherent output against a 2,277-line specification, and sixteen divergent systems without one. The coherence is produced by the grammar, not the prompt.
+The full distinction between GS and prompt engineering is in §4.5. In brief: a prompt is a session artifact, it exists for one interaction and disappears when the context window closes. The specification is the grammar the model reads *before* any session prompt, and it persists across every session. Architectural drift accumulated over thirty sessions is not the product of thirty bad prompts — it is the product of a context that degrades faster than any individual prompt can repair. The Shattered Stars case (§7.6) is the direct demonstration: the same session prompts produce structurally coherent output against a 2,277-line specification, and sixteen divergent systems without one. The coherence is produced by the grammar, not the prompt.
 
 ### 8.10 The Failure Mode: A Wrong Specification
 
@@ -1453,7 +1533,7 @@ $I \propto (1-S)/S$ is a mental model — a visualization of the direction of th
 
 Human review is required to cross the ceiling — not as a fallback, but as the structurally necessary component for uncertainty classes that automated verification cannot resolve.
 
-**The deployment gate.** Minimum $S$ required before first execution scales with $C_i(d) \times (1 - R(d))$ — iteration cost times irreversibility. In software ($C_i \approx 0$, $R \approx 1$), low-$S$ deployment is survivable. For surgical robots or irreversible legal instruments ($C_i$ large, $R \approx 0$), $S$ must approach the completeness ceiling before execution begins. The Defended property (§4.3) operationalizes this: the executor must know which of its actions require a human gate, from the specification itself.
+**The deployment gate.** Minimum $S$ required before first execution scales with $C_i(d) \times (1 - R(d))$ — iteration cost times irreversibility. In software ($C_i \approx 0$, $R \approx 1$), low-$S$ deployment is survivable. For surgical robots or irreversible legal instruments ($C_i$ large, $R \approx 0$), $S$ must approach the completeness ceiling before execution begins. The Defended property (§4.4) operationalizes this: the executor must know which of its actions require a human gate, from the specification itself.
 
 **$S_{\text{realized}}$ tracking.** Eight domain strategies ship with ForgeCraft (UNIVERSAL, API, WEB-REACT, GAME, FINTECH, ML, MOBILE, WEB3). The state file tracks accepted verification steps; $S_{\text{aggregate}} = \sum S_{\text{tag}} \cdot c_{\text{tag}} / \sum c_{\text{tag}}$ where $c_{\text{tag}}$ is the ordinal completeness ceiling band weight. The experiment series is the instrument's calibration run: the three ADR emission fixes from §9.3, the dep governance prescriptive block, and the mutation gate are all now shipped in `templates/universal/instructions.yaml`. The gap between $I \propto (1-S)/S$ and a running instrument is operationally closed.
 
@@ -1653,7 +1733,7 @@ The author named the doors. The AI supplied the contents of the rooms. Both cont
 
 **Generative Specification (GS)**. The methodology introduced in this paper. A structured, versioned document that encodes system architecture, domain rules, and behavioral constraints in sufficient formal detail that a large language model can derive compliant code from it with minimal human mediation.
 
-**Hardening surface**. The complete set of adversarial conditions against which a system must be specified and verified before deployment: stress testing, security testing, chaos engineering, cross-cutting concern validation, and environment auditing. The hardening surface is a subset of the Verifiable property (§4.2): it extends the test-suite adversarial posture to infrastructure and runtime boundaries. A system that lacks an explicitly specified hardening surface has been proven only against itself.
+**Hardening surface**. The complete set of adversarial conditions against which a system must be specified and verified before deployment: stress testing, security testing, chaos engineering, cross-cutting concern validation, and environment auditing. The hardening surface is a subset of the Verifiable property (§4.4): it extends the test-suite adversarial posture to infrastructure and runtime boundaries. A system that lacks an explicitly specified hardening surface has been proven only against itself.
 
 **Living documentation**. Documentation that is co-located with, and continuously reconciled against, the system it describes. A Generative Specification is living documentation because it is the authoritative source from which both implementation and tests are derived.
 
