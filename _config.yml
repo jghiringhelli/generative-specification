@@ -9,14 +9,14 @@ heading_anchors: true
 color_scheme: light
 
 aux_links:
-  "White Paper (Zenodo)": "https://doi.org/10.5281/zenodo.19073543"
+  "White Paper (Zenodo)": "https://doi.org/10.5281/zenodo.19637142"
   "ForgeCraft on GitHub": "https://github.com/jghiringhelli/forgecraft-mcp"
 
 aux_links_new_tab: true
 back_to_top: true
 back_to_top_text: "Back to top"
 
-footer_content: "&copy; 2026 J.C. Ghiringhelli. Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. Citation: <a href=\"https://doi.org/10.5281/zenodo.19073543\">Zenodo</a>"
+footer_content: "&copy; 2026 J.C. Ghiringhelli. Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. Citation: <a href=\"https://doi.org/10.5281/zenodo.19637142\">Zenodo</a>"
 
 plugins:
   - jekyll-remote-theme

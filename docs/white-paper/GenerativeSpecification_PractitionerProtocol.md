@@ -48,6 +48,55 @@ What some frameworks call "Harness Engineering" — the AI behavioral guardrails
 
 **Starting at T1 is correct.** Most practitioners run T1 and T2 indefinitely and reach excellent results. T3 becomes relevant when infrastructure state is complex enough to drift. T4 becomes relevant when the system is in production long enough to accumulate observable behavior. Do not force the cascade depth — let the project's failure modes tell you which tier to activate next.
 
+### The three-layer recording model
+
+A specification artifact set serves a stateless reader. But the practitioner is not stateless, and the team is not stateless, and AI tools accumulate findings across sessions. State persists in three layers, each with a distinct owner, scope, and surface. Conflate them and findings drift to the wrong place — a personal habit lands in the project repo where the next contributor inherits it as a rule, or a project-level decision gets buried in one practitioner's local notes where the team never sees it.
+
+| Layer | Owner | Scope | Surface |
+|---|---|---|---|
+| **Project** | The repository | Specs, ADRs, decisions, use cases, schemas, contracts, hooks, gates | `docs/`, `.forgecraft/`, `.claude/hooks/` — version-controlled |
+| **Individual** | The practitioner | Prompt history, personal findings, work-style habits, learned recoveries | `~/.chronicle/` (or equivalent local memory store) |
+| **Team** | The team | Shared findings, ticket integration, workload split, prompt analytics | Shared DB and dashboard (chronicle-team or equivalent) |
+
+The layers are independent at the persistence level — no tool depends on another's storage — but findings propagate. An insight at the individual layer that recurs across practitioners promotes to the team layer. A team decision that constrains future implementation promotes to the project layer as an ADR. A project ADR is read by every individual session at start, closing the loop.
+
+**The promotion rule.** Before recording a finding, ask which layer the rule applies to. If it would govern the next contributor's commit, it belongs in the project repo (CLAUDE.md, an ADR, the manifest). If it is your own pattern that another practitioner would not benefit from, it stays at the individual layer. If it is a recurrence the team should converge on, promote to the team layer first; the project layer follows when consensus is reached. The same principle that keeps semantic and procedural artifacts distinct keeps these layers distinct.
+
+### The judgment layer — what the cascade does not remove
+
+The cascade removes the work that previously consumed weeks. It does not remove the work that depends irreducibly on human judgment. Name this explicitly to yourself before you start a project under GS, because the contrast effect is the single most disorienting part of the experience.
+
+**What lives in the judgment layer:**
+
+- **Domain expert validation.** Does the AI's interpretation of your specialized field — finance, law, medicine, game design, music, any domain where senior practice differs from textbook knowledge — match what a real expert would actually do? You either are that expert, or you bring one in.
+- **Edge cases from lived experience.** What real users do that no spec author predicted. Surfaced by humans encountering the system in their actual context.
+- **Aesthetic and quality judgment.** Is this UI good? Does this story land? Is this music right? Perceptive judgment, not measurement.
+- **Strategic and business decisions.** Should this feature exist at all? Is the price right? The specification serves these questions; it does not answer them.
+- **Compliance and legal sign-off.** A regulator, an auditor, a lawyer reads the artifact and signs. The social and legal weight of the sign-off is constitutive of the act.
+- **Real user research.** Real humans, real context, real hardware. Synthetic users are not users.
+- **Production-scale performance tuning.** Real workload, real network, real concurrency. Synthetic load is a starting point, not a substitute.
+
+**The perception problem you should expect.** After T1–T2 work resolves in hours instead of weeks, the judgment-layer work that has always run at human pace will feel glacial. This is contrast, not failure. Ninety percent of the work compressed twenty-fold; the ten percent that has always required judgment now occupies proportionally more of your attention. The work has not gotten harder. The adjacent work has gotten dramatically faster.
+
+**Tell yourself upfront:** *"I will do 90% of the work in 1/20 the time, then spend most of my remaining attention on the 10% the discipline cannot compress."* Practitioners who go in with this framing do not experience the judgment layer as a methodology failure. Practitioners who do not are at risk of concluding GS broke at the last step, when in fact the last step is the only one that was ever theirs alone.
+
+**Capacity rule.** Judgment does not parallelize the way mechanical work does. If you have multiple projects in flight, schedule them so their judgment-layer phases do not collide in the same week, or delegate the judgment-layer work to a domain specialist for finite, scoped engagements. Triage ruthlessly: not every project earns full judgment-layer investment. Exploratory work may ship at 80% quality forever; commercial work earns judgment proportional to revenue stakes; personal craft warrants your own time.
+
+**Honesty.** GS does not replace human judgment. It ensures everything before the judgment layer is correct, so judgment is spent only on what it alone can decide. State this to stakeholders before they expect you to ship without it.
+
+**The judgment layer is configured, not assumed.** The constraints that prevent AI-only merges are stated in the project manifest and enforced redundantly at two boundaries:
+
+```yaml
+human_judgment:
+  protected_branches: [main, develop]
+  min_reviewers: 1               # 0 = solo mode, but PR + checks still required
+  require_tests_pass: true
+  require_human_ack: true        # at least one human comment on the PR
+  block_ai_only_merge: true      # rejects merge when only the PR author has interacted
+```
+
+The CI gate reads this block and refuses merge when its conditions are not met. Branch protection (configured via `gh api` or the GitHub UI) enforces the same conditions independently. Together they form a redundant checkpoint that an AI agent cannot route around: the agent cannot create approvals on its own PRs, and the protected branch refuses to merge without them. Solo mode (`min_reviewers: 0`) keeps PR + checks required, preventing direct pushes that skip the cascade.
+
 ---
 
 ## Part I: The Cognitive Framework
@@ -391,6 +440,148 @@ grep -rn "localhost\|password\|secret\|api_key\|http://" src/ --include="*.ts" |
 ```
 
 The architectural constitution specifies what the hook checks. The hook executes the check. The practitioner maintains both artifacts in sync — a rule added to the constitution without a corresponding hook check is advisory, not enforced.
+
+---
+
+### 8.1 The Doc-First Cascade
+
+The conventional commit type is the cascade trigger. The commit message states what kind of change this is; the hook chain validates that the layer above it has been touched. A `feat:` commit without a spec touch is incoherent — there is no source of intent for the code to derive from. A `fix:` commit without a regression test asserts a corrected behavior that no test guards.
+
+| Commit type | Required | Encouraged | Default severity |
+|---|---|---|---|
+| `feat:` | spec | use case, schema, ADR (if architectural) | warning → error once baseline clean |
+| `fix:` | regression test | decision (one-pager) if behavior intentionally redefined | warning |
+| `refactor:` | — | ADR or decision if architectural choice made | info |
+| `perf:` | — | decision + benchmark | info |
+| `docs:`, `test:`, `chore:`, `ci:` | — | — | info |
+| `revert:` | — | decision | info |
+
+Configure these in `docs/manifest.yaml` under the `cascade:` block. The pre-commit hook reads the staged diff against the commit type at commit time. The CI workflow re-runs the same check against the full PR diff at PR time. Defaults sit in the canonical schema; override per project as needed.
+
+`feat.severity` starts at `warning` so the cascade is visible without blocking. After a project's baseline is clean — every committed feature has a spec touch, every fix has a regression test — promote to `error`. The promotion is a one-line manifest change. The severity ramp section below covers the audit cadence that justifies the promotion.
+
+The cascade rule applies regardless of who authored the commit. An AI-generated commit with `feat:` and no spec touch fails the same gate a human-authored one would.
+
+---
+
+### 8.2 Bug-Fix vs Feature Flow
+
+A bug fix does not require a spec update or an ADR. It requires a regression test that demonstrates the corrected behavior. The test is the smallest unit of spec — it is the executable statement of what the code now does. Forcing a written ADR for every fix produces ceremony without information; the diff and the test already encode what changed.
+
+A `fix:` is upgraded to a `feat:` (and inherits the spec requirement) when the corrected behavior is intentionally different from what the spec said. That is not a bug fix — it is a behavioral redefinition. State the redefinition in the spec, write an ADR if the choice was non-obvious, then commit. If the corrected behavior matches what the spec already said and the spec was silent only on the failure mode, a regression test plus an optional `docs/decisions/YYYY-MM-DD-slug.md` one-pager is enough.
+
+Encourage but do not require a one-page decision in `docs/decisions/` when the fix turned on a non-trivial interpretation (e.g., "we chose to round half-to-even because the test we now have was failing under half-up"). Decisions are lightweight; ADRs are reserved for architectural choices.
+
+---
+
+### 8.3 The Anti-Drift Principle
+
+A change is allowed if and only if its layer above explains it. This is the operative rule the cascade exists to enforce. It manifests at three checkpoints:
+
+- **Commit time.** The pre-commit hook checks staged files against the commit type. `feat:` without a `docs/specs/` touch emits a warning (or blocks at `severity: error`). `fix:` without a test file emits the same.
+- **PR time.** The CI workflow re-runs the same check on the full PR diff against the base branch. Local hooks can be skipped; CI cannot. The PR diff is the authoritative ground truth.
+- **Public-surface diff.** Any change to exports, public types, CLI flags, or MCP tool schemas requires a spec or ADR touch regardless of commit type. The manifest declares which globs are public surface (`src/**/index.ts`, `src/types/**/*.ts`, `src/cli/**/*.ts`, `src/tools/**/*.ts` for MCP); the cascade gate honors them.
+
+The principle is symmetric. A `docs:` PR that touches `src/` emits scope drift. A `test:` PR that touches application code emits the same. The gate does not assume the practitioner's intent — it reads the commit type and enforces what that type promised.
+
+---
+
+### 8.4 Hook Chain Reference
+
+Twelve `pre-commit` hooks run in sequence. Two `commit-msg` hooks validate the message and the cascade. A `prepare-commit-msg` hook enriches the draft. Two `post-commit` hooks generate artifacts. One `pre-push` hook safeguards remote refs. Failure of any one blocks the operation.
+
+| Hook | Stage | Purpose | Blocks on |
+|---|---|---|---|
+| `pre-commit-no-temp-files` | pre-commit | Reject temp/draft/debug files | Any `*.tmp`, `*.draft.md`, `*-debug.*` staged |
+| `pre-commit-secrets` | pre-commit | Block credential leakage | API keys, passwords, private keys detected |
+| `pre-commit-prod-quality` | pre-commit | Reject mocks, hardcoded URLs, debug code in production paths | `console.log`, `localhost`, hardcoded creds |
+| `pre-commit-branch-check` | pre-commit | Refuse direct commits to protected branches | Direct commit to `main`/`master` |
+| `pre-commit-format` | pre-commit | Auto-format staged TS/JS files | Never (auto-fixes and re-stages) |
+| `pre-commit-compile` | pre-commit | TypeScript compilation check | Any `tsc --noEmit` error |
+| `pre-commit-import-cycles` | pre-commit | Circular dependency detection (madge / lint-imports) | Any cycle introduced |
+| `pre-commit-tdd-check` | pre-commit | TDD RED gate | Test-only commit where tests pass; src commit without tests warns |
+| `pre-commit-test` | pre-commit | Run bare tests | Any test failure (skips when src/ staged — coverage covers it) |
+| `pre-commit-coverage` | pre-commit | Run tests + enforce coverage thresholds | Coverage below configured threshold |
+| `pre-commit-audit` | pre-commit | Block HIGH/CRITICAL CVEs | `npm audit` / `pip audit` / `cargo audit` HIGH+ findings |
+| `pre-commit-doc-cascade` | pre-commit | Advisory drift detection | Never blocks locally — emits checklist |
+| `commit-msg` | commit-msg | Conventional Commits format | Message fails the type/scope regex |
+| `commit-msg-cascade` | commit-msg | Type-aware cascade enforcement | Required slot missing at `severity: error` |
+| `prepare-commit-msg-usecase` | prepare-commit-msg | Tag commit with touched UC IDs | Never |
+| `post-commit-changelog` | post-commit | Append entry to CHANGELOG.md | Never |
+| `post-commit-complexity-baseline` | post-commit | Refresh cyclomatic complexity baseline | Never |
+| `pre-push` | pre-push | Block deletion of main/master on remote | Force-delete of protected ref |
+
+**`--no-verify` is an emergency exit, not a workflow tool.** Skipping hooks bypasses the cascade. Use it only when a hook is genuinely broken and blocking a critical merge — never as a way to commit faster. Every `--no-verify` invocation is flagged in the changelog by the audit gate. If you find yourself reaching for it routinely, the hook is misconfigured or the manifest severity is wrong; fix the configuration, not the symptom. CI re-runs the same checks on the PR diff; bypassing locally only delays the failure.
+
+---
+
+### 8.5 Manifest Authoring and Override
+
+Every project has one `docs/manifest.yaml`. It is the only required contract between forgecraft, chronicle, chronicle-team, and the hook chain. Each project's manifest references the canonical schema and overrides paths or severities as needed:
+
+```yaml
+# docs/manifest.yaml
+schema_source: forgecraft@1.6.0/templates/docs-manifest.yaml
+project:
+  name: my-app
+  type: api                     # library | cli | api | service | app | tool
+  release_phase: greenfield     # greenfield | brownfield | maintenance
+
+# Brownfield path overrides — three forms, all accepted by cascade gates
+overrides:
+  documents.specs.legacy_files:        # Form 1: legacy single-file specs
+    - docs/PRD.md
+    - docs/spec.md
+  documents.adrs.legacy_dirs:          # Form 2: legacy ADR directories
+    - docs/adr/
+  documents.use_cases.path: docs/uc/   # Form 3: full path replacement
+
+# Severity overrides — start gentle, harden as baseline clears
+cascade_overrides:
+  feat.severity: warning               # bump to error after baseline audit
+```
+
+**Path resolution order:** project `overrides:` block (highest priority) → project top-level fields → canonical schema defaults. The cascade gate accepts ANY of (canonical path, `legacy_files`, `legacy_dirs`, overridden path) as satisfying a slot requirement. This is what "back-compat" means here: brownfield projects pass the cascade on day one without restructuring, and migrate at their own pace.
+
+**Greenfield projects do not need overrides.** Run `setup_project`, accept the canonical layout, and ship. Overrides exist for projects with existing files that should map into the schema without being moved. A greenfield project that adds an override block is fighting the canonical layout for no reason — delete it and align with the default.
+
+---
+
+### 8.6 Severity Ramp
+
+Cascade gates start advisory and harden over time. The default `feat.severity: warning` keeps the cascade visible without blocking commits during the first weeks of a project, when the team is still aligning on slot conventions and any brownfield migration is in flight. Promote to `error` once the baseline is clean.
+
+**The quarterly cascade audit.** Once a quarter, walk one feature end-to-end: spec → use case → code → test → harness. Note any drift — a code path with no spec, an ADR superseded but never archived, a use case the test no longer matches. After two consecutive quarterly audits find no gaps, promote `feat.severity` from `warning` to `error`. The promotion is a one-line manifest change; the audit is what justifies it.
+
+**Greenfield exception.** A greenfield project with no legacy debt may set `feat.severity: error` from day one. There is no migration in flight; the discipline applies fully from the first commit. This is the recommended default for any new repository where the manifest and cascade are configured before the first feature ships.
+
+---
+
+### 8.7 Audit Exceptions
+
+Hook checks are not infallible. A scanner that flags hardcoded URLs catches real defects most of the time and false positives some of the time. A pattern scanner cannot tell a fixture URL in a test file from a hardcoded production URL. The exception mechanism makes the false positives explicit and traceable.
+
+Add exceptions in `.forgecraft/exceptions.json`:
+
+```json
+{
+  "exceptions": [
+    {
+      "id": "EX-0001",
+      "hook": "pre-commit-prod-quality",
+      "pattern": "executable-gates.ts:142 — hardcoded https://example.com",
+      "reason": "Documentation example URL in literal string for the README generator. Confirmed not a runtime reference.",
+      "addedAt": "2026-05-08",
+      "addedBy": "jcg",
+      "adr": "ADR-0014-fixture-url-policy.md"
+    }
+  ]
+}
+```
+
+**Required fields:** `id` (unique, sequential), `hook` (which hook this suppresses), `pattern` (file:line + matched substring), `reason` (the determination — why this is not a real defect), `addedAt`, `addedBy`. **Encouraged:** `adr` (link to a decision record if the exception established a class-wide rule).
+
+**When to add an exception.** A legitimate fixture, a documentation example, a deliberate placeholder in a generator template — these warrant exceptions. Runtime configuration, environment-specific URLs, secrets-shaped values that the scanner correctly flagged — these do not. The reason field is the audit trail; if you cannot articulate why the flagged value is safe, the value is not safe and the exception should not be added. Exceptions are reviewed during the quarterly cascade audit; stale exceptions (the file no longer contains the pattern, the ADR has been superseded) are removed.
 
 ---
 

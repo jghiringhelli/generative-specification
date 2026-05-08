@@ -73,4 +73,4 @@ Example (for a repository module):
 
 ---
 
-*Generative Specification methodology: https://doi.org/10.5281/zenodo.19073543*
+*Generative Specification methodology: https://doi.org/10.5281/zenodo.19637142*

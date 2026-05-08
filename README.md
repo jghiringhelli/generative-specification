@@ -2,7 +2,7 @@
 
 Community home for the Generative Specification methodology — the first programming discipline of the pragmatic dimension, designed for a stateless reader.
 
-- [White Paper (PDF)](docs/white-paper/GenerativeSpecification_WhitePaper.pdf) · [Zenodo preprint](https://doi.org/10.5281/zenodo.19073543)
+- [White Paper (PDF)](docs/white-paper/GenerativeSpecification_WhitePaper.pdf) · [Zenodo preprint](https://doi.org/10.5281/zenodo.19637142)
 - [Ambient Engineer — articles and essays](https://ambientengineer.substack.com)
 - [Experiment Supplement](docs/white-paper/GS_Experiment_Supplement.md)
 - [Practitioner Protocol](docs/white-paper/GenerativeSpecification_PractitionerProtocol.md)
@@ -152,7 +152,7 @@ Commit timestamps are cryptographically signed by GitHub. BRAD shows the full bu
 
 ### White Paper
 
-The published preprint is at [doi.org/10.5281/zenodo.19073543](https://doi.org/10.5281/zenodo.19073543). The source and ancillary files are in [`docs/white-paper/`](docs/white-paper/). Community review is open -- see [REVIEWING.md](docs/white-paper/REVIEWING.md) for how to challenge a claim, propose a correction, or map an issue to a section.
+The published preprint is at [doi.org/10.5281/zenodo.19637142](https://doi.org/10.5281/zenodo.19637142). The source and ancillary files are in [`docs/white-paper/`](docs/white-paper/). Community review is open -- see [REVIEWING.md](docs/white-paper/REVIEWING.md) for how to challenge a claim, propose a correction, or map an issue to a section.
 
 ---
 
@@ -197,7 +197,7 @@ The structural argument developed in ss10 of the white paper: when a practitione
 ## Citation
 
 ```
-Ghiringhelli, J. C. (2026). Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader (1.1). Zenodo. https://doi.org/10.5281/zenodo.19073543
+Ghiringhelli, J. C. (2026). Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader (1.1). Zenodo. https://doi.org/10.5281/zenodo.19637142
 ```
 
 Contact: jcghiri@gmail.com - [linkedin.com/in/jghiringhelli](https://linkedin.com/in/jghiringhelli) - [genspec.dev](https://genspec.dev) - [ambientengineer.substack.com](https://ambientengineer.substack.com)

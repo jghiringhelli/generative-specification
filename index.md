@@ -10,7 +10,7 @@ permalink: /
 
 Community home for the Generative Specification methodology — the first programming discipline of the pragmatic dimension, designed for a stateless reader.
 
-[White Paper (Zenodo)](https://doi.org/10.5281/zenodo.19073543){: .btn .btn-primary .mr-2 }
+[White Paper (Zenodo)](https://doi.org/10.5281/zenodo.19637142){: .btn .btn-primary .mr-2 }
 [Ambient Engineer](https://ambientengineer.substack.com){: .btn }
 
 ---
@@ -144,7 +144,7 @@ When a practitioner community contributes to a shared GS methodology under quali
 
 ```
 Ghiringhelli, J. C. (2026). Generative Specification: A Pragmatic Programming Paradigm
-for the Stateless Reader (1.0). Zenodo. https://doi.org/10.5281/zenodo.19073543
+for the Stateless Reader (1.0). Zenodo. https://doi.org/10.5281/zenodo.19637142
 ```
 
 Contact: [juan@pragmaworks.dev](mailto:juan@pragmaworks.dev) · [LinkedIn](https://linkedin.com/in/jghiringhelli) · [genspec.dev](https://genspec.dev) · [Ambient Engineer](https://ambientengineer.substack.com)

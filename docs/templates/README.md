@@ -38,4 +38,4 @@ If your CLAUDE.md needs a table of contents, it is too big. Split it across the 
 
 ---
 
-*Generative Specification white paper: https://doi.org/10.5281/zenodo.19073543*
+*Generative Specification white paper: https://doi.org/10.5281/zenodo.19637142*

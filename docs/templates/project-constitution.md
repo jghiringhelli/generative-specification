@@ -115,4 +115,4 @@ If the AI proposes something that violates any of the above, reject it and refer
 
 ---
 
-*Generative Specification methodology: https://doi.org/10.5281/zenodo.19073543*
+*Generative Specification methodology: https://doi.org/10.5281/zenodo.19637142*

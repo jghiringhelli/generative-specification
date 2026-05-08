@@ -44,11 +44,13 @@ The first four of these are demonstrated across production deployments. The fift
 
 ## The Evidence
 
-In April 2026, 83 software developers participated in a controlled study at Mitikah, Mexico City. Half worked with standard AI assistance; half worked under GS discipline using the same AI tools.
+In April 2026, 58 developers produced 83 analyzable submissions across two projects at Mitikah, Mexico City. The study ran in two sessions.
 
-The GS group produced three times the rate of fully executable, deployable implementations — systems that passed live integration tests without modification. The effect was strongest for the most demanding output level: perfect implementations.
+In the first session (pre-reveal), neither group knew GS. One group prompted freely; the other used specification tooling without understanding the discipline behind it. The free-prompting group produced three times the rate of fully working implementations (38% vs. 13%). Tooling without methodology is a liability.
 
-This was not a study of AI capability. The AI tools were identical. The difference was whether the practitioners had a complete specification or not.
+In the second session, both groups received a one-session GS introduction. One group applied the discipline freely; the other was constrained to follow a pre-generated roadmap that predated the session. The freely-applying group produced 75% working implementations versus 63%, with five times fewer complete failures (5% vs. 25%).
+
+The discipline transferred in a single session. The bottleneck was not the methodology — it was practitioners using tools they did not yet understand, and artifacts that had gone stale. Both have since been addressed.
 
 ---
 
