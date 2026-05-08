@@ -21,12 +21,14 @@ secondarily CTOs and VPs of Engineering
 4. [The Seven-Tier Cascade](#4-the-seven-tier-cascade)
 5. [The Seven GS Properties](#5-the-seven-gs-properties)
 6. [The Tool Kit](#6-the-tool-kit)
-7. [Case Studies](#7-case-studies)
-8. [The Formal Underpinning](#8-the-formal-underpinning)
-9. [The Biological Isomorphisms](#9-the-biological-isomorphisms)
-10. [The Research Horizon](#10-the-research-horizon)
-11. [Voice and Tone Guide](#11-voice-and-tone-guide)
-12. [Book Positioning](#12-book-positioning)
+7. [The Closed Loop](#7-the-closed-loop)
+8. [Documentation Just-In-Time](#8-documentation-just-in-time)
+9. [Case Studies](#9-case-studies)
+10. [The Formal Underpinning](#10-the-formal-underpinning)
+11. [The Biological Isomorphisms](#11-the-biological-isomorphisms)
+12. [The Research Horizon](#12-the-research-horizon)
+13. [Voice and Tone Guide](#13-voice-and-tone-guide)
+14. [Book Positioning](#14-book-positioning)
 
 ---
 
@@ -841,104 +843,404 @@ express in formalism what they could only express in literature.
 
 ## 5. THE SEVEN GS PROPERTIES
 
-Source: `bioiso-gs-attributes.md`. These are the seven properties every GS-governed system
-must satisfy. ForgeCraft scores systems against them (0–2 points each, 14 points total,
-threshold 11/14). Each property names a specific failure mode. The primitive is the
-structural prevention.
+These are the seven properties every GS-governed system must satisfy. ForgeCraft scores
+systems against them — zero, one, or two points per property, fourteen points total,
+adoption threshold eleven of fourteen. The structure of this chapter is deliberate. Each
+property is presented failure-mode-first, because that is how a practitioner encounters
+them: not as an abstract ideal to aspire to, but as the specific way an AI agent goes
+wrong when the property is missing. The score progression is calibration-anchored: a
+zero, a one, and a two each describe a recognisable state of a real project, drawn from
+SafetyCorePro (greenfield, GS from day one), COMPASS (in active production migration),
+and CPQ Front (a four-year-old codebase that adopted GS incrementally over eleven
+sessions).
+
+A property at zero is a project where the failure mode is happening unnoticed. A property
+at one is a project where the failure mode has been recognised but the structural
+defence is partial. A property at two is a project where the failure mode has been
+made architecturally unreachable. The score is not a grade; it is a diagnostic.
 
 ---
 
 ### Self-Describing
 
-**What failure mode it prevents:** The AI did not know the system's own conventions.
-Sessions produce output that is locally reasonable and globally incoherent because the
-system's identity, its boundaries, its naming conventions, and its purpose were not
-legible from the artifacts alone.
+**Failure mode prevented.** The agent enters the project cold and does not know what it
+is, what state it is in, or what rules apply. It spends the first ten minutes of the
+session rediscovering basics that the previous session also rediscovered. It makes
+changes that contradict in-progress work because nothing told it that work existed. Two
+sessions converging on the same problem produce incompatible answers because each
+inferred the project's identity from a different subset of files.
 
-**What it looks like in practice:** A `CLAUDE.md` that covers architectural identity,
-standards, constraints, tool sequencing, and routing. A project where a new session —
-or a new team member — can understand what the system is for and how it should be built
-without talking to anyone who has worked on it before. ForgeCraft checks: does the
-codebase explain itself without you?
+**What it means.** The project explains itself. Any new agent — human or AI — can
+understand what the system is for, how it is structured, and what is happening right
+now without talking to anyone who has worked on it before. The artifacts carry the
+identity that was previously transmitted through conversation, Slack channels, and
+the institutional memory of senior engineers.
+
+**Artifacts.**
+- `CLAUDE.md` (or its agent-specific equivalent) — the architectural constitution, loaded
+  automatically at session start. Contains: project identity, package map, naming
+  conventions, dependency governance, known pitfalls, corrections log, skills index, ADR
+  index. Hard line cap: ~300 lines, because the agent reads it on every turn and
+  middle-of-context degradation eats anything past the leading position.
+- `Status.md` — what was completed last session, what is in progress, what is next,
+  decisions made, active branches, blockers. Updated at session open and close.
+- `docs/ARCHITECTURE.md` — the system map: component topology, data flows, package
+  boundaries.
+
+**What makes it work, and what breaks it.** These artifacts have value only if they are
+current. A `Status.md` three sessions stale is worse than no `Status.md` — it
+confidently delivers wrong context. The rule "Read `Status.md` at the start of every
+session" in `CLAUDE.md` is the enforcement mechanism, but it is a convention, not an
+automatic barrier. What sustains the property in practice is the discipline of closing
+each session with a Status update before the push. Self-Describing fails not from
+absence but from rot.
+
+**Score progression.**
+- **0** — No `CLAUDE.md`, no `Status.md`, no architecture document. The AI infers
+  structure from code on every session, repeatedly producing different inferences. New
+  contributors onboard by interrogating teammates. *A four-year-old SaaS service whose
+  `README.md` says "Tech Stack: Node, Postgres" and nothing else.*
+- **1** — A `CLAUDE.md` exists but is stale, or covers some of the five categories
+  (architectural identity, standards, constraints, tool sequencing, routing) but not
+  others. Or all three artifacts exist but `Status.md` is updated weekly rather than
+  per-session. *COMPASS at week four — the constitution covers the data layer well but
+  says nothing about the compliance-gate sequencing across tiers.*
+- **2** — All three artifacts present, current within the last working day, covering
+  the five categories the sentinel navigational tree requires. *SafetyCorePro at v1.0
+  — the constitution loaded each session is exhaustive. CPQ Front at 2/2 after eleven
+  sessions of brownfield migration, where `Status.md` is updated as the last act of
+  every session and a corrections log captures the previous session's mistakes.*
+
+**What raises the score.** Generate `CLAUDE.md` with ForgeCraft's `setup_project` (it
+covers the five categories by construction). Add the "read `Status.md` at session start"
+rule to the constitution. Configure a post-commit hook that nudges Status.md updates.
+Run `forgecraft audit_project` quarterly to detect staleness drift before it becomes
+load-bearing.
 
 ---
 
 ### Bounded
 
-**What failure mode it prevents:** The AI modified code outside the feature's scope.
-Session scope creep: the AI "improves" existing code while implementing the requested
-feature, introducing unintended changes that break other behaviors.
+**Failure mode prevented.** The agent interprets a vague request too broadly or too
+narrowly. "Fix the display" becomes a refactor of the rendering pipeline. "Improve
+generation" turns into thirteen unrelated changes nobody asked for. Or, in the inverse
+failure: the agent stays so close to the literal text of the prompt that it produces a
+patch which works for the example but breaks the use case the example was drawn from.
 
-**What it looks like in practice:** Explicit scope boundaries in every session prompt.
-"NOT IN SCOPE" lines that make unauthorized changes architecturally unreachable.
-Architectural boundaries (no direct DB calls from route handlers, no business logic
-in infrastructure adapters) stated as prohibitions, not guidelines. ForgeCraft checks:
-is business logic leaking into your routes?
+**What it means.** Every unit of work has explicit scope and seams. Functions do one
+thing. Modules own one concern. Sessions know what is in scope, what is explicitly out,
+and what the expected behaviour should be. Architectural boundaries — no DB calls from
+route handlers, no business logic in adapters, no React imports in the domain core —
+are stated as prohibitions, not guidelines.
+
+**Artifacts.**
+- `docs/specs/<system>.md` — the functional specification. The source of truth for "is
+  this a bug or expected behaviour?" When the agent sees a computed field returning
+  zero, it reads the spec to know whether that is correct. Without the spec, it guesses.
+- `DEVELOPMENT_PROMPTS.md` — bound prompts (`DP-013`: "fix frozen slot objects in
+  HYDRATE_STATE — acceptance: dispatch with `Object.freeze`'d slots must not throw"). Each
+  one carries: objective, acceptance criteria, files probably involved, and what is
+  explicitly out of scope.
+- The sentinel navigational tree — child specs the agent descends only when relevant.
+  Loading the full spec into a single context is itself a Bounded violation: it forces
+  the agent to operate against context it does not need.
+
+**What makes it work, and what breaks it.** The spec must be a living document. When
+CPQ Front added a `month` field type, the spec entry came in the same commit as the
+code. If it had not, a future session might have deleted `month` as "not supported."
+The property breaks when developers treat the spec as documentation rather than
+contract — updates happen "later" and "later" never arrives. Bounded works only when
+the spec touch is part of the same commit as the behaviour change.
+
+**Score progression.**
+- **0** — No spec, or specs that say "the system handles X cases appropriately."
+  Sessions invent scope. Pull requests sprawl across unrelated concerns. *A five-year-old
+  startup whose only documents are tickets and Slack threads.*
+- **1** — Spec exists for the core domain but bound prompts are absent or used
+  inconsistently. The agent knows what the system *is* but not what the *current task*
+  is. *COMPASS at week six — the data model is fully specified but feature work is still
+  requested as free-form prose.*
+- **2** — Spec covers behaviour; bound prompts are the request format; "NOT IN SCOPE"
+  is mandatory in every prompt; the sentinel tree limits each session's context to what
+  the task needs. *SafetyCorePro from day one (greenfield, never accepted free-form
+  prompts). CPQ Front at 2/2 after introducing the DP-007 to DP-014 series.*
+
+**What raises the score.** Adopt the bound prompt template. Move free-form requests
+through it — the practitioner writes the DP entry before opening Claude. Add a CI
+check that flags PRs whose diff exceeds the bound prompt's stated file list by more
+than one file without an explicit override note. Split the sentinel tree once any
+single spec file exceeds 300 lines.
 
 ---
 
 ### Verifiable
 
-**What failure mode it prevents:** Output was untestable. Code that cannot be verified
-against behavioral contracts is not derivable — it is generated and hoped for.
+**Failure mode prevented.** The agent writes code that looks correct but breaks
+something else. "It compiles" passes for verification. The agent says the fix works,
+but no test proves it. Or, more insidiously: tests exist, but they are tests of
+execution rather than behaviour — they run the right code and assert nothing
+meaningful, so they pass against any plausible implementation including the wrong one.
+An AI-generated suite at 80% line coverage and 0% mutation score is the canonical
+signature of this failure.
 
-**What it looks like in practice:** Use cases that serve as the source for implementation
-contracts, acceptance tests, and documentation simultaneously. Test architecture specified
-before any implementation session begins. Coverage and mutation score thresholds stated
-as gate conditions. ForgeCraft checks: are there tests, and did they pass in a real runtime?
+**What it means.** Every claim about the code can be verified mechanically. Tests
+exist, coverage thresholds enforce them, mutation testing validates that the tests
+actually catch bugs, and the agent runs the suite before declaring done.
+
+**Artifacts.**
+- Coverage thresholds in `vitest.config.ts` / `jest.config.ts` / `pyproject.toml` — the
+  floor can only rise, never fall. Adding tests raises the floor.
+- Mutation testing configuration (Stryker for JS, mutmut for Python, PIT for Java).
+  Mutation score answers the harder question: do the tests actually catch bugs? Line
+  coverage measures what was executed; mutation score measures what was caught.
+- Behavioral test files derived from use cases. The DP-013 test in CPQ Front
+  (`hydrate-state-sync.node.test.js`) freezes every slot and node, dispatches
+  `hydrateState`, and verifies no crash plus valid state. It catches that regression
+  for life.
+- A pre-commit hook that runs the fast suite — not a token sample.
+
+**What makes it work, and what breaks it.** Verifiable breaks when the test suite is
+written by the same agent that wrote the code, with no mutation gate. The agent will
+write tests that pass against its own implementation rather than tests that catch
+violations. Mutation testing is the structural defence: a 0% mutation score reveals
+that 80% line coverage was theatre. The other failure mode is a pre-commit hook
+that runs `test:core` (one test) rather than `test:fast` (the fifty-one that would
+catch the regression you are about to commit).
+
+**Score progression.**
+- **0** — No coverage thresholds, no mutation testing, no behavioural tests. The agent
+  declares completion based on "it compiled." *A brownfield prototype where the only
+  assertion is whether `npm run dev` starts.*
+- **1** — Coverage exists with thresholds; tests are run on commit; mutation testing is
+  absent; behavioural tests cover the happy path but edge cases are inferred at
+  integration time. *CPQ Front at 1/2 — coverage gates are in place but pre-commit
+  only runs `test:core`; there is no mutation testing yet (DP-007 deferred); E2E tests
+  are still manual in Chrome DevTools.*
+- **2** — Mutation score thresholds met (≥65% overall, ≥70% on new or changed code);
+  pre-commit runs the full fast suite; behavioural tests are derived from use cases; at
+  least one E2E test gates CI. *SafetyCorePro at v1.0 — mutation score 72%, every use
+  case generates an acceptance test, the Playwright suite is the merge gate.*
+
+**What raises the score.** Promote pre-commit from `test:core` to `test:fast`. Add
+Stryker or equivalent. Raise coverage thresholds incrementally each session — the
+ratchet only goes up. Generate at least one E2E test per use case, not per release.
 
 ---
 
 ### Defended
 
-**What failure mode it prevents:** The AI committed broken or harmful code. Pre-commit
-hooks that could be bypassed. Security policies that were advisory rather than enforced.
-Architectural constraints that existed only in the constitution but were not mechanically
-enforced.
+**Failure mode prevented.** The agent — or a human — commits code that breaks the
+build, introduces lint violations, or skips tests. The "I will fix it later" pattern
+where debt accumulates silently. Pre-commit hooks that exist as files but never block.
+Branch protection that is advisory. Architectural prohibitions stated in the
+constitution that nothing actually enforces — so the constitution says "no React in
+the domain core" while the domain core imports React in fifteen places.
 
-**What it looks like in practice:** Pre-commit hook that runs the full suite and blocks on
-failure. Dependency governance stated in the constitution — not left to model discretion.
-Correction mechanisms that catch violations before they propagate. ForgeCraft checks:
-are hooks blocking bad commits before they land?
+**What it means.** Automatic barriers prevent bad code from entering the codebase.
+Commits that fail the gates are rejected. Merges without green CI are blocked.
+Architectural prohibitions are mechanically enforced — not left to model discretion.
+Destructive operations are structurally prevented rather than merely discouraged.
+
+**Artifacts.**
+- `.husky/pre-commit` — runs `lint-staged` (ESLint `--fix` on staged files) plus the
+  test gate. If either fails, the commit is rejected.
+- ESLint flat config (`eslint.config.js`) — the project's rules, with warnings
+  promoted to errors in batches as cleanup completes.
+- `.github/workflows/test.yml` — install, build, lint, full test suite, coverage
+  report. The coverage step is blocking, not informational. PRs cannot merge without
+  green CI.
+- Branch protection on `main`: PR required, status checks required, no force pushes,
+  no deletions. The setting that prevents an AI from routing around the human review
+  gate.
+
+**What makes it work, and what breaks it.** Defended works because the layers
+compose. Pre-commit catches problems in seconds, locally, before they enter history.
+CI catches what pre-commit may miss (full suite, different environment). ESLint catches
+patterns (no-unused-vars, no-undef) that tests do not cover. Branch protection
+prevents anyone — AI or human — from bypassing the gates. Defended breaks when one
+layer is bypassed routinely; a team that uses `--no-verify` weekly has lost the
+property regardless of how strict the configuration is.
+
+**Score progression.**
+- **0** — No pre-commit, no CI gates, or gates exist as files but are routinely
+  overridden. *A small repo where `--no-verify` is the team's normal commit path.*
+- **1** — Pre-commit and CI exist but enforcement is partial: pre-commit runs a
+  token sample, CI is informational, branch protection is opt-in. *COMPASS at week
+  three, before the team turned on required status checks on `main`.*
+- **2** — All three layers active and load-bearing: pre-commit runs the fast suite,
+  CI is blocking, branch protection rejects merges that lack green checks; `--no-verify`
+  triggers a changelog entry that surfaces in the next audit. *CPQ Front at 2/2 — the
+  husky chain is the team's first line, the GitHub Actions workflow is the second,
+  branch protection is the third.*
+
+**What raises the score.** Turn on required status checks in branch protection. Move
+the pre-commit hook from `test:core` to `test:fast`. Adopt the cookbook hook chain —
+`pre-commit-secrets`, `pre-commit-no-temp-files`, `pre-commit-prod-quality`. Promote
+ESLint warnings to errors in batches each session.
 
 ---
 
 ### Auditable
 
-**What failure mode it prevents:** Decisions left no trace; the AI "improved" intentional
-choices. Without a decision record, every session is equally free to reconsider every
-decision.
+**Failure mode prevented.** "Why is it built like this?" has no answer. A future
+session reverts a deliberate decision because nothing recorded why it was made. The
+same mistake is committed twice because the first occurrence was not logged. The agent
+treats every architectural choice as up for renegotiation because nothing said it was
+settled. A practitioner who joins the project in month eighteen has to interview five
+people to reconstruct decisions made in month two.
 
-**What it looks like in practice:** ADRs for every non-obvious architectural decision,
-written before implementation begins. Status.md updated at every session close. Commit
-history with typed conventional commits — a queryable record of how the grammar evolved.
-ForgeCraft checks: is every architectural decision recorded and findable?
+**What it means.** Every significant decision has a written record with context. Every
+recurring AI mistake is captured so future sessions do not repeat it. The current state
+of the system, and the history of how it arrived there, is fully recoverable from the
+artifacts alone.
+
+**Artifacts.**
+- ADRs (`docs/adrs/active/ADR-*.md`) — Architecture Decision Records. Each captures
+  decision (one sentence), context (alternatives considered and why rejected), and
+  consequences. Once accepted, never edited; superseded by a new record.
+- Corrections log (in `CLAUDE.md`) — one-line entries capturing AI mistakes and the
+  correct pattern. Cheaper than an ADR; for implementation errors rather than
+  architectural choices. *"[2026-05-07] Display.jsx routed all select fields to XSelect
+  (radio) regardless of option count. Fields with 4+ options should use XComboBox."*
+- Conventional commits as a typed corpus of change. `git log --grep='feat(billing)'`
+  produces the audit trail of how the billing module evolved.
+
+**What makes it work, and what breaks it.** ADRs and corrections work as a pair. ADRs
+cover architectural decisions — large, infrequent, hard to reverse. Corrections cover
+implementation errors — small, frequent, easy to commit again. Together they form a
+complete audit trail of "why is it this way?" (ADRs) and "what went wrong before?"
+(corrections). The property breaks when ADRs are written reluctantly ("this seemed
+obvious at the time"), or when the corrections log is treated as an apology log rather
+than an instruction set for the next session.
+
+**Score progression.**
+- **0** — No ADRs, no corrections log, no conventional commits. Decisions live in
+  Slack threads or in the heads of three people. *A four-year-old SaaS where every
+  "why is it like this?" question requires interrupting a senior engineer.*
+- **1** — ADRs exist for big decisions but the corrections log is missing, or vice
+  versa. Conventional commits are sporadic. *SafetyCorePro at week two — eight ADRs
+  from the design phase, but no corrections log because no AI mistake has been logged
+  yet (this changes by week four).*
+- **2** — ADRs cover architectural decisions; corrections log captures recurring AI
+  mistakes; conventional commits are enforced by hook; ADR-to-commit linking via
+  `Refs:` footers. *CPQ Front at 2/2 — eight ADRs (some retroactive, written when
+  investigation revealed the original justification was real but undocumented), a
+  corrections log with two entries from the past week, every commit typed.*
+
+**What raises the score.** Adopt the ADR template. Write the first ADRs retroactively
+for decisions you discover were intentional but undocumented. Add a corrections-log
+section to `CLAUDE.md` with one entry as seed. Promote `commit-msg` enforcement of
+conventional commits.
 
 ---
 
 ### Composable
 
-**What failure mode it prevents:** Coupled modules that should have been independent.
-Systems where a change to one module requires changes to unrelated modules, because
-boundaries were implicit and the AI crossed them freely.
+**Failure mode prevented.** The agent needs to work on the schema layer but has to
+load the entire project context (100K+ tokens) to do it. Knowledge about formulas is
+scattered across ten files and the agent misses half. Modules that should have been
+independent are coupled because boundaries were implicit and the agent crossed them
+freely. A change to one module requires changes in three unrelated modules. The "lost
+in the middle" effect (Liu et al., 2023) silently degrades quality on every session
+that loads more context than the task requires.
 
-**What it looks like in practice:** Clear layer boundaries: service layer, repository
-layer, domain layer. Interfaces that separate business logic from infrastructure.
-The architectural constitution names what may not cross which boundary and enforces it
-through pre-commit hooks. ForgeCraft checks: can you swap the database without touching
-the domain?
+**What it means.** Knowledge is modular. The agent loads only what it needs for the
+task, and each module is self-contained. Architectural layers — service, repository,
+domain — have explicit boundaries that may not cross.
+
+**Artifacts.**
+- Skills (`.claude/skills/<skill>.md`) — focused knowledge modules. CPQ Front has
+  twenty-six: `/schema-ir`, `/formula-dsl`, `/transitions`, `/validate-doc`,
+  `/create-document`. Loaded on demand. Working on formulas? Load `/formula-dsl`.
+  Debugging the LLM agent? Load `/llm-agent`. The agent does not pay for context it
+  does not need.
+- Spec sections as composable units: section 3.7 covers document creation; section 2
+  covers core entities. The agent reads the relevant section, not the whole spec.
+- Architectural layer boundaries enforced through dependency direction: the domain
+  layer cannot import the infrastructure layer. ADR-001 names the rule; lint or
+  import-cycle detection enforces it.
+
+**What makes it work, and what breaks it.** Composability works because LLMs have
+finite context windows. A project where every session loads 80K tokens of spec
+produces worse code than one that loads 8K tokens of *the right* spec. Composability
+breaks when skills accumulate without taxonomy (forty skills, no router) or when
+layer boundaries are stated in prose but not enforced (no lint rule for "no React
+imports in `packages/core`"). Without enforcement, prose is aspirational.
+
+**Score progression.**
+- **0** — Monolithic spec, no skills, no enforced layer boundaries. Every session pays
+  for the full context whether it is relevant or not. *A startup whose spec is a single
+  4,000-line `SPEC.md`.*
+- **1** — Skills exist but are unevenly developed; layer boundaries are stated in the
+  constitution but not enforced. *COMPASS at week five — six skills covering the data
+  layer, but no skill yet for the compliance gates; layer boundaries are documented but
+  no `import/no-restricted-paths` rule is configured.*
+- **2** — Skills cover the project's domain areas; the sentinel tree routes the agent
+  to the relevant subset; layer boundaries enforced by lint or `madge` import-cycle
+  checks. *CPQ Front at 2/2 — twenty-six skills, spec organised by domain section,
+  ADR-001 ("`@cpq/core` never imports React") enforced by ESLint
+  `no-restricted-imports`.*
+
+**What raises the score.** Create skills for the top three domain areas your sessions
+repeatedly load context about. Add `madge` or equivalent for circular import
+detection. Add `import/no-restricted-paths` rules for the layer boundaries declared in
+your ADRs.
 
 ---
 
 ### Executable
 
-**What failure mode it prevents:** Generated code that never ran against a live environment.
-Test suites that pass in isolation against mocked infrastructure and fail at integration.
+**Failure mode prevented.** The specification says one thing, the code does another,
+and nothing reconciles them. Documentation drifts from reality. Barriers exist but
+are not enforced — the constitution prohibits a pattern that the codebase contains in
+fifteen places. NFRs are aspirational text rather than gate conditions ("the API must
+be fast" instead of "p99 < 200ms under 1k rps load"). The spec is a wish; the code is
+whatever the agent felt like.
 
-**What it looks like in practice:** Every roadmap item exercised at the HTTP or CLI
-boundary, not only unit-tested internally. CI pipeline configured and proven to run.
-A full suite that includes integration tests against real infrastructure, not only in-memory
-mocks. ForgeCraft checks: is there CI evidence this thing actually ran?
+**What it means.** The specification is mechanically enforced. Not "please follow the
+spec" but "the system will not let you violate the spec." Every behavioural claim,
+every NFR, every architectural constraint produces a runnable check.
+
+**Artifacts.**
+- Blocking CI steps — the GitHub Actions workflow rejects PRs that fail tests, lint,
+  coverage, or mutation thresholds. Spec-as-code: the test suite *is* the executable
+  spec.
+- `npm run verify` — a single command that runs lint, type-check, tests, coverage. If
+  `verify` passes locally, CI passes. No "works on my machine" surprises.
+- Behavioural acceptance tests derived from use cases. Each use case postcondition
+  becomes an assertion. Each NFR (latency, availability, security) becomes a runtime
+  gate.
+- For T3-aware projects: the NFR harness — DAST scan, k6 load test, p99 latency
+  assertion — runs against the deployed environment, not just the build.
+
+**What makes it work, and what breaks it.** Executable is the property that
+distinguishes "we have a spec" from "the spec is the program." It works when every
+behavioural assertion in the spec corresponds to a test the agent runs as part of the
+merge cycle. It breaks when spec assertions exist but are not derived into tests, or
+when NFRs are stated as prose rather than thresholds. The CPQ Front spec asserts that
+fields support seven kinds (string, number, date, boolean, select, reference, month),
+but no test validates that all seven render correctly — so the property is at 1/2,
+not 2/2, despite everything else being mature.
+
+**Score progression.**
+- **0** — Tests exist but are not tied to spec assertions; CI is informational; NFRs
+  are prose. *Most pre-GS production systems — the test suite passes, the spec drifts.*
+- **1** — Test suite gates merges; spec-derived behavioural tests exist for the core
+  flows; NFRs are stated but not gated; ADR architectural constraints have no
+  corresponding lint rule. *CPQ Front at 1/2 — CI is blocking, but spec assertions like
+  "fields support seven kinds" have no corresponding test, and ADR-001's "no React
+  imports in core" has no lint rule (it is enforced by reviewer attention).*
+- **2** — Every behavioural spec assertion has a test; every NFR has a
+  threshold-driven gate; ADR architectural constraints have lint or CI enforcement.
+  *SafetyCorePro at v1.0 — every postcondition is an assertion, every NFR has a k6 or
+  load harness, ADR constraints are lint rules. COMPASS at the T3 milestone — the DAST
+  scan blocks deploy when the security NFR fails.*
+
+**What raises the score.** Generate behavioural tests from use cases (one assertion
+per postcondition is the floor). Add lint rules for ADR-encoded architectural
+constraints — `eslint-plugin-import` with `no-restricted-paths` is the cheapest first
+step. Add the deployment-time NFR harness (DAST + load + latency) and gate the deploy
+on it.
 
 ---
 
@@ -1096,7 +1398,346 @@ enforcement. Loom makes the application structural: if it compiles, the stated p
 
 ---
 
-## 7. CASE STUDIES
+## 7. THE CLOSED LOOP
+
+The seven properties describe what a GS-governed project must satisfy. The seven-tier
+cascade describes what obligations dissolve as the discipline deepens. Neither, on its
+own, conveys what the system feels like in motion. A working GS project is not a
+sequence of separate practices stitched together — it is a closed loop, and watching
+it run is the moment the methodology stops feeling like a set of rules and starts
+feeling like a single coherent organism.
+
+This chapter narrates that loop.
+
+---
+
+### The cycle: spec to decision and back
+
+A change in a GS project enters at the spec layer and propagates downward through a
+fixed sequence of layers. Each layer derives from the one above it. Each layer feeds
+back observations to the layer above it. Stated once, in full:
+
+```
+            ┌─────────────────────────────────────────────┐
+            │                                             │
+            v                                             │
+        SPEC ──→ USE-CASE ──→ SCHEMA / CONTRACT ──→ CODE  │
+                                                    │     │
+                                                    v     │
+                                                  TEST    │
+                                                    │     │
+                                                    v     │
+                                                HARNESS   │
+                                                    │     │
+                                                    v     │
+                                              OBSERVATION │
+                                                    │     │
+                                                    v     │
+                                                 DECISION─┘
+```
+
+The arrow from `decision` back into `spec` is the loop. A decision is the layer at
+which what was learned during one cycle reshapes the spec that governs the next
+cycle. Without that arrow, the diagram is a waterfall — the failure mode every prior
+methodology fell into. With it, the diagram is a circulatory system.
+
+Each transition in the chain is governed by a rule about what the layer above must
+contain before the layer below is allowed to change. The spec must name the
+behaviour before a use case can describe its flow. The use case must name the actor
+and postcondition before a schema or contract can encode them. The schema must close
+its types before code can implement them. The code must declare its interface before
+a test can assert against it. The test must specify its precondition before the
+harness can execute it. The harness must produce a structured result before an
+observation can be drawn. The observation must reach a sufficient threshold before a
+decision is made. And the decision — the smallest unit of new spec content — is what
+re-enters the loop.
+
+This is not aspirational sequencing. It is the actual order of the artifacts
+ForgeCraft and Chronicle produce, in the order their hooks fire, in the order CI
+gates evaluate. The order matters because each downstream layer carries no authority
+of its own. A test cannot be more correct than the use case it derives from. A
+schema cannot be more correct than the spec that named the entity. The cascade is
+the answer to the question every sceptic asks first: who governs the AI? The layer
+above governs the layer below, and the spec governs the layer above all the others.
+
+### Three layers of recording: cells, tissue, organism
+
+The loop operates at one timescale: the session. But sessions accumulate, and the
+mechanism by which they accumulate is the three-layer recording structure. Each
+layer corresponds to a different scope of memory, and the biological metaphor is not
+decoration — the structure mirrors the scopes biology evolved for the same problem.
+
+**Short-term memory — the cell.** Chronicle's individual layer holds the per-session,
+per-developer state: what the practitioner just told the agent, which findings
+emerged in this session, what the agent learned about the practitioner's preferences,
+which prompts produced which outputs. This is the cell-level memory: bounded,
+specific, often discarded when the session ends. It corresponds to what a single cell
+remembers across the time it is alive.
+
+**Project memory — the tissue.** ForgeCraft's repository state holds the project
+layer: the specs, ADRs, decisions, use cases, roadmaps, schemas, contracts, hooks,
+and gates that constitute the project's identity. This memory survives sessions,
+survives developer turnover, survives the calendar. It corresponds to tissue-level
+memory: the organisation of cells into a structure with persistent identity that
+outlives any individual cell. Cells die; tissue persists.
+
+**Cultural memory — the organism.** Chronicle-team holds the team layer: shared
+findings, prompt analytics across the whole team, patterns discovered in one
+project that should propagate to the next, ticket-to-spec mapping, dependency-ranked
+work assignment. This is organism-level memory: the patterns the entire body has
+learned across all its tissues, available to any new tissue that grows. A team
+joining a new project inherits the cultural memory before they touch a single file.
+
+The three layers are independent in implementation — Chronicle, ForgeCraft, and
+Chronicle-team are separate tools, no SDK couples them — but they propagate at every
+boundary. A finding at the cell layer (an individual session insight) can promote to
+tissue (an ADR or decision in the repository) and from there to organism (a pattern
+adopted across the team's projects). The propagation is asymmetric, like biology: a
+useful mutation at cell level can promote to tissue and organism; a structural
+change at organism level cascades back down to every tissue and every cell.
+
+### Promotion: how findings move between layers
+
+The propagation has a shape, and naming it makes it operational. A finding's
+lifecycle moves through four stages:
+
+1. **Individual insight.** "I noticed that our LLM agent re-fetches the same
+   embedding three times during a single retrieval call." The finding is in the
+   session; it lives in Chronicle's individual layer.
+2. **Project pattern.** The finding is verified — the embedding fetch is indeed
+   redundant — and is significant enough that the next session should know. The
+   practitioner promotes it: a one-line entry in the corrections log, or a full ADR
+   if the resolution is architectural ("decision: cache embeddings at request scope
+   for the duration of a retrieval call"). The finding now lives in the project
+   layer; every future session reads it at start.
+3. **Team pattern.** Several projects encounter the same redundant-fetch pattern.
+   The finding promotes again — it appears in Chronicle-team's pattern feed. New
+   projects inherit it as part of their starter context. The team has learned
+   something that no individual project would have learned alone.
+4. **Next-session input.** The pattern returns to the individual layer of the next
+   session that touches retrieval, in any project. The cycle has closed.
+
+Promotion is not automatic, and it should not be. The decision to promote a finding
+from cell to tissue is itself a judgment — the finding has been verified, it is
+worth carrying forward, it generalises beyond the session that surfaced it. The same
+decision applies one layer up: not every project finding deserves to become a team
+pattern. The tools make the promotion ergonomic; the practitioner decides the
+promotion is warranted.
+
+### Anti-drift: one operative rule
+
+The rule that keeps the loop honest is operative — a single sentence the practitioner
+can hold in working memory while making any change:
+
+> **A change is allowed iff its layer above explains it.**
+
+The biconditional is load-bearing. Code can change only if a test changed, or the
+contract changed, or the spec changed. A test can change only if the use case
+changed or the spec changed. A use case can change only if the spec changed. A spec
+change is the *only* change that requires no upstream explanation, because the spec
+is the top of the cascade — it is governed by judgment, not by another layer.
+
+Stated as enforcement, this becomes the cascade gate that runs at commit time: a
+`feat:` commit that touches code without touching the spec is flagged. A `fix:`
+commit that touches code without touching a test is flagged. A `refactor:` commit
+that changes a public interface without touching the contract is flagged. Severity
+starts as warning and is promoted to error once the project's baseline is clean.
+The rule is the same at every layer: the change is allowed if and only if the layer
+above explains it.
+
+This is the entire anti-drift mechanism in one sentence. Everything else — the
+hooks, the CI gates, the manifest, the cascade severity — is the implementation of
+that sentence.
+
+### Conventional commits as the cascade trigger
+
+The mechanism by which the cascade gate knows what to enforce is the commit type. A
+commit message of the form `<type>(<scope>): <description>` is parsed by the
+commit-msg hook and the validate-pr workflow, and the type drives which cascade rule
+applies. `feat:` requires a spec touch. `fix:` requires a regression test. `perf:`
+encourages a benchmark and a decision. `refactor:` requires an ADR if it changes an
+architectural choice. `docs:`, `test:`, `chore:`, `ci:` are unconstrained — they
+cannot drive a code change without one of the above appearing first.
+
+Conventional commits are the simplest possible interface to the cascade. The
+practitioner writes `feat(billing): add deferred-charge use case`; the cascade gate
+reads `feat`, demands a spec touch, finds one, allows the commit. The same line of
+text is the audit trail in `git log`, the input to the changelog generator, the
+input to the team-layer prompt analytics, and the cascade trigger. One artifact,
+many readers.
+
+The discipline is small but decisive. A team that adopts conventional commits gains
+a typed corpus of change for free. A team that adopts them and adds the cascade gate
+gains drift prevention for free on top.
+
+### The judgment layer as the loop's terminus
+
+The loop closes at decision. Decisions are written by humans. Some are written by
+practitioners ratifying an AI's proposal; some are written from scratch when the
+practitioner sees something the AI did not surface. Either way, the decision is
+where human judgment enters the system, and the design of GS is to ensure that human
+judgment enters here and only here.
+
+Everything before the decision can be automated. The spec is read by an agent. The
+use case is decomposed by an agent. The schema is written by an agent. The code is
+generated by an agent. The test is generated by an agent and run by a runner. The
+harness is executed by CI. The observation is structured by the harness output. All
+of this happens at AI speed.
+
+The decision happens at human speed because the decision is what cannot be
+automated: was this observation the right one to act on? Should we accept the
+AI's proposed correction, or is there a better one we can see and the AI cannot? Is
+this the moment to widen the spec, or to leave it narrow and let the failure
+re-occur until we understand it better? These are judgment questions. They are not
+lifecycle work the cascade can dissolve. They are what the cascade exists to
+preserve attention for.
+
+The loop is closed by judgment ratifying direction. The cascade is the mechanism by
+which everything else gets out of the way.
+
+### What the closed loop produces
+
+A team running the closed loop notices three changes. The first: the volume of code
+review collapses, because review happens at the spec layer rather than the code
+layer. A pull request becomes a vehicle for verifying that the cascade fired
+correctly and the human ratification is recorded — not for arguing about whether a
+function is well-named.
+
+The second: drift becomes visible at commit time, not at integration time. The
+cascade gate flags a missing spec touch the moment the commit is attempted, not three
+sprints later when the QA team finds the discrepancy. The cost of fixing drift drops
+by the amount it usually costs to rediscover it.
+
+The third — and this is the one that surprises practitioners new to the discipline —
+the team's collective judgment improves over time, because the team-layer recording
+captures what was learned across sessions and projects. The third project's first
+session inherits the lessons of the first two projects automatically. The fourth
+project's first session inherits more. The cultural memory compounds.
+
+This compounding is the GS bargain stated as a result, not a promise. The discipline
+is a structure that captures judgment so judgment does not have to be re-paid every
+session. The closed loop is the shape of that capture.
+
+---
+
+## 8. DOCUMENTATION JUST-IN-TIME
+
+A GS-governed project that began in greenfield carries no documentation debt. SafetyCorePro
+was specified before its first commit; the cascade has been firing from session one. A
+GS-governed project that began in brownfield is in a different situation entirely. CPQ
+Front existed for four years before GS adoption began. There were features without ADRs,
+behaviours not covered by the spec, subsystems with no architecture diagram, and modules
+with no tests. Stopping the project to write all that documentation upfront was not an
+option. The codebase had to keep moving.
+
+The brownfield reality is the situation most senior practitioners encounter when adopting
+GS. The rule that makes adoption tractable is operative and short:
+
+> **When you touch something, leave the area better-documented than you found it.**
+
+This is the just-in-time documentation principle. It does not paralyse work on missing
+documentation, and it does not ignore that the documentation is missing. It binds new
+documentation to the moment a change happens, on the area the change touches. Over twenty
+sessions, the coverage becomes significant. Over a hundred, it becomes complete. The
+alternative — stop everything, document the whole project, then resume — does not work,
+because a four-year-old codebase under active development cannot be paused for the
+weeks that would require.
+
+The principle resolves into specific brownfield strategies, one per missing artifact.
+
+### When the ADR is missing
+
+You are about to modify something that looks like an architectural decision but no ADR
+documents why it was chosen. The question to ask first is whether the decision was
+intentional or accidental. `git log` and `git blame` on the relevant files often
+reveal the commit that introduced the pattern, and the commit message sometimes
+explains the why. Searching `docs/` for an unattributed mention can also reveal that
+the decision was discussed but never formalised.
+
+If you find evidence the decision was intentional, write the ADR retroactively
+documenting what you discovered. Most of the ADRs in CPQ Front (ADR-001 through
+ADR-007) are retroactive — they were written by the practitioner who investigated
+why a pattern existed and recorded what they learned. A retroactive ADR is no less
+valid than a prospective one; it is the act of recording, not the timing, that
+matters.
+
+If you find no evidence the decision was intentional, the pattern may have grown
+organically. You can change it, but you should write a new ADR documenting your
+investigation and your decision, so that the next session inherits both. If you have
+real doubt, ask the human before changing — "I found no ADR for this pattern.
+Current behaviour is X. I want to change it to Y. Proceed?" — because a brownfield
+project's accidental patterns sometimes encode constraints nobody remembered to
+write down.
+
+### When the spec does not cover what you are touching
+
+The spec was written after the codebase. There are features that work but were never
+documented. The wrong move is to assume "if it is not in the spec, it does not exist."
+The right move is to investigate the current behaviour, then decide whether the
+behaviour is significant enough to document.
+
+Read the code; it is the source of truth when the spec is silent. Read the existing
+tests — sometimes the tests are the spec. Run the harness and observe what the
+system does. If the behaviour is significant — covered by use cases, called by other
+systems, exposed to users — add it to the spec before making your change. If it is a
+minor implementation detail, a comment in the code is enough. The threshold is
+roughly: would a future session need to know this to avoid breaking it? If yes, it
+goes in the spec.
+
+### When there are no tests
+
+The area you are about to modify has zero test coverage. The wrong move is to write
+tests for everything in the area before making your change — that is a separate
+task, a separate session, a separate justification. The right move is to write a
+test for *your* change. If the change is a bug fix, write a test that reproduces the
+bug and watch it fail before you fix it. If the change is a feature, write a test
+that asserts the feature works. Then add to the coverage threshold so that your
+test cannot be silently deleted by a future session.
+
+This produces incremental coverage growth bound to feature work. After fifty
+sessions, fifty changes have brought their tests with them, and the coverage gate
+has ratcheted up fifty times. The area is no longer untested.
+
+### When the architecture is not documented
+
+You need to understand how components in a subsystem interact, and `ARCHITECTURE.md`
+does not cover that subsystem. Do not invent the architecture; discover it. Trace
+imports through the relevant files. Use a code-search tool with graph mode to surface
+structurally connected files. Search `docs/` for subsystem-specific notes that
+predate the architecture document.
+
+Once you understand the interaction, draw what you discovered — at the minimum
+useful level, no more. A list of components and arrows of data flow is enough; it
+does not need to be a full C4 diagram. Add it to `ARCHITECTURE.md` as a new
+subsection. Then validate with the human: "I investigated and I understand the flow
+is A → B → C. Is that correct?" If the human corrects you, fix the diagram before
+you make your change.
+
+### The cumulative effect
+
+Each strategy is small and local. None requires stopping the project, and none
+requires the practitioner to be more than honest about what they had to learn to do
+their work. But each session closes with the area in slightly better documentation
+shape than it opened. The project's documental coverage compounds at the rate of
+sessions, not at the rate of dedicated documentation sprints — and the coverage
+that grows is the coverage that proved load-bearing in actual work, not the
+coverage someone speculated would be useful.
+
+The brownfield bargain is honest: the project will not be fully GS-compliant on day
+one, and pretending otherwise would only break the team's ability to ship. The
+property scores will be partial; the spec will have gaps; the corrections log will
+be empty until the first AI mistake gets logged. What just-in-time documentation
+guarantees is that each session moves the score in the right direction. In twenty
+sessions, the project crosses the 11/14 threshold. In a hundred, the gaps that
+remain are the gaps the team has explicitly chosen not to close — because the work
+that lives there is rare enough, or the cost of closing them outweighs the benefit.
+That is a different kind of incompleteness from the one a brownfield project starts
+with. It is the incompleteness of a finished decision rather than an unfinished
+investigation.
+
+---
+
+## 9. CASE STUDIES
 
 ### CodeSeeker as T1–T2 Example
 
@@ -1203,7 +1844,7 @@ practitioners following correct-form artifacts they could not evaluate.
 
 ---
 
-## 8. THE FORMAL UNDERPINNING
+## 10. THE FORMAL UNDERPINNING
 
 This section must be accessible to practitioners who have never read a formal methods paper.
 The goal is not to teach the theory — the AI holds the theory already. The goal is to name
@@ -1287,7 +1928,7 @@ burden disappears because the annotator is the same entity that benefits from th
 
 ---
 
-## 9. THE BIOLOGICAL ISOMORPHISMS
+## 11. THE BIOLOGICAL ISOMORPHISMS
 
 ### What BIOISOs are
 
@@ -1359,7 +2000,7 @@ worked out. You do not implement telomeres before cells, quorum sensing before m
 
 ---
 
-## 10. THE RESEARCH HORIZON
+## 12. THE RESEARCH HORIZON
 
 This section is for readers who want to understand the intellectual architecture of GS,
 not a prerequisite for practice. T1 through T4 are sufficient for most practitioners.
@@ -1414,7 +2055,7 @@ The tradition activates.
 
 ---
 
-## 11. VOICE AND TONE GUIDE
+## 13. VOICE AND TONE GUIDE
 
 ### The primary calibration source
 
@@ -1513,7 +2154,7 @@ not because he is trying to sell it. The thing is good enough to explain itself 
 
 ---
 
-## 12. BOOK POSITIONING
+## 14. BOOK POSITIONING
 
 ### Primary audience
 
