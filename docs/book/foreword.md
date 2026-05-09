@@ -54,13 +54,19 @@ Once I saw this — that the disciplines I had loved for human reasons were *als
 
 ## The first proof
 
-I needed a real test. Gabriel and I had built an OSHA compliance app for the Latin American market — SafetyCorePro — as a proof of whether we could offer SaaS to underserved markets. The codebase was a few months old, working but accumulating debt the way any codebase does when it ships under deadline pressure. I picked up an early version of what is now ForgeCraft and a draft of the spec discipline, and I refactored it.
+I needed a real test. Gabriel had been building an OSHA compliance app for the Latin American market — SafetyCorePro — since January, with five weeks of solo work in the codebase before I joined. We had built it together originally as a proof of whether we could offer SaaS to underserved markets. The codebase was a few months old, working but accumulating debt the way any codebase does when it ships under deadline pressure. I picked up an early version of what is now ForgeCraft and a draft of the spec discipline, and I refactored across his foundation.
 
-The headline number, as anyone who has heard me talk about this knows, is 37.5 hours over a weekend. The number that matters more is the second one: of those 37.5 hours, my hands-on time was something like half an hour. I directed. The system worked.
+The headline number, as anyone who has heard me talk about this knows, is 37.5 hours over a weekend — Valentine's weekend, 2026. Six substantial features landed across three days from a few hours of git-active time: infrastructure and auth refactoring with full test coverage; a GraphRAG module with semantic triads; a data warehouse star schema; a layered architecture with the repository-and-service pattern across visitas and empresas; production hardening with security headers, error boundaries, structured logging, and FK indexes; and a local-first hybrid retrieval system. Of that handful of hours, my hands-on time was something like half an hour. I directed. The system worked. The pre-refactor state of the codebase remains preserved at [github.com/jghiringhelli/scp-gs-experiment](https://github.com/jghiringhelli/scp-gs-experiment) for anyone who wants to compare what was there before to what shipped on Sunday night.
 
-When I closed my laptop on Sunday night I knew several things at once. The discipline worked even in its early form. The work had compressed by two orders of magnitude. The code that came out was not just functional; it was better than what I would have written by hand in any reasonable timeline. And — this was the moment I have not been able to forget — I had not actually felt like I was working.
+Four days later I created the public repo for forgecraft-mcp. The tool that had done the work needed a name and a place to live.
 
-That weekend did not invent Generative Specification. It proved to me that the discipline was real enough to bet on.
+A month after that — March 16 to March 24, 2026 — I came back to SafetyCorePro for a single nine-day sprint and shipped fifty-seven commits, full sprint-4 worth of features under the now-formalized discipline: shift scheduling, GPS map and attendance approval, push notifications, hazard reporting, country-specific OSH regulation modules, RBAC, integration tests across empresa and asistencia, mutation testing past the eighty-percent threshold, and ESLint zeroes on the closing commit. On a single Tuesday, March 18, thirteen substantial features landed in seven and a half hours.
+
+The Valentine's weekend had shown the leverage was possible. The March sprint showed the leverage held under sustained use.
+
+When I closed my laptop after each of those sessions I knew several things at once. The discipline worked even in its early form. The work had compressed by two orders of magnitude. The code that came out was not just functional; it was better than what I would have written by hand in any reasonable timeline. And — this was the moment I have not been able to forget — I had not actually felt like I was working.
+
+That weekend did not invent Generative Specification. The two bursts together proved that the discipline was real enough to bet on.
 
 ## The expansion
 
