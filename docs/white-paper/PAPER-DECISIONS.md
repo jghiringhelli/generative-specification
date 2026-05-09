@@ -443,6 +443,133 @@ natural control conditions.
 
 ---
 
+## May 9, 2026 — Tier framework restructure: 7 tiers → 6 tiers, stage-based (this session)
+
+**Trigger:** Talk in 1 week. Pre-talk audit revealed a structural ambiguity in the
+prior 7-tier formulation: the harness was treated as its own tier (old T2)
+peer to the spec, when in fact it is the cross-cutting capability that recurs
+*at* every tier with stage-appropriate tests. This obscured the symmetry that
+each tier removes both an authoring obligation and a verification obligation
+simultaneously, where the verification removal is what makes the authoring
+removal safe.
+
+**Decision:** Restructure §4.1.f from a 7-tier activity-typed cascade to a
+6-tier *stage-based* cascade. Mapping:
+
+| Old | New | Stage |
+|-----|-----|-------|
+| T1 (write code) + T2 (read generated code / harness) | T1 | Development |
+| T3 (infrastructure) | T2 | Staging / Pre-prod |
+| T4 (self-monitoring) | T3 | Production |
+| T5 (BIOISO) | T4 | Evolution |
+| T6 (problem-stated synthesis) | T5 | Synthesis |
+| T7 (meta-telos) | T6 | Meta-telos |
+
+Old T1 and T2 collapse because verification at the development stage IS what
+makes the "you do not read generated code" removal safe — the same move stated
+twice. Renumbering propagates: proven tiers become T1–T4 (was T1–T5);
+research-frontier tiers become T5–T6 (was T6–T7).
+
+**Conceptual frame added (§4 callout, §4.1.f intro):** Verification is not
+a tier; it is a cross-cutting capability that recurs at every stage with
+stage-appropriate tests — dev-time at T1, staging at T2, production runtime
+at T3, evolution-time (mutation gauntlet) at T4, colony-level at T5. This
+resolves the "harness as peer rung" ambiguity that the 7-tier formulation
+preserved.
+
+**Sections updated:**
+- §4 opening: new "On verification: cross-cutting, not separate" callout
+  added after "On enforcement" and before §4.1.
+- §4.1.f: full restructure. Title "Seven-Tier" → "Six-Tier"; both proven and
+  research-frontier tier tables rewritten with a new "Stage" column and the
+  "authoring + verification" pairing made explicit; six tier descriptions
+  rewritten; "On the role of the harness," "tiers are not independent," and
+  "On cascade refinement" notes updated for the new numbering and reframed
+  around the cross-cutting harness.
+- §4.2 opening: "seven tiers" → "six tiers" (one-word swap; the seven
+  *properties* are unchanged).
+- §3.5 industry prior art: tier renumbering — Tier 1 verification harness is
+  no longer a separate (T2) target; the staging/production/evolution
+  references shifted T3→T2, T4→T3, T5+→T4+.
+- §7 intro: "full T1–T4 proof" → "full T1–T3 proof" (the Conduit EX project
+  covers what was old T1–T4 = new T1–T3).
+- §7.7 case heading and three subsection headings: "(T3 + T4)" → "(T2 + T3)";
+  "T3: Specification-Derived Infrastructure" → "T2: ..."; "T4:
+  Specification-Governed Self-Healing" → "T3: ..."; "Formal Connection
+  Between T3 and T4" → "Between T2 and T3"; body paragraphs in §7.7.3
+  renumbered consistently.
+
+**Reference counts:** ~40 individual tier references updated across the
+paper. The Loom mutation tag string `[GS T5]` → `[GS T4]` was updated in
+§4.1.f Tier 4 description. The reachable cross-references for the
+philosophical/civilizational frames (Nous/Logos T1–T5 → T1–T4; Golden
+Century T5–T7 → T4–T6; Attention is All You Have T1–T7 → T1–T6; Ambient
+Engineering T6–T7 → T5–T6) were updated.
+
+**Preserved:** The seven *specification properties* (Self-describing,
+Bounded, Verifiable, Defended, Auditable, Composable, Executable). The
+closed-loop cascade structure of §4.2 (commit-type trigger surface,
+three-layer recording architecture, public-surface diff rule, judgment layer
+terminus, anti-drift formula). All §7 case study evidence and metrics.
+
+**Ambiguities encountered and how they were resolved:**
+
+1. **Loom `[GS T5]` mutation commit tag.** The public Loom repository has
+   been committing auto-mutations under the `[GS T5]` tag (old T5 = BIOISO).
+   In the new schema, BIOISO is T4, so the description was updated to
+   `[GS T4]`. **This is a documentation change in the paper; whether the
+   Loom commit tag itself is migrated in the repository is a separate
+   operational decision** that may need an addendum or a note explaining
+   the historical-tag → new-tag mapping. Flagged for follow-up.
+
+2. **§7 intro "T1–T4 proof".** Old T1–T4 = (write code, harness, infra,
+   monitor) → new T1–T3 (development includes harness, then staging, then
+   production). Translated as "T1–T3" with a parenthetical clarification of
+   what those stages cover, since the literal numeric range changed but the
+   coverage did not.
+
+3. **§3.5 "Tier 1 (spec drives implementation)".** The industry SDD tools
+   (SpecKit, OpenSpec, Kiro, Tessl) reach only the *authoring* half of new
+   T1 — they do not treat the dev-time harness as constitutive. Reframed as
+   "Tier 1's authoring half" to preserve the original critique under the
+   new model where T1 also implies the harness.
+
+4. **§4.1.f "On the role of the harness".** Old text said "without a
+   verification harness at T2 minimum is an assertion, not a guarantee."
+   In the new model T2 is staging, not the harness tier. Reframed to "the
+   verification harness for the relevant tier" — preserving the load-bearing
+   claim (harness is constitutive, not optional) while removing the
+   tier-as-harness identification.
+
+5. **Philosophical frames T5–T7 reference.** "The Golden Century names the
+   civilizational consequence when T5–T7 complete" — in the new schema T5–T6
+   are the research-frontier tiers. Translated as "T4–T6 complete" to
+   preserve the spirit (the civilizational consequence kicks in once
+   evolution-tier and the two research-frontier tiers are operational).
+
+**Rejected options:**
+
+- *Keeping the old harness as its own T2, just renumbering downstream tiers
+  to span 1–6.* Rejected: it would have preserved the "harness as peer rung"
+  ambiguity the user explicitly identified as the structural debt being
+  paid down.
+
+- *Splitting development into T1a (write spec) / T1b (harness) sub-tiers.*
+  Rejected: the cross-cutting verification frame already captures this; a
+  formal sub-numbering would re-introduce the very ambiguity the restructure
+  is meant to remove.
+
+**Open for next revision:**
+- Companion documents (PractitionerProtocol, GS_Experiment_Supplement) likely
+  carry their own tier references; this session updated only the white paper.
+  A separate sweep is needed before any companion is regenerated as PDF.
+- The Loom repo's `[GS T5]` historical commit tag policy (continue under the
+  old tag for historical continuity? rewrite to `[GS T4]`? ship a mapping
+  doc?) — not a paper question but flagged because the paper now references
+  `[GS T4]`.
+
+---
+
 ## Open questions for next revision (v3.0, post-DX2/DX3)
 
 1. **§7.8.A.1** — Replace "in progress" with DX2 and DX3 actual results when available.
