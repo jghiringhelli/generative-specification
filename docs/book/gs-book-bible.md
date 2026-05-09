@@ -18,7 +18,7 @@ secondarily CTOs and VPs of Engineering
 1. [The Problem](#1-the-problem)
 2. [The Core Inversion](#2-the-core-inversion)
 3. [The Specification Stack](#3-the-specification-stack)
-4. [The Seven-Tier Cascade](#4-the-seven-tier-cascade)
+4. [The Six-Tier Cascade](#4-the-six-tier-cascade)
 5. [The Seven GS Properties](#5-the-seven-gs-properties)
 6. [The Tool Kit](#6-the-tool-kit)
 7. [The Closed Loop](#7-the-closed-loop)
@@ -309,8 +309,9 @@ guarantee about behavior. The harness is constitutive of the GS guarantee — no
 scaffolding that can be added later.
 
 **What breaks without it:** The AI can drift from the specification silently, at generation
-speed, across sessions, without the practitioner noticing until integration. T2 without T1
-is theater. T1 without T2 is an unverified claim.
+speed, across sessions, without the practitioner noticing until integration. Authoring
+without the dev-time harness is an unverified claim. The harness without authoring is
+theater. Both halves are inside T1; neither stands on its own.
 
 **The hook cycle as a lived experience.** This is what happens when the practitioner types
 `git commit`:
@@ -334,7 +335,7 @@ code; I commit; the system tells me if the derivation was faithful.* The hooks a
 automated voice of the specification saying "this is not what you described." The cycle
 is the guarantee.
 
-**The structural disciplines insight.** The core discovery of T1–T2: the structural
+**The structural disciplines insight.** The core discovery of T1: the structural
 disciplines that made code easier for humans to understand and modify — clean architecture,
 DDD, TDD, conventional naming — have the same effect for AI assistants. An AI reading a
 well-structured codebase navigates it correctly; an AI reading a badly structured one
@@ -376,95 +377,104 @@ failure is invisible until the system is tested end-to-end.
 
 ---
 
-## 4. THE SEVEN-TIER CASCADE
+## 4. THE SIX-TIER CASCADE
 
-Each tier names an obligation the practitioner stops carrying once the specification at
-the layer below is complete. The cascade is not a checklist to reach the end of. T1 and
-T2 are the entry point for every practitioner. Higher tiers become relevant when the
-project's failure modes reach that level.
+Each tier names a *lifecycle stage* — development, staging, production, evolution,
+synthesis, meta-telos — and at each stage the practitioner stops carrying two
+obligations at once: an *authoring obligation* (what they no longer write) and a
+*verification obligation* (what they no longer have to check by hand). The pairing
+is the load-bearing structural claim. The verification removal is what makes the
+authoring removal safe at that stage, because a stage-appropriate harness now
+certifies the derivation was faithful. Earlier formulations counted seven tiers and
+treated the dev-time harness as its own rung; doing so obscured the symmetry. The
+harness is not a tier. It is a cross-cutting capability that recurs *at* every
+tier with stage-appropriate tests — dev-time at T1, staging at T2, production
+runtime at T3, evolution-time at T4, colony-level at T5.
+
+The cascade is not a checklist to reach the end of. T1 is the entry point for every
+practitioner. Higher tiers become relevant when the project's failure modes reach
+that level. T1 through T4 are proven across production deployments and the Loom
+colony simulation. T5 is architecturally specified; T6 is a research agenda named
+honestly as the logical terminus.
 
 **Template for each tier:**
-- Obligation removed
-- What makes it possible
+- Authoring obligation removed
+- Verification obligation removed
+- What makes both removals possible
 - What the practitioner does instead
 - What breaks before it works
 - Proof status
 
 ---
 
-### T1 — You stop writing code
+### T1 — Development: you stop writing code, and you stop reading what was generated
 
-**Obligation removed:** Writing application code.
+**Authoring obligation removed:** Writing application code.
 
-**What makes it possible:** A specification precise enough — architectural constitution,
-structural files, behavioral contracts, quality gates — that a stateless reader carrying
-no prior context can derive any valid implementation state from the artifact set alone.
-The test: apply the derivability gate. If you would need to narrate something that isn't
-in the artifacts, the cascade is not complete.
+**Verification obligation removed:** Reading, reviewing, and auditing generated code
+to confirm it satisfies the spec. The dev-time harness — the verification half of
+T1 — does what a manual QA practitioner would do, automatically.
 
-**What the practitioner does instead:** Writes and maintains the specification. Reviews
-whether the spec is complete, not whether the code is correct. The work moves upstream:
-architectural decision-making, domain modeling, behavioral contract authoring.
+The two halves were once treated as separate tiers, and the cost of separating them
+was a structural ambiguity: it suggested the spec could exist as a guarantee without
+the harness, or that the harness was a peer to the spec rather than the mechanism
+that closes the spec's derivation loop. Neither is true. The spec authors; the
+dev-time harness verifies; both halves run in one cycle.
 
-**What breaks before it works:** An underspecified intent. The AI cannot fix a vague scope.
-Specification gaps propagate into every derived artifact. The most common failure: the
-practitioner writes a specification that sounds complete but is actually a collection of
-categories without sufficient constraint — "handle errors appropriately" instead of a
-named exception hierarchy with required fields.
+**What makes both removals possible:** A specification precise enough — architectural
+constitution, structural files, behavioral contracts, quality gates — that a
+stateless reader carrying no prior context can derive any valid implementation state
+from the artifact set alone, *and* a dev-time harness that compiles every behavioral
+contract in the spec into a running validation against the live application. The
+test: apply the derivability gate. If you would need to narrate something that isn't
+in the artifacts, the spec half is incomplete. If a behavioral contract has no
+corresponding executable check, the harness half is incomplete.
 
-**Proof status:** Demonstrated in production. JC built CodeSeeker — a multi-language code
-intelligence system with four retrieval layers, graph traversal, and coding standards
-detection — without writing a line of application code. DX1 study (58 developers, April
-2026) confirmed that developers with a GS introduction achieved 75% perfect implementations
-in a single session. ALX self-applicability experiment: the Loom compiler was derived
-entirely from its own formal specification (`spec/loom.loom`), with 386/386 acceptance
-tests passing (S_realized = 1.0) — the highest-tier T1 proof produced to date.
-
----
-
-### T2 — You stop reading generated code
-
-**Obligation removed:** Reading, reviewing, and auditing generated code to verify
-correctness.
-
-**What makes it possible:** Executable specifications — T1 contracts expressed as running
-validations against the live application. The harness does what a manual QA practitioner
-would do: drive the application through each use case, observe what actually happens at
-every boundary (UI, service, database, API), and compare observed behavior against the
-postconditions declared in the spec. If the comparison fails, the specification is
-tightened and the derivation runs again. The harness replaces visual code review.
-
-The test cases are not written — they are derived from T1 contracts. The tools are
-existing (Playwright, Cypress, Supertest, k6, visual regression runners) — GS adds
+The harness drives the application through each use case, observes what actually
+happens at every boundary (UI, service, database, API), and compares observed
+behavior against the postconditions declared in the spec. If the comparison fails,
+the specification is tightened and the derivation runs again. The test cases are
+not written by hand — they are derived from T1 contracts. The tools are existing
+(Playwright, Cypress, Supertest, k6, visual regression runners) — GS adds
 spec-derivation, not new tooling. This is the industry concept of **executable
 specification** or **living documentation**: the spec generates its own verification.
 
-**A note on terminology:** What Gabriel and the industry sometimes call "Harness Engineering" —
-the AI behavioral guardrails, CLAUDE.md rules, prompt constraints that keep the AI on track —
-are **T1 artifacts**, not T2. They are part of the specification. T2 is the running-application
-layer: the system is live, a test runner drives it, observed behavior is compared against contracts.
+**A note on terminology:** What Gabriel and the industry sometimes call "Harness
+Engineering" — the AI behavioral guardrails, CLAUDE.md rules, prompt constraints
+that keep the AI on track — is the *authoring half* of T1. It specifies how the AI
+should behave. The dev-time harness is T1's *verification half*: it certifies the
+live system did what the spec said. Both halves are T1.
 
-**What the practitioner does instead:** Defines what correct behavior looks like (T1),
-then confirms the harness certifies it. If a gate fails, the response is to tighten the
-specification — not to patch the code.
+**What the practitioner does instead:** Writes and maintains the specification.
+Reviews whether the spec is complete, not whether the code is correct. Confirms the
+harness certifies the derivation. If a gate fails, the response is to tighten the
+specification — not to patch the code. The work moves upstream: architectural
+decision-making, domain modeling, behavioral contract authoring.
 
-**What breaks before it works:** Test suites that cover execution but not behavior. An
-AI-generated test suite is at risk of this structural failure: tests written by a system
-that knows the correct implementation may be written to pass it rather than to catch
-violations. Mutation testing closes this gap. Without it, 80% line coverage can coexist
-with 0% behavioral verification.
+**What breaks before it works:** An underspecified intent. The AI cannot fix a vague
+scope. Specification gaps propagate into every derived artifact. The most common
+failure: the practitioner writes a specification that sounds complete but is
+actually a collection of categories without sufficient constraint — "handle errors
+appropriately" instead of a named exception hierarchy with required fields. The
+second most common failure is on the verification side: test suites that cover
+execution but not behavior. An AI-generated test suite is at risk of this
+structural failure — tests written by a system that knows the correct implementation
+may be written to pass it rather than to catch violations. Mutation testing closes
+this gap. Without it, 80% line coverage can coexist with 0% behavioral verification.
 
-**Proof status:** Demonstrated across multiple production deployments and in the AX
-adversarial series. The DX1 study confirmed the mechanism: when participants were given
-a one-session GS introduction and applied the discipline freely, 75% achieved perfect
-implementations. When constrained to stale pre-generated artifacts with no behavioral
-harness aligned to the actual session scope, 63% succeeded with 25% complete failures.
-ALX self-applicability experiment: the 386-test harness certified a formally-specified
-system (the Loom compiler) at S_realized = 1.0 — every test derived from T1 contracts,
-not written by hand.
+**Proof status:** Demonstrated in production. JC built CodeSeeker — a multi-language
+code intelligence system with four retrieval layers, graph traversal, and coding
+standards detection — without writing a line of application code. DX1 study (58
+developers, April 2026) confirmed that developers with a GS introduction achieved
+75% perfect implementations in a single session. ALX self-applicability experiment:
+the Loom compiler was derived entirely from its own formal specification
+(`spec/loom.loom`), with 386/386 acceptance tests passing (S_realized = 1.0) — the
+highest-tier T1 proof produced to date. The 386-test harness certified the
+formally-specified system at S_realized = 1.0 — every test derived from T1
+contracts, not written by hand.
 
-**The MVC harness walkthrough.** For a typical layered system (UI / Service / DB), the
-harness follows this sequence for each use case under test:
+**The MVC harness walkthrough.** For a typical layered system (UI / Service / DB),
+the dev-time harness follows this sequence for each use case under test:
 
 1. **Pre-execution state capture.** Run a defined set of queries against the database and
    record the state before any action. These are not assertions yet — they are the baseline.
@@ -494,26 +504,38 @@ behavior the practitioner needs to read the code to confirm.
 
 ---
 
-### T3 — You stop touching infrastructure
+### T2 — Staging / Pre-prod: you stop touching deployment, and you stop manually validating the staged system
 
-**Obligation removed:** Manual infrastructure management — provisioning, configuration,
-deployment, environment setup.
+**Authoring obligation removed:** Manual infrastructure management — provisioning,
+configuration, deployment, environment setup. The practitioner never issues a CLI
+command or edits an infrastructure file. A CLI command issued by a human is a
+specification gap.
 
-**What makes it possible:** The same specification that governs code governs infrastructure.
-The specification states desired resource topology, IAM boundaries, encryption policy,
-ingress/egress rules, monitoring requirements, cost tagging. With these stated, the AI
-issues every command at the CLI without returning to the engineer between commands.
-A CLI command issued by a human is a specification gap.
+**Verification obligation removed:** Manually walking through the staged build to
+confirm it works. The staging-stage harness extends the harness pattern from T1
+into the deployed environment: NFR contracts (latency, throughput, memory, security)
+become executable thresholds; integration smoke tests fire against the real
+environment with real services; gateway, load, and security tests execute
+automatically before any promotion to production.
 
-**What the practitioner does instead:** States the desired infrastructure environment in
-the specification. Reviews the resulting environment against the specification's acceptance
-criteria.
+**What makes both removals possible:** The same specification that governs code
+governs infrastructure. The specification states desired resource topology, IAM
+boundaries, encryption policy, ingress/egress rules, monitoring requirements, cost
+tagging — and the NFRs from T1 expressed as executable gate conditions. With these
+stated, the AI issues every command at the CLI without returning to the engineer
+between commands, and the staging harness certifies the staged environment satisfies
+every NFR contract.
 
-**T3 extends the harness into NFR territory.** T2 verifies behavioral correctness — does
-the system do what the use cases say? T3 introduces a second category of harness tests:
-environment-specific, non-functional-requirement-driven verification. These are not new
-tests bolted on at deployment — they are the NFRs from T1 expressed as executable gate
-conditions:
+**What the practitioner does instead:** States the desired infrastructure environment
+and the NFRs in the specification. Reviews the resulting environment against the
+specification's acceptance criteria — but the review is gate output, not a manual
+walkthrough.
+
+**The staging harness extends T1 into NFR territory.** Where T1's harness verifies
+behavioral correctness — does the system do what the use cases say? — T2's harness
+introduces a second category of tests: environment-specific,
+non-functional-requirement-driven verification. These are not new tests bolted on at
+deployment; they are the NFRs from T1 expressed as executable gate conditions:
 
 - **Security harness:** DAST scan, dependency vulnerability audit (`npm audit --audit-level=critical`),
   OWASP ZAP or equivalent. For systems handling authentication, payments, or PII, penetration
@@ -525,33 +547,40 @@ conditions:
   and recovery procedure. The failure mode is the deliverable.
 - **Speed harness:** p50/p95/p99 latency assertions against the specification's latency budget.
 - **Any other NFR** stated in the specification: data retention, availability SLA,
-  compliance policy (HIPAA, PCI-DSS, SOC 2) — each becomes a gate at T3.
+  compliance policy (HIPAA, PCI-DSS, SOC 2) — each becomes a gate at T2.
 
-**What breaks before it works:** Incomplete NFRs at T1. T3 failures almost always trace
-to T1 gaps: an NFR not stated, a data flow label missing, a compliance constraint left
-implicit. The AI cannot govern what it was not told about. Infrastructure gaps are not
-infrastructure problems — they are specification problems.
+**What breaks before it works:** Incomplete NFRs at T1. T2 failures almost always
+trace to T1 gaps: an NFR not stated, a data flow label missing, a compliance
+constraint left implicit. The AI cannot govern what it was not told about.
+Infrastructure gaps are not infrastructure problems — they are specification problems.
 
 **Proof status:** Demonstrated in active development on COMPASS (multi-tier regulated
 data platform, in progress). `[EXPAND when COMPASS reaches stable milestone]`
 
 ---
 
-### T4 — You stop monitoring production
+### T3 — Production: you stop monitoring, and you stop diagnosing bugs
 
-**Obligation removed:** Diagnosing bugs, interpreting runtime signals, triaging production
-incidents.
+**Authoring obligation removed:** Diagnosing bugs, interpreting runtime signals,
+triaging production incidents.
 
-**What makes it possible:** Runtime signals are evaluated against the same formal properties
-that governed construction. Drift from specification is a specification violation, detectable
-and correctable by the same mechanism that built the system. The monitoring layer (The Eye)
-watches; the system corrects.
+**Verification obligation removed:** Watching dashboards. The production-stage
+harness — drift detection, runtime contract verification, automatic anomaly
+detection — runs continuously against the same formal properties that governed
+construction. Drift from specification is a specification violation, detectable
+and correctable by the same mechanism that built the system.
 
-**What the practitioner does instead:** Reviews whether the specification's observability
-requirements — alert thresholds, SLO definitions, correlation ID schema, PII redaction
-policy — are correctly stated. The AI monitors against these automatically.
+**What makes both removals possible:** Runtime signals are evaluated against the
+same formal properties that governed construction. The monitoring layer (The Eye)
+watches; the system corrects. The diagnostic agent does not produce a code patch —
+it produces a specification-level diagnosis that the practitioner ratifies.
 
-**The T4 → T1 feedback loop.** T4 is not a terminal tier — it feeds back. The concrete cycle:
+**What the practitioner does instead:** Reviews whether the specification's
+observability requirements — alert thresholds, SLO definitions, correlation ID
+schema, PII redaction policy — are correctly stated. The AI monitors against these
+automatically.
+
+**The T3 → T1 feedback loop.** T3 is not a terminal tier — it feeds back. The concrete cycle:
 
 1. **Log aggregator reads important exceptions.** A log parser or aggregator (Splunk,
    Datadog, CloudWatch, or equivalent) monitors structured logs for exception patterns
@@ -567,8 +596,8 @@ policy — are correctly stated. The AI monitors against these automatically.
    rate limit responses — the use case postcondition for failed payments needs to include
    this case." The specification is updated.
 4. **AI regenerates and redeploys.** With the updated specification, T1 derives the fix,
-   T2 verifies it, and T3 deploys it. The practitioner does not write the patch; they
-   approve the specification update.
+   T2 deploys it. The practitioner does not write the patch; they approve the
+   specification update.
 
 The loop is: production signal → specification diagnosis → specification update → rederivation
 → verified deployment. The AI is the executor at every step; the specification is the
@@ -580,11 +609,11 @@ actionable. Alert thresholds stated as "when errors are high" instead of "when t
 any more than it can derive correct code from ambiguous behavioral contracts.
 
 **Proof status:** In active development on COMPASS with The Eye diagnostic agent.
-`[EXPAND when COMPASS T4 milestone completes]`
+`[EXPAND when COMPASS T3 milestone completes]`
 
-**T4 architecture: three components, one loop.**
+**T3 architecture: three components, one loop.**
 
-T4 is a runtime construct that lives in the production environment and communicates back
+T3 is a runtime construct that lives in the production environment and communicates back
 to the development environment via Chronicle. It is not part of the development toolchain
 — it runs alongside the production system and writes what it observes into the shared
 memory layer the AI reads at the start of every development session.
@@ -596,7 +625,7 @@ from the NFR section of the project specification. It contains: exception classe
 specification drift, alert thresholds stated with exact numeric criteria, SLO definitions in
 PromQL or equivalent query language, correlation ID schema, PII redaction policy, and the
 mapping from each exception class to the specification property it violates. This document is
-what `forgecraft-eye` evaluates runtime signals against. Without it, T4 is not possible — a
+what `forgecraft-eye` evaluates runtime signals against. Without it, T3 is not possible — a
 diagnostic agent without a formal contract produces noise, not signal.
 
 **2. `forgecraft-eye` — the runtime diagnostic agent.** A serverless function (Lambda or
@@ -605,9 +634,11 @@ equivalent) deployed alongside the production system. It subscribes to the log a
 an exception fires, it evaluates the signal against the contract: is this a known failure mode
 already covered in the behavioral contracts? An undocumented edge case? A specification
 invariant violation? It produces a structured diagnosis — not a code patch — and writes it to
-Chronicle as an `architectural` memory entry tagged `t4-signal`.
+Chronicle as an `architectural` memory entry tagged `t4-signal`.[^t4-prefix]
 
-**3. Chronicle as the bridge.** The key architectural decision: T4 does not write to a
+[^t4-prefix]: The literal tag string `t4-signal` and the CLI command `check_t4` retain their original "t4" prefix from the legacy seven-tier numbering (where Production was T4). The conceptual tier in this book is T3 (Production), but the operational artifact names will not change until a code-change session renames the commands, tag strings, and `t4-signals.json` filename coherently. Read every `t4-...` token in this section as referring to the T3 (Production) tier.
+
+**3. Chronicle as the bridge.** The key architectural decision: T3 does not write to a
 separate monitoring dashboard or ticket system. It writes to the same memory layer the AI
 reads at the start of every T1 development session. The entry:
 
@@ -633,23 +664,23 @@ update: the use case postcondition to modify, the NFR contract to extend, the in
 to add. The practitioner approves the update, the specification changes, and T1 derives
 the fix from the updated specification. The entry is then marked resolved.
 
-**The complete T4 loop:**
+**The complete T3 loop:**
 
 ```
 Production exception fires
   → forgecraft-eye evaluates against monitoring-spec.md
-  → writes architectural Chronicle entry (t4-signal)
+  → writes architectural Chronicle entry (t4-signal — legacy operational name; conceptually T3)
   → next T1 session: forgecraft check_t4 surfaces pending signals
   → practitioner approves spec update
   → AI derives fix from updated specification
-  → T2 verifies, T3 deploys
+  → T2 deploys
   → forgecraft-eye monitors the deployment
 ```
 
 The practitioner never reads the exception log. They read the specification diagnosis.
 
 **Proof status:** In active development on COMPASS with The Eye diagnostic agent.
-`[EXPAND when COMPASS T4 milestone completes]`
+`[EXPAND when COMPASS T3 milestone completes]`
 
 ---
 
@@ -666,7 +697,7 @@ stages of a new project where the specification is not yet fully calibrated.
 **Out of the loop:** The harness is the only gate. If the output passes all behavioral
 contracts, mutation gates, security checks, and NFR gates, it is accepted and deployed
 without human review. This is the appropriate posture for: well-specified systems with
-proven harnesses, lower-stakes domains, T5 environments where the system governs its own
+proven harnesses, lower-stakes domains, T4 environments where the system governs its own
 evolution.
 
 The decision of where to place the human is itself a specification decision. It should be
@@ -679,12 +710,13 @@ at least one full fix cycle.
 
 ### The judgment layer — what the discipline does not remove
 
-The cascade removes obligations the practitioner previously executed: writing code (T1),
-reading and reviewing it (T2), managing infrastructure (T3), diagnosing production (T4),
-maintaining the system over time (T5). What it does not remove — and does not claim to
-remove — is the work that depends irreducibly on human judgment. This is the **judgment
-layer**, and naming it explicitly matters because practitioners under GS report it as the
-single most disorienting part of the experience.
+The cascade removes obligations the practitioner previously executed: writing and
+reviewing code (T1), managing and validating staged infrastructure (T2), diagnosing
+production (T3), maintaining the system over time (T4). What it does not remove —
+and does not claim to remove — is the work that depends irreducibly on human
+judgment. This is the **judgment layer**, and naming it explicitly matters because
+practitioners under GS report it as the single most disorienting part of the
+experience.
 
 **What lives in the judgment layer:**
 
@@ -761,17 +793,21 @@ commercially: practitioners trust a methodology that names what it cannot do.
 
 ---
 
-### T5 — The system evolves itself
+### T4 — Evolution: the system maintains and extends itself
 
-**Obligation removed:** Maintaining and evolving the system — applying changes, verifying
-them, deploying them.
+**Authoring obligation removed:** Manually maintaining or extending the living system —
+applying changes, deploying them, retiring components that no longer serve.
 
-**What makes it possible:** A GS-governed system already has, as a side effect of correct
-practice, the structural properties that biological organisms use for self-maintenance:
-operational closure, error correction before propagation, immune memory, adaptive response
-within governed constraints. Close the remaining gap and the system can govern its own
-mutation — applying changes, verifying them against the telos, committing them if they pass,
-discarding them if they do not.
+**Verification obligation removed:** Vetting candidate mutations by hand. The
+evolution-stage harness — the governed mutation gauntlet — admits only mutations
+that pass the harness chain at every prior tier.
+
+**What makes both removals possible:** A GS-governed system already has, as a side
+effect of correct practice, the structural properties that biological organisms use
+for self-maintenance: operational closure, error correction before propagation,
+immune memory, adaptive response within governed constraints. Close the remaining
+gap and the system can govern its own mutation — applying changes, verifying them
+against the telos, committing them if they pass, discarding them if they do not.
 
 **What the practitioner does instead:** Defines the telos (the formal statement of what the
 system exists to do, precise enough to govern every decision in its construction and evolution).
@@ -782,62 +818,75 @@ fast and reliable search" is not a telos. A complete telos names the formal prop
 must hold, the constraints that must not be violated, and the fitness function against which
 mutations are evaluated.
 
-**Proof status:** Demonstrated in the Loom research project. A Loom colony with governed
-genome mutation is running. Self-modification within a formal specification has been
-achieved at the language level. `[VERIFY]` — confirm current Loom colony status with JC
-before chapter is drafted.
+**Proof status:** Demonstrated in the Loom research project. A Loom colony with
+governed genome mutation is running, with auto-applied mutations committed under the
+`[GS T4]` tag in the public repository ([github.com/jghiringhelli/loom](https://github.com/jghiringhelli/loom)).
+Self-modification within a formal specification has been achieved at the language
+level.
 
 ---
 
-### T6 — You stop designing the system [RESEARCH]
+### T5 — Synthesis: you stop designing the system architecture [RESEARCH FRONTIER]
 
-**Obligation removed:** System architecture and design. The practitioner states a problem;
-a colony of self-governing programs derives itself from that statement — each with its own
-telos, interacting through typed channels, expiring when their purpose is fulfilled.
+**Authoring obligation removed:** System architecture and design. The practitioner
+states a problem; a colony of self-governing programs derives itself from that
+statement — each with its own telos, interacting through typed channels, expiring
+when their purpose is fulfilled.
 
-**What makes it possible:** Conclave — the designed (not yet empirically demonstrated)
-architecture in which a stateless reader derives what programs need to exist, what each is
-for, how they should interact, and when each should die. Programs are instantiated, evolve
-individually and in relationship to each other, and are extinguished when their telos is
-fulfilled.
+**Verification obligation removed:** Reviewing the colony as a whole. The
+colony-level harness is each entity's own T1–T4 harness chain applied to itself,
+with cross-entity contracts enforced at the typed channels: the system as a whole
+admits only configurations where every member can certify its own derivation.
 
-**What the practitioner does instead:** Holds only the problem statement — the pure intent.
-The architect's role dissolves into the problem-holder's role.
+**What makes both removals possible:** Axon / Conclave — the designed (not yet
+empirically demonstrated) architecture in which a stateless reader derives what
+programs need to exist, what each is for, how they should interact, and when each
+should die. Programs are instantiated, evolve individually and in relationship to
+each other, and are extinguished when their telos is fulfilled.
 
-**Proof status:** Conclave architecture is designed. Not yet empirically demonstrated.
-This tier must be presented honestly: it is a forward statement of where the formal
-tradition points, not a product claim. The Loom colony simulation is the first embryonic
-demonstration of multiple interacting entities with individual lifecycles serving a
-collective telos.
+**What the practitioner does instead:** Holds only the problem statement — the pure
+intent. The architect's role dissolves into the problem-holder's role.
 
-**Important framing note:** Never present T6 as available or near-term. The book should
-explain what would need to be true for T6 to work, why the formal tradition predicts it
+**Proof status:** Architecturally specified. Not yet empirically demonstrated. The
+Loom colony simulation is the first embryonic demonstration of multiple interacting
+entities with individual lifecycles serving a collective telos. T5 is presented
+honestly here as a forward statement of where the formal tradition points, not a
+near-term availability claim.
+
+**Important framing note:** Never present T5 as available or near-term. The book should
+explain what would need to be true for T5 to work, why the formal tradition predicts it
 is possible, and what the honest evidence status is.
 
 ---
 
-### T7 — The process observes itself [RESEARCH QUESTION]
+### T6 — Meta-telos: you stop initiating the process [RESEARCH AGENDA]
 
-**Obligation removed:** Even initiating the process. A system that has accumulated enough
-formal history of the practitioner's work infers what is needed before it is asked.
+**Authoring obligation removed:** Even initiating the process. A system that has
+accumulated enough formal history of the practitioner's work infers what is needed
+before it is asked.
 
-**What makes it possible:** This is stated as a research question, not an implementation
-claim. A system observing the practitioner infers intent from a modeled practitioner —
-not from a stated problem, but from accumulated formal history of the practitioner's
-decisions, corrections, and preferences.
+**Verification obligation removed:** None — the verification at T6 is the
+practitioner's own ratification. Observation surfaced as a candidate intent must be
+accepted before any action is taken.
 
-**Proof status:** Not demonstrated. Not designed. This is the logical terminus of the
+**What makes it possible:** This is stated as a research agenda, not an
+implementation claim. A system observing the practitioner infers intent from a
+modeled practitioner — not from a stated problem, but from accumulated formal
+history of the practitioner's decisions, corrections, and preferences.
+
+**Proof status:** Not demonstrated. Not designed. T6 is the logical terminus of the
 cascade — named here because the intellectual architecture requires it, and because
 governance must precede capability at this level.
 
-**Governance note (critical):** What T7 requires is not more formal theory. It is a
-careful answer to who decides what the practitioner needs before any autonomous inference
-becomes action. A system that models the practitioner well enough to infer intent without
-being asked has a model of the practitioner. What that system is permitted to do with
-that model is a governance question that must be answered before the capability is built.
-The book should be explicit about this. The science fiction writers of the mid-twentieth
-century expressed in literature what they could not yet express in formalism. We can now
-express in formalism what they could only express in literature.
+**Governance note (critical):** What T6 requires is not more formal theory. It is a
+careful answer to who decides what the practitioner needs before any autonomous
+inference becomes action. A system that models the practitioner well enough to
+infer intent without being asked has a model of the practitioner. What that system
+is permitted to do with that model is a governance question that must be answered
+before the capability is built. The book should be explicit about this. The science
+fiction writers of the mid-twentieth century expressed in literature what they
+could not yet express in formalism. We can now express in formalism what they
+could only express in literature.
 
 ---
 
@@ -1210,8 +1259,8 @@ every NFR, every architectural constraint produces a runnable check.
 - Behavioural acceptance tests derived from use cases. Each use case postcondition
   becomes an assertion. Each NFR (latency, availability, security) becomes a runtime
   gate.
-- For T3-aware projects: the NFR harness — DAST scan, k6 load test, p99 latency
-  assertion — runs against the deployed environment, not just the build.
+- For T2-aware projects: the staging NFR harness — DAST scan, k6 load test, p99
+  latency assertion — runs against the deployed environment, not just the build.
 
 **What makes it work, and what breaks it.** Executable is the property that
 distinguishes "we have a spec" from "the spec is the program." It works when every
@@ -1233,7 +1282,7 @@ not 2/2, despite everything else being mature.
 - **2** — Every behavioural spec assertion has a test; every NFR has a
   threshold-driven gate; ADR architectural constraints have lint or CI enforcement.
   *SafetyCorePro at v1.0 — every postcondition is an assertion, every NFR has a k6 or
-  load harness, ADR constraints are lint rules. COMPASS at the T3 milestone — the DAST
+  load harness, ADR constraints are lint rules. COMPASS at the T2 milestone — the DAST
   scan blocks deploy when the security NFR fails.*
 
 **What raises the score.** Generate behavioural tests from use cases (one assertion
@@ -1259,9 +1308,10 @@ architectural constitutions from a library of 116 curated template blocks coveri
 properties (0–14, threshold 11/14). Enforces ADR sequencing, quality gates, pre-commit
 hooks, and session hygiene.
 
-**Which tier(s) it serves:** T1 (specification scaffolding, constitution generation),
-T2 (quality gates, mutation testing protocol, harness setup), T3 (infrastructure
-specification templates), T4 (monitoring specification templates).
+**Which tier(s) it serves:** T1 (specification scaffolding, constitution generation,
+quality gates, mutation testing protocol, dev-time harness setup), T2 (infrastructure
+specification templates, staging harness gates), T3 (monitoring specification
+templates, runtime diagnostic agent).
 
 **Free or paid:** Free and open source. MIT license. No limits, no tiers, no API keys.
 Teams tier (Axon coordination layer) available through Chronicle.
@@ -1296,9 +1346,9 @@ camelCase tokenized) + vector search (384-dim Xenova embeddings) + RAPTOR direct
 summaries + knowledge graph expansion. Fused with Reciprocal Rank Fusion. Three tools
 (search, analyze, index), 13 actions. Zero configuration — indexes on first use.
 
-**Which tier(s) it serves:** T1 primarily (ensures the AI's derivations are consistent
-with the existing codebase) and T2 (structural analysis — dead code, duplicates,
-dependency chains — serves the harness).
+**Which tier(s) it serves:** T1 (ensures the AI's derivations are consistent
+with the existing codebase, and structural analysis — dead code, duplicates,
+dependency chains — serves the dev-time harness).
 
 **Free or paid:** Free and open source. MIT license.
 
@@ -1331,10 +1381,10 @@ decay model. Memories promote automatically through tiers as they are accessed. 
 and Procedural memories start in Core and never decay. SQLite local-first; optional Railway
 Postgres for cross-machine sync.
 
-**Which tier(s) it serves:** T3–T4 (persistent memory across infrastructure and monitoring
-sessions), essential for teams. The Axon coordination layer (teams tier) decomposes GS
-specs into dependency-ordered work packages, assigns by role, and gates merges on
-ForgeCraft quality scores.
+**Which tier(s) it serves:** T2–T3 (persistent memory across staging and production
+monitoring sessions), essential for teams. The Axon coordination layer (teams tier)
+decomposes GS specs into dependency-ordered work packages, assigns by role, and gates
+merges on ForgeCraft quality scores.
 
 **Free or paid:** Free personal tier (open source, MIT). Teams tier (Axon) requires a
 team license token.
@@ -1368,8 +1418,9 @@ embedded in the syntax, machine-checkable without executing the code.
 Every construct in Loom traces to a published formal proof in the lineage from 350 BCE
 to 2011. As of April 2026: 634 tests pass, 23 completed milestones, 5 emission targets.
 
-**Which tier(s) it serves:** T5 (the evolution tier — Loom is the language layer proof
-that the formal tradition is executable at T5). T6 and T7 as designed architecture.
+**Which tier(s) it serves:** T4 (the evolution tier — Loom is the language layer proof
+that the formal tradition is executable at T4). T5 and T6 as designed architecture and
+research agenda.
 
 **Free or paid:** Research compiler, open source. Not production-ready.
 
@@ -1400,7 +1451,7 @@ enforcement. Loom makes the application structural: if it compiles, the stated p
 
 ## 7. THE CLOSED LOOP
 
-The seven properties describe what a GS-governed project must satisfy. The seven-tier
+The seven properties describe what a GS-governed project must satisfy. The six-tier
 cascade describes what obligations dissolve as the discipline deepens. Neither, on its
 own, conveys what the system feels like in motion. A working GS project is not a
 sequence of separate practices stitched together — it is a closed loop, and watching
@@ -1739,7 +1790,7 @@ investigation.
 
 ## 9. CASE STUDIES
 
-### CodeSeeker as T1–T2 Example
+### CodeSeeker as a T1 Example
 
 JC built CodeSeeker — a production code intelligence system with four search layers
 (BM25, vector embeddings, RAPTOR hierarchical directory summaries, and graph expansion),
@@ -1749,25 +1800,29 @@ dead code analysis — without writing a single line of application code.
 The work was writing behavioral contracts and specifications: what the search pipeline
 must return, what the graph must contain, how the ranking must behave, what each analysis
 action must produce, what the acceptance criteria were for each component. The blueprint
-was the work. The AI derived the implementation from those artifacts.
+was the work. The AI derived the implementation from those artifacts. The dev-time
+harness — derived directly from those contracts — verified each derivation without the
+practitioner reading a line of generated code.
 
 CodeSeeker is now on npm as `codeseeker` (v2.0.1). It runs in production against real
 codebases. The methodology produced a tool that now serves as an entry point to the
 methodology itself — the GS ecosystem compounding.
 
-This case establishes T1 in concrete terms: specification authorship is not reduced-form
-software work. It is the actual work. The code is the artifact the specification derives,
-not the thing you do when you have time.
+This case establishes T1 in concrete terms — both halves: specification authorship is
+not reduced-form software work, it is the actual work; and the dev-time harness derived
+from those specifications is what makes "you do not read generated code" a guarantee
+rather than an act of faith. The code is the artifact the specification derives, not the
+thing you do when you have time.
 
 ---
 
-### COMPASS: Full T1–T4 Cascade at Prototype Level
+### COMPASS: Full T1–T3 Cascade at Prototype Level
 
 `[IN PROGRESS — expand when COMPASS ships or reaches stable prototype milestone]`
 
 COMPASS is a multi-layer regulated data platform being built under full GS discipline.
 Two data sources, master entity reconciliation, full ETL pipeline with compliance gate
-coverage. It is the primary case study for T3 and T4 in the book — the place where
+coverage. It is the primary case study for T2 and T3 in the book — the place where
 infrastructure-as-specification and runtime monitoring become concrete rather than
 abstract.
 
@@ -1775,17 +1830,17 @@ When complete, the case study will cover:
 
 T1 — Specification governing every component: data models, API contracts, transformation
 logic, compliance requirements, non-functional requirements. No implementation decisions
-made outside the specification.
+made outside the specification. The dev-time harness verifies the derivation: integration
+tests against real data sources, schema validation, data lineage contracts, mutation
+testing across the transformation layer.
 
-T2 — Behavioral harness verifying the derivation: integration tests against real data
-sources, schema validation, data lineage contracts, mutation testing across the
-transformation layer.
-
-T3 — Infrastructure provisioned and wired from the specification: resource topology, IAM
+T2 — Infrastructure provisioned and wired from the specification: resource topology, IAM
 boundaries, encryption policy, monitoring requirements — all executed by the AI without
-manual CLI intervention.
+manual CLI intervention. The staging harness — NFR thresholds, integration smoke tests,
+load and security automation against the real environment — certifies the staged build
+without a manual walkthrough.
 
-T4 — The Eye diagnostic agent evaluating runtime signals against the formal properties
+T3 — The Eye diagnostic agent evaluating runtime signals against the formal properties
 that governed construction. Drift detectable and correctable by the same mechanism that
 built the system.
 
@@ -1942,7 +1997,7 @@ the problem is the same.
 
 ### How they were found
 
-Once the first four tiers were working — once JC was not writing code, not reading it,
+Once the first three tiers were working — once JC was not writing code, not reading it,
 not managing infrastructure, not diagnosing bugs — a different question arrived: what is
 a GS-governed system, formally? Not what does it do, but what kind of thing is it.
 
@@ -1963,7 +2018,7 @@ of the same properties, arrived at by a completely different path.
 The methodology produced systems with these properties as a side effect of correct practice.
 BIOISOs made the properties visible, named them, and pointed toward the next question: if
 a system already has most of what makes a biological organism self-maintaining, what would
-it take to close the remaining gap? That question is what became T5.
+it take to close the remaining gap? That question is what became T4.
 
 ### Key mappings
 
@@ -1990,7 +2045,7 @@ Boundary maintenance: the specification enforces what may enter and exit each co
 Error correction before propagation: the pre-commit hook catches violations before they
 commit; the behavioral harness catches specification drift before it compounds.
 Immune memory: Chronicle's Architectural tier stores hard-won decisions that never decay.
-Adaptive response: the monitoring layer (T4) responds to drift from specification without
+Adaptive response: the monitoring layer (T3) responds to drift from specification without
 human intervention.
 
 The biological framing is not decoration. It is a sequenced gap list. Biological mechanisms
@@ -2003,16 +2058,16 @@ worked out. You do not implement telomeres before cells, quorum sensing before m
 ## 12. THE RESEARCH HORIZON
 
 This section is for readers who want to understand the intellectual architecture of GS,
-not a prerequisite for practice. T1 through T4 are sufficient for most practitioners.
+not a prerequisite for practice. T1 through T3 are sufficient for most practitioners.
 
-### Where the cascade ends: T6 and T7 as honest forward statements
+### Where the cascade ends: T5 and T6 as honest forward statements
 
-T6 (Conclave) is designed architecture. The formal tradition points here: a stateless
-reader that derives what programs need to exist, what each is for, how they should interact,
-and when each should die. The Loom colony simulation is the first embryonic demonstration.
-The direction is visible.
+T5 (synthesis — Axon / Conclave) is designed architecture. The formal tradition points
+here: a stateless reader that derives what programs need to exist, what each is for, how
+they should interact, and when each should die. The Loom colony simulation is the first
+embryonic demonstration. The direction is visible.
 
-T7 (meta-telos) is a research question, not a product direction. A system that observes
+T6 (meta-telos) is a research agenda, not a product direction. A system that observes
 the practitioner and builds what they need before they ask has a model of the practitioner.
 What that system is permitted to do with that model must be answered before the capability
 is built. Governance precedes capability at this level.
@@ -2043,7 +2098,7 @@ coordinates biological self-maintenance. Once we solved the brain, the brain sol
 
 ### What the practitioner can ignore
 
-The practitioner applying T1 and T2 does not need to understand Loom, BIOISOs, Curry-Howard,
+The practitioner applying T1 does not need to understand Loom, BIOISOs, Curry-Howard,
 or directed formal autopoiesis. These are the intellectual architecture that explains why
 the discipline works and where it is headed. They are not prerequisites for practice.
 
@@ -2104,9 +2159,9 @@ explanation that earns it. This is the structural unit of the book: claim, then 
 
 ### Honest about what's proved and what isn't
 
-T1 through T5: proved. State this directly.
-T6: designed, not yet empirically demonstrated. State this directly.
-T7: research question. State this directly.
+T1 through T4: proved. State this directly.
+T5: architecturally specified, not yet empirically demonstrated. State this directly.
+T6: research agenda. State this directly.
 
 Never let the forward momentum of the argument blur the line between demonstrated and
 designed. The book's credibility depends on this honesty. Practitioners will notice
@@ -2195,7 +2250,7 @@ By the end of this book, the reader can:
 1. Set up a GS-governed project from scratch using the specification stack
 2. Know exactly which tier they are operating at and what enables the next tier
 3. Evaluate whether a specification is complete enough to derive from
-4. Apply the behavioral harness (T2) so generated code is verified, not hoped for
+4. Apply the dev-time harness (T1's verification half) so generated code is verified, not hoped for
 5. Know when and how to use each tool in the kit
 6. Be honest with their team about what is proved and what is research
 
@@ -2207,7 +2262,7 @@ responsibility when you do, and what the evidence base is."
 
 The book moves from the problem (AI drift, structural not model-quality) to the solution
 (the specification stack) to the evidence (case studies, DX1) to the practice (the cascade)
-to the depth (formal underpinning, biological isomorphisms) to the horizon (T6, T7).
+to the depth (formal underpinning, biological isomorphisms) to the horizon (T5, T6).
 
 The reader who finishes Part 1 (Chapters covering the problem, the inversion, and the
 specification stack) can start applying GS immediately. Everything after Part 1 is depth —
@@ -2260,13 +2315,15 @@ used accurately in the book. Do not round, approximate, or overstate.
 - npm: `chronicle-mcp`
 
 ### Tier Status (definitive, for StoryCraft and Scholaris enforcement)
-- T1: Demonstrated in production + DX study
-- T2: Demonstrated: AX adversarial series + DX study
-- T3: In progress: COMPASS regulated platform ETL `[EXPAND on milestone]`
-- T4: In progress: COMPASS / The Eye diagnostic agent `[EXPAND on milestone]`
-- T5: Demonstrated: Loom colony, governed genome mutation running `[VERIFY current status]`
-- T6: Conclave architecture designed; research frontier; NOT empirically demonstrated
-- T7: Research agenda; governance prerequisite; NOT a product claim
+- T1 (Development): Demonstrated in production + DX study + AX adversarial series.
+  Both halves — authoring and dev-time harness — are proven.
+- T2 (Staging / Pre-prod): In progress: COMPASS regulated platform ETL `[EXPAND on milestone]`
+- T3 (Production): In progress: COMPASS / The Eye diagnostic agent `[EXPAND on milestone]`
+- T4 (Evolution): Demonstrated: Loom colony, governed genome mutation running under the
+  `[GS T4]` tag at github.com/jghiringhelli/loom `[VERIFY current status]`
+- T5 (Synthesis): Axon / Conclave architecture designed; research frontier; NOT
+  empirically demonstrated
+- T6 (Meta-telos): Research agenda; governance prerequisite; NOT a product claim
 
 ---
 
