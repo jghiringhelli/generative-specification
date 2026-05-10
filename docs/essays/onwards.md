@@ -126,7 +126,7 @@ The lineage as told so far runs in one direction: a theory is proved, it waits, 
 
 New proven theories become new Loom constructs. Loom, in turn, proves some of those theories by induction — running them against real programs at scale, finding where the boundaries are, discovering which invariants hold universally and which require refinement. The language becomes a continuous experimental apparatus. The formal tradition feeds Loom. Loom feeds back.
 
-This is not speculative. It is the ALX (Adversarial Loom eXperiment): Loom as both the treatment and the treated. The AI uses GS and Loom to implement the next formal property *in Loom itself*. An adversarial loop finds edge cases in the type system. The GS specification captures each failure as a new gate. The language becomes more formally complete per iteration, and the specification that governs the language becomes more precise per iteration. The theories that were too expensive to apply are now the baseline. The baseline improves as the theories do. ALX-V8 completed in April 2026 with S_realized = 1.0 across 386 acceptance tests; the convergence trajectory ran 0 → 0.339 → 0.641 → 0.780 → 0.900 → 1.000 as the spec absorbed the gaps the adversarial loop surfaced. The collapsed loop ran. The result is in the repository.
+This is not speculative. It is the ALX (Adversarial Loom eXperiment): Loom as both the treatment and the treated. The AI uses GS and Loom to implement the next formal property *in Loom itself*. An adversarial loop finds edge cases in the type system. The GS specification captures each failure as a new gate. The language becomes more formally complete per iteration, and the specification that governs the language becomes more precise per iteration. The theories that were too expensive to apply are now the baseline. The baseline improves as the theories do. ALX-6 completed in April 2026 with S_realized = 1.0 across 386 acceptance tests; the convergence trajectory ran 0 → 0.339 → 0.641 → 0.780 → 0.900 → 1.000 as the spec absorbed the gaps the adversarial loop surfaced. The collapsed loop ran. The result is in the repository.
 
 The collapsed loop has a structural name that I will take one more section to earn.
 
@@ -379,7 +379,7 @@ One step beyond the terminus is visible, and worth naming honestly: a system tha
 - Plotinus. (c. 270 CE). *Enneads.*
 - Vaswani, A., et al. (2017). Attention Is All You Need. *NeurIPS 2017.*
 - Conway Research. (2025). Automaton: Self-Improving, Self-Replicating, Sovereign AI. https://github.com/Conway-Research/automaton
-- Ghiringhelli, J.C. (2026). Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader. Preprint. arXiv:XXXX.
+- Ghiringhelli, J.C. (2026). *Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader* (V3). Zenodo. https://doi.org/10.5281/zenodo.19637142
 - Ghiringhelli, J.C. (2026). Loom: An AI-Native Functional Language. https://github.com/jghiringhelli/loom
 - Ghiringhelli, J.C. (2026). Biological Isomorphisms in Formal Self-Maintaining Systems. Forthcoming.
 - Ghiringhelli, J.C. (2026). The New Golden Century. *Substack.*
