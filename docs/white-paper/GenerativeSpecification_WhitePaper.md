@@ -511,6 +511,8 @@ A separate empirical thread provides independent evidence for the paper's centra
 
 The methodology's empirical record does not depend on ForgeCraft: any practitioner producing the same artifacts by hand produces the same grammar the AI reads. See §7.8 for authorship and conflict-of-interest disclosure.
 
+> **Tool-agnostic mechanical reference.** The repo-mechanical specifics — what files exist, what they contain, how they are touched, and the manual checklists that hold the discipline together without any tooling — are consolidated in [`docs/repository-discipline.md`](../repository-discipline.md). This section gives the theory; that document gives the operational discipline.
+
 A system built to generative specification consists of the following artifact types, each functioning as a distinct production rule in the system's grammar.
 
 | Artifact | Linguistic Analog | Function in the System |

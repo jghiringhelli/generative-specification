@@ -24,6 +24,8 @@ The document is organized around a single cognitive model: the **five memory typ
 
 ## Part I: The Obligation Cascade
 
+> **Tool-agnostic mechanical reference.** The repo-mechanical specifics — five mandatory artifact types, the sentinel navigational tree, branch isolation, conventional commits as cascade trigger, the doc-first cascade, the pre-commit / pre-merge / pre-deploy gates, the 5-step cascade check by hand, the public-surface diff rule, severity ramps + recorded exceptions, manifest schema for manual authoring, three-layer recording, and the patterned failure modes — are consolidated in [`docs/repository-discipline.md`](../repository-discipline.md). Read this protocol for the *why* and the lifecycle obligations; read that document for the *how* of the repository discipline that works on any repo with git, a text editor, and the practitioner's attention.
+
 ### 0. What GS Removes — and What It Adds
 
 Every tier of GS operates on two axes simultaneously: it adds a restriction to the system and removes an obligation from the practitioner. These are the same move stated from two directions. Understanding both axes is what distinguishes a practitioner applying the discipline from one merely following procedures.

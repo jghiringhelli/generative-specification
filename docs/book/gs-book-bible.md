@@ -1298,6 +1298,12 @@ on it.
 The tools in this section are the current practitioner's toolkit. They are all built using
 GS — eating their own cooking. Each is an entry point at a specific tier.
 
+> **The discipline works without any of these tools.** Every mechanical practice the toolkit
+> automates is documented in [`docs/repository-discipline.md`](../repository-discipline.md) as a
+> manual variant. A practitioner with git, a text editor, and attention can run GS by hand. The
+> toolkit makes the discipline cheap and survivable under operational pressure — it does not
+> replace it.
+
 ---
 
 ### ForgeCraft-MCP
