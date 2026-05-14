@@ -194,15 +194,16 @@ it generates. I argue that Generative Specification (GS) is the
 discipline that connects them: it activates formal theory through
 specification rather than annotation, addresses the three structural
 causes of abandonment (fatigue, single-target economics, fragmentation),
-and exhibits the functional structure of biological autopoiesis as a
-consequence of being a self-maintaining formal system. The essay traces
-the full lineage, identifies the human author as the <em>Nous</em> (the
-intent, the <em>what</em> and <em>why</em>), the body of formal theory
-as the <em>Logos</em> (the laws governing correct work, the
-<em>how</em>), and the AI executor as the worker who operates under the
-<em>Logos</em> without the erosion human practitioners suffer. It names
-the structural category that distinguishes this from AGI: <em>directed
-formal autopoiesis</em> — a self-creating system that converges toward
+and exhibits structural analogies with biological autopoiesis that
+converge on the same self-maintenance solutions — a consequence of being
+a self-maintaining formal system. The essay traces the full lineage,
+identifies the human author as the <em>Nous</em> (the intent, the
+<em>what</em> and <em>why</em>), the body of formal theory as the
+<em>Logos</em> (the laws governing correct work, the <em>how</em>), and
+the AI executor as the worker who operates under the <em>Logos</em>
+without the erosion human practitioners suffer. It names the structural
+category that distinguishes this from AGI: <em>directed formal
+autopoiesis</em> — a self-creating system that converges toward
 mathematical correctness through formally grounded increments. Loom, an
 AI-native language compiling to five targets from a single source, is
 offered as the language-layer demonstration backing the claim.</p>
@@ -744,12 +745,13 @@ written and read by AI code assistants as the primary reader. Its syntax
 carries enough semantic context in every declaration that a stateless AI
 session can derive a correct implementation from the specification alone
 — without institutional memory, without documentation lookup, without a
-human explaining what the types mean. As of submission, the public
-repository — <code>github.com/jghiringhelli/loom</code> [49] — carries
-the verified test suite, the language manual, and the experimental
-evidence backing each formal claim. The test surface is intentionally
-split across three tiers, each answering a different correctness
-question. <strong>685 cargo unit and integration tests</strong>
+human explaining what the types mean.</p>
+<p>As of submission, the public repository —
+<code>github.com/jghiringhelli/loom</code> [49] — carries the verified
+test suite, the language manual, and the experimental evidence backing
+each formal claim. The test surface is intentionally split across three
+tiers, each answering a different correctness question. <strong>685
+cargo unit and integration tests</strong>
 (<code>cargo test --all-targets</code>, zero failures) cover the
 language implementation itself — parser, checker, codegen, type system,
 runtime. <strong>386 ALX-6 acceptance tests</strong> measure
@@ -853,11 +855,10 @@ biological mechanisms occupy in theirs. That role-equivalence is what
 the table records. And the analogies are not merely descriptive: they
 are predictive. Mechanisms present in complex organisms with no current
 GS/Loom equivalent are candidates for missing language constructs.</p>
-<p>The companion BIOISO paper in preparation (Ghiringhelli &amp;
-collaborator, in preparation) undertakes the stronger claim directly: a
-formal demonstration, working from Maturana and Varela’s own criteria —
-organizational closure, self-production of components, boundary
-maintenance, and substrate-independence — that BIOISO’s
+<p>The companion BIOISO paper [50] undertakes the stronger claim
+directly: a formal demonstration, working from Maturana and Varela’s own
+criteria — organizational closure, self-production of components,
+boundary maintenance, and substrate-independence — that BIOISO’s
 <code>(G, T, M, Ω)</code> structure satisfies each criterion in the
 sense their definition requires. <strong>We expect to demonstrate the
 isomorphism holds; we do not claim it here.</strong> This essay’s §VII
@@ -974,10 +975,8 @@ biological isomorphism — an artificial imitation of the organ that
 coordinates biological self-maintenance. Once we solved the brain, the
 brain solved the rest. The loop is not just closed. It was always one
 loop.</p>
-<p>And the isomorphism is not merely descriptive. It is
-<em>predictive</em>. Mechanisms present in more complex organisms that
-have no current equivalent in GS or Loom are candidates for missing
-constructs:</p>
+<p>Mechanisms present in more complex organisms that have no current
+equivalent in GS or Loom are candidates for missing constructs:</p>
 <p><strong>Epigenetics</strong> — heritable behavioral changes without
 altering the genome. Context that persists across generations without
 modifying the base specification. What is the Loom equivalent of
@@ -1080,43 +1079,42 @@ accident. It becomes more correct by design.</p>
 systems that produce their own components and through that production
 maintain themselves. Maturana and Varela named this in 1972 [13].
 McMullin’s review, <em>Thirty Years of Computational Autopoiesis</em>
-(2004) [28], surveys three decades of attempts to instantiate
-autopoietic systems in computational media — cellular automata,
-artificial chemistry, agent-based models. None succeeded in producing
-genuine organizational closure in software. Bianchini (2023) [36]
-revisits the question in <em>Autopoiesis of the Artificial</em>, asking
-whether AI systems might cross the threshold. The answer in both cases
-remained tentative, because the computational autopoiesis tradition was
-attempting to <em>simulate</em> life — to build systems whose
-self-production imitates biological self-production. That is not what is
-being described here. Loom does not simulate autopoiesis. It exhibits
-the functional structure of autopoiesis as a <em>consequence</em> of
-being a self-maintaining formal system — the isomorphisms arise from
-structural convergence, not from design intent.</p>
-<p>The formal demonstration is forthcoming work. The companion paper in
-preparation (Ghiringhelli &amp; collaborator, in preparation) undertakes
-the stronger claim directly: working from Maturana and Varela’s own
-criteria — organizational closure, self-production of components,
-boundary maintenance, and substrate-independence — it tests whether the
-BIOISO <code>(G, T, M, Ω)</code> structure satisfies each criterion in
-the sense their definition requires. <strong>We expect to demonstrate
-the isomorphism holds; we do not claim it here.</strong> This essay
+[28], surveys three decades of attempts to instantiate autopoietic
+systems in computational media — cellular automata, artificial
+chemistry, agent-based models. None succeeded in producing genuine
+organizational closure in software. Bianchini [36] revisits the question
+in <em>Autopoiesis of the Artificial</em>, asking whether AI systems
+might cross the threshold. The answer in both cases remained tentative,
+because the computational autopoiesis tradition was attempting to
+<em>simulate</em> life — to build systems whose self-production imitates
+biological self-production. That is not what is being described here.
+Loom does not simulate autopoiesis. It exhibits the functional structure
+of autopoiesis as a <em>consequence</em> of being a self-maintaining
+formal system — the isomorphisms arise from structural convergence, not
+from design intent.</p>
+<p>The formal demonstration is taken up in the companion paper [50],
+which works from Maturana and Varela’s own criteria — organizational
+closure, self-production of components, boundary maintenance, and
+substrate-independence — to test whether the BIOISO
+<code>(G, T, M, Ω)</code> structure satisfies each criterion in the
+sense their definition requires. <strong>We expect to demonstrate the
+isomorphism holds; we do not claim it here.</strong> This essay
 therefore commits only to <em>directed formal autopoiesis</em> as a
 structural category — the system has the functional shape and the named
 distinction (telos directs the convergence) — and reserves the formal
 organizational-closure equivalence with biological autopoiesis for the
 companion paper’s framing.</p>
-<p>The distinction goes deeper. Di Paolo (2005) [29], in
-<em>Autopoiesis, Adaptivity, Teleology, Agency</em>, argues that
-autopoietic systems possess intrinsic teleology: their organizational
-closure generates purpose without external specification of goals.
-Barandiaran and Egbert (2014) [34] extend this to “aitiopoiesis” — the
-causal self-determination of adaptive systems. These are important
-contributions, and the essay acknowledges them as groundwork. But their
-telos is survival — fitness-relative, undirected, environmentally
-contingent. Biological autopoiesis drifts toward what survives, not
-toward what is provably correct. The mutations are random. The direction
-emerges from selection pressure, not from an ideal.</p>
+<p>The distinction goes deeper. Di Paolo [29], in <em>Autopoiesis,
+Adaptivity, Teleology, Agency</em>, argues that autopoietic systems
+possess intrinsic teleology: their organizational closure generates
+purpose without external specification of goals. Barandiaran and Egbert
+[34] extend this to “aitiopoiesis” — the causal self-determination of
+adaptive systems. These are important contributions, and the essay
+acknowledges them as groundwork. But their telos is survival —
+fitness-relative, undirected, environmentally contingent. Biological
+autopoiesis drifts toward what survives, not toward what is provably
+correct. The mutations are random. The direction emerges from selection
+pressure, not from an ideal.</p>
 <p>The self-evolution described here is <em>directed</em>. It grows
 toward a known ideal: mathematical correctness as defined by the formal
 tradition. Each iteration adds a proved property. The system does not
