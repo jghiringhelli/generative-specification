@@ -637,6 +637,68 @@ training-data average. Less total tokens. Faster generation. Cleaner
 result. Quality gates enforce the boundary at commit time. Generative
 execution and deployment derive from the same blueprint. The cheap path
 becomes the correct one.</p>
+<p>Operationally, GS unfolds as a <strong>four-tier lifecycle
+cascade</strong> with two <strong>transversal layers</strong> that run
+across all four tiers rather than between them. Each cascade tier names
+a <em>lifecycle stage</em> and removes two obligations the practitioner
+previously carried at once: an <em>authoring obligation</em> (what they
+stop writing) and a <em>verification obligation</em> (what they stop
+checking by hand). The two transversal layers run across all four tiers
+because no tier can subsume them.</p>
+<p><strong>T1 — Development.</strong> The practitioner stops writing
+application code and stops reading what was generated. The specification
+is precise enough that a stateless reader can derive any valid
+implementation from the artefact set; the dev-time harness compiles
+every behavioural contract into a running validation against the live
+application. If the harness fails, the response is to tighten the
+specification, not to patch the code. <strong>T2 — Staging /
+Pre-production.</strong> The practitioner stops touching deployment
+scripts and stops manually validating the staged system.
+Infrastructure-as-spec emits the deployment configuration; a staging
+harness re-runs the T1 derivation against staged data and certifies
+readiness. <strong>T3 — Production.</strong> The practitioner stops
+manually monitoring or diagnosing. A monitoring specification names
+every observable invariant; a diagnostic agent (production-side
+observer) routes any drift back to T1 as a specification-update proposal
+— drift becomes spec change, not bug ticket. <strong>T4 —
+Evolution.</strong> The system rewrites parts of its own specification
+under safety annotations, regenerates the affected derivatives, and
+re-runs every prior tier’s harness against the new spec. BIOISO is the
+operational instantiation of this tier, developed in the companion paper
+[50]; the structural mechanism it employs — meiosis-gated structural
+rewire — is BIOISO’s own internal tier hierarchy, distinct in framing
+from the GS cascade but operating at the GS T4 lifecycle stage.</p>
+<p><strong>Generative execution</strong> is the transversal layer that
+runs the cascade. The harness pattern recurs at each tier with
+stage-appropriate tests: a dev-time test pyramid at T1 (unit,
+integration, property, behavioural end-to-end with mutation-tested
+coverage), a staging harness at T2 (the same harness re-run against
+staged data with hardening checks added), a production runtime harness
+at T3 (synthetic monitoring, dynamic property checking against live
+traffic, regression on observed signals), and a colony-level harness at
+T4 (the same checks applied to the proposed mutated specification before
+promotion). The harness is not a separate tier because it is not
+stage-specific; it is the verification mechanism by which each tier’s
+authoring removal becomes safe.</p>
+<p><strong>The judgment layer</strong> is the second transversal — the
+irreducible human obligation that recurs at every tier and that no
+future tier removes. It carries domain validation (does the AI’s
+interpretation of finance, law, medicine, or any specialised field match
+what a real domain expert would do?), aesthetic and quality
+discrimination (does this UI work, does this story land, is this music
+right?), strategic and product judgment (should this feature exist, does
+this product solve a real problem?), compliance and legal sign-off, real
+user research, and edge-case discovery from lived experience. The
+judgment layer is not a tier because it is not mechanical work — it is
+what remains when mechanical work is removed. Naming it explicitly
+matters: GS does not claim to replace human judgment, and the
+methodology’s honesty depends on the practitioner knowing what the
+discipline does not and never claimed to compress.</p>
+<p>Two higher cascade tiers — <strong>T5 (Colony / Synthesis)</strong>
+and <strong>T6 (Meta-telos)</strong> — are named in the full GS
+framework as research stages above T4. They are out of scope for this
+essay; the operational core for the present claims is T1–T4 plus the two
+transversals.</p>
 <p>Loom is offered in this essay as the language-layer proof of that
 discipline — a concurrent demonstration that the claim holds, with
 artefacts available for public inspection. Before describing it, a
