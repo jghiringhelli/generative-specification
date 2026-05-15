@@ -645,25 +645,27 @@ load-bearing structural claim: the verification obligation can be
 removed because a stage-appropriate harness certifies the derivation was
 faithful at that stage, and the authoring removal is safe only because
 that certification holds.</p>
-<p><strong>T1 — Development:</strong> the practitioner does not write
-code, and does not read what was generated. The specification authors;
-the dev-time harness — ForgeCraft gates, unit/integration/E2E tests,
-mutation testing, multimodal AI-as-QA, automated scoring — verifies
-every executable obligation against the running system. If validation
-fails, the spec is tightened and T1 regenerates. <strong>T2 — Staging /
-Pre-prod:</strong> the practitioner does not touch deployment, and does
-not manually validate the staged system. CI/CD, environment manifests,
-and compliance policy (HIPAA, PCI-DSS, GDPR, SOC2) become
-deployment-gate type-level constraints; the staging-stage harness
-extends the T1 harness pattern into the deployed environment with NFR
-contracts, integration smoke tests, and gateway/load/security automation
-against the real environment. <strong>T3 — Production:</strong> the
-practitioner does not monitor, and does not diagnose bugs. Logs,
-signals, and runtime observations are evaluated against the same formal
-properties that drove construction; the production-stage harness runs
-continuous drift detection and runtime contract verification, and
-discrepancies trigger structured root-cause analysis rather than human
-paging. <strong>T4 — Evolution:</strong> the practitioner does not
+<ul>
+<li><p><strong>T1 — Development:</strong> the practitioner does not
+write code, and does not read what was generated. The specification
+authors; the dev-time harness — ForgeCraft gates, unit/integration/E2E
+tests, mutation testing, multimodal AI-as-QA, automated scoring —
+verifies every executable obligation against the running system. If
+validation fails, the spec is tightened and T1 regenerates.</p></li>
+<li><p><strong>T2 — Staging / Pre-prod:</strong> the practitioner does
+not touch deployment, and does not manually validate the staged system.
+CI/CD, environment manifests, and compliance policy (HIPAA, PCI-DSS,
+GDPR, SOC2) become deployment-gate type-level constraints; the
+staging-stage harness extends the T1 harness pattern into the deployed
+environment with NFR contracts, integration smoke tests, and
+gateway/load/security automation against the real environment.</p></li>
+<li><p><strong>T3 — Production:</strong> the practitioner does not
+monitor, and does not diagnose bugs. Logs, signals, and runtime
+observations are evaluated against the same formal properties that drove
+construction; the production-stage harness runs continuous drift
+detection and runtime contract verification, and discrepancies trigger
+structured root-cause analysis rather than human paging.</p></li>
+<li><p><strong>T4 — Evolution:</strong> the practitioner does not
 manually maintain or extend the living system. The evolution-stage
 harness — the governed mutation gauntlet — admits only mutations that
 pass the harness chain at every prior tier. BIOISO is the operational
@@ -672,20 +674,23 @@ structural mechanism it employs — meiosis-gated structural rewire — is
 BIOISO’s own internal tier hierarchy (a hierarchy of
 optimization-complexity primitives, distinct in framing from the
 lifecycle cascade described here but operating at the GS T4 lifecycle
-stage). <strong>T5 — Synthesis</strong> (architecturally specified;
-empirical demonstration is the next validation phase): the practitioner
-does not design the system architecture — a stateless reader derives an
-interacting set of T4-governed programs, each with its own derived
-telos, interacting through typed channels, dying when their telos is
-fulfilled. <strong>T6 — Meta-telos</strong> (named as the logical
-terminus and as a research agenda, not as a near-term capability claim):
-the practitioner does not initiate the process — a system that has
-observed the practitioner across their full history infers what is
-needed before it is asked, and the practitioner’s ratification is the
-meta-telos verification. T6 requires not more formal theory but a
-careful answer to who decides what the practitioner needs before any
-autonomous inference becomes action; governance must precede
-capability.</p>
+stage).</p></li>
+<li><p><strong>T5 — Synthesis</strong> <em>(architecturally specified;
+empirical demonstration is the next validation
+phase)</em><strong>:</strong> the practitioner does not design the
+system architecture — a stateless reader derives an interacting set of
+T4-governed programs, each with its own derived telos, interacting
+through typed channels, dying when their telos is fulfilled.</p></li>
+<li><p><strong>T6 — Meta-telos</strong> <em>(named as the logical
+terminus and as a research agenda, not as a near-term capability
+claim)</em><strong>:</strong> the practitioner does not initiate the
+process — a system that has observed the practitioner across their full
+history infers what is needed before it is asked, and the practitioner’s
+ratification is the meta-telos verification. T6 requires not more formal
+theory but a careful answer to who decides what the practitioner needs
+before any autonomous inference becomes action; governance must precede
+capability.</p></li>
+</ul>
 <p>The harness is <strong>not a tier</strong>. It is a <em>cross-cutting
 capability</em> that recurs at every tier with stage-appropriate tests —
 dev-time at T1, staging at T2, production runtime at T3, evolution-time
