@@ -1,4 +1,4 @@
-# Onwards: The Formal Tradition Was Waiting for Its Executor
+# The Formal Tradition Was Waiting for Its Executor
 
 *Juan Carlos Ghiringhelli*
 *Pragmaworks · May 2026*
