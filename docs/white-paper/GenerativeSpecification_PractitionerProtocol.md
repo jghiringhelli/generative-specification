@@ -1,7 +1,7 @@
 # Generative Specification: The Practitioner's Protocol
 
 **Status:** Living Document  
-**Version:** 1.3 — April 2026  
+**Version:** 1.4 — May 2026  
 **Companion to:** *Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader*
 
 ---
@@ -239,6 +239,7 @@ The architectural constitution governs *how* the system is built. The technical 
 - Data models: entity definitions, field types, constraints, relationships — stated with enough precision that two different engineers writing separate modules would produce compatible schemas
 - API contracts: endpoint signatures, expected inputs and outputs, error shapes, authentication requirements
 - Non-functional requirements: latency targets (p99), throughput ceiling, availability SLA, data retention policy, security compliance requirements
+- UI/UX contracts (frontend codebases): design tokens (color, spacing, typography — the named vocabulary all AI-generated components draw from); component library specification (atomic design hierarchy — atoms, molecules, organisms); UX pattern documents covering the canonical states every interactive surface must implement (error, loading, empty, modal, and table patterns); responsive/adaptive ADR recording the breakpoint strategy and any layout decision whose alternative was considered and rejected. Omitting these contracts produces the same class of drift at the presentation layer that omitting API contracts produces at the service layer.
 
 **Naming as a contract.** In a polyglot system, naming is the cross-language contract. A function named identically in a TypeScript API surface and its Python backend will not produce incoherent output when the AI touches both sides. A function named `processItem` in TypeScript and `handle_document` in Python for the same concept will. The technical specification names every domain concept once, in language-neutral terms. Both sides derive from the same vocabulary.
 
@@ -277,6 +278,57 @@ Generate with ForgeCraft (`setup_project`), then review and customize. ForgeCraf
 | **Routing** | Which artifact to consult for which class of decision — spec for contracts, ADR for architecture history, use cases for behavior | AI ignores available context; makes decisions already recorded elsewhere |
 
 Audit a `CLAUDE.md` against this five-category grid before the first implementation session. Missing categories are not style choices — they are specification gaps with predictable failure modes.
+
+**Why each discipline specifically benefits AI readers.** Practitioners who already follow SOLID, TDD, and clean architecture often miss the second-order effect: these disciplines are not only best practices for human readers — they produce structural properties a stateless reader can exploit mechanically. The human and AI benefits flow from the same structure but they are different benefits:
+
+| Discipline | What it provides to a human reader | What it provides to a stateless AI reader |
+|---|---|---|
+| **SOLID interfaces + Dependency Inversion** | Decoupled, independently changeable systems | AI reads the contract boundary (N lines), not the implementation (N×10 lines). Hallucination of private state is structurally unreachable across interface boundaries. |
+| **Single Responsibility** | One reason to change per class; lower cognitive load | AI acts on a class without traversing the call graph for scope. The class is its own complete specification. |
+| **Hexagonal / consistent folder structure** | Separation between domain, application, infrastructure | File searches are deterministic. `controllers/` always has controllers. First-pass navigation succeeds; no discovery traversal required. |
+| **DDD ubiquitous language** | Shared vocabulary reduces translation loss between technical and domain teams | Domain vocabulary in code maps to AI training data on the same domain. Generation quality improves when code names are drawn from domain language. |
+| **Conventional commits** | Readable change history for human reviewers | Git log is AI-queryable by type and scope. Cascade triggers fire correctly from machine-parseable commit types. |
+| **TDD — tests as behavioral specification** | Failing-first discipline verifies test quality | Each test is a behavioral statement the AI reads *before* the implementation. Intent is declared at the assertion layer, not inferred from possibly-incorrect code. |
+| **ADRs** | Preserves design rationale for future maintainers | AI reads *why* decisions were made. Cannot "optimize" intentional tradeoffs that appear suboptimal without context — the ADR is the context. |
+| **Doc-first cascade** (sentinel → spec → ADR → code) | Keeps docs synchronized with implementation | AI receives intent before implementation. Generating from a complete spec is specification execution. Generating from code without a spec is reverse-engineering. |
+| **Intentional naming** | Reduces cognitive load when reading unfamiliar code | `calculateMonthlyCostPerMember` provides domain, operation, unit, and scope at the token level. `processData` provides none of these. AI generates correct downstream code from the first; guesses from the second. |
+| **Commit hooks / quality gates** | Catches defects before they land in shared branch | Structural rejection of non-conforming output converts feedback from conversational to architectural. AI corrects against machine-readable rules, not session-by-session reminders. |
+| **GoF patterns (named in spec)** | Named solutions with known tradeoffs | Pattern name activates the AI's trained knowledge of canonical structure, interface contracts, and invariants. The name is the specification. |
+
+State all named structural disciplines explicitly in the Standards category — the AI activates them only when they are named.
+
+**Physical folder structure in the sentinel.** The architectural constitution must include the physical directory layout, not only the document tree. An agent reading only the ADR and spec structure cannot determine where controllers, services, repositories, and domain models physically live without a grepping traversal. Declaring the folder structure in the sentinel converts brownfield navigation from probabilistic to deterministic — the agent searches the right location on the first attempt.
+
+**Contract-sufficient navigation mode.** On a GS-compliant codebase, include a navigation mode declaration in the architectural constitution under the Standards or Tool Sequencing category. The claim is stronger than "read contracts before implementations" — on a disciplined codebase, implementations are optional for most tasks. They exist for modification, not for understanding.
+
+```markdown
+## Navigation Mode
+This project follows SOLID (interfaces as contracts), hexagonal layering, and TDD.
+- For understanding behavior: read interface/abstract class definitions only.
+  Implementations are derivations of contracts already visible — do not read them.
+- For behavioral contracts: read TDD test signatures and descriptions.
+  The test suite is the complete behavioral specification.
+- For behavior inference: method signatures, return types, and domain names
+  are often sufficient to fully specify behavior. Read implementations only
+  when modifying them or debugging a confirmed contract violation.
+- Layer membership (domain / application / infrastructure) specifies the
+  complete dependency graph. Do not read imports to discover constraints.
+- Pattern names in the spec (Repository, Strategy, Observer) are complete
+  implementation specifications. Do not read implementations for named patterns.
+```
+
+**When to enable this:** GS-compliant greenfield projects (enabled from day one); brownfield codebases that have completed an Annealing pass with confirmed SOLID interfaces, TDD coverage, and quality gates enforcing them. Do not enable on unrefactored brownfield codebases — where the contract layer may be absent or diverged from implementations, treating contracts as authoritative produces confident errors. The enforcement layer (hooks, gates) is what makes the policy safe; enabling it without enforcement means trusting contracts that may not be trustworthy.
+
+**What it eliminates per discipline:**
+- **SOLID interfaces** → implementation reads for behavior understanding
+- **SRP** → side-effect analysis (cannot exist outside the declared responsibility)
+- **Hexagonal layers** → import reads for dependency constraint discovery
+- **DDD naming** → method body reads when the signature fully specifies behavior
+- **TDD tests** → implementation reads for behavioral specification
+- **GoF pattern names** → implementation reads for structure and contracts
+- **ADRs** → code reads to understand *why* the structure is what it is
+- **Doc-first cascade** → implementation reads for intent (the spec already has it)
+- **Clean architecture** → implementation reads for layer constraint verification
 
 **Step 4: ADR initialization.** For every non-obvious decision made in steps 1–3 — technology selection, architectural pattern, exclusion of scope — write an ADR before any implementation begins. An ADR at initialization is the rationale record for decisions whose alternatives were considered and rejected. Without it, the AI will "optimize" these decisions in a future session.
 
@@ -335,6 +387,8 @@ Every change to a running system consists of two decisions: *what* to change, an
 **Full procedure:**
 
 1. **Name the delta.** Observe something: a discrepancy in the running system, a new requirement, a design insight, a bug. Write it down in precise terms. Vague deltas produce vague cascades.
+
+   **Pre-classify cascade depth before the session.** Append a `cascade:` field naming the layers the delta touches (any of `data`, `code`, `prompt`, `spec`, `schema`, `adr`). Example: `DELTA-001: Bus Factor vitamins — cascade: data|code`. This classification is often obvious from the symptom and takes seconds to record; it eliminates most of the CIA analysis step from in-context budget. A session that begins with cascade depth already scoped starts working immediately instead of spending ~1,000 tokens rediscovering what the practitioner already knew. Multi-layer deltas (e.g., `data|code|prompt`) flag which bug-fix sessions require all three layers addressed — code-only fixes to data-layer root causes produce symptom patches that recur.
 
 2. **Impact assessment (CIA).** Before propagating anything, answer: Which artifacts reference the changed element? Which roadmap items currently in progress share a dependency with it? Does the delta change a shared interface contract or schema? This is the Change Impact Assessment step. Skipping it risks propagating a change into implementation before discovering it breaks a parallel item already in progress.
 
@@ -477,6 +531,70 @@ Encourage but do not require a one-page decision in `docs/decisions/` when the f
 
 ---
 
+### 8.2.A Three flows, three artifacts: knowing which cycle you're in
+
+The cascade table tells you what each commit type *requires*. This section tells you which **cycle** you're entering, what **artifact** records it, and which **tool** scaffolds it. Picking the right cycle up front saves the re-work of recording a bug-fix as if it were a refactor, or a spec change as if it were a one-off decision.
+
+| Cycle | Trigger | Artifact slot | Scaffolder | Lifecycle | Exit criterion |
+|---|---|---|---|---|---|
+| **Feature** | new capability, refactor with a new architectural choice | `docs/adrs/active/ADR-NNNN-*.md` | `generate_adr` | ADR `Proposed` → `Accepted` → (later) `Superseded` | ADR Accepted; PR merged with reviewer ack |
+| **Bug post-mortem** | bug surfaced that warrants recorded reasoning (recurrence-prone, intentional behavior change, or chronicle-tracked investigation) | `docs/decisions/YYYY-MM-DD-*.md` | `generate_decision` (often paired with `change_request --type=bug-postmortem`) | decision file written; if change_request opened: `open → implementing → verified → closed` | regression test exists, decision merged |
+| **Spec drift** | spec found incomplete, ambiguous, or contradicted by reality — touches multiple layers | the spec itself + cascade artifacts | `change_request --type=spec-change` | `open → implementing → verified → closed` (`close_cycle` blocks until verified) | every affected artifact updated, all `required_gates` green |
+
+#### When to use which
+
+**Use Feature flow** when *the system gains a capability or a "how we build" decision*. The reasoning lives in `Context / Decision / Alternatives / Consequences`. ADRs are immutable after acceptance — supersede, don't edit.
+
+**Use Bug-postmortem flow** when *the bug exposed something worth remembering*. Not every bug needs a post-mortem: a one-line null-check fix with a regression test is fully recorded by the test alone. Open a post-mortem when at least one of these is true:
+
+- The bug recurs or is one of a class (the *cause* is interesting, not the *fix*)
+- The fix intentionally redefines behavior (the spec quietly changed; you owe a `[NEEDS CLARIFICATION]` resolution)
+- An architectural assumption broke (link the post-mortem to the offending ADR via `related_adr`)
+- The investigation was long enough that you used chronicle to track it (link the session via `chronicle_session_id`)
+
+**Use Spec-drift flow** when *the spec itself was wrong, not the code*. The signal is that you cannot describe the change inside a single artifact — the PRD, use cases, schemas, and ADRs all need a coordinated edit. `change_request` is the only flow that opens an implementing-state record and blocks `close_cycle` until every affected artifact updates.
+
+#### Worked example: bug-postmortem
+
+```bash
+# 1. Open the lifecycle record (creates .forgecraft/changes/<id>.yaml)
+forgecraft change_request \
+  --type bug-postmortem \
+  --title "Idempotent import retry" \
+  --description "Retry of an interrupted import double-inserted rows"
+
+# 2. (Optional) start a chronicle session to track the investigation
+chronicle session start "investigate import dup"
+
+# 3. After fixing the code and adding the regression test:
+forgecraft generate_decision \
+  --title "Idempotent import retry" \
+  --trigger "Customer report: retried import produced duplicate task_id rows" \
+  --root_cause "No UNIQUE(task_id) constraint; ON CONFLICT path missing" \
+  --fix "Migration 0042 adds UNIQUE(task_id); insert path uses ON CONFLICT DO NOTHING" \
+  --regression_test "tests/integration/import.test.ts::test_idempotent_retry" \
+  --chronicle_session_id "sess-2026-05-14-a1b2c3" \
+  --related_adr "ADR-0014"
+
+# 4. Mark the change_request verified once the test is green, then close_cycle
+```
+
+#### The chronicle integration contract
+
+`generate_decision` accepts `chronicle_session_id` and writes it into the decision doc. That string is the join key between the team-level artifact (`docs/decisions/*.md`, durable, versioned) and the individual-level memory (`~/.chronicle/sessions/<id>`, where the AI's prompts, hypotheses, and dead-ends live). The team layer gets *what was decided*; the individual layer keeps *how the practitioner got there*. Neither layer pollutes the other.
+
+#### What's NOT a separate cycle
+
+- **`refactor:` without an architectural choice** — no cycle needed; the cascade flags only if a public surface moves.
+- **`docs:`, `test:`, `chore:`, `ci:`** — informational severity; no artifact required.
+- **`perf:`** — a decision is *encouraged* if the optimization required a measured trade-off, but no lifecycle record is opened.
+
+#### Anti-pattern: ADR-as-postmortem
+
+Don't use `generate_adr` for a bug. ADRs answer "what did we decide and why over alternatives" — that's the wrong frame for a defect. The post-mortem template asks the right questions (Trigger, Root cause, Regression test) and lives in the right slot. If a bug exposed a *flawed* architectural decision, file a post-mortem **and** supersede the ADR — the two records together tell the full story.
+
+---
+
 ### 8.3 The Anti-Drift Principle
 
 A change is allowed if and only if its layer above explains it. This is the operative rule the cascade exists to enforce. It manifests at three checkpoints:
@@ -513,6 +631,10 @@ Twelve `pre-commit` hooks run in sequence. Two `commit-msg` hooks validate the m
 | `post-commit-changelog` | post-commit | Append entry to CHANGELOG.md | Never |
 | `post-commit-complexity-baseline` | post-commit | Refresh cyclomatic complexity baseline | Never |
 | `pre-push` | pre-push | Block deletion of main/master on remote | Force-delete of protected ref |
+
+**Hook economics: the token multiplier framing.** The hook chain is commonly described as a quality enforcement mechanism. The token economics reframe it as something more foundational: each automated check running as a hook costs 0 tokens. The equivalent check performed in-context — compile, run tests, review for forbidden patterns, validate commit format — costs 1,000–3,000 tokens per invocation. For a session with three commits and seven active hooks, this offloads approximately 31,500 tokens of verification work from the context window — more than the entire GS artifact load for a well-configured project. The hooks do not merely prevent errors; they expand the effective budget available for work. A project without hooks is not just less safe: it is spending a substantial fraction of every session re-verifying what hooks would have confirmed for free.
+
+The **Defended** property scores 0 until hooks are implemented and active — not prescribed, not planned, not ADR'd. Writing "add pre-commit hooks" in Status.md is not a Defended system. Running hooks that log real violations is. The Protocol prescribes the chain; the practitioner must build it. The build effort is a one-time investment; the savings recur on every session for the life of the project.
 
 **`--no-verify` is an emergency exit, not a workflow tool.** Skipping hooks bypasses the cascade. Use it only when a hook is genuinely broken and blocking a critical merge — never as a way to commit faster. Every `--no-verify` invocation is flagged in the changelog by the audit gate. If you find yourself reaching for it routinely, the hook is misconfigured or the manifest severity is wrong; fix the configuration, not the symptom. CI re-runs the same checks on the PR diff; bypassing locally only delays the failure.
 
@@ -741,6 +863,8 @@ Every session begins and ends at the same steady state: code, tests, and documen
 
 **Phase 2 — Specification gate.** Before any code is written: does this change *fit* the existing specification, or does it *change* it? A feature the specification anticipates can be implemented directly. A feature the specification does not yet cover requires the specification to be updated first: the ADR, the schema change, the new section of the constitution. These precede implementation. Code written against the old specification is wrong by the grammar it was supposed to serve, regardless of whether the tests pass.
 
+   **Functional scope loading.** The fit/change distinction is reliable only when the relevant functional artifacts are in context at the moment the check runs. The architectural constitution is always-loaded — architectural guardrails fire on every change automatically. Use cases, user flows, and state machines governing the affected behavior are not always-loaded; they are reached only when the sentinel navigational tree routes to them. For any change request that could contradict existing business logic — not architectural structure, but what the system is supposed to do — explicitly load the use cases and user flows governing the affected behavior before Phase 2 concludes. An architectural incongruence is detectable without this step because the constitution is already present; a functional incongruence is detectable only if the artifact that defines the expected behavior is in context when the change is evaluated. This is a known asymmetry: GS's architectural detection is robust by construction; functional detection depends on sentinel routing completeness.
+
 **Phase 3 — Implementation and verification.** Execute against the specification. Tests are written alongside the code they cover, not deferred. Before any commit, three conditions hold:
 1. Full test suite passes
 2. Feature exercised at HTTP or CLI boundary (not only unit-tested internally)
@@ -770,6 +894,12 @@ The order in which artifacts are loaded at session start determines what the AI 
 5. **Session prompt** (bound roadmap item or improvised intent) — last, after all context artifacts are loaded.
 
 **What to exclude.** Test files, unless the session is specifically about the test suite. Generated files. `node_modules`, `dist`, `build`. Lock files. Anything the AI would contextualize but not act on. Context budget is finite; loading noise competes with signal.
+
+**The spec-map pattern for large specifications.** When the technical specification exceeds ~500 lines, "load the relevant section" still underspecifies the loading task: identifying *which* 18% of a 4,776-line spec applies to a given task requires loading the full document first — which degrades attention quality for content in the later sections. The solution is `spec-map.md`: a ~50-line lookup table that maps every roadmap item (RM-NNN) and test case group (TC-NNN) to exact spec line ranges. Load `spec-map.md` instead of the full spec; the agent reads only the indexed sections directly.
+
+The attention quality effect is non-obvious but decisive. When a full specification is loaded, content in the first 500 lines receives full attention; content past line 2,000 receives degraded attention. For most domain-specific tasks, the highest-value content — seed data, test cases, domain models — sits in the degraded zone. Loading those sections individually restores them to full attention. In a validated brownfield maintenance task (vitamin prescription bug), this reduced spec context from 55,000 tokens to 9,900 tokens (−82%) while improving expected fix correctness from 75% to 90%. The spec-map costs one session to build and saves tokens on every subsequent session. Build it when the specification crosses ~500 lines — the ROI is immediate.
+
+The spec-map does not replace the pointer architecture (§16 rationale). It is its logical extension: where the pointer architecture applies to the architectural constitution, the spec-map applies the same principle to the technical specification.
 
 **MCP server budget.** A maximum of three active MCP servers in any session: the built-in file/search/terminal tools, optionally one semantic search tool (CodeSeeker) for large codebases, and optionally one specification-management tool (ForgeCraft). Each declared tool is read by the model on every turn whether invoked or not. Beyond three servers, tooling overhead begins to compete with the specification for context attention.
 
@@ -995,6 +1125,21 @@ Mandatory cadence:
 Mutation score thresholds are in §21 (coverage thresholds table). They are gate conditions, not guidelines.
 
 Recommended tooling: `stryker-mutator` (JavaScript/TypeScript), `mutmut` (Python), Pitest (Java).
+
+**Property-Based Testing.** Complements TDD; replaces many specific test cases with generalized invariant specifications. State properties — universal truths about the system's behavior across all valid inputs — rather than specific input/output examples. The property is a first-class spec artifact: the AI reads it to understand the behavioral envelope, not just the verified cases.
+
+```typescript
+// Instead of: test("add(2, 3) returns 5")
+// Specify the invariant:
+fc.assert(fc.property(fc.integer(), fc.integer(), (a, b) => {
+  expect(add(a, b)).toBe(add(b, a));   // commutativity
+  expect(add(a, 0)).toBe(a);           // identity
+}));
+```
+
+Properties are particularly valuable for: parsers and serializers (round-trip invariant: `parse(serialize(x)) === x`), financial calculations (invariants across input ranges rather than spot-checked values), data transformations (shape and constraint preservation), and any domain where the input space is too large to cover with examples. Declare which modules receive property-based coverage in the test architecture document; the generator framework (fast-check, QuickCheck, Hypothesis) is the tooling; the property specification is the artifact.
+
+Recommended tooling: `fast-check` (TypeScript/JavaScript), `QuickCheck` (Haskell, Erlang), `Hypothesis` (Python), `jqwik` (Java).
 
 **Multimodal quality gates.** For generative assets (images, audio), define acceptance criteria as executable validation:
 
@@ -1413,6 +1558,106 @@ Every exemplar follows the same structure, but each exercises a different constr
 3. **P-003** constrains *what the agent verifies* (including a negative assertion the agent would never generate unprompted)
 
 The practitioner's skill is not in the format — the format is a template. The skill is in knowing which constraint to impose for each task shape. That knowledge is domain expertise expressed as specification structure.
+
+---
+
+### 28. GS at the Service Boundary — Microservices Extension
+
+The SOLID principles and the contract-sufficient navigation mode (§3 above) apply at the class/module grain. They apply without modification at a larger grain: the microservice boundary. The following maps each principle to its microservices expression and specifies the concrete GS artifacts it produces.
+
+#### Service Boundary Spec Artifacts
+
+A GS-compliant microservice produces contracts at three artifact levels:
+
+| Level | Artifact | What the AI reads for navigation |
+|---|---|---|
+| **API contract** | OpenAPI / AsyncAPI spec | Complete behavioral specification for synchronous consumers. The AI navigating a consumer service reads this spec; it never reads the producer's implementation. |
+| **Event schema** | Avro / JSON Schema / Protobuf for each topic | Complete behavioral specification for async consumers. The event schema is the interface; the broker is the dependency injector. |
+| **Failure contract** | Circuit breaker configuration, timeout policy, fallback behavior | Complete behavioral specification for failure paths. Declared in the architectural constitution or a dedicated reliability ADR — not discovered from production incidents. |
+
+These three artifact levels are the "interface" in the SOLID sense at the service grain. Contract-sufficient navigation applies: a service consumer never reads a service implementation to understand what it depends on.
+
+#### SOLID Principles at the Service Grain — Spec Requirements
+
+**1. Single Responsibility → Single Business Capability**
+
+The architectural constitution for each service must declare its business capability boundary in one sentence. If the capability statement requires "and" or "or," the service has more than one responsibility. The spec surface of a single-capability service is bounded — spec completeness is achievable. A service that does too much has a spec that cannot be complete, and its blast radius includes capabilities the spec cannot isolate.
+
+*GS artifact required:* Capability declaration in `## Service Identity` of the architectural constitution. ForgeCraft enforces this as a required field; an absent or multi-clause declaration is a spec violation.
+
+**2. Loose Coupling → Async Messaging + Event Schemas as Contracts**
+
+Synchronous REST between services introduces temporal coupling: the downstream service's availability becomes part of the upstream service's behavioral contract, even though it is never declared in the spec. The spec lies: it says the upstream service produces a result, but it actually produces a result *when the downstream is available* — a constraint invisible in the contract.
+
+Asynchronous messaging via event broker (Kafka, RabbitMQ) resolves this: the event schema is the complete contract, the broker absorbs availability coupling, and the consumer processes events at its own pace. The producer's spec does not include the consumer's availability; the consumer's spec does not include the producer's availability.
+
+*GS artifact required:* AsyncAPI spec (or equivalent event schema) for every topic the service publishes or consumes. Synchronous REST between internal services requires an explicit ADR with justification — it is not the default.
+
+**3. Interface Segregation → Database Isolation**
+
+A shared database is an undeclared interface. Service B implicitly depends on Service A's schema, migration cadence, write patterns, and failure modes — none of which appear in either service's spec. GS's Self-describing property requires every dependency to be expressible in the spec; a shared database violates this at the storage layer.
+
+*GS artifact required:* Database ownership declared per service in the architectural constitution. Schema migrations owned exclusively by the service that owns the schema. Any cross-service data access must go through the owning service's API contract, never directly through the database.
+
+**4. Liskov Substitution → Idempotency + Statelessness**
+
+A stateless service instance is substitutable: kill it, spin up a replacement, behavior is unchanged. This is the Liskov property at the service grain — the "subtype" is a new instance, the "supertype" is the service contract. For this to hold, all write operations must be idempotent: retrying after a mid-flight failure produces the same result as the original call.
+
+*GS artifact required:* Idempotency contract declared per endpoint in the API spec (idempotency key semantics, retry behavior, duplicate detection mechanism). Statelessness requirement declared in the architectural constitution. Hardening tests verify both: a repeated-request test confirms idempotency; a kill-and-restart test confirms stateless recovery.
+
+**5. Dependency Inversion → Bulkheads + Circuit Breakers**
+
+The circuit breaker is the runtime expression of dependency inversion at the service boundary: Service X depends on Service Y's *contract*, not Service Y's *availability*. When Service Y is slow or unavailable, the circuit breaker trips and returns the declared fallback — the contract holds even when the dependency fails.
+
+*GS artifact required:* For every outbound dependency, declare in the architectural constitution or a reliability ADR:
+- Timeout: maximum wait before circuit trips
+- Retry policy: count, backoff strategy, jitter
+- Fallback behavior: what the service returns when the circuit is open
+- Failure threshold: trip condition (error rate %, consecutive failures)
+
+These are behavioral contracts. An unspecified fallback is an unspecified behavior — the AI cannot generate correct consumer code for a failure path that is not in the spec.
+
+**6. Graceful Degradation — Fallback as Spec Artifact**
+
+Degraded behavior is a first-class behavioral contract, not a heroic runtime improvisation. If a Recommendation service is unavailable and the e-commerce page returns an empty recommendation list, that is a *specified* fallback, not an ad-hoc one. An unspecified fallback is a contract gap: the AI will generate something — and what it generates will be inconsistent across sessions.
+
+*GS artifact required:* Fallback behavior declared per dependency in the API spec or a dedicated degradation ADR. Test suite includes degraded-mode tests for each declared fallback (circuit open, dependency timeout, partial data available).
+
+**7. Redundancy and Autoscaling — Deployment as Spec**
+
+Deployment topology is a T2/T3 specification artifact. It does not belong in the application-level spec; it belongs in the infrastructure spec and the deployment ADR.
+
+*GS artifact required:* Infrastructure-as-code (Kubernetes manifests, Helm charts, Terraform modules) versioned alongside application code. Deployment ADR declaring: minimum replicas, autoscaling policy (HPA thresholds), availability zone distribution, pod disruption budget. Chaos engineering tests at T3 verify the declared availability guarantees.
+
+#### Complementary Patterns for Microservices Codebases
+
+| Pattern | Replaces / Complements | Spec artifacts it produces |
+|---|---|---|
+| **CQRS + Event Sourcing** | Replaces a single unified model with command/query contracts + an event schema. | Three GS artifacts: command contract (what changes state), event schema (what is recorded — typed, named, versioned), query projection spec (what is returned). Current state is a derivation from the event log — the AI reads the event schema and projection spec; it never reads the projector implementation. Audit history is structural, not added as an afterthought. |
+| **Consumer-Driven Contracts (Pact)** | Replaces provider-defined OpenAPI as the sole source of truth for integration contracts. | Pact files per consumer/provider pair, versioned in the repo. The consumer declares what it needs; the provider verifies it satisfies those needs. The AI reads Pact contracts to understand real consumer dependencies — stronger than a provider-written spec because it reflects actual usage. Pact + OpenAPI together: the OpenAPI is the public surface; Pact files are the verified integration contracts. |
+| **Protocol Buffers / gRPC** | Replaces OpenAPI + JSON for internal service-to-service calls where performance or strong typing matters. | `.proto` files are the canonical service interface spec: interface contract, serialization contract, and code generation template in one artifact. Generated stubs are derivations — the AI reads the proto, never the generated code. If using gRPC internally, the proto file is the artifact the AI navigates. |
+| **Consistency Model (CAP)** | Complements any service spec; replaces implicit assumptions. | One ADR per service or data boundary declaring: strong consistency or eventual consistency, the conflict resolution strategy under eventual consistency, and the consumer contract implications (retry logic, read-after-write guarantees). Undeclared = the AI assumes strong consistency = silent failure under partitions. |
+| **Saga Pattern** | Replaces distributed ACID transactions; complements event sourcing. | Saga definition document: each step, its command, its expected event, and its compensation (rollback action). Compensations are fallback behavioral contracts — the same requirement as graceful degradation at the transaction coordination level. Undeclared compensations are unspecified failure paths the AI will fill arbitrarily. |
+| **Anti-Corruption Layer (ACL)** | Complements DDD bounded context integration; replaces implicit vocabulary leakage. | Two interface specs: the upstream context's interface (as the upstream uses it) and the downstream context's interface (as the downstream uses it), with a mapping ADR declaring the translation rules. The AI reads both interfaces; the translation implementation is a derivation. Makes the vocabulary boundary explicit and navigable. |
+
+#### Navigation Mode for Microservices Codebases
+
+In a microservices repository, extend the architectural constitution's Navigation Mode declaration:
+
+```markdown
+## Navigation Mode (Microservices)
+Service contracts are complete behavioral specifications for consumers.
+- For understanding what a service does: read its OpenAPI / AsyncAPI spec only.
+  Do not read the service implementation.
+- For understanding event contracts: read the event schema definition.
+  Do not read the producer implementation.
+- For failure behavior: read the circuit breaker configuration and fallback ADR.
+  Do not read the implementation to discover failure handling.
+- Service A never reads Service B's database schema directly.
+  All cross-service contracts are API-level only.
+```
+
+The same rule that applies at the class grain applies at the service grain: implementations are for modification, not for understanding. An API spec is to a microservice what an interface is to a class.
 
 ---
 
