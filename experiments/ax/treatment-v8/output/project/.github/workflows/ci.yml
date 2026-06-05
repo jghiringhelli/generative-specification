@@ -1,0 +1,74 @@
+# CI pipeline — runs on every push and pull request.
+# Gate order mirrors the local pre-commit hook, plus DB migration and the
+# Stryker mutation gate (test-quality verification, non-negotiable).
+# Target wall-clock < 10 min via dependency caching.
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: build · lint · test · mutation
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: conduit
+          POSTGRES_PASSWORD: conduit
+          POSTGRES_DB: conduit_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U conduit"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://conduit:conduit@localhost:5432/conduit_test?schema=public
+      JWT_SECRET: ci-test-secret-not-for-production
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Dependency audit (high+)
+        run: npm audit --audit-level=high
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Type-check
+        run: npx tsc -p tsconfig.json --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Apply database migrations
+        run: npx prisma migrate deploy
+
+      - name: Test with coverage
+        run: npm run test:coverage
+
+      - name: Mutation gate (Stryker)
+        run: npm run mutation

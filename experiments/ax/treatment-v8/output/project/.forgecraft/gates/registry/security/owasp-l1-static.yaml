@@ -1,0 +1,22 @@
+id: owasp-l1-static
+title: OWASP ASVS Level 1 — Static Security Analysis at Commit Time
+description: >
+  Run static security checks on every commit to catch the most common vulnerability classes before
+  they reach code review.
+domain: security
+gsProperty: defended
+phase: development
+hook: pre-commit
+check: >
+  Run a static security analyzer appropriate for the project's language. Checks must cover: (1)
+  hardcoded secrets and credentials, (2) SQL/command injection patterns via string concatenation,
+  (3) eval() with dynamic input, (4) dependency CVEs. See tools-registry.yaml for language-specific
+  tools. These are LEVEL 1 checks: they run at every commit with no human review required.
+passCriterion: Zero HIGH/CRITICAL findings from static analyzer. All pre-commit hooks exit 0.
+tags:
+  - UNIVERSAL
+evidence: >
+  Static analysis at commit time catches ~70% of OWASP Top 10 issues before they reach code review.
+  SQL injection and hardcoded credential patterns are reliably detected statically without running
+  the application.
+source: community-registry

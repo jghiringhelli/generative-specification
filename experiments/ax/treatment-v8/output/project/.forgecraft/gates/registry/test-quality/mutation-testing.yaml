@@ -1,0 +1,25 @@
+id: mutation-testing
+title: Mutation Testing Gate — Pre-Release Test Quality Verification
+description: >
+  Verify that the test suite actually catches real bugs by injecting synthetic faults into the
+  codebase and confirming that tests fail when the code is broken.
+domain: test-quality
+gsProperty: verifiable
+phase: pre-release
+hook: pre-release
+check: >
+  Run mutation testing on changed files. Inject synthetic bugs: operator replacement (== to !=, + to
+  -, < to <=), boundary inversion (off-by-one), and return value mutation (return null, return
+  empty). If tests don't catch the injected bug, the test suite is checking the wrong things.
+  Minimum score 80% on changed files. Tools: Stryker (JS/TS), PITest (Java), mutmut (Python),
+  cargo-mutants (Rust).
+passCriterion: >
+  MSI >= 80% on changed files. No surviving mutants in critical path code (auth, permissions,
+  financial calculations).
+tags:
+  - UNIVERSAL
+evidence: >
+  GS experiments found 40-50% MSI on naive agent-generated test suites. Between 1-2 out of 3
+  agent-generated tests provide no real coverage. Explicit mutation gate consistently raises this to
+  80%+.
+source: community-registry

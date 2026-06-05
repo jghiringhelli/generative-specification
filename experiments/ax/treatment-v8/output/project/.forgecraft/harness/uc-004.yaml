@@ -1,0 +1,12 @@
+# Auto-generated probe spec for UC-004.
+# Edit probe type, scenario, and description as needed.
+uc: UC-004
+title: Create, Read, Update, and Delete an Article
+action: perform primary action
+probes:
+  - id: happy
+    type: api_call
+    scenario: UC-004 happy path — Create, Read, Update, and Delete an Article
+    description: >-
+      Auto-generated. Precondition: For create, Actor is authenticated. For update/delete, the. Expected: Create ⇒
+      `201`; get/update ⇒ `200`, each returning

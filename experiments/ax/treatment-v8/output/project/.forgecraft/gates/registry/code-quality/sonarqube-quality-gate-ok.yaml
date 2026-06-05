@@ -1,0 +1,34 @@
+id: sonarqube-quality-gate-ok
+title: SonarQube Quality Gate — Independent Static Analysis Passes
+description: >
+  Run SonarQube (or SonarCloud) static analysis and confirm the Quality Gate passes. SonarQube is an
+  industry-standard quality tool with no knowledge of GS. A passing Quality Gate (A ratings across
+  reliability, security, maintainability; 0 bugs, 0 vulnerabilities) from an independent tool closes
+  Layer 3 of the GS circularity problem: GS-designed implementations scoring well on a non-GS
+  quality model.
+domain: code-quality
+gsProperty: verifiable
+phase: pre-release
+hook: pre-release
+check: |
+  Option A — SonarCloud (recommended for open source):
+    1. Connect repo to SonarCloud
+    2. Run: npx sonar-scanner (with sonar-project.properties configured)
+    3. Confirm Quality Gate status = OK in SonarCloud dashboard
+  Option B — SonarQube local:
+    1. docker run -d -p 9000:9000 sonarqube:community
+    2. sonar-scanner -Dsonar.host.url=http://localhost:9000
+    3. Confirm Quality Gate = OK
+  Minimum pass criteria: 0 bugs, 0 vulnerabilities, A maintainability rating.
+passCriterion: >
+  SonarQube/SonarCloud Quality Gate: OK. Ratings: Reliability A, Security A, Maintainability A. Zero
+  bugs, zero vulnerabilities flagged.
+tags:
+  - UNIVERSAL
+evidence: >
+  GS Treatment v6 rated A/A/A, 0 bugs, 0 vulnerabilities, Quality Gate OK on SonarQube. This was run
+  as part of the Norman Owens circularity challenge: if a system passes GS-designed tests on a
+  GS-designed implementation scoring against a GS rubric, nothing independent has been tested.
+  SonarQube — with no GS knowledge — agreed the output was high quality. Closes Layer 3 of the
+  circularity problem partially.
+source: community-registry

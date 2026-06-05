@@ -1,0 +1,6 @@
+# ForgeCraft hook manifest — pre-push
+# One script filename per line. Comments (#) and blank lines are ignored.
+# Add hooks: forgecraft add_hook — scripts are appended here automatically.
+# Reorder lines to change execution sequence.
+
+pre-push-doc-cascade.sh

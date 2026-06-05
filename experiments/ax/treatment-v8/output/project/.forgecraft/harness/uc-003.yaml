@@ -1,0 +1,16 @@
+# Auto-generated probe spec for UC-003.
+# Edit probe type, scenario, and description as needed.
+uc: UC-003
+title: View a Profile and Follow / Unfollow
+action: perform primary action
+probes:
+  - id: happy
+    type: api_call
+    scenario: UC-003 happy path — View a Profile and Follow / Unfollow
+    description: >-
+      Auto-generated. Precondition: A target user identified by `:username` exists.. Expected: All three endpoints
+      return `200` with
+  - id: error-unknown
+    type: api_call
+    scenario: UC-003 error — Unknown `
+    description: username` (any of the three) → `404`

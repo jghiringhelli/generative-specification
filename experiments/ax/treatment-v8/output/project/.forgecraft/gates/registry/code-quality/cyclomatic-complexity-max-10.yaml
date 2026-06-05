@@ -1,0 +1,29 @@
+id: cyclomatic-complexity-max-10
+title: Cyclomatic Complexity — Maximum 10 Per Function
+description: >
+  No function may have a cyclomatic complexity greater than 10. Complexity above 10 indicates a
+  function that is doing too much, is hard to test completely, and is difficult for an AI to reason
+  about correctly. This is a direct enforcement of the Bounded property: each function has a
+  limited, understandable decision space.
+domain: code-quality
+gsProperty: bounded
+phase: development
+hook: pre-commit
+check: |
+  Run ESLint with complexity rule:
+    eslint --rule '{"complexity": ["error", 10]}' src/
+  Or configure in .eslintrc:
+    "complexity": ["error", 10]
+  Fix violations by decomposing the function into smaller, single-purpose functions.
+passCriterion: |
+  Zero functions with cyclomatic complexity > 10. eslint with complexity rule exits 0.
+tags:
+  - UNIVERSAL
+evidence: >
+  High cyclomatic complexity is consistently correlated with defect density (McCabe 1976, replicated
+  across multiple industrial studies). Functions with complexity > 10 require exponentially more
+  test cases for full branch coverage. In AI-assisted development, high-complexity functions are
+  particularly risky: the AI must track more conditional paths simultaneously and is more likely to
+  miss edge cases. The threshold of 10 is the standard industry threshold (SonarQube default, ESLint
+  default).
+source: community-registry

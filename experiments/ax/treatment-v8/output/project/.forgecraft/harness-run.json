@@ -1,0 +1,64 @@
+{
+  "timestamp": "2026-06-05T13:50:30.350Z",
+  "passed": 11,
+  "failed": 0,
+  "errors": 0,
+  "notFound": 0,
+  "results": [
+    {
+      "ucId": "UC-001",
+      "status": "pass",
+      "durationMs": 548
+    },
+    {
+      "ucId": "UC-001",
+      "status": "pass",
+      "durationMs": 418
+    },
+    {
+      "ucId": "UC-002",
+      "status": "pass",
+      "durationMs": 107
+    },
+    {
+      "ucId": "UC-002",
+      "status": "pass",
+      "durationMs": 355
+    },
+    {
+      "ucId": "UC-003",
+      "status": "pass",
+      "durationMs": 86
+    },
+    {
+      "ucId": "UC-003",
+      "status": "pass",
+      "durationMs": 356
+    },
+    {
+      "ucId": "UC-004",
+      "status": "pass",
+      "durationMs": 377
+    },
+    {
+      "ucId": "UC-005",
+      "status": "pass",
+      "durationMs": 757
+    },
+    {
+      "ucId": "UC-006",
+      "status": "pass",
+      "durationMs": 386
+    },
+    {
+      "ucId": "UC-007",
+      "status": "pass",
+      "durationMs": 381
+    },
+    {
+      "ucId": "UC-008",
+      "status": "pass",
+      "durationMs": 263
+    }
+  ]
+}

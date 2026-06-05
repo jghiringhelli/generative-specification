@@ -1,0 +1,100 @@
+{
+  "mcpServers": {
+    "codeseeker": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "codeseeker@2",
+        "serve",
+        "--mcp"
+      ],
+      "env": {
+        "CODESEEKER_STORAGE_MODE": "embedded"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "forgecraft": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "forgecraft-mcp"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic/mcp-server-playwright"
+      ]
+    },
+    "postman": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic/mcp-server-postman"
+      ],
+      "env": {
+        "POSTMAN_API_KEY": ""
+      }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "spec-workflow": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "spec-workflow-mcp"
+      ]
+    }
+  },
+  "permissions": {
+    "allow": [
+      "mcp__codeseeker__*",
+      "mcp__context7__*",
+      "mcp__forgecraft__*",
+      "mcp__playwright__*",
+      "mcp__postman__*",
+      "mcp__sequential-thinking__*",
+      "mcp__spec-workflow__*"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(rm -rf /*)",
+      "Bash(*DROP TABLE*)",
+      "Bash(*TRUNCATE *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "type": "command",
+        "command": "bash \"C:\\workspace\\PragmaWorks\\gs\\generative-specification\\experiments\\ax\\treatment-v8\\output\\project\\.claude\\hooks\\pre-tool-use.sh\""
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "type": "command",
+        "command": "bash \"C:\\workspace\\PragmaWorks\\gs\\generative-specification\\experiments\\ax\\treatment-v8\\output\\project\\.claude\\hooks\\post-edit.sh\""
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "bash \"C:\\workspace\\PragmaWorks\\gs\\generative-specification\\experiments\\ax\\treatment-v8\\output\\project\\.claude\\hooks\\prompt-guard.sh\""
+      }
+    ]
+  }
+}

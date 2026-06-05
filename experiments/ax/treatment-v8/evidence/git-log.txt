@@ -1,0 +1,530 @@
+commit 3f5fe9a98dfc0b0d9f5c3e80bb401d8c230dd899
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Fri Jun 5 08:47:41 2026 -0500
+
+    test(harness): implement UC acceptance-criteria probes (hurl)
+    
+    Replace the TODO scaffolds in tests/harness/*.hurl with self-contained
+    probes that assert each use case's machine-checkable acceptance criteria
+    (docs/use-cases.md) against the live server at http://localhost:3008.
+    
+    Each probe registers its own user(s) with unique suffixes, creates its own
+    data, and asserts the UC postconditions/error envelopes. Covers AC-001..008.
+    All 11 files green: hurl --test tests/harness/*.hurl (87 requests, 11/11).
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+ ...or-register-email-already-taken-409-errors.hurl |  64 +++++++
+ tests/harness/uc-001-happy.hurl                    |  42 +++++
+ .../uc-002-error-missing-token-401-errors.hurl     |  12 ++
+ tests/harness/uc-002-happy.hurl                    |  69 +++++++
+ tests/harness/uc-003-error-unknown.hurl            |  13 ++
+ tests/harness/uc-003-happy.hurl                    |  62 +++++++
+ tests/harness/uc-004-happy.hurl                    | 109 +++++++++++
+ tests/harness/uc-005-happy.hurl                    | 205 +++++++++++++++++++++
+ tests/harness/uc-006-happy.hurl                    |  78 ++++++++
+ tests/harness/uc-007-happy.hurl                    | 104 +++++++++++
+ tests/harness/uc-008-happy.hurl                    |  76 ++++++++
+ 11 files changed, 834 insertions(+)
+
+commit 2a2668322be6077338cdcfea628aa109021d2d63
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Fri Jun 5 08:36:26 2026 -0500
+
+    docs(use-cases): document behavioral contracts of the implemented API
+    
+    Replace the generic UC scaffold with 8 use cases — one per endpoint group
+    (registration/login, current user, profiles+follow, articles CRUD,
+    feed+pagination, favorites, comments, tags). Each carries Actor, Precondition,
+    Steps, Postcondition, Error Cases, and machine-checkable Acceptance Criteria,
+    derived from the shipped src/http + src/services behavior and the Hurl
+    conformance suite (13/13). Update docs/status.md.
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+ docs/status.md    |  14 ++-
+ docs/use-cases.md | 302 ++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 294 insertions(+), 22 deletions(-)
+
+commit bf9beff6722d0afeedf894ce5deafd0a6eed4e57
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 15:47:10 2026 -0500
+
+    fix(api): conform to RealWorld contract (Hurl suite 13/13)
+    
+    Resolve the 12 failing files in the gothinkster RealWorld Hurl conformance
+    suite. Four spec gaps, all at the HTTP/persistence boundary:
+    
+    - Resource-scoped error envelopes: AppError now carries an overridable
+      `errors` body (default `{body:[msg]}`). Throw sites emit Rails-style
+      fields: `{token:["is missing"]}`, `{<resource>:["not found"]}`,
+      `{article|comment:["forbidden"]}`, `{email|username:["has already been
+      taken"]}`, `{credentials:["invalid"]}`, and `"can't be blank"` for empty
+      required inputs.
+    - DELETE /articles/:slug and /comments/:id now return 204 (no body).
+    - Comment ids are integers: Comment.id -> Int autoincrement across the
+      Prisma schema, port, both repositories, service, presenter, and
+      controller (which parses :id as an integer).
+    - Article update accepts tagList ([] clears tags, null -> 422); empty-string
+      bio/image on PUT /user normalize to null.
+    
+    Endpoint/unit tests updated to the new contract. Gates green: typecheck,
+    lint, jest (211 passed), coverage 98.9% stmts.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+ prisma/schema.prisma                               |  2 +-
+ .../persistence/InMemoryArticleRepository.ts       |  1 +
+ .../persistence/InMemoryCommentRepository.test.ts  |  4 +-
+ .../persistence/InMemoryCommentRepository.ts       | 15 +++---
+ .../persistence/PrismaArticleRepository.ts         |  1 +
+ .../persistence/PrismaCommentRepository.ts         |  8 +--
+ src/errors/AppError.ts                             | 60 ++++++++++++++++------
+ src/http/ArticleController.ts                      |  2 +-
+ src/http/CommentController.ts                      | 13 +++--
+ src/http/articleEndpoints.test.ts                  |  2 +-
+ src/http/articleSchemas.ts                         | 17 +++---
+ src/http/commentEndpoints.test.ts                  |  8 +--
+ src/http/commentPresenter.ts                       |  2 +-
+ src/http/commentSchemas.ts                         |  2 +-
+ src/http/controllerGuards.test.ts                  |  2 +-
+ src/http/middleware/authenticate.ts                |  2 +-
+ src/http/middleware/errorHandler.ts                | 13 ++---
+ src/http/userSchemas.ts                            |  4 +-
+ src/repositories/IArticleRepository.ts             |  2 +
+ src/repositories/ICommentRepository.ts             |  7 +--
+ src/services/ArticleService.ts                     |  6 ++-
+ src/services/CommentService.test.ts                |  4 +-
+ src/services/CommentService.ts                     | 10 ++--
+ src/services/UserService.ts                        | 30 ++++++++---
+ 24 files changed, 135 insertions(+), 82 deletions(-)
+
+commit 5316258c0662b0b334616677f3a183e8c2dd1896
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 15:14:05 2026 -0500
+
+    test(hardening): cover remaining error paths and finalize integration pass
+    
+    Final integration & hardening pass. All 7 GS properties re-verified against
+    the .husky/pre-commit gate (typecheck 0, lint 0, audit 0 high, coverage, build).
+    
+    - Add controller defense-in-depth guard tests (identity -> 401, missing path
+      segment -> 404) in src/http/controllerGuards.test.ts; HTTP layer now 100%/100%.
+    - Cover service author-resolution 404 (ArticleService/CommentService.resolveAuthor),
+      JWT empty-userId rejection, and the username/image partial-update branch.
+    - Branch coverage 86.5% -> 95.3%; suite 199 -> 211 passing (4 DB-gated skipped).
+    - gitignore the generated .forgecraft/gate-violations.jsonl tooling log; update
+      CHANGELOG.md with delivered feature slices and refresh docs/status.md.
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+ .gitignore                                    |   1 +
+ CHANGELOG.md                                  |  27 ++++++-
+ docs/status.md                                |  17 +++++
+ src/adapters/security/JwtTokenService.test.ts |   5 ++
+ src/http/controllerGuards.test.ts             | 101 ++++++++++++++++++++++++++
+ src/services/ArticleService.test.ts           |   4 +
+ src/services/CommentService.test.ts           |   6 ++
+ src/services/UserService.test.ts              |  11 +++
+ 8 files changed, 170 insertions(+), 2 deletions(-)
+
+commit 185331799b4913538f1b00638e653ea6403bac0c
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 15:00:14 2026 -0500
+
+    feat(tags): implement GET /api/tags
+    
+    Add GET /api/tags returning the distinct, de-duplicated, alphabetically
+    sorted set of tags appearing on any non-deleted article.
+    
+    Tags are owned by the Article aggregate (Article.tagList) with no
+    independent lifecycle, so the vocabulary is derived from live articles
+    via a new IArticleRepository.listTags() (implemented in the in-memory
+    and Prisma adapters) and exposed through ArticleService.listTags(). A
+    thin TagController/tagRoutes/tagPresenter slice presents { tags } and is
+    wired in app.ts; server.ts is unchanged (reuses the injected
+    articleService).
+    
+    Remove the scaffolded ITagRepository port: its listAll()/ensure()
+    registration model contradicts "tags that appear on any article" - a
+    registered tag would outlive its last soft-deleted article. Deriving
+    from live articles keeps the endpoint coherent with soft delete.
+    
+    Tests: subcutaneous endpoint suite (empty, no-auth, dedup/sort, tag
+    drops out on article delete) plus repository unit tests.
+    
+    Spec: docs/specs/tags.md. No new ADR (reuses ADR-0002 layering); no
+    schema change (tagList already on Article).
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+ docs/specs/tags.md                                 |  58 ++++++++++
+ docs/status.md                                     |  26 ++++-
+ .../persistence/InMemoryArticleRepository.test.ts  |  19 ++++
+ .../persistence/InMemoryArticleRepository.ts       |   9 ++
+ .../persistence/PrismaArticleRepository.ts         |  13 +++
+ src/http/TagController.ts                          |  20 ++++
+ src/http/app.ts                                    |   5 +-
+ src/http/tagEndpoints.test.ts                      | 123 +++++++++++++++++++++
+ src/http/tagPresenter.ts                           |  21 ++++
+ src/http/tagRoutes.ts                              |  35 ++++++
+ src/repositories/IArticleRepository.ts             |   7 ++
+ src/repositories/ITagRepository.ts                 |  14 ---
+ src/services/ArticleService.ts                     |   9 ++
+ 13 files changed, 342 insertions(+), 17 deletions(-)
+
+commit 7c442a7db780ad6510f50f96a10ae9f64d279493
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 14:50:05 2026 -0500
+
+    feat(comments): implement article comments CRUD
+    
+    Add the comment vertical slice (RealWorld contract): GET/POST
+    /api/articles/:slug/comments and DELETE .../comments/:id.
+    
+    - CommentService over ICommentRepository + IArticleRepository (slug -> id,
+      404) + IUserRepository (embed author) + IProfileRepository (following);
+      InMemoryCommentRepository fake and PrismaCommentRepository for prod, wired
+      at the composition root.
+    - HTTP: commentRoutes (optional auth on list, required on create/delete),
+      CommentController, commentSchemas (Zod), commentPresenter. Author-only
+      delete enforced in the service (403); unknown slug/comment -> 404.
+    - Soft delete (deletedAt + read-time filtering) reuses the article Tier-3
+      decision; comments list newest first. Comment model added to the Prisma
+      schema (cascade FKs); client regenerated, adapter excluded from coverage.
+    - "comment" added to validation envelope keys so field errors stay flat.
+    - Docs: docs/specs/comments.md, data-model.md (Comment entity + ERD), status.
+    
+    Verification gate green: typecheck (0), eslint (0), audit (0 high),
+    jest --coverage (192 passed, 4 DB-gated skipped; 96.96% stmts / 86.47%
+    branch), build emits.
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+ docs/architecture/data-model.md                    |  19 ++
+ docs/specs/comments.md                             |  91 +++++++++
+ docs/status.md                                     |  37 +++-
+ jest.config.js                                     |   1 +
+ prisma/schema.prisma                               |  32 +++-
+ .../persistence/InMemoryCommentRepository.test.ts  |  71 +++++++
+ .../persistence/InMemoryCommentRepository.ts       |  92 +++++++++
+ .../persistence/PrismaCommentRepository.ts         |  98 ++++++++++
+ src/http/CommentController.ts                      |  66 +++++++
+ src/http/app.ts                                    |   5 +-
+ src/http/articleEndpoints.test.ts                  |  12 +-
+ src/http/commentEndpoints.test.ts                  | 212 +++++++++++++++++++++
+ src/http/commentPresenter.ts                       |  61 ++++++
+ src/http/commentRoutes.ts                          |  53 ++++++
+ src/http/commentSchemas.ts                         |  19 ++
+ src/http/profileEndpoints.test.ts                  |  14 +-
+ src/http/userEndpoints.test.ts                     |  14 +-
+ src/http/validation.ts                             |   2 +-
+ src/repositories/ICommentRepository.ts             |  11 +-
+ src/server.ts                                      |  17 +-
+ src/services/CommentService.test.ts                | 134 +++++++++++++
+ src/services/CommentService.ts                     | 113 +++++++++++
+ 22 files changed, 1154 insertions(+), 20 deletions(-)
+
+commit c1144958aab536e384db54703094396d8452e089
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 14:34:47 2026 -0500
+
+    feat(articles): implement article CRUD, feed, and favorites
+    
+    Add the article vertical slice conforming to the RealWorld contract: list
+    (tag/author/favorited filters + limit/offset pagination), personalized feed,
+    single-article read, create, author-only update/delete, and favorite/unfavorite.
+    
+    - ArticleService over IArticleRepository + IUserRepository (resolve filter
+      usernames to ids) + IProfileRepository (author `following` + feed author ids).
+    - InMemoryArticleRepository fake (tests/dev) and PrismaArticleRepository (prod);
+      Article + ArticleFavorite Prisma models, favoritesCount derived via _count.
+    - Refine the scaffolded IArticleRepository port so filters/feed take ids,
+      keeping the adapter ignorant of users and the follow graph. Extract the shared
+      boundary-validation helper to src/http/validation.ts (no cross-domain import).
+    - List and feed omit the `body` field per the 2024-08-16 performance spec.
+    - Soft delete (deletedAt + read-time filtering) reconciles the RealWorld DELETE
+      contract with operation-classification Tier 3 (no hard delete of entities).
+    
+    Auth enforced at the router seam; author-only mutation enforced in the service
+    (403). Spec record in docs/specs/articles.md; data-model.md + status.md updated.
+    Gate green: typecheck, lint, audit (0 high), 164 tests / 97.3% stmts.
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+ docs/architecture/data-model.md                    |  31 ++
+ docs/specs/articles.md                             | 104 +++++++
+ docs/status.md                                     |  39 ++-
+ jest.config.js                                     |   1 +
+ prisma/schema.prisma                               |  56 +++-
+ .../persistence/InMemoryArticleRepository.test.ts  | 170 +++++++++++
+ .../persistence/InMemoryArticleRepository.ts       | 185 ++++++++++++
+ .../persistence/PrismaArticleRepository.ts         | 204 +++++++++++++
+ src/http/ArticleController.ts                      |  95 +++++++
+ src/http/app.ts                                    |   6 +-
+ src/http/articleEndpoints.test.ts                  | 316 +++++++++++++++++++++
+ src/http/articlePresenter.ts                       |  86 ++++++
+ src/http/articleRoutes.ts                          |  81 ++++++
+ src/http/articleSchemas.ts                         |  55 ++++
+ src/http/profileEndpoints.test.ts                  |   5 +-
+ src/http/userEndpoints.test.ts                     |   8 +-
+ src/http/userSchemas.ts                            |  25 +-
+ src/http/validation.ts                             |  36 +++
+ src/repositories/IArticleRepository.ts             |  38 ++-
+ src/server.ts                                      |  12 +-
+ src/services/ArticleService.test.ts                | 217 ++++++++++++++
+ src/services/ArticleService.ts                     | 284 ++++++++++++++++++
+ src/services/slug.test.ts                          |  33 +++
+ src/services/slug.ts                               |  30 ++
+ 24 files changed, 2069 insertions(+), 48 deletions(-)
+
+commit f21355d4fbd2b4e1477266cce3dc106d8999667e
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 14:13:21 2026 -0500
+
+    feat(profiles): implement profile retrieval and follow/unfollow
+    
+    Add the RealWorld profile vertical slice over the existing ports & adapters
+    layering (reuses ADR-0002; no new ADR):
+    
+    - GET /api/profiles/:username (optional auth — anonymous/invalid token yields
+      the public view, following=false), POST and DELETE .../follow (auth required).
+    - ProfileService over IUserRepository + IProfileRepository; InMemoryProfileRepository
+      fake for tests/dev and PrismaProfileRepository for prod, wired at server.ts.
+    - Follow model added to the Prisma schema (composite PK, cascade delete).
+    - optionalAuthenticate middleware sharing readBearerToken with authenticate.
+    - Idempotent follow/unfollow; unknown username -> 404; success -> 200.
+    
+    Tests: ProfileService + InMemoryProfileRepository unit tests and subcutaneous
+    endpoint tests (96 passing, 4 DB-gated skipped; 97.5% stmts / 85.7% branch).
+    Spec recorded in docs/specs/profiles.md; data-model.md updated with the Follow
+    entity + ERD.
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+ docs/architecture/data-model.md                    |  40 ++++-
+ docs/specs/profiles.md                             |  72 +++++++++
+ docs/status.md                                     |  23 ++-
+ jest.config.js                                     |   9 +-
+ prisma/schema.prisma                               |  27 +++-
+ .../persistence/InMemoryProfileRepository.test.ts  |  60 +++++++
+ .../persistence/InMemoryProfileRepository.ts       |  43 +++++
+ .../persistence/PrismaProfileRepository.ts         |  49 ++++++
+ src/http/ProfileController.ts                      |  52 ++++++
+ src/http/app.ts                                    |   4 +-
+ src/http/middleware/authenticate.ts                |  29 +++-
+ src/http/middleware/optionalAuthenticate.ts        |  36 +++++
+ src/http/profileEndpoints.test.ts                  | 174 +++++++++++++++++++++
+ src/http/profilePresenter.ts                       |  33 ++++
+ src/http/profileRoutes.ts                          |  53 +++++++
+ src/http/userEndpoints.test.ts                     |   5 +-
+ src/server.ts                                      |  12 +-
+ src/services/ProfileService.test.ts                |  91 +++++++++++
+ src/services/ProfileService.ts                     |  80 ++++++++++
+ 19 files changed, 863 insertions(+), 29 deletions(-)
+
+commit 31a627df5454d2b9c39792cbe2f2fd3b15fbeed4
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 13:57:39 2026 -0500
+
+    feat(auth): implement user registration, login, and profile endpoints
+    
+    Add the authentication vertical slice for the RealWorld user contract:
+    POST /api/users, POST /api/users/login, GET /api/user, PUT /api/user.
+    
+    - Layered ports & adapters: UserService over IUserRepository, IPasswordHasher
+      (argon2id), and ITokenService (JWT HS256), wired at the composition root.
+    - PrismaUserRepository for production; InMemoryUserRepository fake for tests/dev.
+    - Zod validation at the boundary; AppError -> RealWorld error-envelope middleware;
+      Token/Bearer auth middleware; fail-fast env config with the documented
+      jsonwebtoken expiresIn cast.
+    - Unit tests (token, hasher, service, env, errors, error handler) plus
+      subcutaneous integration tests for all four endpoints via Supertest. The
+      real-database PrismaUserRepository test is gated on RUN_DB_TESTS.
+    
+    Coverage 97.8% stmts / 85.7% branch. Refs ADR-0002, docs/specs/auth.md.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+ docs/specs/auth.md                                 |  65 ++++++
+ docs/status.md                                     |  52 ++++-
+ prisma/schema.prisma                               |  29 +++
+ src/adapters/persistence/InMemoryUserRepository.ts |  89 ++++++++
+ .../persistence/PrismaUserRepository.test.ts       |  65 ++++++
+ src/adapters/persistence/PrismaUserRepository.ts   |  95 ++++++++
+ src/adapters/security/Argon2PasswordHasher.test.ts |  35 +++
+ src/adapters/security/Argon2PasswordHasher.ts      |  29 +++
+ src/adapters/security/JwtTokenService.test.ts      |  57 +++++
+ src/adapters/security/JwtTokenService.ts           |  55 +++++
+ src/config/env.test.ts                             |  53 +++++
+ src/config/env.ts                                  |  65 ++++++
+ src/errors/AppError.test.ts                        |  59 +++++
+ src/http/UserController.ts                         |  55 +++++
+ src/http/app.ts                                    |  40 ++++
+ src/http/middleware/asyncHandler.ts                |  26 +++
+ src/http/middleware/authenticate.ts                |  37 ++++
+ src/http/middleware/errorHandler.test.ts           |  63 ++++++
+ src/http/middleware/errorHandler.ts                |  40 ++++
+ src/http/userEndpoints.test.ts                     | 244 +++++++++++++++++++++
+ src/http/userPresenter.ts                          |  36 +++
+ src/http/userRoutes.ts                             |  40 ++++
+ src/http/userSchemas.ts                            |  66 ++++++
+ src/server.ts                                      |  38 ++++
+ src/services/UserService.test.ts                   | 136 ++++++++++++
+ src/services/UserService.ts                        | 157 +++++++++++++
+ src/services/ports/IPasswordHasher.ts              |  25 +++
+ src/services/ports/ITokenService.ts                |  33 +++
+ src/types/express.d.ts                             |  19 ++
+ 29 files changed, 1795 insertions(+), 8 deletions(-)
+
+commit ccb50bae05b8ac367ddea1a229eb160ef15759d8
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 13:56:50 2026 -0500
+
+    chore: scaffold project tooling, standards, and base ports
+    
+    ForgeCraft scaffold plus the tooling required to build on it: package manifest
+    and lockfile, TypeScript/ESLint/Jest configs, Husky pre-commit/commit-msg gates,
+    commitlint, CI workflow, the base repository ports and AppError hierarchy, and
+    the auth ADRs.
+    
+    - tsconfig.eslint.json: lint-only project so type-aware ESLint can see *.test.ts
+      (the build tsconfig excludes them from emit).
+    - jest.config.js: exclude the DB-only Prisma adapter from the coverage denominator.
+    - package.json: override tmp@^0.2.7 to clear a transitive high-severity CVE from
+      the dev-only stryker chain (see docs/approved-packages.md).
+    - protocols.md: document the jsonwebtoken expiresIn and CommonJS-import pitfalls.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+ .claude/standards/protocols.md         |    28 +-
+ .github/workflows/ci.yml               |    74 +
+ .husky/commit-msg                      |     7 +
+ .husky/pre-commit                      |    29 +
+ CHANGELOG.md                           |    24 +
+ commitlint.config.js                   |    23 +
+ docs/adrs/ADR-0001-stack.md            |    67 +
+ docs/adrs/ADR-0002-auth.md             |    56 +
+ docs/approved-packages.md              |    59 +
+ eslint.config.js                       |    40 +
+ jest.config.js                         |    42 +
+ jest.setup.ts                          |    19 +
+ package-lock.json                      | 10467 +++++++++++++++++++++++++++++++
+ package.json                           |    72 +
+ src/errors/AppError.ts                 |    81 +
+ src/repositories/IArticleRepository.ts |    67 +
+ src/repositories/ICommentRepository.ts |    29 +
+ src/repositories/IProfileRepository.ts |    25 +
+ src/repositories/ITagRepository.ts     |    14 +
+ src/repositories/IUserRepository.ts    |    46 +
+ stryker.conf.json                      |    25 +
+ tsconfig.eslint.json                   |     9 +
+ tsconfig.json                          |    26 +
+ 23 files changed, 11323 insertions(+), 6 deletions(-)
+
+commit f4b7d7698cf9f41cb7c5dc1199059b314024c109
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 13:17:41 2026 -0500
+
+    chore: forgecraft scaffold — treatment artifacts (forgecraft-mcp 7a4b18e)
+
+ .claude/adr/index.md                               |   8 +
+ .claude/agents/change-reviewer.md                  |  69 ++
+ .claude/agents/security-reviewer.md                |  63 ++
+ .claude/agents/spec-guardian.md                    |  64 ++
+ .claude/agents/test-hunter.md                      |  66 ++
+ .claude/commands/api-add-endpoint.md               |  21 +
+ .claude/commands/api-test-endpoint.md              |  17 +
+ .claude/commands/code-review.md                    |  19 +
+ .claude/commands/debug-error.md                    |  14 +
+ .claude/commands/refactor-file.md                  |  21 +
+ .claude/commands/run-tests.md                      |  17 +
+ .claude/commands/static-analysis-circular-deps.md  |   6 +
+ .claude/commands/static-analysis-duplication.md    |   8 +
+ .claude/commands/static-analysis-mutation.md       |  10 +
+ .claude/commands/tdd-workflow.md                   | 101 +++
+ .claude/constitution.md                            |  53 ++
+ .claude/core.md                                    |  36 +
+ .claude/corrections.md                             |  12 +
+ .claude/gates/index.md                             |   7 +
+ .claude/hooks/commit-msg.list                      |   7 +
+ .claude/hooks/commit-msg.sh                        |  74 ++
+ .claude/hooks/post-commit.list                     |   7 +
+ .claude/hooks/post-edit.sh                         |  21 +
+ .claude/hooks/pre-commit-branch-check.sh           |   6 +
+ .claude/hooks/pre-commit-compile.sh                |  52 ++
+ .claude/hooks/pre-commit-coverage.sh               | 125 ++++
+ .claude/hooks/pre-commit-format.sh                 |  13 +
+ .claude/hooks/pre-commit-function-length.sh        |  43 ++
+ .claude/hooks/pre-commit-import-cycles.sh          |  24 +
+ .claude/hooks/pre-commit-prod-quality.sh           | 121 ++++
+ .claude/hooks/pre-commit-review.sh                 |   7 +
+ .claude/hooks/pre-commit-secrets.sh                |  32 +
+ .claude/hooks/pre-commit-tdd-check.sh              |  54 ++
+ .claude/hooks/pre-commit-test.sh                   |  75 ++
+ .claude/hooks/pre-commit.list                      |  18 +
+ .claude/hooks/pre-exec-safety.sh                   |  16 +
+ .claude/hooks/pre-push.list                        |   6 +
+ .claude/hooks/pre-tool-use.sh                      |  33 +
+ .claude/hooks/prepare-commit-msg.list              |   6 +
+ .claude/hooks/prompt-guard.sh                      |  41 ++
+ .claude/index.md                                   |  29 +
+ .claude/lifecycle.md                               |  93 +++
+ .claude/reference/gs-theory.md                     | 306 +++++++++
+ .claude/routes/code.md                             |  43 ++
+ .claude/routes/docs.md                             |  40 ++
+ .claude/settings.json                              | 100 +++
+ .claude/standards/api.md                           |  54 ++
+ .claude/standards/architecture.md                  |  75 ++
+ .claude/standards/cicd.md                          |  35 +
+ .claude/standards/project-specific.md              |  14 +
+ .claude/standards/protocols.md                     | 118 ++++
+ .claude/standards/spec.md                          |  51 ++
+ .claude/standards/testing.md                       | 126 ++++
+ .claude/state.md                                   |   2 +
+ .forgecraft/exceptions.json                        |   5 +
+ .forgecraft/gates-cache.json                       | 751 +++++++++++++++++++++
+ .../api-error-envelope-resource-scoped.yaml        |  31 +
+ .../api-contracts/api-nullable-field-coercion.yaml |  28 +
+ .../api-contracts/hurl-contract-tests-pass.yaml    |  26 +
+ .../code-quality/cyclomatic-complexity-max-10.yaml |  29 +
+ .../code-quality/no-duplicate-string-literals.yaml |  31 +
+ .../code-quality/sonarqube-quality-gate-ok.yaml    |  34 +
+ .../playwright-ui-smoke-test.yaml                  |  40 ++
+ .../node-esm-cjs-safe-imports.yaml                 |  33 +
+ .../gates/registry/security/dependency-audit.yaml  |  25 +
+ .../gates/registry/security/owasp-l1-static.yaml   |  22 +
+ .../registry/test-quality/mutation-testing.yaml    |  25 +
+ .forgecraft/project-gates.yaml                     |   6 +
+ .gitignore                                         |   9 +
+ CLAUDE.md                                          |  56 ++
+ Status.md                                          |  36 +
+ docs/PRD.md                                        |  24 +
+ docs/TechSpec.md                                   |  29 +
+ docs/adrs/ADR-000-cnt-init.md                      |  25 +
+ docs/adrs/README.md                                |  26 +
+ docs/architecture.md                               |  19 +
+ docs/architecture/data-model.md                    |  24 +
+ docs/architecture/integrations.md                  |  17 +
+ docs/architecture/layers.md                        |  17 +
+ docs/architecture/modules.md                       |  17 +
+ docs/data-model.md                                 |  19 +
+ docs/diagrams/c4-container.md                      |  18 +
+ docs/diagrams/c4-context.md                        |  10 +
+ docs/diagrams/flow-primary.md                      |  23 +
+ docs/diagrams/sequence-primary.md                  |  26 +
+ docs/diagrams/state-primary.md                     |  24 +
+ docs/domain-glossary.md                            |   8 +
+ docs/manifest.yaml                                 |  38 ++
+ docs/operation-classification.md                   |  47 ++
+ docs/status.md                                     |  25 +
+ docs/test-architecture.md                          |  35 +
+ docs/use-cases.md                                  |  31 +
+ forgecraft.yaml                                    |  42 ++
+ 93 files changed, 4210 insertions(+)
+
+commit 4ba7ceafb2ad1d99ce1e3e06c7534875bb8c6c74
+Author: Juan Carlos Ghiringhelli <jcghiri@gmail.com>
+Date:   Thu Jun 4 13:13:41 2026 -0500
+
+    chore: initial commit

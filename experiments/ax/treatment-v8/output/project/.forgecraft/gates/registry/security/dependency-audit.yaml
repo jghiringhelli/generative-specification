@@ -1,0 +1,25 @@
+id: dependency-audit
+title: Dependency CVE Audit — Pre-Commit Blocking Gate
+description: >
+  Audit all project dependencies for known CVEs before every commit. Block on HIGH or CRITICAL
+  vulnerabilities in direct dependencies.
+domain: security
+gsProperty: defended
+phase: development
+hook: pre-commit
+check: >
+  Run the project's ecosystem audit tool before every commit. Block on HIGH or CRITICAL CVEs in
+  direct dependencies. See tools-registry.yaml for ecosystem-specific commands: - Node.js: npm audit
+  --audit-level=high - Python: pip-audit --severity high - Rust: cargo audit --deny warnings - Go:
+  govulncheck ./... - Java: dependency-check --failBuildOnCVSS 7
+passCriterion: >
+  Zero HIGH/CRITICAL CVEs in direct dependencies. All transitive CVEs triaged with documented
+  disposition (accepted, remediated, or suppressed with reason).
+tags:
+  - UNIVERSAL
+evidence: >
+  The bcrypt -> @mapbox/node-pre-gyp -> tar CVE chain is a well-known example where a conceptually
+  dev-only dependency introduced a production CVE. Pre-commit audit would have caught this at
+  install time. Supply chain attacks via transitive dependencies are the fastest-growing
+  vulnerability class as of 2025.
+source: community-registry

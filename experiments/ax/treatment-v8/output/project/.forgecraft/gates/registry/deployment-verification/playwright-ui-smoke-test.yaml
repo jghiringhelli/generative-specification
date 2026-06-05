@@ -1,0 +1,40 @@
+id: playwright-ui-smoke-test
+title: Playwright UI Smoke Test — Live Page Verification with Screenshot
+description: >
+  After every deploy or significant UI change, navigate to the live URL with Playwright, wait for
+  all async data to load, assert that critical elements are present and non-empty, and save a
+  full-page screenshot as a proof artifact. This catches an entire class of bugs that unit and API
+  tests cannot see: blank pages, broken async fetches, CSS layout collapses, missing data sections,
+  and rendering errors that only appear in a real browser against real infrastructure.
+domain: deployment-verification
+gsProperty: verifiable
+phase: deployment
+hook: post-deploy
+check: >
+  Write a Playwright script (scripts/smoke-test.js or tests/smoke/ui.spec.ts) that: 1. Navigates to
+  the live URL with { waitUntil: "networkidle" } 2. Waits for async data to resolve (waitForFunction
+  on a data-populated element) 3. Asserts critical elements: page title/heading, primary data
+  section populated,
+     no error messages visible (target specific error elements, not body.textContent
+     which includes script source), navigation present
+  4. Takes a full-page screenshot and saves it as an artifact 5. Exits with code 1 on any assertion
+  failure Run against staging before promotion, and against production within 5 minutes of deploy.
+  Add to CI as a post-deploy step. Tool: Playwright (playwright.dev) — language-agnostic, works with
+  any web UI.
+passCriterion: >
+  All element assertions pass. Screenshot artifact saved and visually confirms the page renders
+  correctly. Script exits 0. Total run time < 60 seconds. No blank sections, no error messages, no
+  spinner/loading states still active after the wait-for-data step.
+tags:
+  - UNIVERSAL
+  - WEB-REACT
+  - WEB-STATIC
+  - API
+evidence: >
+  First run on genspec-portal caught two bugs invisible to unit tests: (1) Gates with multiple tags
+  rendered once per tag — the page was visually cluttered with duplicates. Zero unit tests would
+  catch this; it requires seeing the rendered output. (2) A naive body.textContent error check
+  matched the JS source code string 'Failed to load taxonomy.json' — triggering a false positive
+  that masked the real check. Both bugs found and fixed before any user saw the page. Pattern holds:
+  the gap between "tests pass" and "page works" is exactly what Playwright closes.
+source: community-registry

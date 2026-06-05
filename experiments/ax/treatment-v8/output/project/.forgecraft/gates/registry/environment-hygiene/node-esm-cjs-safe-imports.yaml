@@ -1,0 +1,33 @@
+id: node-esm-cjs-safe-imports
+title: Node ESM — CJS Packages Require Default Import Pattern
+description: >
+  CommonJS packages (jsonwebtoken, bcrypt, multer, and others) do not expose named exports under ESM
+  interop. Named imports compile cleanly under tsc but crash at runtime with "does not provide an
+  export named 'X'". Required pattern: import pkg from 'jsonwebtoken'; const { sign } = pkg. This
+  gate applies to any Node project with "type": "module" or moduleResolution: "NodeNext".
+domain: environment-hygiene
+gsProperty: executable
+phase: development
+hook: pre-commit
+check: >
+  1. Identify all dependencies that are CommonJS-only (no ESM entry in package.json exports map).
+     Key candidates: jsonwebtoken, bcrypt, multer, express (v4), require-from-string.
+  2. Search for named imports of these packages:
+     grep -rn "^import {" src/ | grep -E "jsonwebtoken|bcrypt|multer"
+  3. Any named import of a CJS-only package must be replaced with default import + destructure. 4.
+  Start the server and confirm no runtime "does not provide an export named" errors occur.
+passCriterion: >
+  Zero named imports of CJS-only packages in ESM projects. Server starts without named-export
+  runtime errors. tsc --noEmit exits 0 AND server starts successfully on first request.
+tags:
+  - CLI
+  - API
+  - LIBRARY
+evidence: >
+  GS Treatment v6 — server started (tsc --noEmit passed, npm run build succeeded), then crashed on
+  the first JWT operation with "jsonwebtoken does not provide an export named 'sign'". The build
+  gate passed; the runtime gate did not exist. This is a category of failure that tsc cannot catch
+  because TypeScript's ESM interop adds type stubs for CJS named exports — the types exist, the
+  runtime exports do not. The only detection is a runtime smoke test or an explicit import pattern
+  gate. The gate was added after v6; v7 uses default import + destructure throughout.
+source: community-registry

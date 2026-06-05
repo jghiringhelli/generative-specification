@@ -1,0 +1,31 @@
+id: no-duplicate-string-literals
+title: No Duplicate String Literals — Extract to Named Constants
+description: >
+  String values appearing more than 3 times in the codebase must be extracted to named constants.
+  Duplicate string literals are a proxy for the Bounded property: the same concept being expressed
+  in multiple places without a single authoritative definition. When a value changes, all
+  occurrences must be found and updated manually, which produces drift. A named constant makes the
+  concept explicit and the value single-source-of-truth.
+domain: code-quality
+gsProperty: bounded
+phase: development
+hook: pre-commit
+check: >
+  Run SonarJS duplicate string literal detection:
+    npx eslint --plugin sonarjs --rule '{"sonarjs/no-duplicate-string": "error"}' src/
+  Or configure in .eslintrc:
+    "sonarjs/no-duplicate-string": ["error", { "threshold": 3 }]
+  Any string appearing more than 3 times that is not a technical constant (import path, log prefix)
+  must be extracted to a named constant in a constants file.
+passCriterion: |
+  Zero sonarjs/no-duplicate-string violations at threshold 3. eslint exits 0.
+tags:
+  - UNIVERSAL
+evidence: >
+  SonarJS ran against GS experiment conditions with no knowledge of GS or the rubric. Naive
+  condition (no GS guidance): 19 duplicate string literal violations. v3 treatment (GS-guided): 1
+  violation. The external tool ranked conditions consistently with the GS rubric ranking — without
+  any GS knowledge. This confirmed the rubric is measuring something real: the same signal is
+  detectable by an independent quality model. The gate formalizes what SonarJS was already
+  detecting.
+source: community-registry

@@ -1,0 +1,42 @@
+projectName: project
+tags:
+  - UNIVERSAL
+  - API
+sensitiveData: false
+cascade:
+  steps:
+    - step: functional_spec
+      required: true
+      rationale: >-
+        All projects require a functional specification (docs/PRD.md); it is the axiom set from which all other
+        artifacts are derived.
+      decidedAt: '2026-06-04'
+      decidedBy: scaffold
+    - step: architecture_diagrams
+      required: true
+      rationale: >-
+        API projects expose public contracts; C4 diagram (docs/diagrams/c4-context.md) is the spec for integration
+        partners and AI assistants navigating the service boundary.
+      decidedAt: '2026-06-04'
+      decidedBy: scaffold
+    - step: constitution
+      required: true
+      rationale: >-
+        All projects require an architectural constitution (CLAUDE.md); it is the operative grammar that constrains
+        every AI coding session.
+      decidedAt: '2026-06-04'
+      decidedBy: scaffold
+    - step: adrs
+      required: true
+      rationale: >-
+        API design decisions (versioning, auth strategy, pagination contract) must be recorded in docs/adrs/ before
+        implementation to prevent AI assistants from "improving" intentional choices.
+      decidedAt: '2026-06-04'
+      decidedBy: scaffold
+    - step: behavioral_contracts
+      required: true
+      rationale: >-
+        Existing consumers detected: behavioral contracts (docs/use-cases.md) are required for breaking-change
+        detection.
+      decidedAt: '2026-06-04'
+      decidedBy: scaffold

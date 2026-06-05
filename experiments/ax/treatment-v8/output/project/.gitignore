@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+.tsbuildinfo
+.env
+.env.*
+coverage/
+*.log
+.forgecraft/gate-violations.jsonl
+.DS_Store

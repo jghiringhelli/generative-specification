@@ -1,0 +1,12 @@
+# Auto-generated probe spec for UC-006.
+# Edit probe type, scenario, and description as needed.
+uc: UC-006
+title: Favorite and Unfavorite an Article
+action: perform primary action
+probes:
+  - id: happy
+    type: api_call
+    scenario: UC-006 happy path — Favorite and Unfavorite an Article
+    description: >-
+      Auto-generated. Precondition: Actor is authenticated and the target article exists.. Expected: Both return `200`
+      with the full article

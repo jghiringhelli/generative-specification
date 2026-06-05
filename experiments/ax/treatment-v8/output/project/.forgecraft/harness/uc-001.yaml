@@ -1,0 +1,16 @@
+# Auto-generated probe spec for UC-001.
+# Edit probe type, scenario, and description as needed.
+uc: UC-001
+title: Register and Log In
+action: perform primary action
+probes:
+  - id: happy
+    type: api_call
+    scenario: UC-001 happy path — Register and Log In
+    description: >-
+      Auto-generated. Precondition: The system is operational.. Expected: A user account exists; the Actor holds a JWT
+      identifying it.
+  - id: error-register-email-already-taken-409-errors
+    type: api_call
+    scenario: UC-001 error — Register — email already taken → `409` `{ errors
+    description: '{ email: [''has already been taken''] } }`.'

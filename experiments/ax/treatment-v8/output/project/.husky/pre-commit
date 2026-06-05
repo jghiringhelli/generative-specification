@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+# Pre-commit quality gate — every commit must pass all four stages.
+# Order is fail-fast: cheapest, most-likely-to-fail checks first.
+
+# 1. Type safety — no commit may break the compiler.
+echo "▶ pre-commit: typecheck (tsc --noEmit)"
+npx tsc -p tsconfig.json --noEmit || {
+  echo "✖ pre-commit: typecheck failed"; exit 1;
+}
+
+# 2. Lint — style + correctness rules (no-any, import cycles, etc.).
+echo "▶ pre-commit: lint (eslint)"
+npm run lint || {
+  echo "✖ pre-commit: lint failed"; exit 1;
+}
+
+# 3. Dependency audit — block known high/critical vulnerabilities.
+echo "▶ pre-commit: npm audit --audit-level=high"
+npm audit --audit-level=high || {
+  echo "✖ pre-commit: vulnerable dependencies (high+) — resolve before commit"; exit 1;
+}
+
+# 4. Test gate — affected tests must pass with coverage threshold.
+echo "▶ pre-commit: test gate (jest --coverage)"
+npm run test:coverage || {
+  echo "✖ pre-commit: tests or coverage gate failed"; exit 1;
+}
+
+echo "✔ pre-commit: all gates passed"

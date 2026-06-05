@@ -1,0 +1,11 @@
+{
+  "alwaysLoadLines": 149,
+  "typicalTaskLines": 411,
+  "fullHarnessLines": 808,
+  "largestBranch": {
+    "path": ".claude/standards/testing.md",
+    "lines": 127
+  },
+  "violations": [],
+  "withinBudget": true
+}

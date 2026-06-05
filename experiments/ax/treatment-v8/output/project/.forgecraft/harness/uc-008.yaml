@@ -1,0 +1,12 @@
+# Auto-generated probe spec for UC-008.
+# Edit probe type, scenario, and description as needed.
+uc: UC-008
+title: List Tags
+action: perform primary action
+probes:
+  - id: happy
+    type: api_call
+    scenario: UC-008 happy path — List Tags
+    description: >-
+      Auto-generated. Precondition: The system is operational.. Expected: Returns `200` `{ tags: [...] }` — the
+      distinct,

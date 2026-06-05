@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Commit-message gate — enforce Conventional Commits via commitlint.
+# Rejects "wip", "fixes", "asdf" and anything not matching type(scope): subject.
+echo "▶ commit-msg: commitlint"
+npx --no-install commitlint --edit "$1" || {
+  echo "✖ commit-msg: message does not follow Conventional Commits"; exit 1;
+}

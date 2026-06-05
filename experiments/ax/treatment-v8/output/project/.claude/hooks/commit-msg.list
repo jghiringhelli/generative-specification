@@ -1,0 +1,7 @@
+# ForgeCraft hook manifest — commit-msg
+# One script filename per line. Comments (#) and blank lines are ignored.
+# Add hooks: forgecraft add_hook — scripts are appended here automatically.
+# Reorder lines to change execution sequence.
+
+commit-msg.sh
+commit-msg-cascade.sh

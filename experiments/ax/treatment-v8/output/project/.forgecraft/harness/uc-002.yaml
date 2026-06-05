@@ -1,0 +1,16 @@
+# Auto-generated probe spec for UC-002.
+# Edit probe type, scenario, and description as needed.
+uc: UC-002
+title: View and Update the Current User
+action: perform primary action
+probes:
+  - id: happy
+    type: api_call
+    scenario: UC-002 happy path — View and Update the Current User
+    description: >-
+      Auto-generated. Precondition: Actor holds a valid JWT for an existing account.. Expected: Both calls return `200`
+      with
+  - id: error-missing-token-401-errors
+    type: api_call
+    scenario: UC-002 error — Missing token → `401` `{ errors
+    description: '{ token: [''is missing''] } }`.'

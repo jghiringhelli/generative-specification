@@ -1,0 +1,10 @@
+# Auto-generated probe spec for UC-005.
+# Edit probe type, scenario, and description as needed.
+uc: UC-005
+title: List Articles, Feed, and Pagination
+action: perform primary action
+probes:
+  - id: happy
+    type: api_call
+    scenario: UC-005 happy path — List Articles, Feed, and Pagination
+    description: 'Auto-generated. Precondition: Zero or more non-deleted articles exist.. Expected: Both return `200` with'

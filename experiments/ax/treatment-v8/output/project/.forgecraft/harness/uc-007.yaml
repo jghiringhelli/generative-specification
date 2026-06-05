@@ -1,0 +1,12 @@
+# Auto-generated probe spec for UC-007.
+# Edit probe type, scenario, and description as needed.
+uc: UC-007
+title: Comment on an Article
+action: perform primary action
+probes:
+  - id: happy
+    type: api_call
+    scenario: UC-007 happy path — Comment on an Article
+    description: >-
+      Auto-generated. Precondition: The article identified by `:slug` exists.. Expected: List ⇒ `200` `{ comments: [ {
+      id, body, createdAt,

@@ -1,0 +1,26 @@
+id: hurl-contract-tests-pass
+title: Hurl Contract Tests — Official RealWorld Suite Passes
+description: >
+  Run the gothinkster/realworld official Hurl contract test suite against a running server. These
+  tests were authored by the open-source community with no knowledge of GS or the implementation.
+  They are the definitive external validator for RealWorld Conduit API implementations. All tests
+  must pass before a cycle closes.
+domain: api-contracts
+gsProperty: verifiable
+phase: pre-release
+hook: pre-release
+check: >
+  1. Start the server: npm run dev (or equivalent) 2. Clone or use local copy of
+  gothinkster/realworld Hurl specs 3. Run: hurl --test specs/api/hurl/*.hurl --variable
+  host=localhost --variable port=3000 4. All tests must exit 0
+passCriterion: >
+  hurl --test exits 0. All official RealWorld contract tests pass. Pass rate: 13/13 (or equivalent
+  for non-Conduit APIs: 100% of contract tests pass).
+tags:
+  - API
+evidence: >
+  GS Treatment v6 passed 6/13 official Hurl contract tests. The two root causes were
+  api-error-envelope-resource-scoped (6 failures) and api-nullable-field-coercion (1 failure). Both
+  were spec gaps invisible to the GS rubric. v7 hypothesis: formalizing these as gates and including
+  them in the spec moves the pass rate from 6/13 to 13/13.
+source: community-registry

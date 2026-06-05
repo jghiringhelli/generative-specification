@@ -1,0 +1,18 @@
+# ForgeCraft hook manifest — pre-commit
+# One script filename per line. Comments (#) and blank lines are ignored.
+# Add hooks: forgecraft add_hook — scripts are appended here automatically.
+# Reorder lines to change execution sequence.
+
+pre-commit-no-temp-files.sh
+pre-commit-secrets.sh
+pre-commit-prod-quality.sh
+pre-commit-branch-check.sh
+pre-commit-format.sh
+pre-commit-compile.sh
+pre-commit-import-cycles.sh
+pre-commit-tdd-check.sh
+pre-commit-test.sh
+pre-commit-coverage.sh
+pre-commit-audit.sh
+pre-commit-doc-cascade.sh
+pre-commit-gs-links.sh

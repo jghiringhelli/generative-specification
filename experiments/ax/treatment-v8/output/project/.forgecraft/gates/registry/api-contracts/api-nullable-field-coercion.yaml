@@ -1,0 +1,28 @@
+id: api-nullable-field-coercion
+title: Nullable Fields — Empty String Must Coerce to Null at Service Layer
+description: >
+  Optional profile fields declared nullable in the schema must coerce empty-string client input to
+  null at the service layer: bio === '' ? null : bio. An empty string stored as "" violates the
+  nullable contract and breaks contract tests. This coercion must happen in the service, not the
+  route handler, so the domain model always reflects the declared type.
+domain: api-contracts
+gsProperty: verifiable
+phase: development
+hook: pre-commit
+check: >
+  1. Identify all fields in the schema declared as nullable (string | null). 2. Locate the
+  service-layer update function for each such field. 3. Confirm each has a coercion guard:
+  fieldValue === '' ? null : fieldValue 4. Run contract tests covering PUT/PATCH with empty string
+  for nullable fields.
+passCriterion: >
+  All nullable fields coerce '' to null at the service layer. PUT/PATCH with bio: "" (or equivalent)
+  returns null, not "". Contract tests for nullable field behavior pass.
+tags:
+  - API
+evidence: >
+  Hurl RC1 against gothinkster/realworld — PUT /api/user with bio: "" returned "" instead of null.
+  One test failure. The fix is a single coercion guard at the service layer. Without this gate, the
+  pattern is easy to miss because tsc passes, unit tests pass (they don't send ""), and only a
+  contract test that explicitly sends an empty string catches it. The Conduit spec says bio is
+  nullable; storing "" violates that contract silently.
+source: community-registry

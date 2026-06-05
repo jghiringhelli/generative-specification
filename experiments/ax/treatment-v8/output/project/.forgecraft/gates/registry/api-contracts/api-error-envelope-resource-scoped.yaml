@@ -1,0 +1,31 @@
+id: api-error-envelope-resource-scoped
+title: API Validation Errors — Resource-Scoped Keys Required
+description: >
+  API validation error responses must use a resource-scoped key: { "errors": { "<resource>": ["msg"]
+  } }. Never errors.body[]. Enforce via a formatError(resource: string, messages: string[]) utility
+  function so the pattern is impossible to violate accidentally. Returning errors.body[] is a spec
+  deficiency that causes all contract tests against real-world test suites to fail, even when the
+  implementation is otherwise correct.
+domain: api-contracts
+gsProperty: verifiable
+phase: development
+hook: pre-commit
+check: >
+  1. Search codebase for any validation error response that uses a literal "body" key:
+     grep -rn '"body"' src/ | grep -i error
+  2. Confirm a formatError(resource, messages) utility exists and is used at all validation points.
+  3. Run the project's contract test suite (e.g. Hurl, Postman) — all error-shape tests must pass.
+passCriterion: >
+  Zero validation error responses use errors.body[]. All use errors.<resource>[]. A formatError()
+  utility enforces the pattern. Contract tests for error shapes pass.
+tags:
+  - API
+evidence: >
+  Hurl RC2 against gothinkster/realworld — 6 of 13 official community contract tests failed against
+  GS Treatment v6. All six failures traced to a single root cause: the v6 spec (conduit-gs.md §3.4)
+  explicitly specified errors.body[] but the Hurl tests expected resource-scoped keys
+  (errors.username[], errors.article[]). Both v6 and the RX control implementation failed
+  identically because the spec was wrong, not the implementations. The GS rubric had scored v6
+  highly despite this contract violation because the rubric was written by the same author as the
+  spec — neither could see the gap. An independent external test suite found it immediately.
+source: community-registry

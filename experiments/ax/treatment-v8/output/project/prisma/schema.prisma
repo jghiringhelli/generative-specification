@@ -1,0 +1,116 @@
+// Prisma schema — persistence mapping for the RealWorld Conduit API.
+//
+// The User aggregate (auth vertical slice, ADR-0002), the Follow edge that
+// backs public profiles, the Article aggregate with its favorites join, and the
+// Comment aggregate on articles are modelled so far. The remaining entity (Tag
+// vocabulary) joins this schema as its feature lands.
+//
+// @gs-links: docs/adrs/ADR-0002-auth.md, docs/adrs/ADR-0001-stack.md, docs/specs/profiles.md, docs/specs/articles.md, docs/specs/comments.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  username     String   @unique
+  bio          String?
+  image        String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  following Follow[]           @relation("UserFollowing")
+  followers Follow[]           @relation("UserFollowers")
+  articles  Article[]
+  favorites ArticleFavorite[]
+  comments  Comment[]
+
+  @@map("users")
+}
+
+// Directed follow edge: `follower` follows `followed`. The composite primary
+// key makes a follow idempotent and a self-follow at most a single row; the
+// cascade keeps the graph consistent when a user is removed.
+model Follow {
+  followerId String
+  followedId String
+  createdAt  DateTime @default(now())
+
+  follower User @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  followed User @relation("UserFollowers", fields: [followedId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followedId])
+  @@index([followedId])
+  @@map("follows")
+}
+
+// An authored article. `tagList` is denormalised onto the row (the tag
+// vocabulary is a separate, later concern); favorites live in the join below
+// and `favoritesCount` is derived from it, never stored. `deletedAt` records a
+// soft delete: per operation-classification Tier 3, articles are never
+// hard-deleted — every read filters `deletedAt: null`.
+model Article {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  description String
+  body        String
+  tagList     String[]
+  authorId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  author    User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  favoritedBy ArticleFavorite[]
+  comments    Comment[]
+
+  @@index([authorId])
+  @@index([deletedAt])
+  @@map("articles")
+}
+
+// Directed favorite edge: `user` favorited `article`. The composite primary key
+// makes favoriting idempotent (at most one edge per pair); the cascade keeps the
+// graph consistent when either side is removed.
+model ArticleFavorite {
+  articleId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, userId])
+  @@index([userId])
+  @@map("article_favorites")
+}
+
+// A comment authored on an article. `deletedAt` records a soft delete: per
+// operation-classification Tier 3 comments are never hard-deleted, so every read
+// filters `deletedAt: null` (mirroring the Article aggregate). Both foreign keys
+// cascade so a comment cannot outlive its article or author.
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String
+  articleId String
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+  @@index([authorId])
+  @@index([deletedAt])
+  @@map("comments")
+}
