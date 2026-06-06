@@ -1,0 +1,41 @@
+{
+  "id": "T5-43",
+  "type": "T5",
+  "condition": "monolith",
+  "answer": "The provided documentation does not include `src/http/CommentController.ts` or its `@gs-links` line, so the exact links cannot be read; per the comments spec the governing docs would be docs/specs/comments.md and docs/adrs/ADR-0002-auth.md (UC-007).",
+  "usage": {
+    "input_tokens": 2147,
+    "cache_creation_input_tokens": 77972,
+    "cache_read_input_tokens": 20687,
+    "output_tokens": 529,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 77972,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2147,
+        "output_tokens": 529,
+        "cache_read_input_tokens": 20687,
+        "cache_creation_input_tokens": 77972,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 77972
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.5761235,
+  "duration_ms": 10523,
+  "num_turns": 1,
+  "wall_ms": 13939,
+  "is_error": false
+}

@@ -1,0 +1,41 @@
+{
+  "id": "T3-24",
+  "type": "T3",
+  "condition": "bare",
+  "answer": "`src\\repositories\\` (interfaces), `src\\adapters\\persistence\\` (database implementations).",
+  "usage": {
+    "input_tokens": 2709,
+    "cache_creation_input_tokens": 4886,
+    "cache_read_input_tokens": 68550,
+    "output_tokens": 263,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 4886,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 560,
+        "output_tokens": 34,
+        "cache_read_input_tokens": 25126,
+        "cache_creation_input_tokens": 464,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 464
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.0855215,
+  "duration_ms": 10194,
+  "num_turns": 4,
+  "wall_ms": 13458,
+  "is_error": false
+}

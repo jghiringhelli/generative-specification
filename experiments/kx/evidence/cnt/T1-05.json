@@ -1,0 +1,41 @@
+{
+  "id": "T1-05",
+  "type": "T1",
+  "condition": "cnt",
+  "answer": "Zod",
+  "usage": {
+    "input_tokens": 3048,
+    "cache_creation_input_tokens": 7525,
+    "cache_read_input_tokens": 74243,
+    "output_tokens": 305,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7525,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 560,
+        "output_tokens": 5,
+        "cache_read_input_tokens": 27923,
+        "cache_creation_input_tokens": 791,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 791
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.10758175,
+  "duration_ms": 18990,
+  "num_turns": 3,
+  "wall_ms": 24408,
+  "is_error": false
+}

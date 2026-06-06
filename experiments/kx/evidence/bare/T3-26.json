@@ -1,0 +1,41 @@
+{
+  "id": "T3-26",
+  "type": "T3",
+  "condition": "bare",
+  "answer": "`src/server.ts` — its `main()` function constructs the concrete adapters and wires them into the services.",
+  "usage": {
+    "input_tokens": 2711,
+    "cache_creation_input_tokens": 8347,
+    "cache_read_input_tokens": 97102,
+    "output_tokens": 298,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 8347,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 35,
+        "cache_read_input_tokens": 27301,
+        "cache_creation_input_tokens": 1750,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1750
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.12229775000000001,
+  "duration_ms": 12583,
+  "num_turns": 4,
+  "wall_ms": 15422,
+  "is_error": false
+}

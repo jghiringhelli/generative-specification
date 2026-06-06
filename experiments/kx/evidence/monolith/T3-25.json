@@ -1,0 +1,41 @@
+{
+  "id": "T3-25",
+  "type": "T3",
+  "condition": "monolith",
+  "answer": "Repositories/Adapters (the persistence adapter layer).",
+  "usage": {
+    "input_tokens": 2147,
+    "cache_creation_input_tokens": 77968,
+    "cache_read_input_tokens": 20687,
+    "output_tokens": 22,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 77968,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2147,
+        "output_tokens": 22,
+        "cache_read_input_tokens": 20687,
+        "cache_creation_input_tokens": 77968,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 77968
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.5634225,
+  "duration_ms": 4539,
+  "num_turns": 1,
+  "wall_ms": 9224,
+  "is_error": false
+}

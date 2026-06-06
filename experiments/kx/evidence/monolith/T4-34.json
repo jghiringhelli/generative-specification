@@ -1,0 +1,41 @@
+{
+  "id": "T4-34",
+  "type": "T4",
+  "condition": "monolith",
+  "answer": "UC-001, UC-002, UC-003, UC-004, UC-005, UC-006, UC-007, UC-008",
+  "usage": {
+    "input_tokens": 2147,
+    "cache_creation_input_tokens": 77958,
+    "cache_read_input_tokens": 20687,
+    "output_tokens": 41,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 77958,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2147,
+        "output_tokens": 41,
+        "cache_read_input_tokens": 20687,
+        "cache_creation_input_tokens": 77958,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 77958
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.563825,
+  "duration_ms": 5321,
+  "num_turns": 1,
+  "wall_ms": 8203,
+  "is_error": false
+}

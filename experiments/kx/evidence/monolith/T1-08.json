@@ -1,0 +1,41 @@
+{
+  "id": "T1-08",
+  "type": "T1",
+  "condition": "monolith",
+  "answer": "`422`",
+  "usage": {
+    "input_tokens": 2147,
+    "cache_creation_input_tokens": 77967,
+    "cache_read_input_tokens": 20687,
+    "output_tokens": 5,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 77967,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2147,
+        "output_tokens": 5,
+        "cache_read_input_tokens": 20687,
+        "cache_creation_input_tokens": 77967,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 77967
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.56299225,
+  "duration_ms": 4057,
+  "num_turns": 1,
+  "wall_ms": 7274,
+  "is_error": false
+}

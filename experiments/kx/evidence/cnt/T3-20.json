@@ -1,0 +1,41 @@
+{
+  "id": "T3-20",
+  "type": "T3",
+  "condition": "cnt",
+  "answer": "commentRoutes.ts, CommentController.ts, CommentService.ts, ICommentRepository.ts, PrismaCommentRepository.ts",
+  "usage": {
+    "input_tokens": 3048,
+    "cache_creation_input_tokens": 7901,
+    "cache_read_input_tokens": 74429,
+    "output_tokens": 346,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7901,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 560,
+        "output_tokens": 52,
+        "cache_read_input_tokens": 28093,
+        "cache_creation_input_tokens": 997,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 997
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.11108475,
+  "duration_ms": 11879,
+  "num_turns": 3,
+  "wall_ms": 15849,
+  "is_error": false
+}

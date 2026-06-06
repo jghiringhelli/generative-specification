@@ -1,0 +1,41 @@
+{
+  "id": "T3-20",
+  "type": "T3",
+  "condition": "bare",
+  "answer": "The flow: commentRoutes.ts, CommentController.ts, CommentService.ts, PrismaCommentRepository.ts",
+  "usage": {
+    "input_tokens": 2174,
+    "cache_creation_input_tokens": 5732,
+    "cache_read_input_tokens": 43434,
+    "output_tokens": 115,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 5732,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 45,
+        "cache_read_input_tokens": 22730,
+        "cache_creation_input_tokens": 3706,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 3706
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.071879,
+  "duration_ms": 5678,
+  "num_turns": 2,
+  "wall_ms": 10261,
+  "is_error": false
+}

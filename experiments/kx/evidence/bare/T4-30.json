@@ -1,0 +1,41 @@
+{
+  "id": "T4-30",
+  "type": "T4",
+  "condition": "bare",
+  "answer": "There is no such registry or category in this project; \"environment-hygiene\" and \"quality gate ids\" do not appear anywhere in the project files.",
+  "usage": {
+    "input_tokens": 2850,
+    "cache_creation_input_tokens": 11826,
+    "cache_read_input_tokens": 232843,
+    "output_tokens": 2004,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 11826,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 284,
+        "cache_read_input_tokens": 29809,
+        "cache_creation_input_tokens": 2721,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2721
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.255285,
+  "duration_ms": 58137,
+  "num_turns": 13,
+  "wall_ms": 61164,
+  "is_error": false
+}

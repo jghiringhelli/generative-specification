@@ -1,0 +1,272 @@
+[
+  {
+    "id": "T1-01",
+    "type": "T1",
+    "query": "What HTTP status code does the API return when registering a user with an email that is already taken? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "409"
+  },
+  {
+    "id": "T1-02",
+    "type": "T1",
+    "query": "What HTTP status code does GET /api/user return when no authentication token is provided? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "401"
+  },
+  {
+    "id": "T1-03",
+    "type": "T1",
+    "query": "What HTTP status code does DELETE /api/articles/:slug return on success? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "204"
+  },
+  {
+    "id": "T1-04",
+    "type": "T1",
+    "query": "Which password hashing algorithm does the implementation use? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "argon2"
+  },
+  {
+    "id": "T1-05",
+    "type": "T1",
+    "query": "Which library validates and parses request bodies at the HTTP boundary? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "zod"
+  },
+  {
+    "id": "T1-06",
+    "type": "T1",
+    "query": "Which ORM is used for database persistence? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "prisma"
+  },
+  {
+    "id": "T1-07",
+    "type": "T1",
+    "query": "Which HTTP framework serves the API? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "express"
+  },
+  {
+    "id": "T1-08",
+    "type": "T1",
+    "query": "What HTTP status code does updating the current user with an empty-string username return? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "422"
+  },
+  {
+    "id": "T2-09",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be read first before implementing a new feature? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/PRD.md and the relevant use case"
+  },
+  {
+    "id": "T2-10",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be produced after implementing a new feature? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "spec decision record in docs/specs/"
+  },
+  {
+    "id": "T2-11",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be read first before an architecture change? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/architecture/layers.md and the ADR index"
+  },
+  {
+    "id": "T2-12",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be produced after an architecture change? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "ADR in docs/adrs/active/"
+  },
+  {
+    "id": "T2-13",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be read first before a data model or schema change? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/architecture/data-model.md"
+  },
+  {
+    "id": "T2-14",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be produced after a schema change? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "update schema and ERD"
+  },
+  {
+    "id": "T2-15",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be read first before changing a module boundary? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/architecture/modules.md"
+  },
+  {
+    "id": "T2-16",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be produced after changing a module boundary? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "update modules.md and ADR if non-obvious"
+  },
+  {
+    "id": "T2-17",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be read first before fixing a bug? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "linked use case and failing test"
+  },
+  {
+    "id": "T2-18",
+    "type": "T2",
+    "query": "According to the project's conventions, what must be produced after fixing a bug? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "regression note in use case"
+  },
+  {
+    "id": "T3-19",
+    "type": "T3",
+    "query": "Through which files does an article-creation request flow, from HTTP route to the database adapter? List one file name per layer in order. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "articleRoutes.ts, ArticleController.ts, ArticleService.ts, IArticleRepository.ts, PrismaArticleRepository.ts"
+  },
+  {
+    "id": "T3-20",
+    "type": "T3",
+    "query": "Through which files does a comment-creation request flow, from HTTP route to the database adapter? List one file name per layer in order. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "commentRoutes.ts, CommentController.ts, CommentService.ts, ICommentRepository.ts, PrismaCommentRepository.ts"
+  },
+  {
+    "id": "T3-21",
+    "type": "T3",
+    "query": "Through which files does a profile-follow request flow, from HTTP route to the database adapter? List one file name per layer in order. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "profileRoutes.ts, ProfileController.ts, ProfileService.ts, IProfileRepository.ts, PrismaProfileRepository.ts"
+  },
+  {
+    "id": "T3-22",
+    "type": "T3",
+    "query": "Through which files does a user-registration request flow, from HTTP route to the database adapter? List one file name per layer in order. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "userRoutes.ts, UserController.ts, UserService.ts, IUserRepository.ts, PrismaUserRepository.ts"
+  },
+  {
+    "id": "T3-23",
+    "type": "T3",
+    "query": "Name the architectural layers of this project in order, from the HTTP boundary to persistence. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "routes, controllers, services, repository ports, persistence adapters"
+  },
+  {
+    "id": "T3-24",
+    "type": "T3",
+    "query": "In which directory do the repository port interfaces live, and in which directory do their database implementations live? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "src/repositories and src/adapters/persistence"
+  },
+  {
+    "id": "T3-25",
+    "type": "T3",
+    "query": "Which layer is the only one allowed to use the PrismaClient directly? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "persistence adapters (src/adapters/persistence)"
+  },
+  {
+    "id": "T3-26",
+    "type": "T3",
+    "query": "Where is the composition root that wires services to their adapters? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "src/server.ts"
+  },
+  {
+    "id": "T4-27",
+    "type": "T4",
+    "query": "List the quality gate ids in the 'api-contracts' registry category. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "api-error-envelope-resource-scoped, api-nullable-field-coercion, hurl-contract-tests-pass"
+  },
+  {
+    "id": "T4-28",
+    "type": "T4",
+    "query": "List the quality gate ids in the 'code-quality' registry category. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "cyclomatic-complexity-max-10, no-duplicate-string-literals, sonarqube-quality-gate-ok"
+  },
+  {
+    "id": "T4-29",
+    "type": "T4",
+    "query": "List the quality gate ids in the 'deployment-verification' registry category. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "playwright-ui-smoke-test"
+  },
+  {
+    "id": "T4-30",
+    "type": "T4",
+    "query": "List the quality gate ids in the 'environment-hygiene' registry category. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "node-esm-cjs-safe-imports"
+  },
+  {
+    "id": "T4-31",
+    "type": "T4",
+    "query": "List the quality gate ids in the 'security' registry category. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "dependency-audit, owasp-l1-static"
+  },
+  {
+    "id": "T4-32",
+    "type": "T4",
+    "query": "List the quality gate ids in the 'test-quality' registry category. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "mutation-testing"
+  },
+  {
+    "id": "T4-33",
+    "type": "T4",
+    "query": "List the ADR document ids that exist in this project. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "ADR-000-cnt-init, ADR-0001-stack, ADR-0002-auth"
+  },
+  {
+    "id": "T4-34",
+    "type": "T4",
+    "query": "List all use case IDs defined in this project. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "UC-001, UC-002, UC-003, UC-004, UC-005, UC-006, UC-007, UC-008"
+  },
+  {
+    "id": "T4-35",
+    "type": "T4",
+    "query": "List the markdown files at the top level of the .claude directory. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "constitution.md, core.md, corrections.md, index.md, lifecycle.md, state.md"
+  },
+  {
+    "id": "T4-36",
+    "type": "T4",
+    "query": "List the architecture documents under docs/architecture/. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "data-model.md, integrations.md, layers.md, modules.md"
+  },
+  {
+    "id": "T4-37",
+    "type": "T4",
+    "query": "List the spec decision records under docs/specs/. Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "articles.md, auth.md, comments.md, profiles.md, tags.md"
+  },
+  {
+    "id": "T5-38",
+    "type": "T5",
+    "query": "Which documents govern src/adapters/persistence/PrismaUserRepository.ts according to the project's traceability links? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/adrs/ADR-0002-auth.md, docs/adrs/ADR-0001-stack.md"
+  },
+  {
+    "id": "T5-39",
+    "type": "T5",
+    "query": "Which documents govern src/adapters/security/JwtTokenService.ts according to the project's traceability links? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/adrs/ADR-0002-auth.md"
+  },
+  {
+    "id": "T5-40",
+    "type": "T5",
+    "query": "Which documents govern src/adapters/security/Argon2PasswordHasher.ts according to the project's traceability links? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/adrs/ADR-0002-auth.md"
+  },
+  {
+    "id": "T5-41",
+    "type": "T5",
+    "query": "Which documents govern src/http/ArticleController.ts according to the project's traceability links? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/specs/articles.md, docs/use-cases.md"
+  },
+  {
+    "id": "T5-42",
+    "type": "T5",
+    "query": "Which documents govern src/http/articleRoutes.ts according to the project's traceability links? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/specs/articles.md, docs/adrs/ADR-0002-auth.md"
+  },
+  {
+    "id": "T5-43",
+    "type": "T5",
+    "query": "Which documents govern src/http/CommentController.ts according to the project's traceability links? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/specs/comments.md, docs/use-cases.md"
+  },
+  {
+    "id": "T5-44",
+    "type": "T5",
+    "query": "Which documents govern src/config/env.ts according to the project's traceability links? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/adrs/ADR-0002-auth.md"
+  },
+  {
+    "id": "T5-45",
+    "type": "T5",
+    "query": "Which documents govern src/adapters/persistence/PrismaProfileRepository.ts according to the project's traceability links? Answer with only the answer itself (a value, a comma-separated list, or one short sentence). No explanation.",
+    "truth": "docs/specs/profiles.md, docs/adrs/ADR-0002-auth.md"
+  }
+]

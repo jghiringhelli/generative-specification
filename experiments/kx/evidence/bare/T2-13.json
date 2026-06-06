@@ -1,0 +1,41 @@
+{
+  "id": "T2-13",
+  "type": "T2",
+  "condition": "bare",
+  "answer": "The `@gs-links` documents listed in `prisma/schema.prisma`: docs/adrs/ADR-0002-auth.md, docs/adrs/ADR-0001-stack.md, docs/specs/profiles.md, docs/specs/articles.md, docs/specs/comments.md.",
+  "usage": {
+    "input_tokens": 2854,
+    "cache_creation_input_tokens": 14263,
+    "cache_read_input_tokens": 300153,
+    "output_tokens": 3208,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 14263,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 563,
+        "cache_read_input_tokens": 32564,
+        "cache_creation_input_tokens": 2403,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2403
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.33427925,
+  "duration_ms": 65291,
+  "num_turns": 12,
+  "wall_ms": 69475,
+  "is_error": false
+}

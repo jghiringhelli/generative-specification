@@ -1,0 +1,41 @@
+{
+  "id": "T4-35",
+  "type": "T4",
+  "condition": "bare",
+  "answer": "There is no `.claude` directory in this project, so there are no markdown files to list.",
+  "usage": {
+    "input_tokens": 2713,
+    "cache_creation_input_tokens": 5998,
+    "cache_read_input_tokens": 119083,
+    "output_tokens": 561,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 5998,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 172,
+        "cache_read_input_tokens": 25675,
+        "cache_creation_input_tokens": 1027,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 1027
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.12520199999999998,
+  "duration_ms": 30807,
+  "num_turns": 5,
+  "wall_ms": 33822,
+  "is_error": false
+}

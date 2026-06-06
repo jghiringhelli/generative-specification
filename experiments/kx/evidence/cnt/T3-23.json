@@ -1,0 +1,41 @@
+{
+  "id": "T3-23",
+  "type": "T3",
+  "condition": "cnt",
+  "answer": "Line 50: API/CLI/Handlers → Services → Domain models → Port interfaces → Repositories/Adapters → Infrastructure/Config.",
+  "usage": {
+    "input_tokens": 3052,
+    "cache_creation_input_tokens": 10837,
+    "cache_read_input_tokens": 132885,
+    "output_tokens": 643,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 10837,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 53,
+        "cache_read_input_tokens": 29670,
+        "cache_creation_input_tokens": 2356,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2356
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.16607175,
+  "duration_ms": 27425,
+  "num_turns": 5,
+  "wall_ms": 32906,
+  "is_error": false
+}

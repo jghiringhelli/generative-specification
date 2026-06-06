@@ -1,0 +1,41 @@
+{
+  "id": "T4-37",
+  "type": "T4",
+  "condition": "bare",
+  "answer": "There is no `docs/specs/` directory in this project (the only `specs/` directory is at the project root and is empty), so there are no spec decision records.",
+  "usage": {
+    "input_tokens": 2717,
+    "cache_creation_input_tokens": 6232,
+    "cache_read_input_tokens": 172475,
+    "output_tokens": 691,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6232,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 118,
+        "cache_read_input_tokens": 26798,
+        "cache_creation_input_tokens": 138,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 138
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.1566325,
+  "duration_ms": 41319,
+  "num_turns": 7,
+  "wall_ms": 45117,
+  "is_error": false
+}

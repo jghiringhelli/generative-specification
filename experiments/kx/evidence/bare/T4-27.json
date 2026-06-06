@@ -1,0 +1,41 @@
+{
+  "id": "T4-27",
+  "type": "T4",
+  "condition": "bare",
+  "answer": "There is no such registry in this project — no 'api-contracts' category or quality-gate-id registry exists in any file here.",
+  "usage": {
+    "input_tokens": 2858,
+    "cache_creation_input_tokens": 16676,
+    "cache_read_input_tokens": 354235,
+    "output_tokens": 3486,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16676,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 355,
+        "cache_read_input_tokens": 33869,
+        "cache_creation_input_tokens": 3511,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 3511
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.3833825,
+  "duration_ms": 86324,
+  "num_turns": 17,
+  "wall_ms": 88988,
+  "is_error": false
+}

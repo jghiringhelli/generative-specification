@@ -1,0 +1,41 @@
+{
+  "id": "T2-10",
+  "type": "T2",
+  "condition": "cnt",
+  "answer": "The answer is in the Doc Obligation Table in CLAUDE.md.\n\nA spec decision record in `docs/specs/`.",
+  "usage": {
+    "input_tokens": 2486,
+    "cache_creation_input_tokens": 3943,
+    "cache_read_input_tokens": 21189,
+    "output_tokens": 44,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 3943,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2486,
+        "output_tokens": 44,
+        "cache_read_input_tokens": 21189,
+        "cache_creation_input_tokens": 3943,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 3943
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.04933125,
+  "duration_ms": 7788,
+  "num_turns": 1,
+  "wall_ms": 13335,
+  "is_error": false
+}

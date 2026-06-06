@@ -1,0 +1,41 @@
+{
+  "id": "T1-03",
+  "type": "T1",
+  "condition": "cnt",
+  "answer": "204 No Content",
+  "usage": {
+    "input_tokens": 3048,
+    "cache_creation_input_tokens": 7525,
+    "cache_read_input_tokens": 74593,
+    "output_tokens": 301,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 7525,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 560,
+        "output_tokens": 7,
+        "cache_read_input_tokens": 28270,
+        "cache_creation_input_tokens": 444,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 444
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.10765974999999998,
+  "duration_ms": 13025,
+  "num_turns": 3,
+  "wall_ms": 16157,
+  "is_error": false
+}

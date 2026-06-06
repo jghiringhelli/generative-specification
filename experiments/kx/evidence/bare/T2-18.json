@@ -1,0 +1,41 @@
+{
+  "id": "T2-18",
+  "type": "T2",
+  "condition": "bare",
+  "answer": "A `CHANGELOG.md` entry under a \"Fixed\" section (per the project's Keep a Changelog convention).",
+  "usage": {
+    "input_tokens": 2860,
+    "cache_creation_input_tokens": 16134,
+    "cache_read_input_tokens": 422300,
+    "output_tokens": 3982,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 16134,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 598,
+        "cache_read_input_tokens": 36279,
+        "cache_creation_input_tokens": 559,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 559
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.42640749999999994,
+  "duration_ms": 93041,
+  "num_turns": 14,
+  "wall_ms": 96443,
+  "is_error": false
+}

@@ -1,0 +1,41 @@
+{
+  "id": "T1-06",
+  "type": "T1",
+  "condition": "bare",
+  "answer": "Prisma",
+  "usage": {
+    "input_tokens": 2174,
+    "cache_creation_input_tokens": 5027,
+    "cache_read_input_tokens": 43375,
+    "output_tokens": 309,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 5027,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 6,
+        "cache_read_input_tokens": 22688,
+        "cache_creation_input_tokens": 3026,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 3026
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.07227925,
+  "duration_ms": 8701,
+  "num_turns": 3,
+  "wall_ms": 13361,
+  "is_error": false
+}

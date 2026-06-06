@@ -1,0 +1,41 @@
+{
+  "id": "T5-39",
+  "type": "T5",
+  "condition": "cnt",
+  "answer": "docs/adrs/ADR-0002-auth.md",
+  "usage": {
+    "input_tokens": 2488,
+    "cache_creation_input_tokens": 6677,
+    "cache_read_input_tokens": 46332,
+    "output_tokens": 227,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 6677,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 20,
+        "cache_read_input_tokens": 25143,
+        "cache_creation_input_tokens": 2723,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 2723
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.08359925,
+  "duration_ms": 10202,
+  "num_turns": 2,
+  "wall_ms": 13288,
+  "is_error": false
+}

@@ -1,0 +1,41 @@
+{
+  "id": "T2-10",
+  "type": "T2",
+  "condition": "bare",
+  "answer": "A CHANGELOG.md entry under the \"Unreleased\" → \"Added\" section.",
+  "usage": {
+    "input_tokens": 2717,
+    "cache_creation_input_tokens": 15974,
+    "cache_read_input_tokens": 183186,
+    "output_tokens": 2066,
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 15974,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "inference_geo": "not_available",
+    "iterations": [
+      {
+        "input_tokens": 2,
+        "output_tokens": 639,
+        "cache_read_input_tokens": 32228,
+        "cache_creation_input_tokens": 4450,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 4450
+        },
+        "type": "message"
+      }
+    ],
+    "speed": "standard"
+  },
+  "total_cost_usd": 0.25724650000000004,
+  "duration_ms": 61647,
+  "num_turns": 9,
+  "wall_ms": 65640,
+  "is_error": false
+}
