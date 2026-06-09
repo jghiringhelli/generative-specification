@@ -18,7 +18,7 @@ The document is organized around a single cognitive model: the **five memory typ
 
 **On practitioner evolution.** Expect heavy AI dialogue early — especially on your first few GS projects. You are learning the domain while writing the spec; the AI helps surface what you don't yet know to ask. This is correct practice, not a sign of inadequate specification. As your fluency builds, the dialogue contracts: later projects require only course corrections and directed expansions. The AI's role shifts from collaborator to executor. If you are still having the same kind of conversations after ten projects that you had on your first, the spec is incomplete — the dialogue is compensating for a gap that should be in the artifact set. The direction of expertise is: prompt less, specify more exactly.
 
-> **Paper reference:** This document is the companion methodology documentation explicitly referenced in §§6.5, 6.6, and 6.7 of the white paper (`GenerativeSpecification_WhitePaper.md`). The paper establishes the structural argument; this document provides the execution protocol.
+> **Reference:** This document is the companion methodology documentation explicitly referenced in §§6.5, 6.6, and 6.7 of the Compendium (`GenerativeSpecification_Compendium.md`). The Compendium establishes the structural argument; this document provides the execution protocol.
 
 ---
 

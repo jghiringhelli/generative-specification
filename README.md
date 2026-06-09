@@ -2,7 +2,9 @@
 
 Community home for the Generative Specification methodology — the first programming discipline of the pragmatic dimension, designed for a stateless reader.
 
-- [White Paper (PDF)](docs/white-paper/GenerativeSpecification_WhitePaper.pdf) · [Zenodo preprint](https://doi.org/10.5281/zenodo.19637142)
+- [White Paper](docs/white-paper/GenerativeSpecification_WhitePaper.md) — the focused publication paper (the Zenodo/arXiv version, derived from the Compendium)
+- [Compendium](docs/white-paper/GenerativeSpecification_Compendium.md) — the canonical, comprehensive source; the white paper, essays, and submissions derive from it
+- [Zenodo preprint](https://doi.org/10.5281/zenodo.19637142) — current published build
 - [Ambient Engineer — articles and essays](https://ambientengineer.substack.com)
 - [Experiment Supplement](docs/white-paper/GS_Experiment_Supplement.md)
 - [Practitioner Protocol](docs/white-paper/GenerativeSpecification_PractitionerProtocol.md)
@@ -14,8 +16,9 @@ Community home for the Generative Specification methodology — the first progra
 ```
 docs/
   white-paper/          Primary research documents
-                          GenerativeSpecification_WhitePaper.md   — source (Markdown)
-                          GenerativeSpecification_WhitePaper.pdf  — current release build
+                          GenerativeSpecification_Compendium.md   — canonical source (everything derives from it)
+                          GenerativeSpecification_WhitePaper.md    — derived publication paper (Zenodo/arXiv)
+                          GenerativeSpecification_WhitePaper.pdf   — current published build (PDF)
                           GS_Experiment_Supplement.md             — extended experiment data
                           GenerativeSpecification_PractitionerProtocol.md — how-to guide
                           REVIEWING.md                            — how to challenge a claim

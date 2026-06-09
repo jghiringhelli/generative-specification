@@ -180,4 +180,5 @@ Open an issue or start a discussion in this repository. The methodology is under
 
 ΓåÆ [Contribute a quality gate](quality-gates/CONTRIBUTING.md)  
 ΓåÆ [White paper](docs/white-paper/GenerativeSpecification_WhitePaper.md)  
+ΓåÆ [Compendium (full canonical source)](docs/white-paper/GenerativeSpecification_Compendium.md)  
 ΓåÆ [Practitioner Protocol](docs/white-paper/GenerativeSpecification_PractitionerProtocol.md)
