@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use or reference Generative Specification, please cite the white paper."
+title: "Generative Specification (research repository)"
+authors:
+  - family-names: Ghiringhelli
+    given-names: Juan Carlos
+    affiliation: PragmaWorks
+repository-code: "https://github.com/jghiringhelli/generative-specification"
+url: "https://github.com/jghiringhelli/generative-specification"
+keywords:
+  - generative specification
+  - AI-assisted development
+  - spec-driven development
+  - software engineering
+  - large language models
+  - stateless reader
+  - derivability
+preferred-citation:
+  type: article
+  title: "Generative Specification: A Discipline of Derivability for the Stateless Reader"
+  authors:
+    - family-names: Ghiringhelli
+      given-names: Juan Carlos
+      affiliation: PragmaWorks
+  year: 2026
+  # DOI minted on Zenodo deposit — fill in, then unfreeze nothing else:
+  doi: "10.5281/zenodo.XXXXXXX"
+  notes: "White paper (preprint), v4.0. The full ~115-page Compendium and all experiment evidence are in this repository; the ALX experiment is in github.com/jghiringhelli/loom."
