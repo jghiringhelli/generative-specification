@@ -484,6 +484,24 @@ A complete specification makes prompt engineering unnecessary. If the spec is co
 
 ---
 
+### 4.4.1 Current Best Exemplars by Property
+
+The six production case studies (§7) are the discovery substrate — early proof, built under still-maturing GS. More recent projects, built under mature versions of the discipline, are the stronger demonstrations of each property. The clearest current exemplar for each, with its concrete artifact:
+
+| Property | Best current exemplar | Concrete artifact |
+|---|---|---|
+| **Self-describing** | `pragmaworks` | `CLAUDE.md` + `docs/manifest.yaml` — a navigation manifest where every document location announces its domain (screaming architecture) |
+| **Bounded** | workshop instances `vaquita-b` vs `taskflow-b` | `score.json`: the bounded variant scored 2/2 with **zero** direct-DB-access violations; the unbounded one scored 0/2 with 31 — measured, reproducible, not hand-graded |
+| **Verifiable** | `lumen` | `reports/mutation/mutation.json` + the mutation-testing gate (MSI ≥ 80%) — proves *detection*, not merely execution |
+| **Defended** | `conclave` | `.forgecraft/project-gates.yaml` — pre-commit fintech gates citing exact production code lines; structural enforcement, not prose |
+| **Auditable** | `pragmaworks` | `docs/adrs/0001…0006` (each with context/decision/consequences) + conventional-commit history — decisions retrievable |
+| **Composable** | `conclave` | message-bus architecture: no cross-package imports, typed events, packages independently testable |
+| **Executable** | the EX experiment (Conduit) | `experiments/ex/evidence/slo-ramp-summary.json` + `experiments/ex/.../*.hurl` — behavioral contracts run against a live runtime |
+
+These illustrate the properties *at maturity*; the §7 case studies remain the record of how the rubric was discovered. The same exemplars anchor the derived white paper's property table, keeping the two documents consistent.
+
+---
+
 ## 5. Related Work: Relationship to Existing Principles
 
 Generative Specification does not replace the syntactic and semantic tier disciplines. It operates at the pragmatic tier: it constrains derivability for a stateless reader, a requirement the prior disciplines were not designed for because no widely-deployed stateless reader existed at their formulation. Each prior discipline removed a programmer freedom and in doing so made the code more predictable for its intended reader. The table below maps each discipline to the tier it occupies, the freedom it removes, and the GS property it satisfies — or the gap it leaves that GS fills.
