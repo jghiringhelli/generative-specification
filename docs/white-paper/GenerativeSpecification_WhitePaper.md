@@ -30,7 +30,7 @@ The empirical program is layered so that independent experiments establish disti
 
 ## 1. Introduction: The Stateless Reader
 
-On September 23, 1999, the Mars Climate Orbiter was destroyed because one team reported thruster impulse in pound-force seconds and another expected newton-seconds. Both components were internally correct. The interface contract between them had been *assumed, not written*. The failure was invisible everywhere except at the boundary, and it cost $327.6 million and two years to produce.
+On September 23, 1999, the Mars Climate Orbiter completed a nine-month, 416-million-mile crossing and arrived within 26 kilometers of its intended trajectory — then entered the Martian atmosphere at the wrong angle and was destroyed in 57 seconds. The cause was not a bug in any module. One team reported thruster impulse in pound-force seconds; the flight computer expected newton-seconds. Both components were internally correct, and *no test caught it — the code compiled cleanly.* The failure lived only at the boundary: the seam where two internally-coherent systems had to agree on a shared language they were never required to write down. The contract had been **assumed, not written**. It cost $327.6 million and two years to produce.
 
 Today an AI assistant produces an equivalent interface in thirty seconds. The code compiles, types check, unit tests pass — and embedded in the output is a set of implicit assumptions the model resolved silently. The Orbiter problem did not go away; the velocity of producing it increased by orders of magnitude.
 
@@ -87,6 +87,8 @@ The bridge is **asymmetric**, and this is the sharper claim. The training corpus
 ### 4.2 Cost Inversion
 
 In traditional development, implementation accumulates a sunk cost; when a specification conflicts with a built system, the rational response is to amend the specification, because the code is load-bearing and the specification is not. GS inverts this. When regeneration is near-free, implementation carries no sunk cost: fix the specification and regenerate. The specification is *not* reliably recoverable from code — decisions, alternatives considered, and accumulated rationale resist reconstruction. Code becomes an implementation residue. **The scarce resource is no longer the ability to write code; it is the ability to specify correctly.**
+
+A directional model captures the consequence: **I ∝ (1−S)/S**, where *S* is specification completeness and *I* is the expected number of correction iterations. This is no formal claim — the curve only visualizes the direction: each freedom the specification leaves unclosed is an additional correction cycle, and the cost rises sharply as *S* falls toward zero. The AX series provides cross-condition support; DX will supply the first cross-practitioner correlation test. Full treatment in the Compendium (§9.4).
 
 ### 4.3 Token Economics and the Discipline-Role Taxonomy
 
