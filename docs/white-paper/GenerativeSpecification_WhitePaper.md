@@ -10,7 +10,9 @@ description: "Generative Specification: A Pragmatic Programming Paradigm for the
 **Author:** Juan Carlos Ghiringhelli (PragmaWorks)
 **Version:** 4.0 · **Date:** June 2026 · **Status:** Preprint
 
-> **This is the white paper** — the focused, publication-length statement of the methodology, intended for Zenodo and arXiv. It is *derived from* the **Compendium** (`GenerativeSpecification_Compendium.md`), the canonical source that carries the full evidence, the failure-mode catalog, the practitioner protocol, the formal-disciplines treatment, and the biological-isomorphism frontier. Where this paper compresses, the Compendium expands; both are kept consistent.
+> **This is the white paper** — the focused, publication-length statement of the methodology, intended for Zenodo and arXiv. It is *derived from* the **Compendium** — the canonical, ~115-page source that carries the full evidence, the failure-mode catalog, the practitioner protocol, the formal-disciplines treatment, and the biological-isomorphism frontier. Every claim and number here is traceable there, and the experiment evidence is committed in the public repository. Where this paper compresses, the Compendium expands; both are kept consistent.
+>
+> **Full story and verification:** the Compendium and all committed experiment evidence (AX/DX/EX/KX/ALX/RX, with per-run JSON) live at [`github.com/jghiringhelli/generative-specification`](https://github.com/jghiringhelli/generative-specification) — Compendium at [`docs/white-paper/GenerativeSpecification_Compendium.md`](https://github.com/jghiringhelli/generative-specification/blob/main/docs/white-paper/GenerativeSpecification_Compendium.md), experiments under [`experiments/`](https://github.com/jghiringhelli/generative-specification/tree/main/experiments).
 
 ---
 
