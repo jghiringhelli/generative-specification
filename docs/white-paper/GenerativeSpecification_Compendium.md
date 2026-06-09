@@ -486,19 +486,19 @@ A complete specification makes prompt engineering unnecessary. If the spec is co
 
 ### 4.4.1 Current Best Exemplars by Property
 
-The six production case studies (§7) are the discovery substrate — early proof, built under still-maturing GS. More recent projects, built under mature versions of the discipline, are the stronger demonstrations of each property. The clearest current exemplar for each, with its concrete artifact:
+The six production case studies (§7) are the discovery substrate — early proof, built under still-maturing GS. More recent work demonstrates each property more cleanly; where that work is **public** it is cited here, so every exemplar is independently verifiable. (Two of the strongest internal exemplars — a fintech decision engine and a HIPAA data platform — are client-confidential and are deliberately *not* cited as public evidence; the public anchors below are sufficient to inspect each property.)
 
-| Property | Best current exemplar | Concrete artifact |
+| Property | Public exemplar | Concrete, verifiable artifact |
 |---|---|---|
-| **Self-describing** | `pragmaworks` | `CLAUDE.md` + `docs/manifest.yaml` — a navigation manifest where every document location announces its domain (screaming architecture) |
-| **Bounded** | workshop instances `vaquita-b` vs `taskflow-b` | `score.json`: the bounded variant scored 2/2 with **zero** direct-DB-access violations; the unbounded one scored 0/2 with 31 — measured, reproducible, not hand-graded |
-| **Verifiable** | `lumen` | `reports/mutation/mutation.json` + the mutation-testing gate (MSI ≥ 80%) — proves *detection*, not merely execution |
-| **Defended** | `conclave` | `.forgecraft/project-gates.yaml` — pre-commit fintech gates citing exact production code lines; structural enforcement, not prose |
+| **Self-describing** | `pragmaworks` ([repo](https://github.com/jghiringhelli/pragmaworks)) | `CLAUDE.md` — a navigation root where every document location announces its domain (screaming architecture) |
+| **Bounded** | the DX study (`experiments/dx`) | bounded violations (e.g. direct DB access bypassing the repository layer) are machine-counted per submission across all 83 analyzable branches — measured, not hand-graded |
+| **Verifiable** | AX (`experiments/ax`) | a Stryker mutation gate drove the mutation score from 58.6% to 93.1% MSI — proving *detection*, not merely line execution |
+| **Defended** | AX (`experiments/ax`) | the Defended property moved 0/2 → 2/2 only once gates were emitted as fenced file templates (the First Response Requirements) — structural enforcement, measured |
 | **Auditable** | `pragmaworks` | `docs/adrs/0001…0006` (each with context/decision/consequences) + conventional-commit history — decisions retrievable |
-| **Composable** | `conclave` | message-bus architecture: no cross-package imports, typed events, packages independently testable |
-| **Executable** | the EX experiment (Conduit) | `experiments/ex/evidence/slo-ramp-summary.json` + `experiments/ex/.../*.hurl` — behavioral contracts run against a live runtime |
+| **Composable** | AX (`experiments/ax`) | interface-based dependency injection — the GS contribution over expert prompting — so a stateless reader can work a unit in isolation |
+| **Executable** | EX (`experiments/ex`) | `evidence/slo-ramp-summary.json` + the Hurl probe suite — behavioral contracts run against a live runtime |
 
-These illustrate the properties *at maturity*; the §7 case studies remain the record of how the rubric was discovered. The same exemplars anchor the derived white paper's property table, keeping the two documents consistent.
+Every exemplar above is in a public repository (`generative-specification` for the experiments, `jghiringhelli/pragmaworks` for the reference project); the §7 case studies remain the record of how the rubric was discovered. The same anchors appear in the derived white paper, keeping the two documents consistent.
 
 ---
 
