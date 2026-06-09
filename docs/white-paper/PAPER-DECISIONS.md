@@ -570,6 +570,27 @@ terminus, anti-drift formula). All §7 case study evidence and metrics.
 
 ---
 
+## June 9, 2026 — §5.3 Field corroboration (W1: McBrokers) + Compendium/White-Paper split + review reframe
+
+**Trigger:** First paying-cohort delivery (McBrokers "La Fragua," four-day workshop, June 2–5 2026), full transcripts mined; plus a reviewer pass on the derived white paper (overall A−/B+, publishable after a short fix list).
+
+**Decision:**
+1. **Document split.** The long document was repositioned as the **Compendium** (canonical, ~115 pp); a focused **white paper** (~8–10 pp, *A Discipline of Derivability for the Stateless Reader*) was derived from it for Zenodo/arXiv. The *Onwards* essay and conference submissions also derive from the Compendium.
+2. **Title softened; paradigm demoted.** Dropped "A Pragmatic Programming Paradigm" from the title; the pragmatic-tier placement is now an explicitly-labeled *proposed lens*, not load-bearing for the evidence, with "paradigm" scoped to Martin's narrow sense and an explicit no-Kuhnian-claim caveat. The abstract now leads with the defended thesis and each experiment's proof-point.
+3. **§5.3 Field corroboration (W1) added** as *observational* evidence — fenced (no control, no blind scoring, no pre-registration, single self-selected cohort) and tied to §4.3. It shows the controlled findings recur on a real team and codebase and surfaces the failure modes the controlled program then tests.
+4. **Public-sourcing.** Every cited exemplar was re-anchored to public repositories (the experiments + `pragmaworks`). ALX is correctly located in `github.com/jghiringhelli/loom`, not `generative-specification`.
+
+**Preserved (the Auditable trail — do not quietly undo):**
+- **The ~70% token-reduction figure is conceded UNPROVEN.** It was stated to the W1 cohort, on camera, as *"un número mágico… no tengo grandes pruebas."* The paper therefore does **not** claim a measured end-to-end token reduction: §4.3 flags the per-correct-output economy as a *reasoned argument* supported only by the measured **KX** retrieval proxy. This concession is the rationale for that hedge and must not be re-inflated into a measured claim without a powered experiment.
+- The strongest internal exemplars — a fintech decision engine (*conclave*) and a HIPAA data platform (*lumen*) — are **client-confidential** and deliberately not cited as public evidence.
+- The honest negatives that are the paper's strongest credibility signal: DX p=.076 (not significant at the conventional threshold), the AX v4 regression (non-monotonic trajectory), and the falsified DX timing hypothesis.
+
+**Rejected options:** (a) presenting W1 as controlled evidence — it is not; (b) omitting W1 — a methodology's claim to practice is incomplete without one account of it meeting a real team; (c) keeping conclave/lumen as cited exemplars — unverifiable to readers and a client-confidentiality risk.
+
+**Open:** A controlled, multi-cohort study (DX2/DX3) is the path from corroboration to confirmation — and the powered test of the token economy that would let the per-session figure be *claimed* rather than reasoned.
+
+---
+
 ## Open questions for next revision (v3.0, post-DX2/DX3)
 
 1. **§7.8.A.1** — Replace "in progress" with DX2 and DX3 actual results when available.

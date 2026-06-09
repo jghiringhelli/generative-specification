@@ -1,13 +1,14 @@
-# Generative Specification — Experiment Supplement
+# Generative Specification — AX Experiment Supplement (Multi-Agent Adversarial Study)
 
-**Companion to:** *Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader*
-**Section:** §7.7.B — Multi-Agent Adversarial Study
-**Supplement version:** 1.4 (eight-condition; treatment-v6 GS ecosystem compounding results incorporated)
+**Companion to:** *Generative Specification: A Discipline of Derivability for the Stateless Reader*
+**Scope:** this supplement covers the **AX experiment only** — §5.2 (white paper) / §7.8.B (Compendium).
+**Other experiments:** BX, CX, DX, EX, KX, RX evidence is committed under `experiments/<name>/` in this repository; ALX under `experiments/alx/` in `github.com/jghiringhelli/loom`.
+**Supplement version:** 1.4 (eight pre-registered conditions plus the ninth construction-invariance condition; treatment-v6 GS ecosystem compounding results incorporated)
 **Date:** March 14, 2026
 **Repository:** `github.com/jghiringhelli/generative-specification` (experiments/)
 **Contact:** jcghiri@gmail.com
 
-This document contains the complete verifiable evidence underlying §7.7.B of the white paper: prompt texts, session IDs, scoring rubric, per-condition audit transcripts, full metric tables, mutation testing progression, and the treatment-v2 post-hoc analysis. Its purpose is replicability — a researcher with access to the benchmark and the model can reproduce every number in this supplement and verify the paper's claims from primary sources.
+This document contains the complete verifiable evidence underlying the AX study (§5.2 / §7.8.B): prompt texts, session IDs, scoring rubric, per-condition audit transcripts, full metric tables, mutation testing progression, and the treatment-v2 post-hoc analysis. Its purpose is replicability — a researcher with access to the benchmark and the model can reproduce every number in this supplement and verify the paper's claims from primary sources.
 
 ---
 
