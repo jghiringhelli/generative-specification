@@ -135,17 +135,20 @@ inferred structure on structural queries*, not general superiority.
 ## Part III — Closing the Loop: learning-graph.csv Emission
 
 As of forgecraft-mcp post-`7a4b18e`, `setup_project` emits
-`docs/learning-graph.csv` — the harness serialized in the paper's exact
-Definition 1 schema (`ConceptID,ConceptLabel,Dependencies,TaxonomyID`,
-DAG-validated). Concepts are the harness artifacts (CNT branches, docs, ADRs,
-use cases, specs, gates, standards, linked source); edges are reading order
-(routing table, doc obligations, derivation chains, @gs-links). The T8
-Conduit harness serializes to **83 concepts / 99 edges** — within the
-McCreary corpus size band (25–550).
+`docs/learning-graph.csv` — the harness serialized in the benchmark's
+Definition 1 *column format* (`ConceptID,ConceptLabel,Dependencies,TaxonomyID`).
+Nodes are the harness artifacts (CNT branches, docs, ADRs, use cases, specs,
+gates, standards, linked source) — not atomic learnable concepts; edges are
+reading order (routing, doc obligations, derivation chains, @gs-links) folded
+into one column, generalized from the benchmark's single prerequisite relation;
+`TaxonomyID` denotes artifact class, not a subject-domain taxonomy. The graph is
+acyclic by construction (DFS-verified in the test suite, not at write time) and
+deterministic. The T8 Conduit harness serializes to **83 nodes / 99 edges** —
+comfortably within the benchmark's reported corpus-size range.
 
-Consequence: every ForgeCraft project is a benchmarkable CKG domain,
-directly consumable by the open ckg-benchmark harness, and a candidate
-domain contribution to that benchmark.
+Consequence: every ForgeCraft project is serializable into the benchmark's input
+format as an artifact-dependency graph — a CKG-*shaped* structure rather than a
+concept learning-graph — directly consumable by the open ckg-benchmark harness.
 
 ## Suggested white-paper placements
 
