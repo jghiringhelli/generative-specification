@@ -142,8 +142,8 @@ gates, standards, linked source) — not atomic learnable concepts; edges are
 reading order (routing, doc obligations, derivation chains, @gs-links) folded
 into one column, generalized from the benchmark's single prerequisite relation;
 `TaxonomyID` denotes artifact class, not a subject-domain taxonomy. The graph is
-acyclic by construction (DFS-verified in the test suite, not at write time) and
-deterministic. The T8 Conduit harness serializes to **83 nodes / 99 edges** —
+validated acyclic at emission (a write-time cycle check throws on any back-edge)
+and deterministic. The T8 Conduit harness serializes to **83 nodes / 99 edges** —
 comfortably within the benchmark's reported corpus-size range.
 
 Consequence: every ForgeCraft project is serializable into the benchmark's input
