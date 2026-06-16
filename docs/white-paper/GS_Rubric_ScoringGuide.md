@@ -301,7 +301,7 @@ The Self-describing property requires that an artifact announce its own intent a
 ```yaml
 ---
 id: UC-014                 # stable identifier; unique within the spec corpus
-type: use-case            # closed enum: constitution | spec-section | use-case | adr | gate | pattern | status
+type: use-case            # closed enum: constitution | sentinel-node | spec-section | use-case | adr | gate | pattern | status
 status: active            # closed enum: draft | active | superseded | archived
 tier: T2                  # obligation-cascade tier this artifact serves (T1..T5); see Compendium §4.3
 properties: [verifiable, executable]   # which of the 7 this artifact serves; closed vocabulary (the 7 names)
@@ -325,6 +325,22 @@ depends_on: [UC-002, ADR-0006]   # ids this artifact derives from or requires; p
 | `depends_on` | Upstream artifact ids. | router (load order), Composable (dependency-direction check), Auditable |
 
 Rules: keys are optional individually but **the set is closed** (no free-form keys); enum values are fixed; a document carries frontmatter **only if a listed consumer reads at least one of its keys**. A constitution root and a use case will carry frontmatter; a narrative essay should not.
+
+**Sentinel-tree nodes — the case where this pays off most.** A node of the sentinel navigational tree (Bounded, Compendium §4.4) turns its prose scope-and-routing declaration into a machine-navigable, *verifiable* contract. A node carries `type: sentinel-node` plus four routing keys:
+
+```yaml
+---
+node: ecosystem            # node name within the tree
+type: sentinel-node
+scope: tools, repos, project map        # one line: what this node covers
+load: on-demand            # closed enum: always (root/core) | on-demand (descend when relevant)
+categories: [routing, tool-sequencing]  # which of the 5 required categories it contributes; closed vocabulary:
+                                         #   architectural-identity | standards | constraints | tool-sequencing | routing
+routes_to: [papers, files, website]     # child node ids the agent may descend to
+---
+```
+
+This makes the tree's invariants checkable by a tool rather than asserted in prose: (1) the **root stays within the bounded line budget** and is the only node with `load: always`; (2) across all nodes the five required categories are **collectively present** — a gate can fail a tree that declares no `tool-sequencing` node, the most commonly absent and most consequential category (§4.4); (3) `routes_to` must resolve to real nodes, so the tree is provably connected and lossless. The router descends by `routes_to` deterministically instead of inferring from prose. ForgeCraft's sentinel renderer (the source-of-truth that generates the per-agent copies) is the natural emitter and validator of this frontmatter, and its drift check verifies it; hand-written sentinels adopt it once that consumer is in place — the same minimal-sufficient rule.
 
 ---
 
