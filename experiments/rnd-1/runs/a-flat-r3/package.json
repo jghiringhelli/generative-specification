@@ -1,0 +1,12 @@
+{
+  "name": "a-flat-r3",
+  "version": "1.0.0",
+  "description": "Spec A descriptivo — run r3",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
