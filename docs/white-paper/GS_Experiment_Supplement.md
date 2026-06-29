@@ -2,7 +2,7 @@
 
 **Companion to:** *Generative Specification: A Discipline of Derivability for the Stateless Reader*
 **Scope:** this supplement covers the **AX experiment only** — §5.2 (white paper) / §7.8.B (Compendium).
-**Other experiments:** BX, CX, DX, EX, KX, RX evidence is committed under `experiments/<name>/` in this repository; ALX under `experiments/alx/` in `github.com/jghiringhelli/loom`.
+**Other experiments:** BX, DX, EX, KX, RX evidence is committed under `experiments/<name>/` in this repository; ALX under `experiments/alx/` in `github.com/jghiringhelli/loom`.
 **Supplement version:** 1.4 (eight pre-registered conditions plus the ninth construction-invariance condition; treatment-v6 GS ecosystem compounding results incorporated)
 **Date:** March 14, 2026
 **Repository:** `github.com/jghiringhelli/generative-specification` (experiments/)
@@ -448,6 +448,8 @@ After the auditor scored treatment-v5 at 14/14 based on the model-generated `INT
 | Runner `JWT_SECRET` = 29 chars; model enforces ≥32 chars → all suites crash on import | Secret too short for the model’s own startup validation | Set `JWT_SECRET` to 37-char secret in runner env | `f0fcd72` |
 
 **Result (Run 4 post-fix):** 109/109 tests, 11 suites, 0 failures. Verify loop converged in 2 passes (was exhausting 5 in v4). The `$executeRawUnsafe` multi-statement SQL anti-pattern that caused the persistent jest failures was also documented in the CLAUDE.md Known Type Pitfalls section, so future runs will not generate the pattern from the start.
+
+**Reconciliation with the white paper.** The white paper reports this result conservatively as "109 runner-verified tests (106 passing on independent re-run)." The 109/109 above is the author's runner-verified figure; a later independent third-party reproduction reproduced 106 of the 109. Both refer to the same suite under two runs — author-verified here, independent there — and the paper cites the lower independent number for conservatism. The two figures are consistent, not contradictory.
 
 **Note on the audit score.** The auditor’s 14/14 was correct in direction but the Executable justification was based on the model’s `INTEGRATION_REPORT.md`. The runner confirmation does not change the score — it changes the epistemic basis. The audit methodology is sound; the runner adds the verification layer the audit cannot provide.
 
