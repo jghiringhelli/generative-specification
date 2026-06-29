@@ -38,6 +38,8 @@ This is not an argument against AI-assisted development. It is an argument for w
 
 The answer is a specification precise enough that a **stateless reader** — one with no memory of your intentions, no shared context, no ability to ask a clarifying question — can derive correct output from it alone. That discipline is what this work defines.
 
+That the reader is stateless is not a limitation to engineer around but the unexamined condition of every AI session — taken as an inescapable reality rather than named as a solvable constraint. The three failures practitioners report — no reliable process, no warranted trust, unreliable results — are its symptoms; naming the constraint is the precondition for removing them.
+
 **This work requires an AI agent with direct CLI access** — not a chat assistant, but an agent that can read and write files, run tests, commit, and execute commands (Claude Code, Cursor, and agentic IDE modes qualify). The methodology does not apply to chat-based interfaces.
 
 **Contributions.** (1) The **derivability obligation** — naming implicit-context removal as the defining structural constraint of AI-assisted development. (2) **A proposed theoretical placement** — situating the discipline in the pragmatic tier of the syntactic/semantic/pragmatic tripartition, offered as a conceptual lens distinct from (and not load-bearing for) the empirical claims. (3) The **seven-property rubric** — a teachable, scored instrument validated across production projects and 83 practitioner submissions. (4) **Phase collapse** — specification, implementation, and verification collapsing into a single derivation step when the spec is complete and the executor is capable. (5) **The bridge and its asymmetry** — the positive premise for why externalized intent is derivable, and why the load moves to the model's stronger bank. (6) **Cost inversion and the token economics of authored structure** — tokens-per-correct-output, not tokens-generated, as the binding metric. (7) A **layered validation program** (AX/BX/DX plus EX/KX/ALX/RX) in which independent experiments close distinct sources of circularity.
@@ -70,7 +72,7 @@ The discipline is operationalized as seven properties, each named for a class of
 
 These properties are not independent virtues; they partition by **functional role** (§4.3). Two — Self-describing and Bounded — carry disproportionate weight, because a bounded, self-describing specification activates the model's relevant domain knowledge (a schema-fit effect: Bransford & Johnson, 1972) rather than its full prior distribution.
 
-The Verifiable and Defended properties are not new instruments; they are the obligation to *apply* the standard quality toolchain and gate on it. The verification layer is assembled from type checkers, linters (ESLint), test-coverage and cyclomatic-complexity gates, mutation testing (Stryker), dependency-vulnerability scans (`npm audit`), and quality-gate platforms such as SonarQube. GS does not reinvent these — it specifies which gates apply where and makes passing them the definition of *done* for a stateless executor that otherwise reports success on byte-write, not on correctness. Crucially, the project-specific gates are a **ledger of paid-for incidents**: each encodes a real production failure the discipline already paid for once — a field finding promoted to a named *forbidden pattern* and then to a versioned, shareable gate that carries the original incident as provenance. The rule set accumulates from observed failure, not opinion, which is what makes it cumulative and falsifiable. Those same tools, being rubric-independent, double as external corroboration of the GS scores (§6).
+The Verifiable and Defended properties are not new instruments; they are the obligation to *apply* the standard quality toolchain and gate on it. The verification layer is assembled from type checkers, linters (ESLint), test-coverage and cyclomatic-complexity gates, mutation testing (Stryker), dependency-vulnerability scans (`npm audit`), and quality-gate platforms such as SonarQube. GS does not reinvent these — it specifies which gates apply where and makes passing them the definition of *done* for a stateless executor that otherwise reports success on byte-write, not on correctness. Crucially, the project-specific gates are a **ledger of paid-for incidents**: each encodes a real production failure the discipline already paid for once — a field finding promoted to a named *forbidden pattern* and then to a versioned, shareable gate that carries the original incident as provenance. The rule set accumulates from observed failure, not opinion, which is what makes it cumulative and falsifiable. This is **the ratchet**: it does not reverse — every defect resolved becomes a test and a permanent rule, every ambiguity an ADR that closes a decision for good. A defect, in this frame, is not evidence the method failed but a **specification query** — *what constraint, had it been present, would have ruled this out?* — and once that constraint is written, the class of output that produced the defect becomes unreachable. Those same tools, being rubric-independent, double as external corroboration of the GS scores (§6).
 
 The properties also generate a **diagnostic catalog**: their observable violations resolve into twenty-nine named pathologies (Architectural Drift, Session Amnesia, Implicit Contract Syndrome, and so on), each mapping to one or more absent properties and to the tier of the lifecycle cascade that structurally repairs it. The catalog is the rubric made actionable; it is developed in full in the Compendium.
 
@@ -80,7 +82,7 @@ The properties also generate a **diagnostic catalog**: their observable violatio
 
 ### 4.1 The Bridge
 
-The negative premise of GS is the stateless reader (the problem) and the navigational structure that bounds its context (a mechanism). The **positive** premise — why externalizing intent into structure actually *produces correct derivation* — is the bridge.
+The negative premise of GS is the stateless reader (the problem) and a navigational structure that bounds its context (a mechanism): the **sentinel navigational tree** — a hierarchy of specification files in which each node declares its own scope and routes to its children, so a session loads only the slice the task needs instead of the whole corpus. A well-formed tree carries five categories — architectural identity, standards, constraints and prohibitions, tool sequencing, and routing; **tool sequencing is the most commonly absent and the most consequential gap**, because a tree that lists tools without stating when to prefer one over another forces unreliable inference. The **positive** premise — why externalizing intent into structure actually *produces correct derivation* — is the bridge.
 
 Every structural discipline is a **bridge between human conceptual language and executable code**: intentional naming, the specification, SOLID, domain-driven ubiquitous language, type-driven design, design by contract. Each encodes human meaning in a form the machine can act on, and machine behavior in a form the human can verify. These disciplines were built to carry intent across that gap for the *next human reader*. The transformer is the **first reader trained on both banks** — the corpus of human language and the corpus of code — and therefore the first that can cross the bridge in both directions: read intent encoded as structure, and emit code that encodes intent. GS works because it makes building and maintaining that bridge the primary act of development.
 
@@ -90,6 +92,8 @@ The bridge is **asymmetric**, and this is the sharper claim. The training corpus
 
 In traditional development, implementation accumulates a sunk cost; when a specification conflicts with a built system, the rational response is to amend the specification, because the code is load-bearing and the specification is not. GS inverts this. When regeneration is near-free, implementation carries no sunk cost: fix the specification and regenerate. The specification is *not* reliably recoverable from code — decisions, alternatives considered, and accumulated rationale resist reconstruction. Code becomes an implementation residue. **The scarce resource is no longer the ability to write code; it is the ability to specify correctly.**
 
+At portfolio scale this compounds into **specification bandwidth** — the binding constraint shifts from execution capacity to the rate at which intent can be correctly externalized into a durable specification. A project in a waiting state (deploy running, output under review) demands no execution from the practitioner, so portfolio size is bounded by status management, not execution load. And because the specification certifies *what* a valid implementation state is while the executor supplies the *how* within that boundary, the correctness criterion becomes **convergence, not inspection** — what we call **contract sufficiency**: the reader navigates and verifies against the contract instead of reading the derivation line by line.
+
 A directional model formalizes this: **I ∝ (1−S)/S**, where *S* is specification completeness — the fraction of the output space the specification closes — and *I* is the expected number of correction iterations. It is a *mental model, not a formal result*: no units, no proportionality constant, no magnitude prediction. What it communicates is direction — each freedom the specification leaves unclosed is an additional correction cycle, and the cost rises sharply as *S* falls toward zero. The AX series gives cross-condition directional support (3/14 → 14/14 across eight conditions as *S* rises); DX will supply the first cross-practitioner correlation test. Full treatment in the Compendium (§9.4).
 
 ### 4.3 Token Economics and the Discipline-Role Taxonomy
@@ -98,7 +102,7 @@ The one substantive objection GS meets in the field is token expenditure: writin
 
 The mechanism is retrieval economics. An authored specification is a member of the **compact-knowledge-graph (CKG)** family — a small, enumerable, closed-vocabulary structure the reader navigates instead of re-deriving from prose at every query. Yarmoluk and McCreary (2026) benchmark this directly for knowledge retrieval: a pre-authored CKG costs ≈11× fewer tokens at ≈3.8× higher accuracy than chunked-prose RAG or query-time graph extraction, concluding that "when expert structure is available, the dynamic extraction step is wasted computation." The GS navigation tree generalizes the CKG's single prerequisite relation to the executor's full operating path: navigation across cascade documents, dependency direction, applicable disciplines, and inviolable constraints.
 
-This frames a GS session as **retrieve → generate → verify**. The read side is a retrieval problem, attacked from both ends — authoring the structure (the navigation tree) *and* shaping the code to be retrievable (the disciplines), with a code-search engine as the traversal. The harness is the categorically distinct *verify* step, which checks output against the specification. GS is therefore retrieval-augmented *and verified* generation, with the retrieval **authored rather than inferred**.
+This frames a GS session as **retrieve → generate → verify**. The read side is a retrieval problem, attacked from both ends — authoring the structure (the navigation tree) *and* shaping the code to be retrievable (the disciplines), with a code-search engine as the traversal. The harness is the categorically distinct *verify* step — **generative execution**: the full test pyramid (unit, integration, E2E, mutation, contract, NFR) plus multimodal-AI-as-QA exercised against the live application, not assumed from compilation — which checks output against the specification. GS is therefore retrieval-augmented *and verified* generation, with the retrieval **authored rather than inferred**.
 
 This sorts the seven properties by **functional role**:
 
@@ -109,6 +113,8 @@ This sorts the seven properties by **functional role**:
   - *Decision-memory* — read the **why**: ADRs, conventional commits, engineering decision records → Auditable. Enforced by the cascade documents.
 
 A discipline may serve more than one role; the grouping is by dominant function. Naming the role explains why the seven properties partition as they do — and why a codebase strong on verification yet weak on legibility and bounding still reads expensively.
+
+A corollary sharpens the boundary with prompt engineering: **a complete specification makes prompt engineering unnecessary.** If the specification closes the output space, the stateless reader derives the correct output from the grammar alone; a few-shot example is needed only where a constraint has not yet been stated — the example compensating for an incomplete specification, not improving a complete one.
 
 ---
 
@@ -172,6 +178,32 @@ The most serious risk is **guidance circularity**: GS guided the implementations
 ## 8. Conclusion
 
 Architectural drift at generation speed is the anomaly that documentation-based convention cannot structurally prevent. The reconstitution is the specification becoming the primary artifact, with code as derived output, governed for a reader that carries no context of its own. The discipline is replicable (RX), measurable (the rubric, KX), and demonstrable in production (EX) and at the formal tier (ALX); it transfers to practitioners in a single session (DX, with honest qualification) and recurs in the field. The specification is the mold. The AI is the foundry. The scarce resource — the one that does not regenerate for free — is the judgment to specify correctly.
+
+---
+
+## 9. Lexicon of Coined Terms
+
+The discipline introduces a vocabulary; these are the load-bearing coinages, collected for citation. Each is developed in the section noted (full glossary in the Compendium).
+
+| Term | Meaning | Developed in |
+|---|---|---|
+| **Stateless reader** | An executor that begins each session with no memory, no shared context, and no ability to ask — the reader GS specifies for. | §1 |
+| **Architectural drift** | The dominant failure mode: locally-reasonable decisions that diverge across session, team, and service boundaries. | §1, §3 |
+| **Derivability** | What a stateless reader can correctly determine from the artifacts alone; GS's binding constraint. | §1–2 |
+| **The pragmatic tier** | The semiotic level (signs to a contextless interpreter) GS occupies — the tier prior disciplines left vacant. | §2 |
+| **Paradigm of removal** | A discipline defined by what it removes from programmer freedom (Martin's sense); GS removes implicit intent. | §2 |
+| **Phase collapse** | Specification, implementation, and verification converging in a single session when the spec is complete and gates close the loop. | §1 |
+| **Schema-fit effect** | A bounded, self-describing specification activates the model's relevant domain knowledge rather than its full prior. | §3 |
+| **The ratchet** | Accumulated tests, rules, and ADRs that do not reverse — each resolved defect a permanent constraint. | §3 |
+| **Specification query** | A defect reframed as the missing constraint that, had it been present, would have ruled it out. | §3 |
+| **The bridge (asymmetric)** | Structural disciplines bridge human language and code; the transformer is fluent on both banks, stronger on meaning — so intent is routed through its strong half. | §4.1 |
+| **Sentinel navigational tree** | A scoped, routing hierarchy of specification files that bounds the session's context to the slice the task needs. | §4.1 |
+| **Cost inversion** | When regeneration is near-free, the specification — not the code — becomes the scarce, load-bearing artifact. | §4.2 |
+| **Specification bandwidth** | The portfolio-scale binding constraint: the rate at which intent can be correctly externalized into a durable specification. | §4.2 |
+| **Contract sufficiency** | The spec certifies *what* a valid state is; the executor supplies the *how*; correctness is convergence, not inspection. | §4.2 |
+| **Generative execution** | The verify step: the full test pyramid plus multimodal-AI-as-QA exercised against the live application. | §4.3 |
+| **Compact knowledge graph (CKG)** | An authored, navigable structure the reader traverses instead of re-deriving from prose at every query. | §4.3 |
+| **Tokens-per-correct-output** | The binding token metric, not tokens-generated. | §4.3 |
 
 ---
 
