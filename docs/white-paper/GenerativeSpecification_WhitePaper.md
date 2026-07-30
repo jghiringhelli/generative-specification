@@ -322,7 +322,7 @@ Full bibliography, glossary, the twenty-nine-pathology catalog, a practitioner p
 - Martin, R. C. *Clean Architecture* — paradigm as constraint.
 - Bransford, J. D., & Johnson, M. K. (1972). Contextual prerequisites for understanding. *JVLVB.*
 - Yarmoluk, D., & McCreary, D. (2026). *Benchmarking Knowledge Retrieval Architectures: RAG, GraphRAG, and Compact Knowledge Graphs.* v0.6.2 preprint. `github.com/Yarmoluk/ckg-benchmark`
-- Gordon (2024, ACM Onward!). *The Linguistics of Programming.*
+- Gordon, C. S. (2024). *The Linguistics of Programming.* ACM SIGPLAN Onward! 2024 (Onward! Essays). https://doi.org/10.1145/3689492.3689806
 - Jimenez, C. E., et al. (2024). *SWE-bench: Can Language Models Resolve Real-World GitHub Issues?* ICLR.
 - Brown, T. B., et al. (2020). *Language Models are Few-Shot Learners.* NeurIPS.
 - Wei, J., et al. (2022). *Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.* NeurIPS.
