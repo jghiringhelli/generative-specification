@@ -131,8 +131,8 @@ concrete:
 |---|---|---|
 | **Session Amnesia** | the model repeats a decision you already corrected | **Auditable** — the correction is on record, so the next session inherits it |
 | **Implicit Contract Syndrome** | two systems agreed on nothing (the Mars Orbiter problem) | **Executable** — behavioral contracts run against the live boundary |
-| **Specification Absence** | no sentinel, no architecture decision on record | **Self-describing** — intent and scope are externalized, not inferred |
-| **Implicit Architecture** | the structure lives in someone's head | **Bounded** — explicit scope and seams make it inspectable |
+| **Specification Absence** | no sentinel, no architecture decision on record | **Bounded** — the sentinel bounds and routes the reader's context; without it, everything must be scanned |
+| **Implicit Architecture** | the structure lives in someone's head | **Self-describing** — screaming architecture: naming and layering announce the structure, so it is never inferred |
 | **AI Security Blindspot** | the supply chain is ungoverned | *none of the seven — the rubric misses this; spec it separately* (`npm audit` gate + approved-library list) |
 | **Test Theater** | high line coverage, low mutation score | **Verifiable** — mutation measures what was *caught*, not what ran |
 
