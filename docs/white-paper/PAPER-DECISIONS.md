@@ -263,10 +263,9 @@ as a standalone technical appendix, restore the original name.
 
 ---
 
-## April 13, 2026 — DX results integration + Contract Sufficiency (`f9f13f1`)
+## April 13, 2026 — Contract Sufficiency + adversarial critique pass (`f9f13f1`)
 
-**Trigger:** DX experiment ran April 10, 2026 (Mitikah, Mexico City). Results
-available. Final adversarial critique pass before arXiv submission.
+**Trigger:** Final adversarial critique pass before arXiv submission.
 
 **Decisions:**
 
@@ -276,47 +275,22 @@ available. Final adversarial critique pass before arXiv submission.
    states *what* must be true; it does not prescribe *how* the AI achieves it.
    Promiscuous specification (over-specifying how) is a distinct failure mode.
 
-2. **DX results integrated as §7.8.A.1.** 58 developers (not pre-registered 40).
-   Three design deviations from pre-registration acknowledged explicitly:
-   - Greenfield project (Vaquita) instead of brownfield
-   - Two successive sessions, not one
-   - Condition labels inverted
-   The two-part finding is stated plainly: GS discipline transfers in one session;
-   ForgeCraft revealed a temporal mismatch artifact (non-starter failure mode) that
-   is a product gap, not a methodology gap.
+2. **§8.2.2 "The Industrial Threshold"** added.
 
-3. **"Non-starter failure mode" named** for ForgeCraft: front-loading cognitive
-   investment without scaffolded implementation guidance. The fix is a product
-   change (guided onboarding), not a methodology change.
-
-4. **§8.2.2 "The Industrial Threshold"** added.
-
-5. **AX study: seven → eight conditions** (one more post-hoc condition from
+3. **AX study: seven → eight conditions** (one more post-hoc condition from
    iterative gap-closing).
 
-**Preserved:** The pre-registration framing. The paper does not hide that the design
-deviated — it states this explicitly and argues the findings are valid despite the
-deviation because the two-part reading is more informative than the original
-single-question design.
-
-**Rejected options:** Discarding the Vaquita pre-reveal results (the 13% vs. 38%
-functional completion finding) on the grounds that ForgeCraft's front-loading cost
-confounds the measure. Retained because the confound is itself a finding — it names
-a real product failure mode.
-
-**Open:** Whether GS's front-loading cost is tolerable under time pressure (90-120 min
-workshop) vs. normal project timelines is unresolved. DX2 is designed to separate
-these conditions.
+**Preserved:** The pre-registration framing for the AX experiment series.
 
 ---
 
-## April 14–15, 2026 — Seven structural fixes + three content restorations (session: 74db953f)
+## April 14–15, 2026 — Six structural fixes + three content restorations (session: 74db953f)
 
-**Trigger:** Multi-round adversarial critique session. Seven vulnerabilities identified
+**Trigger:** Multi-round adversarial critique session. Six vulnerabilities identified
 in the then-current v1.4. Three content losses identified by auditing v1.0 and v1.1
 against current state.
 
-### Seven structural fixes:
+### Six structural fixes:
 
 **Fix 1 — Abstract: Kuhn/Martin framing separated.**
 Prior: The abstract conflated Martin's structural criterion (what defines a paradigm)
@@ -326,13 +300,7 @@ Decision: Rewritten to keep them distinct. "The Martin-sense structural case is
 complete is the claim this paper advances." Whether the Kuhnian transition occurs
 is left explicitly as a community determination question.
 
-**Fix 2 — Abstract: DX1 two-part finding stated.**
-Prior: Abstract described DX as a single study with a single finding.
-Decision: Two-part finding stated explicitly in abstract — discipline transfer
-(post-reveal free application outperformed tool-mediated compliance) AND temporal
-mismatch artifact (ForgeCraft front-loading cost under time pressure).
-
-**Fix 3 — §4 opening: GS removal differs in kind from predecessors.**
+**Fix 2 — §4 opening: GS removal differs in kind from predecessors.**
 Prior: GS's removal was listed alongside structured programming, OOP, FP as
 a member of the same category.
 Decision: Added paragraph making the categorical difference explicit: prior
@@ -340,27 +308,27 @@ paradigms made implicit context *inconvenient* (human readers compensate);
 GS makes it *structurally absent* because the reader that would have compensated
 does not exist.
 
-**Fix 4 — §4 opening: Enforcement objection answered at the top of §4.**
+**Fix 3 — §4 opening: Enforcement objection answered at the top of §4.**
 Prior: The answer to "the compiler knows nothing about the spec" was buried in §4.3.
 Decision: Moved to §4 opening as "On enforcement." paragraph. The gate stack
 (commit hooks, CI, MCP boundaries) IS the compiler for GS's restriction class.
 Removed from §4.3 to avoid duplication.
 
-**Fix 5 — Tier table: Evidence column corrected.**
+**Fix 4 — Tier table: Evidence column corrected.**
 Prior: T3 cited "Chronicle/Railway, §7.7" but §7.7 is the COMPASS ETL case, not
 Chronicle/Railway.
-Decision: T1 → "Demonstrated: production cases + DX1"; T2 → "Demonstrated: AX + DX1";
+Decision: T1 → "Demonstrated: production cases + AX + ALX"; T2 → "Demonstrated: AX";
 T3 → "Demonstrated: COMPASS ETL (§7.7)"; T4 → "Demonstrated: COMPASS/The Eye (§7.7)".
 The word "Proven" was replaced throughout with "Demonstrated" — the epistemic claim
 is calibrated to what the evidence actually supports.
 
-**Fix 6 — §3: Auto Dream promoted from footnote to body.**
+**Fix 5 — §3: Auto Dream promoted from footnote to body.**
 Prior: Auto Dream was a footnote.
 Decision: Promoted to §3 body as a complementary approach. Auto Dream (bottom-up,
 reactive consolidation) vs. GS (top-down, preventive specification) are not competing.
 Both address the stateless reader problem at different layers.
 
-**Fix 7 — Orphaned footnotes removed.**
+**Fix 6 — Orphaned footnotes removed.**
 Three footnote definitions ([^1], [^2], [^6]) remained in the file after their inline
 references were removed during prior condensation. Pandoc generated warnings.
 [^6] content promoted to §3 body (Auto Dream paragraph). [^1] and [^2] removed.
@@ -427,7 +395,7 @@ T1 is a prerequisite for T3/T4 enforceability, not a documentation exercise.
 **§7 intro — Two-category reframe.**
 The §7 italic preamble now explicitly separates the six production projects (method
 development substrate, existence proofs — "the rubric is their residue, not their
-premise") from the controlled experiments (testing phase — AX, RX, BX, EX, DX —
+premise") from the controlled experiments (testing phase — AX, RX, BX, EX —
 designed to falsify rather than illustrate). The body paragraph adds the practitioner-
 arc sentence with forward reference to §8.13.
 
@@ -583,18 +551,29 @@ terminus, anti-drift formula). All §7 case study evidence and metrics.
 **Preserved (the Auditable trail — do not quietly undo):**
 - **The ~70% token-reduction figure is conceded UNPROVEN.** It was stated to the W1 cohort, on camera, as *"un número mágico… no tengo grandes pruebas."* The paper therefore does **not** claim a measured end-to-end token reduction: §4.3 flags the per-correct-output economy as a *reasoned argument* supported only by the measured **KX** retrieval proxy. This concession is the rationale for that hedge and must not be re-inflated into a measured claim without a powered experiment.
 - The strongest internal exemplars — a fintech decision engine (*conclave*) and a HIPAA data platform (*lumen*) — are **client-confidential** and deliberately not cited as public evidence.
-- The honest negatives that are the paper's strongest credibility signal: DX p=.076 (not significant at the conventional threshold), the AX v4 regression (non-monotonic trajectory), and the falsified DX timing hypothesis.
+- The honest negatives that are the paper's strongest credibility signal: the AX v4 regression (non-monotonic trajectory) and the conceded-unproven token-reduction figure.
 
 **Rejected options:** (a) presenting W1 as controlled evidence — it is not; (b) omitting W1 — a methodology's claim to practice is incomplete without one account of it meeting a real team; (c) keeping conclave/lumen as cited exemplars — unverifiable to readers and a client-confidentiality risk.
 
-**Open:** A controlled, multi-cohort study (DX2/DX3) is the path from corroboration to confirmation — and the powered test of the token economy that would let the per-session figure be *claimed* rather than reasoned.
+**Open:** A controlled, multi-cohort human-participant study is the path from corroboration to confirmation — and the powered test of the token economy that would let the per-session figure be *claimed* rather than reasoned.
 
 ---
 
-## Open questions for next revision (v3.0, post-DX2/DX3)
+## July 29, 2026 — Controlled practitioner study removed from public materials
 
-1. **§7.8.A.1** — Replace "in progress" with DX2 and DX3 actual results when available.
-   Update pre-registered prediction outcomes. Update follow-up studies section.
+**Trigger:** Confidentiality. The controlled practitioner study was conducted at the author's employer and cannot be published.
+
+**Decision:** The controlled practitioner study was removed from all public materials (Compendium, white paper, field guide, two-pager, book drafts, supplement, and this record). Its data is preserved in a private archive. Practitioner-transfer evidence is now carried by the observational McBrokers field corroboration (a paying-client workshop cohort, June 2026), which remains in §7.8.A of the Compendium and is explicitly fenced as observational — no control, no blind scoring, no pre-registration. Arguments that had leaned on the removed study (the guidance-circularity closure, the layered-validation triad, the transferability claim, the tier-demonstration citations) were rewired to the remaining evidence — the six production projects, AX, ALX, BX, RX — plus the observational corroboration, with a controlled human-participant study now noted throughout as future work.
+
+**Preserved:** All claims and numbers of the remaining experiments (AX, EX, KX, ALX, RX, BX, MX, RND-1). The observational McBrokers corroboration. No replacement numbers were fabricated; unsupported claims were softened rather than re-sourced.
+
+---
+
+## Open questions for next revision (v3.0)
+
+1. **§7.8 controlled human-participant study** — When a controlled, pre-registered,
+   multi-cohort study is available, integrate its results, update pre-registered
+   prediction outcomes, and update the follow-up-studies section.
 
 2. **§9 header** — Verify `## 9. Extended Applications and Technical Notes` (or
    equivalent) exists before §9.1. The missing §9 header is a structural artifact
@@ -615,7 +594,7 @@ terminus, anti-drift formula). All §7 case study evidence and metrics.
    This is a meta-demonstration worth one sentence in the Provenance section.
 
 6. **NFR → T3/T4 cascade insight** — The insight that T3/T4 failures trace to T1 NFR
-   incompleteness is now in §4.1.f as a paragraph. If DX2/DX3 produce data on this
+   incompleteness is now in §4.1.f as a paragraph. If a controlled study produces data on this
    (teams that had complete vs. incomplete NFRs at T1 and their T3 failure rates),
    promote the paragraph to a subsection with evidence.
 

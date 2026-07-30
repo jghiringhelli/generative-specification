@@ -38,7 +38,7 @@ Merge substantive changes to the paper's argument without author review. The pap
 | §4.3 | Seven properties: Self-describing, Bounded, Verifiable, Defended, Auditable, Composable, Executable |
 | §5 | Related work: Gordon (2024), Thirolf (2025), SlopCodeBench (Orlanski et al., arXiv:2603.24755, 2026) |
 | §6 | Artifact grammar; ForgeCraft; CodeSeeker |
-| §7 | Case studies; adversarial experiment (AX); replication (RX); practitioner study (DX) |
+| §7 | Case studies; adversarial experiment (AX); replication (RX) |
 | §8 | Implications |
 | §9 | Discussion; I(S) formula |
 | §10 | Conclusion; community convergence theorem |
