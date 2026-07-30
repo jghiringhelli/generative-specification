@@ -1,0 +1,84 @@
+ConceptID,ConceptLabel,Dependencies,TaxonomyID
+1,CLAUDE.md (CNT root),,CNT
+2,Constitution,1,CNT
+3,Corrections Log,1,CNT
+4,Lifecycle,1,CNT
+5,Code Routes,1,CNT
+6,Docs Routes,1,CNT
+7,PRD,,DOC
+8,TechSpec,7,DOC
+9,Status,1,DOC
+10,Docs Manifest,1,DOC
+11,Architecture: data-model,8,ARCH
+12,Architecture: integrations,8,ARCH
+13,Architecture: layers,8,ARCH
+14,Architecture: modules,8,ARCH
+15,ADR: ADR-000-cnt-init,7,ADR
+16,ADR: ADR-0001-stack,7,ADR
+17,ADR: ADR-0002-auth,7,ADR
+18,UC-001: Register and Log In,7,UC
+19,UC-002: View and Update the Current User,7,UC
+20,UC-003: View a Profile and Follow / Unfollow,7,UC
+21,UC-004: Create Read Update and Delete an Article,7,UC
+22,UC-005: List Articles Feed and Pagination,7,UC
+23,UC-006: Favorite and Unfavorite an Article,7,UC
+24,UC-007: Comment on an Article,7,UC
+25,UC-008: List Tags,7,UC
+26,Spec: articles,7,SPEC
+27,Spec: auth,7,SPEC
+28,Spec: comments,7,SPEC
+29,Spec: profiles,7,SPEC
+30,Spec: tags,7,SPEC
+31,Gate: api-error-envelope-resource-scoped,2,GATE
+32,Gate: api-nullable-field-coercion,2,GATE
+33,Gate: hurl-contract-tests-pass,2,GATE
+34,Gate: cyclomatic-complexity-max-10,2,GATE
+35,Gate: no-duplicate-string-literals,2,GATE
+36,Gate: sonarqube-quality-gate-ok,2,GATE
+37,Gate: playwright-ui-smoke-test,2,GATE
+38,Gate: node-esm-cjs-safe-imports,2,GATE
+39,Gate: dependency-audit,2,GATE
+40,Gate: owasp-l1-static,2,GATE
+41,Gate: mutation-testing,2,GATE
+42,Standards: api,2,STD
+43,Standards: architecture,2,STD
+44,Standards: cicd,2,STD
+45,Standards: project-specific,2,STD
+46,Standards: protocols,2,STD
+47,Standards: spec,2,STD
+48,Standards: testing,2,STD
+49,Code: src/adapters/persistence/InMemoryArticleRepository.ts,26,CODE
+50,Code: src/adapters/persistence/InMemoryCommentRepository.ts,28,CODE
+51,Code: src/adapters/persistence/InMemoryProfileRepository.ts,29,CODE
+52,Code: src/adapters/persistence/PrismaArticleRepository.ts,17|26,CODE
+53,Code: src/adapters/persistence/PrismaCommentRepository.ts,17|28,CODE
+54,Code: src/adapters/persistence/PrismaProfileRepository.ts,17|29,CODE
+55,Code: src/adapters/persistence/PrismaUserRepository.ts,16|17,CODE
+56,Code: src/adapters/security/Argon2PasswordHasher.ts,17,CODE
+57,Code: src/adapters/security/JwtTokenService.ts,17,CODE
+58,Code: src/config/env.ts,17,CODE
+59,Code: src/http/ArticleController.ts,18|26,CODE
+60,Code: src/http/articlePresenter.ts,26,CODE
+61,Code: src/http/articleRoutes.ts,17|26,CODE
+62,Code: src/http/articleSchemas.ts,26,CODE
+63,Code: src/http/CommentController.ts,18|28,CODE
+64,Code: src/http/commentPresenter.ts,28,CODE
+65,Code: src/http/commentRoutes.ts,17|28,CODE
+66,Code: src/http/commentSchemas.ts,28,CODE
+67,Code: src/http/middleware/authenticate.ts,17,CODE
+68,Code: src/http/middleware/optionalAuthenticate.ts,17|29,CODE
+69,Code: src/http/ProfileController.ts,18|29,CODE
+70,Code: src/http/profileRoutes.ts,17|29,CODE
+71,Code: src/http/TagController.ts,18|30,CODE
+72,Code: src/http/tagPresenter.ts,30,CODE
+73,Code: src/http/tagRoutes.ts,30,CODE
+74,Code: src/http/UserController.ts,17|18,CODE
+75,Code: src/http/userRoutes.ts,17,CODE
+76,Code: src/repositories/IArticleRepository.ts,26,CODE
+77,Code: src/repositories/ICommentRepository.ts,28,CODE
+78,Code: src/server.ts,16|17,CODE
+79,Code: src/services/ArticleService.ts,18|26,CODE
+80,Code: src/services/CommentService.ts,18|28,CODE
+81,Code: src/services/ProfileService.ts,18|29,CODE
+82,Code: src/services/slug.ts,26,CODE
+83,Code: src/services/UserService.ts,17|18,CODE

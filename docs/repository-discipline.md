@@ -46,6 +46,70 @@ Behavioral contracts. Lives at `docs/specs/use-cases.md` (or split per use case 
 
 ---
 
+## §1B — Three flows, three artifacts: knowing which cycle you're in
+
+The cascade table (§5) tells you what each commit type *requires*. This section tells you which **cycle** you're entering, what **artifact** records it, and which **tool** scaffolds it. Picking the right cycle up front saves the re-work of recording a bug-fix as if it were a refactor, or a spec change as if it were a one-off decision.
+
+| Cycle | Trigger | Artifact slot | Scaffolder | Lifecycle | Exit criterion |
+|---|---|---|---|---|---|
+| **Feature** | new capability, refactor with a new architectural choice | `docs/adrs/active/ADR-NNNN-*.md` | `generate_adr` | ADR `Proposed` → `Accepted` → (later) `Superseded` | ADR Accepted; PR merged with reviewer ack |
+| **Bug post-mortem** | bug surfaced that warrants recorded reasoning (recurrence-prone, intentional behavior change, or chronicle-tracked investigation) | `docs/decisions/YYYY-MM-DD-*.md` | `generate_decision` (often paired with `change_request --type=bug-postmortem`) | decision file written; if change_request opened: `open → implementing → verified → closed` | regression test exists, decision merged |
+| **Spec drift** | spec found incomplete, ambiguous, or contradicted by reality — touches multiple layers | the spec itself + cascade artifacts | `change_request --type=spec-change` | `open → implementing → verified → closed` (`close_cycle` blocks until verified) | every affected artifact updated, all `required_gates` green |
+
+### When to use which
+
+**Use Feature flow** when *the system gains a capability or a "how we build" decision*. The reasoning lives in `Context / Decision / Alternatives / Consequences`. ADRs are immutable after acceptance — supersede, don't edit.
+
+**Use Bug-postmortem flow** when *the bug exposed something worth remembering*. Not every bug needs a post-mortem: a one-line null-check fix with a regression test is fully recorded by the test alone. Open a post-mortem when at least one of these is true:
+
+- The bug recurs or is one of a class (the *cause* is interesting, not the *fix*)
+- The fix intentionally redefines behavior (the spec quietly changed; you owe a `[NEEDS CLARIFICATION]` resolution)
+- An architectural assumption broke (link the post-mortem to the offending ADR via `related_adr`)
+- The investigation was long enough that you used chronicle to track it (link the session via `chronicle_session_id`)
+
+**Use Spec-drift flow** when *the spec itself was wrong, not the code*. The signal is that you cannot describe the change inside a single artifact — the PRD, use cases, schemas, and ADRs all need a coordinated edit. `change_request` is the only flow that opens an implementing-state record and blocks `close_cycle` until every affected artifact updates.
+
+### Worked example: bug-postmortem
+
+```bash
+# 1. Open the lifecycle record (creates .forgecraft/changes/<id>.yaml)
+forgecraft change_request \
+  --type bug-postmortem \
+  --title "Idempotent import retry" \
+  --description "Retry of an interrupted import double-inserted rows"
+
+# 2. (Optional) start a chronicle session to track the investigation
+chronicle session start "investigate import dup"
+
+# 3. After fixing the code and adding the regression test:
+forgecraft generate_decision \
+  --title "Idempotent import retry" \
+  --trigger "Customer report: retried import produced duplicate task_id rows" \
+  --root_cause "No UNIQUE(task_id) constraint; ON CONFLICT path missing" \
+  --fix "Migration 0042 adds UNIQUE(task_id); insert path uses ON CONFLICT DO NOTHING" \
+  --regression_test "tests/integration/import.test.ts::test_idempotent_retry" \
+  --chronicle_session_id "sess-2026-05-14-a1b2c3" \
+  --related_adr "ADR-0014"
+
+# 4. Mark the change_request verified once the test is green, then close_cycle
+```
+
+### The chronicle integration contract
+
+`generate_decision` accepts `chronicle_session_id` and writes it into the decision doc. That string is the join key between the team-level artifact (`docs/decisions/*.md`, durable, versioned) and the individual-level memory (`~/.chronicle/sessions/<id>`, where the AI's prompts, hypotheses, and dead-ends live). The team layer gets *what was decided*; the individual layer keeps *how the practitioner got there*. Neither layer pollutes the other.
+
+### What's NOT a separate cycle
+
+- **`refactor:` without an architectural choice** — no cycle needed; the cascade flags only if a public surface moves.
+- **`docs:`, `test:`, `chore:`, `ci:`** — informational severity; no artifact required.
+- **`perf:`** — a decision is *encouraged* if the optimization required a measured trade-off, but no lifecycle record is opened.
+
+### Anti-pattern: ADR-as-postmortem
+
+Don't use `generate_adr` for a bug. ADRs answer "what did we decide and why over alternatives" — that's the wrong frame for a defect. The post-mortem template asks the right questions (Trigger, Root cause, Regression test) and lives in the right slot. If a bug exposed a *flawed* architectural decision, file a post-mortem **and** supersede the ADR — the two records together tell the full story.
+
+---
+
 ## §2 — The sentinel navigational tree
 
 The root sentinel file is always loaded into AI context. Therefore it must be bounded (~500 lines). The completeness rule: between the root and every leaf, the tree must cover **five categories**:
