@@ -238,7 +238,7 @@ The most serious risk is **guidance circularity**: GS guided the implementations
 
 **The specification precedes the code.** The architectural constitution, structural diagrams, schema definitions, and at least a skeleton decision record must exist before the first agent session. This is not new; it was optional when the cost of skipping it was paid by a human who could compensate with memory. That compensation is unavailable to a stateless executor.
 
-**The document cascade.** The specification is not one file but a small set of authored artifacts, each governing a distinct dimension, written before the first session and maintained as the source of truth the agent reads:
+**The document cascade.** The individual artifacts below are established practice — every mature team writes ADRs, diagrams, and schemas. What GS changes is their *role*. They are not documentation *about* the code; they are the specification the code is *derived from* — authored first, the source of truth from which the implementation is regenerated (the inversion of §4.2). And together they are the **read-asymmetry (§4.1) made concrete**: the layered structural surface the stateless reader comprehends the system *through*, instead of reading the implementation. The novelty is the inversion and the read-surface, not the list of artifacts:
 
 | Document | What it specifies / is used for | Authored |
 |---|---|---|
