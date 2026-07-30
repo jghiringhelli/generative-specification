@@ -78,7 +78,7 @@ I tried half a dozen other ideas in those months. Some did not work. Some worked
 
 ## The horizon
 
-In April 2026 I flew to Mexico for the practitioner study that became DX1. The trip began in Puerto Morelos for a long weekend of rest before the work — a day at the beach, the town in the afternoon, a rooftop in the evening with a friend. Conversations with the right person at the right altitude have a way of lifting questions out of their normal frame. By the time we went down for dinner I had two ideas I had not had at lunch.
+In April 2026 I took a long weekend of rest before a stretch of work — a day at the beach, the town in the afternoon, a rooftop in the evening with a friend. Conversations with the right person at the right altitude have a way of lifting questions out of their normal frame. By the time we went down for dinner I had two ideas I had not had at lunch.
 
 The first was Loom. A functional language designed to be written by humans for AI executors, compiling to multiple targets from one source — Rust, TypeScript, WebAssembly, OpenAPI, JSON Schema. The proposition was that the formal-tradition theorems that had never reached production (Hoare contracts, Honda session types, Denning information flow, Kennedy units) could be activated *from a specification* if the language carried them as constructs. Loom was the language-layer proof that the GS argument held.
 

@@ -44,13 +44,9 @@ The first four of these are demonstrated across production deployments. The fift
 
 ## The Evidence
 
-In April 2026, 58 developers produced 83 analyzable submissions across two projects at Mitikah, Mexico City. The study ran in two sessions.
+The discipline has been tested, not just asserted. A controlled adversarial study drove a specification from a naive baseline to a full rubric score across successive conditions, with independent static-analysis tools corroborating the gradient. A replication experiment lets any reader reproduce a working implementation — 104 passing tests against a live database — from a committed specification alone. A production deployment proof verified behavioral contracts and service-level objectives against a live runtime.
 
-In the first session (pre-reveal), neither group knew GS. One group prompted freely; the other used specification tooling without understanding the discipline behind it. The free-prompting group produced three times the rate of fully working implementations (38% vs. 13%). Tooling without methodology is a liability.
-
-In the second session, both groups received a one-session GS introduction. One group applied the discipline freely; the other was constrained to follow a pre-generated roadmap that predated the session. The freely-applying group produced 75% working implementations versus 63%, with five times fewer complete failures (5% vs. 25%).
-
-The discipline transferred in a single session. The bottleneck was not the methodology — it was practitioners using tools they did not yet understand, and artifacts that had gone stale. Both have since been addressed.
+Beyond the controlled experiments, a paying client team applied the discipline in a four-day workshop on their own production codebase. Within a single engagement, practitioners were diagnosing generation failures as specification gaps — "it is my fault, because I did not specify it correctly" — and one made an architecture decision record a merge prerequisite of his own accord. The methodology took hold on a real team in a single engagement. A controlled, multi-cohort study is the next step.
 
 ---
 
@@ -90,7 +86,7 @@ The research behind GS spans a white paper, two companion essays, a formal langu
 
 **On quality and credibility:**
 - "What is the central claim of this paper and what evidence supports it? Where is the evidence weakest?"
-- "Is the statistical methodology in the DX1 study sound? What are its limitations?"
+- "Is the experimental methodology sound? Where is the evidence weakest, and does the author acknowledge it?"
 - "What would a skeptical peer reviewer object to, and how does the paper address those objections?"
 
 **On your domain:**

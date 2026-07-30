@@ -17,7 +17,6 @@ June-2026 pilots (MX, RND-1) extend it to model-cost economics and to behaviour 
 | [**BX — Benchmark**](bx/) | Rubric validity. Three Conduit implementations scored blind against the GS rubric — two never exposed to GS. Establishes the rubric captures real quality. | ✅ Complete |
 | [**CX — Patchability**](cx/) | GS-specified codebases are more patchable. SWE-bench-style patch tasks on two quality tiers characterized by BX. | ✅ Complete |
 | [**RX — Replication**](rx/) | Any reader can reproduce 104 passing tests against a live PostgreSQL instance from a GS document alone. No ForgeCraft required. | ✅ Complete |
-| [**DX — Human Practitioner**](dx/) | 40 developers, two conditions. Tests between-practitioner replication across engineers of varying GS skill. Crossover design. | 🗓 April 2026 |
 | [**EX — Executable Sprint**](ex/) | Full L1–L4 tier proof on the live RealWorld Conduit benchmark. 13/13 behavioral probes, 3/3 env probes, k6 ramp — all green on Railway production. Single session. | ✅ Complete |
 | [**KX — Knowledge Retrieval**](kx/) | Routed navigation-tree retrieval beats RAG-dump and no-structure on accuracy and token cost; the CKG divergence replicates on software. | ✅ Complete |
 | [**MX — Model Cost & Tiering**](mx/) | Once GS-specified, a mid-tier model (Sonnet) matches a strong model (Opus) at ~6× lower cost on the full Conduit; model-tiering is unjustified when the mid model one-shots the task. | ✅ Pilot (Jun 2026) |
@@ -27,15 +26,15 @@ June-2026 pilots (MX, RND-1) extend it to model-cost economics and to behaviour 
 
 ## Validation Structure
 
-The five experiments address a three-layer validity problem:
+The experiments address a three-layer validity problem:
 
 | Layer | Threat | Closed By |
 |---|---|---|
 | **Output measurement** | External checks use criteria the author defined | BX: rubric applied to non-GS implementations |
 | **Rubric validity** | Rubric rewards GS compliance, not objective quality | BX + CX: congruent with CVE count, test count, patchability |
-| **Guidance circularity** | GS guided the implementation AND scored it | DX: blind evaluator, 40 external practitioners |
+| **Guidance circularity** | GS guided the implementation AND scored it | BX: blind evaluator on peer implementations; RX: independent replication; plus observational field corroboration |
 
-Layers 1 and 2 are closed. Layer 3 closes April 2026.
+Layers 1 and 2 are closed. Layer 3 is addressed by BX/RX and observational field corroboration; a controlled human-participant study is future work.
 
 EX addresses a complementary validity question: **does the methodology produce working, deployable software at all four tiers?** AX proves quality increases with specification completeness — EX proves the toolchain closes the loop from specification to production-verified behavior.
 
@@ -43,7 +42,7 @@ EX addresses a complementary validity question: **does the methodology produce w
 
 ## Pre-Registration Policy
 
-AX and DX rubrics, hypotheses, and evaluation criteria were committed to this repository before any experimental run. Commit timestamps are cryptographically signed by GitHub. This prevents post-hoc rubric adjustment.
+AX rubrics, hypotheses, and evaluation criteria were committed to this repository before any experimental run. Commit timestamps are cryptographically signed by GitHub. This prevents post-hoc rubric adjustment.
 
 ---
 

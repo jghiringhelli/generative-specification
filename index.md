@@ -19,7 +19,7 @@ Community home for the Generative Specification methodology — the first progra
 
 | Section | Contents |
 |---|---|
-| [Experiments](experiments/) | AX · BX · CX · RX (all complete) · DX (April 2026) |
+| [Experiments](experiments/) | AX · BX · CX · RX · EX · KX (complete) · MX · RND-1 (pilots) |
 | [Quality Gates](quality-gates/) | 32-gate community library · contribute via PR |
 | [Workflow Recipes](docs/recipes/) | Step-by-step guides for all 8 practitioner scenarios |
 | [Domain Guides](domains/) | FINTECH · ML · GAME · Creative · CLI |
@@ -35,7 +35,6 @@ Community home for the Generative Specification methodology — the first progra
 | [**BX**](experiments/bx/) | Benchmark cross-validation. Three Conduit implementations scored blind. Rubric ranking congruent with CVE count, test count, and TypeScript health. | ✅ Complete |
 | [**CX**](experiments/cx/) | Patchability study. SWE-bench-style patch tasks on two quality tiers. GS-specified codebase resolves 5/5 tasks; reference implementation resolves 1/5. | ✅ Complete |
 | [**RX**](experiments/rx/) | Replication experiment. Any developer with Docker and an Anthropic API key can reproduce 104 passing tests against a live PostgreSQL instance. | ✅ Complete |
-| [**DX**](experiments/dx/) | Human practitioner study. 40 developers. Group A: prompt-driven. Group B: GS + ForgeCraft. Dual rubric. Crossover design. | 🗓 April 2026 |
 
 ---
 

@@ -274,6 +274,17 @@ Use case format (minimum): Actor / Precondition (what must be true before) / Tri
 Main flow (step-by-step, precise enough to be executable) / Postcondition (what is true
 after successful completion) / Error cases (condition → system response) / Out of scope.
 
+**Frontend codebases — UI/UX contracts.** For projects with a significant UI layer, behavioral
+contracts extend to the presentation tier. The additional artifacts are: design tokens
+(the named color, spacing, and typography vocabulary all generated components must draw from);
+component library specification (atomic design hierarchy — atoms, molecules, organisms, and
+the contracts between them); UX pattern documents specifying the canonical state each
+interactive surface must implement (error, loading, empty, modal, and table states); and a
+responsive/adaptive ADR recording the breakpoint strategy. Omitting these produces UI Pattern
+Drift, Design Token Scatter, Component Reinvention, and Unspecified Breakpoint Contracts —
+the four presentation-layer pathologies that are structurally identical to their backend
+counterparts and resolved by the same method: make the contract explicit before generation begins.
+
 **Why it exists:** A use case is not a requirements document. It is a production rule.
 The service layer is written against it. The acceptance test is the use case transcribed
 into executable form. When a test is hard to write, the use case is underspecified —
@@ -407,6 +418,27 @@ honestly as the logical terminus.
 
 ---
 
+### The Generative-X lexicon: naming what runs at each tier
+
+Each tier names a stage of the lifecycle, but the *activity* the AI executor is performing at each stage deserves its own term. The shared root — *generative* — names the underlying operation: the executor derives the artifact (code, deployment, alert, mutation, ecosystem) from the specification, rather than being directed step-by-step by a human. The suffix names the *kind* of artifact being derived and verified at that stage.
+
+| Tier | Stage | Generative-X term (authoring) | Generative-X term (verification) | What runs here |
+|------|-------|-------------------------------|----------------------------------|----------------|
+| T1 | Development | **Generative Specification** — the AI derives code from spec | **Generative Execution** — the harness runs cross-cutting quality gates at every boundary: unit tests, integration tests, end-to-end tests, mutation testing, coverage, lints, multimodal-AI-as-QA driving the live app via Playwright + vision against use-case postconditions, plus a hardening pass before the work is callable "done" | Pyramid of tests + multimodal AI verification at every commit; gates run continuously and block on failure |
+| T2 | Staging / Pre-prod | **Generative Deployment** — the AI derives CI/CD pipelines, environment configuration, infra-as-spec, and deployment scripts | **Generative Validation** — the staging harness runs NFR contracts (latency, throughput, error budgets), smoke tests, security scans, and load tests against the deployed environment before promotion | Pre-production gates: deployment derivation + staging-environment verification before any release to T3 |
+| T3 | Production | **Generative Monitoring** — the AI derives alerts, dashboards, thresholds, and observability hooks from the spec | **Generative Diagnostics** — the production harness reads runtime logs against a specification-derived monitoring contract, detects drift, and surfaces it back to the originating spec (`forgecraft-eye` is the reference implementation) | Production-time observability + drift detection that signals the originating spec, closing the loop from prod back to authoring |
+| T4 | Evolution | **Generative Evolution** — the AI proposes specification changes from observed production behaviour (drift signals, new use-case requests, performance gaps) under governed self-mutation rules | **Generative Gauntlet** — the same verification pipeline that approved the original code gates every self-proposed mutation; nothing reaches T1 unless it passes the gauntlet bidirectionally | Mutation-time governance: proposal generation + verification gauntlet, bounded by telomere mechanisms that prevent runaway self-modification |
+| T5 | Synthesis | **Generative Synthesis** — the AI derives what *programs* need to exist, what each one is for, how they should interact, and when each should die, from a problem statement | **Generative Colony Validation** — the colony validates itself against the telos it derived; entities are extinguished when their telos is fulfilled; the colony is solved when all entities have died with their telos met | Colony-time self-derivation: problem-statement-to-ecosystem and ecosystem-to-result, with the colony as both the derivation and the verification surface |
+| T6 | Meta-telos | **Generative Cognition** *(research horizon)* — the system models the practitioner well enough to infer telos before it is stated | *(irreducible — judgment layer)* — the practitioner remains the only entity that can validate whether the inferred telos is the right one | The boundary at which the tool becomes an agent with a model of its user; this essay raises the boundary rather than crossing it |
+
+The pairing matters: at every tier, the *authoring* obligation removed is matched by a *verification* obligation removed, and the verification half is what makes the authoring half safe. A practitioner who adopts T2 generative deployment without T2 generative validation has not adopted T2 — they have automated their deployments past their ability to verify them, which is the most dangerous state in the cascade.
+
+**Hardening as a cross-cutting capability, not a tier:** *hardening* (security audit, edge-case discovery, NFR validation, dependency audit) is the load-bearing capability that recurs at every tier with stage-appropriate scope. T1 hardening is the dev-time pre-merge pass; T2 hardening is the pre-promotion gate; T3 hardening is continuous; T4 hardening is the mutation gauntlet itself; T5 hardening is the colony's self-validation surface. Calling out *Generative Hardening* as a separate term would be redundant — it is *what each tier's verification side does* under stage-appropriate constraints.
+
+**Dynamic testing under the Generative-X lexicon:** dynamic testing (driving the running system, comparing observable behaviour against expected behaviour) is the operational form of *Generative Execution* at T1 (multimodal AI as QA), *Generative Validation* at T2 (staging smoke + load), and *Generative Diagnostics* at T3 (runtime drift detection against production logs). The same primitive — derive expected behaviour from spec, observe actual, compare, signal — runs at three different timescales under three different names because the timescale and the consequence of mismatch differ at each tier.
+
+---
+
 ### T1 — Development: you stop writing code, and you stop reading what was generated
 
 **Authoring obligation removed:** Writing application code.
@@ -464,9 +496,7 @@ this gap. Without it, 80% line coverage can coexist with 0% behavioral verificat
 
 **Proof status:** Demonstrated in production. JC built CodeSeeker — a multi-language
 code intelligence system with four retrieval layers, graph traversal, and coding
-standards detection — without writing a line of application code. DX1 study (58
-developers, April 2026) confirmed that developers with a GS introduction achieved
-75% perfect implementations in a single session. ALX self-applicability experiment:
+standards detection — without writing a line of application code. ALX self-applicability experiment:
 the Loom compiler was derived entirely from its own formal specification
 (`spec/loom.loom`), with 386/386 acceptance tests passing (S_realized = 1.0) — the
 highest-tier T1 proof produced to date. The 386-test harness certified the
@@ -1792,6 +1822,58 @@ That is a different kind of incompleteness from the one a brownfield project sta
 with. It is the incompleteness of a finished decision rather than an unfinished
 investigation.
 
+### Three flows, three artifacts: knowing which cycle you're in
+
+The cascade table tells you what each commit type *requires*. This section tells you which **cycle** you're entering, what **artifact** records it, and which **tool** scaffolds it. Picking the right cycle up front saves the re-work of recording a bug-fix as if it were a refactor, or a spec change as if it were a one-off decision.
+
+| Cycle | Trigger | Artifact slot | Scaffolder | Lifecycle | Exit criterion |
+|---|---|---|---|---|---|
+| **Feature** | new capability, refactor with a new architectural choice | `docs/adrs/active/ADR-NNNN-*.md` | `generate_adr` | ADR `Proposed` → `Accepted` → (later) `Superseded` | ADR Accepted; PR merged with reviewer ack |
+| **Bug post-mortem** | bug surfaced that warrants recorded reasoning (recurrence-prone, intentional behavior change, or chronicle-tracked investigation) | `docs/decisions/YYYY-MM-DD-*.md` | `generate_decision` (often paired with `change_request --type=bug-postmortem`) | decision file written; if change_request opened: `open → implementing → verified → closed` | regression test exists, decision merged |
+| **Spec drift** | spec found incomplete, ambiguous, or contradicted by reality — touches multiple layers | the spec itself + cascade artifacts | `change_request --type=spec-change` | `open → implementing → verified → closed` (`close_cycle` blocks until verified) | every affected artifact updated, all `required_gates` green |
+
+**Use Feature flow** when *the system gains a capability or a "how we build" decision*. The reasoning lives in `Context / Decision / Alternatives / Consequences`. ADRs are immutable after acceptance — supersede, don't edit.
+
+**Use Bug-postmortem flow** when *the bug exposed something worth remembering*. Not every bug needs a post-mortem: a one-line null-check fix with a regression test is fully recorded by the test alone. Open a post-mortem when at least one of these is true:
+
+- The bug recurs or is one of a class (the *cause* is interesting, not the *fix*)
+- The fix intentionally redefines behavior (the spec quietly changed; you owe a `[NEEDS CLARIFICATION]` resolution)
+- An architectural assumption broke (link the post-mortem to the offending ADR via `related_adr`)
+- The investigation was long enough that you used chronicle to track it (link the session via `chronicle_session_id`)
+
+**Use Spec-drift flow** when *the spec itself was wrong, not the code*. The signal is that you cannot describe the change inside a single artifact — the PRD, use cases, schemas, and ADRs all need a coordinated edit. `change_request` is the only flow that opens an implementing-state record and blocks `close_cycle` until every affected artifact updates.
+
+**Worked example — bug-postmortem:**
+
+```bash
+# 1. Open the lifecycle record (creates .forgecraft/changes/<id>.yaml)
+forgecraft change_request \
+  --type bug-postmortem \
+  --title "Idempotent import retry" \
+  --description "Retry of an interrupted import double-inserted rows"
+
+# 2. (Optional) start a chronicle session to track the investigation
+chronicle session start "investigate import dup"
+
+# 3. After fixing the code and adding the regression test:
+forgecraft generate_decision \
+  --title "Idempotent import retry" \
+  --trigger "Customer report: retried import produced duplicate task_id rows" \
+  --root_cause "No UNIQUE(task_id) constraint; ON CONFLICT path missing" \
+  --fix "Migration 0042 adds UNIQUE(task_id); insert path uses ON CONFLICT DO NOTHING" \
+  --regression_test "tests/integration/import.test.ts::test_idempotent_retry" \
+  --chronicle_session_id "sess-2026-05-14-a1b2c3" \
+  --related_adr "ADR-0014"
+
+# 4. Mark the change_request verified once the test is green, then close_cycle
+```
+
+`generate_decision` accepts `chronicle_session_id` and writes it into the decision doc. That string is the join key between the team-level artifact (`docs/decisions/*.md`, durable, versioned) and the individual-level memory (`~/.chronicle/sessions/<id>`, where the AI's prompts, hypotheses, and dead-ends live). The team layer gets *what was decided*; the individual layer keeps *how the practitioner got there*. Neither layer pollutes the other.
+
+What is *not* a separate cycle: `refactor:` without an architectural choice (no cycle needed; the cascade flags only if a public surface moves); `docs:`, `test:`, `chore:`, `ci:` (informational severity, no artifact required); `perf:` (a decision is *encouraged* if the optimization required a measured trade-off, but no lifecycle record is opened).
+
+**The anti-pattern to avoid:** ADR-as-postmortem. Do not use `generate_adr` for a bug. ADRs answer "what did we decide and why over alternatives" — that is the wrong frame for a defect. The post-mortem template asks the right questions (Trigger, Root cause, Regression test) and lives in the right slot. If a bug exposed a *flawed* architectural decision, file a post-mortem **and** supersede the ADR — the two records together tell the full story.
+
 ---
 
 ## 9. CASE STUDIES
@@ -1858,50 +1940,6 @@ can watch it happen. Expand this section as each tier completes.
 **For data team audiences (MinneAnalytics):** COMPASS is the entry point. It speaks their
 language — ETL, regulated data, master entity reconciliation. The pipeline drift problem
 is identical to the code drift problem, just with data instead of functions.
-
----
-
-### DX1: The Discipline Transfers in a Session
-
-In April 2026 at Mitikah, Mexico City, 58 developers produced 83 analyzable submissions
-across two projects (Vaquita — greenfield, and Taskflow — brownfield) in a controlled study.
-
-**Session 1 (pre-reveal): Condition A vs. Condition B**
-Neither group knew GS. Condition A prompted freely. Condition B used ForgeCraft specification
-tooling without understanding the discipline behind it.
-
-Result: Condition A = 38% perfect implementations. Condition B = 13% perfect implementations.
-Mann-Whitney p=.076, rank-biserial r=.28, Cohen's d≈0.5.
-
-Finding 1: Tooling without methodology is a liability. Condition B was given tools they did
-not understand and artifacts whose purpose they could not evaluate. The result was worse
-than unconstrained free prompting. Three times the rate of complete failures.
-
-**Session 2 (post-reveal): Both groups had a one-session GS introduction**
-Condition A applied the discipline freely. Condition B was constrained to follow a
-pre-generated roadmap that predated the session — stale artifacts from before the GS
-introduction.
-
-Result: Condition A = 75% perfect implementations. Condition B = 63% perfect implementations.
-Complete failures: Condition A = 5%, Condition B = 25%.
-
-Finding 2: The discipline transfers in a single session. A one-session GS introduction
-was sufficient for practitioners to apply the methodology effectively when given freedom
-to do so. Free GS application outperformed stale artifact compliance.
-
-Finding 3: Stale artifacts are worse than no artifacts. Condition B was constrained to
-follow a roadmap that had been generated before they understood GS. The roadmap was
-correct in structure but aligned to a pre-session understanding of the problem. Practitioners
-applying the methodology freely — and adjusting specifications as they learned — outperformed
-practitioners following correct-form artifacts they could not evaluate.
-
-**What the study means for the book:**
-- The methodology is learnable in a session. This is not a "takes years" discipline.
-- The order matters: discipline before tooling. Tooling without discipline is a liability.
-  Discipline with tooling is the intended state.
-- ForgeCraft has been significantly improved since April 10. The version participants used
-  was an earlier iteration. The study's treatment condition understates current tooling
-  capability.
 
 ---
 
@@ -2130,7 +2168,7 @@ who wrote that essay.
 
 The personal narrative is not decoration. It is evidence. JC was there when CodeSeeker
 was built without a line of application code. He was there when the biological isomorphisms
-became visible. He was there when the DX1 results came in.
+became visible. He was there when the adversarial experiment closed at 14/14.
 
 Use first person in these moments. "I spent months understanding that variable" is more
 credible than "practitioners often discover" because it is a specific claim, locatable in
@@ -2183,7 +2221,7 @@ one chance to prove itself before dismissing it.
 
 The book earns that chance by:
 - Making specific, falsifiable claims
-- Citing specific evidence (DX1 numbers, named case studies, named tools)
+- Citing specific evidence (experiment numbers, named case studies, named tools)
 - Being honest about failure modes and edge cases
 - Not requiring the reader to accept anything on faith
 
@@ -2197,7 +2235,7 @@ discipline, not of software engineering fundamentals.
 
 Wrong: "Imagine a world where you never have to write another line of boilerplate code again!"
 
-Right: "In April 2026, 58 developers at Mitikah tested this claim directly."
+Right: "The adversarial study moved from 3 of 14 rubric points to 14 of 14 as the specification was completed."
 
 The methodology is demonstrated. Evidence exists. Use the evidence.
 
@@ -2267,7 +2305,7 @@ responsibility when you do, and what the evidence base is."
 ### The structure the promise implies
 
 The book moves from the problem (AI drift, structural not model-quality) to the solution
-(the specification stack) to the evidence (case studies, DX1) to the practice (the cascade)
+(the specification stack) to the evidence (case studies, the adversarial and replication experiments) to the practice (the cascade)
 to the depth (formal underpinning, biological isomorphisms) to the horizon (T5, T6).
 
 The reader who finishes Part 1 (Chapters covering the problem, the inversion, and the
@@ -2280,14 +2318,6 @@ important depth, but not a prerequisite for practice.
 
 The following specific numbers and claims appear in the source material and should be
 used accurately in the book. Do not round, approximate, or overstate.
-
-### DX1 Study
-- 58 registered developers, 83 analyzable submissions (2 projects each)
-- Vaquita (pre-reveal): Condition A = 38% perfect, Condition B = 13%. Mann-Whitney p=.076,
-  rank-biserial r=.28, Cohen's d≈0.5
-- Taskflow (post-reveal): Condition A = 75% perfect, Condition B = 63% perfect
-- Complete failures: Condition A = 5%, Condition B = 25%
-- Location: Mitikah, Mexico City, April 2026
 
 ### ForgeCraft
 - 116 curated template blocks, 24 project classification tags
@@ -2321,7 +2351,7 @@ used accurately in the book. Do not round, approximate, or overstate.
 - npm: `chronicle-mcp`
 
 ### Tier Status (definitive, for StoryCraft and Scholaris enforcement)
-- T1 (Development): Demonstrated in production + DX study + AX adversarial series.
+- T1 (Development): Demonstrated in production + AX adversarial series + ALX self-application.
   Both halves — authoring and dev-time harness — are proven.
 - T2 (Staging / Pre-prod): In progress: COMPASS regulated platform ETL `[EXPAND on milestone]`
 - T3 (Production): In progress: COMPASS / The Eye diagnostic agent `[EXPAND on milestone]`
@@ -2334,7 +2364,7 @@ used accurately in the book. Do not round, approximate, or overstate.
 ---
 
 *This bible is maintained as the canonical source for the GS book. When the research
-moves — new experimental results, Loom milestones, DX2 or DX3 data — update this document
+moves — new experimental results, Loom milestones, new study data — update this document
 before any chapter drafts are generated from it.*
 
 *Version: 1.0 — April 2026*

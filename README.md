@@ -37,11 +37,6 @@ experiments/
     realworld-spec/     RealWorld Conduit API spec (hurl files)
     EXTERNAL_ANALYSIS.md  Independent external tool validation across all 8 conditions
     RESULTS.md          Scored results table
-  dx/                   Human practitioner study (April 2026)
-    pilot/              Self-administered calibration run (6 conditions, 2 repos)
-    scoring/            Automated scoring script (score-fork.js)
-    workshops/          Workshop repo links and participant materials
-    design.md           Study design and rubric
   rx/                   Replication experiment — any reader can reproduce
     spec/               The committed GS document (conduit-gs.md)
     runner/             run.sh / run.ps1 — clone, install, run
@@ -68,7 +63,6 @@ scripts/                Repository utilities
 |---|---|---|
 | [**AX**](experiments/ax/) | Multi-agent adversarial study. Naive to expert prompting to treatment v1–v6 with ForgeCraft. Establishes quality gradient as a function of specification completeness under controlled conditions. Eight conditions. RealWorld Conduit API benchmark. | Complete |
 | [**RX**](experiments/rx/) | Replication Experiment. Independent verification: given the committed GS document, any developer with Docker and an Anthropic API key can reproduce 104 passing tests against a live PostgreSQL instance. | Complete |
-| [**DX**](experiments/dx/) | Human practitioner study. 40 developers. Group A: prompt-driven. Group B: GS + ForgeCraft. Dual rubric. April 2026. | April 2026 |
 
 ---
 
