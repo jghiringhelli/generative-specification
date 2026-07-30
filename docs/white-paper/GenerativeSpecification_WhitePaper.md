@@ -238,6 +238,20 @@ The most serious risk is **guidance circularity**: GS guided the implementations
 
 **The specification precedes the code.** The architectural constitution, structural diagrams, schema definitions, and at least a skeleton decision record must exist before the first agent session. This is not new; it was optional when the cost of skipping it was paid by a human who could compensate with memory. That compensation is unavailable to a stateless executor.
 
+**The document cascade.** The specification is not one file but a small set of authored artifacts, each governing a distinct dimension, written before the first session and maintained as the source of truth the agent reads:
+
+| Document | What it specifies / is used for | Authored |
+|---|---|---|
+| **Architectural constitution** (the sentinel root — `CLAUDE.md` / `AGENTS.md` / `.cursor/rules`) | The grammar: identity, standards, inviolable constraints, tool sequencing, routing. Governs every session. | First — before any code |
+| **Sentinel navigational tree** | The scoped child specs the root routes to, so a session loads only the slice its task needs. | With the constitution |
+| **Architecture Decision Records (ADRs)** | The *why* — so the agent does not "correct" an intentional decision it lacks the context for. | At each decision; ongoing |
+| **Structural diagrams (C4)** | The system at a glance — context for any agent entering the codebase. | Up front; revised on change |
+| **Use-case / sequence / state diagrams** | Protocols (which calls, in which order), user journeys (which are also the E2E test scripts), and valid states/transitions (which also generate the state-test cases). | Before generating the behavior they describe |
+| **Schema definitions (DB / API / event)** | The vocabulary of the system with its constraints formally stated. | Before implementation |
+| **Test suite (TDD / contracts)** | The behavioral specification and a standing adversarial audit. | With each feature |
+| **Quality gates & commit hooks** | Structural rejection of malformed output — the parser that makes certain mistakes unreachable. | Once; enforced continuously |
+| **Living (derived) documentation** | Regenerated from the specs (OpenAPI, TypeDoc, Storybook) so it never drifts from the code. | Automatic — from the source |
+
 **Specification-first, iterative delivery.** GS is not a third methodology beside waterfall and agile. The specification layer runs waterfall — the grammar is written first; the delivery layer runs agile — each session produces atomic, tested, deployable commits. Waterfall's rigid front-loading dissolves because the constitution is a living document revised through commit discipline; agile's structural drift dissolves because the specification gates every session. Scope may be bounded: a complete specification of a minimum viable slice is still complete.
 
 **The industrial threshold.** Three constraints historically prevented sustained formal discipline — learning (no career is long enough), maintenance (discipline erodes under deadline), and transfer (knowledge lived in people). A tireless executor that reads the specification before every session makes all three irrelevant. The practitioner's role shifts from implementation artisan to specification architect. The complexity moved upstream, into the card.
