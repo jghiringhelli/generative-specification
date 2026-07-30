@@ -121,6 +121,21 @@ The rubric grades how the AI *structured* what it produced, not what it *selecte
 constraint too: `npm audit` zero-HIGH as a P1 gate, plus an approved/forbidden library list. An executor
 handed no dependency policy is unconstrained in the supply-chain dimension — and will act like it.
 
+### Six pathologies you'll recognize — and the property that prevents each
+
+The rubric grades structure; the pathologies name what its absence *feels like* in a real repo. Practitioners
+recognize their own problems here — that recognition is the hook. Each is one or more absent properties made
+concrete:
+
+| Pathology | What you'll recognize | Property that prevents it |
+|---|---|---|
+| **Session Amnesia** | the model repeats a decision you already corrected | **Auditable** — the correction is on record, so the next session inherits it |
+| **Implicit Contract Syndrome** | two systems agreed on nothing (the Mars Orbiter problem) | **Executable** — behavioral contracts run against the live boundary |
+| **Specification Absence** | no sentinel, no architecture decision on record | **Self-describing** — intent and scope are externalized, not inferred |
+| **Implicit Architecture** | the structure lives in someone's head | **Bounded** — explicit scope and seams make it inspectable |
+| **AI Security Blindspot** | the supply chain is ungoverned | *none of the seven — the rubric misses this; spec it separately* (`npm audit` gate + approved-library list) |
+| **Test Theater** | high line coverage, low mutation score | **Verifiable** — mutation measures what was *caught*, not what ran |
+
 ### The loop: retrieve → generate → verify
 
 Author the structure so the agent **retrieves** context instead of re-deriving it; the agent
@@ -140,6 +155,19 @@ Every defect becomes a permanent test and a named rule. This is **the ratchet**:
 grows, and each fixed bug makes its class of failure unreachable. A defect is not "the method failed" —
 it is a **specification query**: *what constraint, had it been written, would have ruled this out?*
 
+### The horizon: what you stop doing
+
+Why bother building all this structure? Because each tier it unlocks removes a whole class of work from your
+hands:
+
+- **T1** — you don't write the code, and you don't review what was generated; the harness certifies it.
+- **T2** — you don't touch deployment; the spec drives CI/CD.
+- **T3** — you don't monitor; the spec's behavioral contracts run against the live system.
+
+Each tier is admissible only when the one before it holds. (The full cascade runs to T6; the treatment is in
+the Compendium.) The horizon is not "the AI writes code faster" — it is that specifying correctly is the only
+thing left that you do.
+
 ### The sharpest move: prescriptive, not descriptive
 
 The most common objection is *"the agent cuts corners."* It is real — and it is a specification problem.
@@ -147,6 +175,15 @@ Under speed-and-token pressure, a **descriptive** spec ("build a rate limiter") 
 the literal minimum. A **prescriptive** spec — intent made explicit ("reject the 101st request in a 60s
 window with HTTP 429, per API key, return `Retry-After`") — closes the output space. What the spec does
 not close, the agent is free to floor.
+
+**Reach for the RFC 2119 keywords — they are the lexical tool for closing a degree of freedom.** Phrase
+each load-bearing obligation with a capitalized normative word: **MUST** closes the freedom outright (a
+blocking gate), **SHOULD** is defeasible (a warning — deviation needs a recorded reason), **MAY** is
+ungated (permitted, unchecked). The keyword sets both the obligation and the gate's severity, so "MUST
+reject the 101st request in a 60-second window per API key with HTTP 429" closes what "the rate limiter
+should handle bursts" leaves open. Every MUST is an acceptance criterion, which makes it a machine-checkable
+probe — the keyword is where a prescriptive clause connects to **Verifiable** and the verify loop. Keyword
+the obligations that carry weight, not every sentence; over-marking is harness excess.
 
 ### The unit of work: a bound prompt, not a task title
 
@@ -195,6 +232,12 @@ the paper and the linked experiments.
 *tokens-per-correct-output*, not tokens spent. Leading with these limits is deliberate — it is why the
 measured results above can be trusted.
 
+**The other side, measured by someone else.** Independent work shows what happens *without* authored structure:
+Orlanski et al.'s SlopCodeBench (2026) instruments agent trajectories that extend their own prior solutions and
+finds structural erosion rising in 80% of them, with agent code running 2.2× more verbose than matched
+human-authored code and deteriorating each iteration while human code stays flat — the failure mode GS is built
+to prevent, measured by a group that never tested GS.
+
 ---
 
 ## 4. Start here — this week
@@ -203,13 +246,23 @@ measured results above can be trusted.
 2. **Write the architectural constitution** before the first agent session — identity, layers and their
    ownership, the schema, a skeleton decision record.
 3. **Turn on the harness** — hooks + CI that gate on tests, types, and lint. "Done" = gates pass.
+   **ForgeCraft** installs these quality gates in CI — the **Defended** property made installable.
 4. **Grade yourself** on the seven-property rubric. Your lowest two scores are your next two moves.
+   **`npx pragmaworks audit`** runs the seven-property rubric automatically; **CodeSeeker** (hybrid graph
+   search) makes the *retrieve* step operational so the agent traverses structure instead of re-deriving it.
 
 **Hooks aren't just safety — they're budget.** Every check that runs as a hook costs zero context tokens;
 the same check done in-conversation — compile, run tests, scan for forbidden patterns — costs a
 thousand-plus tokens *each time the agent redoes it by hand*. Move verification into hooks and the freed
 budget goes to work instead of re-checking. And **Defended** scores 0 until hooks actually run: *"add
 pre-commit hooks"* written in a status file is not a defended system; hooks logging real violations are.
+
+**What GS does not remove — the judgment layer.** Naming what stays human is what makes the promise credible.
+GS automates specification, generation, and verification; it does not touch *domain expertise*, the *strategic
+decision about what should exist*, real *user research*, *aesthetic judgment*, or *compliance sign-off*. Those
+are the terminus every tier routes toward, not the work the harness absorbs. If a pitch claims the machine
+decides what to build, it is overselling; GS lowers the cost of everything downstream of that decision so the
+decision is all that is left.
 
 The specification is the mold. The AI is the foundry. The scarce resource — the one that does not
 regenerate for free — is the judgment to specify correctly.
