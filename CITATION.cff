@@ -24,5 +24,5 @@ preferred-citation:
       affiliation: PragmaWorks
   year: 2026
   # DOI minted on Zenodo deposit — fill in, then unfreeze nothing else:
-  doi: "10.5281/zenodo.XXXXXXX"
+  doi: "10.5281/zenodo.21726017"
   notes: "White paper (preprint), v4.0. The full ~115-page Compendium and all experiment evidence are in this repository; the ALX experiment is in github.com/jghiringhelli/loom."
