@@ -34,8 +34,10 @@ Every structural discipline you already use — naming, SOLID, a schema, a domai
 a **bridge between human meaning and executable code**. It carries intent across the gap. Those bridges
 were built for the next *human* reader.
 
-The transformer is the **first reader trained on both banks**: the corpus of human language and the
-corpus of code. It crosses the bridge in both directions.
+Skilled programmers were always fluent on both banks — that fluency *is* the craft. The transformer is
+the first **tireless machine executor** with it, at scale: it reads intent encoded as structure and
+emits code that encodes intent, in both directions. And, like us, it grasps an explanation far more
+reliably than it reconstructs behavior from raw code.
 
 And the bridge is **asymmetric** — this is the leverage. Training is overwhelmingly natural language;
 code is a small, exact, unforgiving slice where one wrong token breaks everything. The model is therefore
