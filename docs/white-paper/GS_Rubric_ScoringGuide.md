@@ -292,6 +292,33 @@ Some catalog pathologies are not the failure of a single property but the failur
 
 ---
 
+## Scoring refinements: declared rigor vs derivable guarantee
+
+A recurring failure mode in spec-driven and phased-gate workflows is that the *shape* of rigor — reports, matrices, gates — is fully present while the *guarantee* is absent: status is authored, not derived. The following refinements make the rubric penalize declared-but-underived rigor. They sharpen **Verifiable, Defended, and Executable** in particular.
+
+- **R1 — Evidence, not description.** No green status without an attached execution record (run id, inputs, outputs, timestamp). A report that *describes* a validation procedure which was never executed scores 0 on **Verifiable** and **Auditable** — prose about a test is not evidence of a test.
+- **R2 — Computed status.** A "done" / "passing" status that is human-assigned rather than a function over evidence does not count. **Verifiable** forbids hand-typed status.
+- **R3 — Enforced vs aspirational.** Every control declares whether it actually runs. **Defended** counts only the `enforced` set; a governance gate that exists as fitness tests but whose CI has never run is aspirational and scores 0 on that control.
+- **R4 — Directionality test.** Score **Executable** by asking whether a stateless reader could regenerate the system from the specification alone. A spec whose requirements cite source files as their origin — reverse-engineered from the code — describes a system rather than specifying one, and fails Executable.
+- **R5 — Intent-anchoring.** No capability is scorable until it traces upward to a job-to-be-done. "A stakeholder chose this technology" is not an intent; a module with no use case and no consumer fails **Self-describing** and **Bounded**.
+- **R6 — Single source + embedded provenance.** One parameterized template rather than N near-duplicate files; content-addressed or embedded sources rather than external URLs with no snapshot; location-independent artifacts (no absolute paths). Violations penalize **Composable**, **Auditable**, and **Self-describing**.
+- **R7 — Predicates over checklists.** A gate expressed as a human checklist ("all questions answered?") does not score; a gate expressed as a machine-evaluable predicate (requirement→task coverage = 100%, no orphans) does. Keep the disciplinary kernel that moves a score; drop the human-gated document relay.
+
+**Negative test cases** (specimens the rubric must score low — calibration set):
+
+| Specimen | Scores low on | Because |
+|---|---|---|
+| Validation report describing an unrun procedure | Verifiable, Auditable | prose ≠ evidence |
+| Module with no use case / user story | Self-describing, Bounded | intent absent |
+| Flagship output unimplemented under a "done" narrative | Verifiable, Defended | status not derived |
+| Governance gate never wired to CI | Defended | control aspirational |
+| Requirements citing source files as their origin | Executable | spec descriptive, not generative |
+| Duplicated, post-hoc-amended artifacts | Composable, Auditable | no single source; drift |
+
+These derive from a field examination of a production-grade enterprise system built with a spec-driven phased-gate workflow; the positive patterns it also demonstrated — an executable policy layer, an ADR dependency graph, a per-decision constraint ledger, an honest gap register — are reflected in the property definitions above.
+
+---
+
 ## Harness-document YAML frontmatter schema (Self-describing, made machine-readable)
 
 The Self-describing property requires that an artifact announce its own intent and scope. A short, **closed-key** YAML frontmatter block makes the rubric-relevant facts about a harness/spec document consumable by tooling — the sentinel router, the gates, and ForgeDX — **without parsing prose**. This is the Self-describing property rendered for a machine reader.
