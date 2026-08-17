@@ -9,18 +9,18 @@ Einstein said he could not, and did not intend to. *That information is availabl
 in any physics textbook. Why would I clutter my mind with facts I can look up
 in two minutes? What matters is the ability to think.*
 
-He was not being modest. He was making a claim about where intelligence lives —
-not in the accumulation of formulas, but in the capacity to reason with them.
+He was not being modest. He was making a claim about where intelligence lives.
+Not in the accumulation of formulas, but in the capacity to reason with them.
 
 For most of history, the textbook was a dead object. You had to carry the reasoning
-yourself. The book held the formula; your mind had to apply it.
+yourself. The book held the formula. Your mind had to apply it.
 
 That distinction has collapsed.
 
 ---
 
 In 350 BCE, Aristotle wrote down the rules of valid inference. If all men are mortal, and
-Socrates is a man, then Socrates is mortal — not as a fact about Socrates, but as a
+Socrates is a man, then Socrates is mortal. Not as a fact about Socrates, but as a
 *structural* fact about the argument itself. The conclusion follows necessarily from the
 premises. The form is what matters.
 
@@ -34,22 +34,22 @@ He could not have known he was starting something that would take 2,376 years to
 
 Leibniz, working in the late 1600s, had a vision he called the *calculus ratiocinator*:
 a symbolic language in which all disputes could be resolved by calculation. When two
-philosophers disagreed, they would not argue — they would say *let us calculate* and
+philosophers disagreed, they would not argue. They would say *let us calculate* and
 sit down with their symbols. He spent years designing the notation. He could not build
 the engine that would run it. He died with the vision intact and the machinery missing.
 
-Boole, in 1854, completed the algebra Leibniz imagined. Logical statements — AND, OR,
-NOT — could be manipulated like numbers. Thought had an arithmetic. He built a
+Boole, in 1854, completed the algebra Leibniz imagined. Logical statements (AND, OR,
+NOT) could be manipulated like numbers. Thought had an arithmetic. He built a
 beautiful calculus. He could not automate it. The calculation still required a human
 to perform it.
 
 Frege, in 1879, built the first formal logical system powerful enough to represent
-mathematical reasoning — predicate logic, quantifiers, the full apparatus. He thought
+mathematical reasoning. Predicate logic, quantifiers, the full apparatus. He thought
 he had finished the job. Russell showed him a paradox that made the whole system
 collapse. Frege revised his work until the end of his life. He said in his diary,
 near the end, that the foundation had shaken under him.
 
-Russell and Whitehead spent ten years writing *Principia Mathematica* — 2,000 pages
+Russell and Whitehead spent ten years writing *Principia Mathematica*, 2,000 pages
 proving that 1+1=2 from first principles. The proof of 1+1=2 appears on page 379.
 They were not joking. They were building the foundation. The foundation was real.
 And it was still entirely manual.
@@ -60,7 +60,7 @@ Turing with his imaginary machine. Between them they gave computation its mathem
 Programs were not yet a thing. The theory was older than the practice.
 
 Hoare, in 1969, gave us the contract. If you state what must be true before a function
-runs — the precondition — and what must be true after — the postcondition — then the
+runs (the precondition) and what must be true after (the postcondition), then the
 implementation can be checked against those promises. Programs could now be argued
 about the way mathematics is argued about. A proof of correctness, not just a test.
 
@@ -71,7 +71,7 @@ certain bugs the way a circle cannot have corners. The error is not there to fin
 because it was never allowed to form.
 
 Girard, in 1987, found something stranger: a logic for *resources*. Linear logic. The
-ability to say that something must be used exactly once — not zero times, not twice,
+ability to say that something must be used exactly once. Not zero times, not twice,
 once. A ticket that cannot be copied. A key that is consumed when the lock opens.
 This was not just aesthetics. It was a new kind of guarantee.
 
@@ -95,7 +95,7 @@ And the machinery never deployed.
 Each breakthrough came with a cost: you had to understand it to use it.
 
 Hoare contracts require you to state the preconditions correctly. If you state them
-wrong — if you describe the territory imprecisely — the contract fails silently or
+wrong, if you describe the territory imprecisely, the contract fails silently or
 (worse) proves something you did not intend. You need to know what a well-formed
 precondition looks like. You need to know the theory.
 
@@ -108,15 +108,15 @@ against every ordinary programming habit. The concept is not hard in the abstrac
 Applying it consistently to a real program requires a particular kind of training.
 
 Session types and information flow analysis require more still. They require you to
-have read the papers. Not skimmed — read. Understood the formal apparatus. Can apply
+have read the papers. Not skimmed. Read. Understood the formal apparatus. Can apply
 it under pressure, in a codebase you did not write, with requirements that keep changing.
 
 The annotation burden was not recoverable at human scale. You could deploy these tools
-in a small number of places — aircraft navigation software, pacemaker firmware, nuclear
-control systems — where the cost of the annotation was justified by the cost of failure.
+in a small number of places (aircraft navigation software, pacemaker firmware, nuclear
+control systems) where the cost of the annotation was justified by the cost of failure.
 
-For everything else — the small business inventory tool, the scheduling script, the
-game an engineer builds for her daughter on a Saturday — the cost was simply too high.
+For everything else (the small business inventory tool, the scheduling script, the
+game an engineer builds for her daughter on a Saturday) the cost was simply too high.
 The machinery sat waiting.
 
 2,376 years. Piece after piece added to the engine. The engine never started.
@@ -127,13 +127,13 @@ The machinery sat waiting.
 
 The AI assistant has read the papers.
 
-Not metaphorically. These systems trained on the entire formal methods corpus —
-every implementation of Hoare logic, every paper on linear types and session types,
+Not metaphorically. These systems trained on the entire formal methods corpus.
+Every implementation of Hoare logic, every paper on linear types and session types,
 every example of information flow analysis ever published. They have internalized
 the patterns at a depth that makes them applicable without the practitioner needing
 to understand the underlying theory.
 
-The annotation burden — the thing that kept the machinery from starting — was the
+The annotation burden (the thing that kept the machinery from starting) was the
 cost of *learning the theory and applying it correctly by hand*. That cost has moved.
 
 What the AI is missing is not the theory. It has the theory. What it is missing
@@ -143,7 +143,7 @@ be shared. Every session starts from scratch.
 
 A specification closes that gap.
 
-Write a precise description of what your system must be. Name the territory — what
+Write a precise description of what your system must be. Name the territory. What
 a record is, what a transaction means, what must never be allowed to happen. Not code.
 Not implementation. The domain, stated clearly.
 
@@ -173,12 +173,12 @@ could actually use on a Saturday afternoon project.
 The Aristotle who wrote down the rules of valid inference did not know he was building
 the first component of something. He was just trying to understand how arguments work.
 Leibniz did not know he was building the second component. He was just trying to
-mechanize reasoning. Hoare, Milner, Girard, Honda, Denning — each one added a piece
+mechanize reasoning. Hoare, Milner, Girard, Honda, Denning. Each one added a piece
 to a machine whose purpose they could see only partially.
 
 The purpose is clearer now.
 
-A practitioner sits down with her domain — her fleas, her platforms, her invariants —
+A practitioner sits down with her domain (her fleas, her platforms, her invariants)
 and describes what the system must be. The machinery that took 2,376 years to build
 is waiting on the other side of that description.
 
@@ -188,7 +188,7 @@ Einstein was right. What matters is not the formula in your head. It is the abil
 to think.
 
 The textbook is no longer dead. It holds not just formulas but the accumulated
-reasoning of 2,376 years — and it knows how to apply that reasoning to new situations.
+reasoning of 2,376 years. And it knows how to apply that reasoning to new situations.
 What remains irreducibly human is exactly what Einstein said: the thinking.
 The ability to look at your domain and say precisely what it is.
 
@@ -199,5 +199,5 @@ That is all it has ever needed to be.
 ---
 
 *Generative Specification is a discipline for building software with AI assistance
-that produces consistent, auditable, formally grounded results. The white paper,
-the tools, and the practitioner study are at [forgeworkshop.dev](https://forgeworkshop.dev).*
+that produces consistent, auditable, formally grounded results. The white paper, the
+field guide, and the tools are open access at [pragmaworks.dev](https://pragmaworks.dev).*
