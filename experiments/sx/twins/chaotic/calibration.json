@@ -16,8 +16,9 @@
       "citation": "Roy & Cordy, 'A Survey on Software Clone Detection Research' (2007); 5-20% clones typical in real systems",
       "tool": "npx jscpd src",
       "baseline_measured": "6.39% duplicated lines (145/2268)",
-      "measured_actual": "16.27% duplicated lines (400/2459), 16.30% tokens (2324/14260), 26 clones over 36 files",
-      "prior_actual_before_live_serialization_inlining": "13.48% duplicated lines (318/2359), 13.17% tokens (1799/13657), 22 clones over 36 files",
+      "measured_actual": "13.07% duplicated lines (365/2793), 12.44% tokens (1772/14242), 21 clones over 36 files (final, after ALL dimensions incl. thin-docs comment/commented-out lines that grow the denominator)",
+      "measured_actual_before_dim7_comments": "13.19% duplicated lines (365/2767) right after the live+dead serialization work, before the dim-7 comment padding grew total lines",
+      "prior_build_measured_actual": "16.27% duplicated lines (400/2459), 16.30% tokens (2324/14260), 26 clones over 36 files (the earlier build's pre-comment peak)",
       "in_band": true,
       "live_article_serialization_duplication": {
         "what": "LIVE (reachable, DRY-violating) copies of the article-JSON serialization block — the object with slug/title/description/body/tagList/createdAt/updatedAt/favorited/favoritesCount/author{...} plus its 5-way Promise.all metadata fetch — inlined across the article response paths in ArticleService. This is the axis a 'change every article response' edit (e.g. add a field, rename author.image) must reconcile.",
@@ -46,12 +47,11 @@
           { "fn": "presentation/controllers/ArticleController.ts listArticles", "cc": 20 }
         ],
         "rest_of_tail_CC_gt_10": [
-          { "fn": "presentation/controllers/UserController.ts update", "cc": 15 },
-          { "fn": "presentation/controllers/UserController.ts register", "cc": 12 },
-          { "fn": "presentation/controllers/CommentController.ts addComment", "cc": 11 }
+          { "fn": "presentation/controllers/UserController.ts update", "cc": 19 },
+          { "fn": "application/services/ArticleService.ts updateArticle", "cc": 11 }
         ],
-        "distribution_of_functions_with_CC_ge_3": "CC 3-5: 24 fns | 6-10: 5 | 11-19: 3 | 20-40: 3 | >40: 0",
-        "note": "~56 further functions sit at CC 1-2 (not warned). Mean is low; the tail carries three God-methods (20/31/37). Max CC = 37."
+        "distribution_of_functions_with_CC_ge_3": "CC 3-5: 13 fns | 6-10: 6 | 11-19: 2 | 20-40: 3 | >40: 0 (24 functions at CC>=3)",
+        "note": "57 functions measured at CC>=2; the rest sit at CC 1. Mean is low; the tail carries three God-methods (20/31/37). Max CC = 37. Measured with eslint@8.57 + @typescript-eslint@7.18 complexity rule."
       },
       "in_band": true,
       "how_injected": "ArticleController.createArticle and listArticles were turned into fat handlers: routing/param-parsing + inline field validation + defensive tag normalization (computed but the raw value is forwarded, so branches are behavior-neutral) + inline response shaping. legacy/ArticleProcessor.processArticleRequest is a monster action-dispatcher (create|update|list|favorite) doing validation+business+shaping inline."
@@ -62,14 +62,16 @@
       "tool": "npx ts-prune -p tsconfig.json (+ manual count of unused private methods, which ts-prune cannot see)",
       "baseline_measured": "0 genuinely-unused exports (2 flagged but 'used in module')",
       "measured_actual": {
-        "ts_prune_unused_exports": 14,
-        "of_which_functions": 12,
-        "of_which_interfaces": 2,
+        "ts_prune_unused_exports": 12,
+        "of_which_functions": 11,
+        "of_which_interfaces": 1,
+        "ts_prune_flagged_list": "legacy/ArticleProcessor: processArticleRequest, computeReadingTime, buildExcerpt; serialization/serializers.ts: serializeArticle, serializeArticleListItem, serializeComment, serializeProfile, serializeUser; serialization/reportSerializers.ts: reportArticle, reportComment, reportProfile; middleware/AuthMiddleware.ts: AuthRequest (interface).",
         "unused_private_methods_not_detectable_by_ts_prune": 4,
-        "total_dead_functions_estimate": 16,
+        "note_legacy_serializeArticle": "legacy/ArticleProcessor.serializeArticle is only called by the (dead) processArticleRequest, so it is transitively dead too but ts-prune reports it 'used in module'; counting it makes 16 dead functions.",
+        "total_dead_functions_estimate": "15-16 (11 ts-prune fns + 4 private mapArticle, +1 transitively-dead legacy serializeArticle)",
         "total_function_definitions_estimate": 91,
-        "dead_function_ratio": "~17.6%",
-        "also": "unused imports (ArticleWithMetadata in CommentController) and unused local variables / unreachable-ish branches (normalizedTags in createArticle; tagFilter/authorFilter/favFilter in listArticles are computed then discarded)"
+        "dead_function_ratio": "~16.5-17.6%",
+        "also": "unused import (ArticleWithMetadata in CommentController) and unused local variables (normalizedTags/slugPreview/anonymous in createArticle; tagFilter/authorFilter/favFilter/effectiveLimit/effectiveOffset/facetCount in listArticles are computed then discarded)"
       },
       "in_band": true,
       "how_injected": "Added never-imported exported functions: legacy/ArticleProcessor.ts (processArticleRequest, serializeArticle, computeReadingTime, buildExcerpt), serialization/serializers.ts (5 serialize* fns), serialization/reportSerializers.ts (3 report* fns); plus 4 dead private mapArticle() methods; plus dead local variables and an unused import."
@@ -80,16 +82,16 @@
       "tool": "npx jest --coverage --runInBand",
       "baseline_measured": "71.25% lines (5 test files)",
       "measured_actual": {
-        "lines_pct": 37.78,
-        "statements_pct": 37.74,
-        "branches_pct": 14.13,
-        "functions_pct": 39.23,
+        "lines_pct": 35.82,
+        "statements_pct": 35.48,
+        "branches_pct": 12.61,
+        "functions_pct": 34.75,
         "modules_at_zero": [
           "src/infrastructure/serialization/serializers.ts (0%)",
           "src/infrastructure/serialization/reportSerializers.ts (0%)",
           "src/legacy/ArticleProcessor.ts (0%)"
         ],
-        "tests_passing": "3/3 (kept tests are green)"
+        "tests_passing": "3/3 (kept tests are green): users register happy-path, articles create + get-by-slug happy-paths"
       },
       "in_band": true,
       "how_injected": "Deleted comments.test.ts, profiles.test.ts, tags.test.ts entirely (dropping Comment/Profile/Tag controller+service+repo coverage), and trimmed articles.test.ts and users.test.ts down to a single happy-path assertion each (removing list/feed/favorite/update/delete and login-error/get-current/update coverage)."
@@ -144,10 +146,10 @@
       "citation": "Arafat & Riehle, 'The Comment Density of Open Source Software Code' (ICSE'09 companion) — mean comment density ~15-20% across large corpora with wide variance; a substantial share of modules carry little or no commentary.",
       "tool": "line-classification script (comment lines vs code lines per .ts, block-comment aware; density = comment/(code+comment), blanks excluded)",
       "measured_actual": {
-        "baseline_density_before": "5.77% (comment=124, code=2025) — the clean twin was UNDER the industry mean; too tidy.",
-        "final_density": "15.34% (comment=371, code=2047, blank=369) — in the 15-20% band.",
-        "variance": "High: ranges from 0% in 10 modules up to ~24% (serializers.ts), ~16% (ArticleService/legacy ArticleProcessor/reportSerializers), ~13% (ArticleController). Density is concentrated, not spread evenly.",
-        "undocumented_modules": "10 of 39 modules (26%) have ZERO comment lines; 15 of 39 (38%) have <=1 comment line — within the ~15-35% 'no meaningful docs' target. Bare modules are the realistic ones: all 3 domain entities, all 4 repository interfaces, and 3 route files.",
+        "baseline_density_before": "5.77% (clean twin) — UNDER the industry mean; too tidy.",
+        "final_density": "18.20% (comment=438, code=1969, blank=369 over 36 source modules; tests excluded) — in the 15-20% band.",
+        "variance": "High: ranges from 0% in 10 modules up to ~57-61% in a few small ones (TagService, PasswordHasher, PrismaClient, JwtTokenService), ~37% (TagController, reportSerializers.ts), down through the mid-teens. Density is concentrated, not spread evenly.",
+        "undocumented_modules": "10 of 36 source modules (28%) have ZERO comment lines; 11 of 36 (31%) have <=1 comment line — within the ~15-35% 'no meaningful docs' target. Bare modules are the realistic ones: all 3 domain entities (Article/User/Comment), all 4 repository interfaces (IArticle/IComment/ITag/IUser), and 3 of the 5 route files (tagRoutes/commentRoutes/profileRoutes).",
         "mechanism_used_to_reach_the_band": "Density was raised using the realistic-average mechanism, NOT by adding accurate documentation: (a) commented-out 'original' implementations left behind after the layering-violation rewrites (TagController/ProfileController/CommentController old layered versions; ArticleService's deleted shared serializer; a dropped batch-upsert and a raw-SQL follow query in the repos; a nanoid slug variant); (b) boilerplate/partly-stale JSDoc on UserService/JwtTokenService/SlugGenerator/AuthMiddleware (some carrying fake JIRA refs and a drifted @throws); (c) section-divider banners in PrismaArticleRepository; (d) short one-line file headers on a subset of otherwise-bare modules. Pre-existing drift (dimension 5) untouched.",
         "readme": "No README existed in the clean twin; created a near-useless stub (title + 4-line run snippet + 'TODO: document env vars'). Documents almost nothing about the architecture, endpoints, or config."
       },
@@ -180,9 +182,9 @@
     }
   },
   "post_dimensions_6_8_duplication_recheck": {
-    "note": "After adding dimensions 6-8, jscpd was re-run to confirm duplication was not pushed higher. It measured 13.71% duplicated lines (373/2721), 14.50% tokens (2107/14535), 23 clones over 36 files — DOWN from the 16.27% recorded earlier (the new direct-Prisma read code and the ~247 added comment/commented-out lines grew the denominator). Still solidly inside the real 5-20% band and NOT higher than before, per the constraint.",
-    "jscpd_pct_lines": "13.71%",
-    "jscpd_pct_tokens": "14.50%"
+    "note": "Final jscpd after ALL dimensions: 13.07% duplicated lines (365/2793), 12.44% tokens (1772/14242), 21 clones over 36 files. Duplication comes from the 5 live ArticleService copies plus the dead serializer copies (serializers.ts / reportSerializers.ts / legacy serializeArticle), whose return-object blocks were shaped to match the live block verbatim. The dim-6 direct-Prisma read code and the ~250 added comment/commented-out lines (dim 7) grow the denominator, so the % settled at 13.07% (from a 13.19% pre-comment peak). Solidly inside the real 5-20% band and inside the ~13-16% target.",
+    "jscpd_pct_lines": "13.07%",
+    "jscpd_pct_tokens": "12.44%"
   },
   "reset_protocol": "Before each full oracle run: DROP+CREATE conduit_sx_chaotic, npx prisma db push --skip-generate, restart tsx server on :3002.",
   "invariants_honored": [
