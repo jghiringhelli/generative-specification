@@ -19,6 +19,17 @@ HURL="/c/Program Files/Hurl/hurl.exe"
 OUT_DIR="$SX_DIR/runs"
 mkdir -p "$OUT_DIR"
 
+# --- Concurrency guard: NEVER run two pilots at once. Concurrent snapshot/restore
+# of a twin's src races (one run's `rm -rf src` + another's lost `mv .srcbak src`)
+# and can DELETE the twin src. A lock makes a second invocation refuse instead.
+LOCK="$SX_DIR/.run_sx.lock"
+if [ -e "$LOCK" ]; then
+  echo "REFUSING: run_sx.sh is already running (lock: $LOCK, pid $(cat "$LOCK" 2>/dev/null)). Two concurrent runs race the src snapshot/restore and can destroy the twins. Wait for it, or remove the lock if stale." >&2
+  exit 3
+fi
+echo "$$" > "$LOCK"
+trap 'rm -f "$LOCK"' EXIT INT TERM
+
 PG_CONTAINER="sx-pg"
 
 twin_port()  { case "$1" in lean) echo 3001;; chaotic) echo 3002;; esac; }
