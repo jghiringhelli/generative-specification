@@ -1,0 +1,8 @@
+twins/*/node_modules/
+twins/*/dist/
+twins/*/coverage/
+twins/*/.srcbak/
+repos/
+runs/*.raw
+runs/*.log
+runs/*.output

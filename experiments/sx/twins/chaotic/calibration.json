@@ -1,0 +1,195 @@
+{
+  "artifact": "calibrated-chaotic twin of the clean RealWorld (Conduit) backend",
+  "purpose": "Degrade a clean codebase to INDUSTRY-AVERAGE mess while holding behavior identical (API oracle 13/13). Representative, not adversarial. All parameters recorded with citation + measured actual.",
+  "base": "experiments/sx/twins/lean (clean twin)",
+  "server": { "port": 3002, "db": "conduit_sx_chaotic", "start": "npx tsx src/index.ts", "status_when_done": "stopped" },
+  "behavior_gate": {
+    "oracle": "experiments/sx/repos/realworld-oracle/specs/api/hurl (13 .hurl files, read-only)",
+    "command": "hurl --test --jobs 1 --variable host=http://localhost:3002 --variable uid=$U <oracle>/*.hurl",
+    "target": "13/13 (100%)",
+    "measured": "13/13 (100.0%) — 154 requests, all green, after ALL dimensions incl. mixed-patterns/styles, thin-docs, and dependency-staleness (final pass)",
+    "note": "Behavior held constant throughout. Degradation is additive dead/duplicated/branchy code + weakened tests + drifted/thin comments + mixed layering/async/error/naming styles + a light set of stale dependency pins; every oracle-asserted response stayed byte-for-byte identical."
+  },
+  "dimensions": {
+    "1_duplication": {
+      "target_range": "~10-15% of LOC",
+      "citation": "Roy & Cordy, 'A Survey on Software Clone Detection Research' (2007); 5-20% clones typical in real systems",
+      "tool": "npx jscpd src",
+      "baseline_measured": "6.39% duplicated lines (145/2268)",
+      "measured_actual": "16.27% duplicated lines (400/2459), 16.30% tokens (2324/14260), 26 clones over 36 files",
+      "prior_actual_before_live_serialization_inlining": "13.48% duplicated lines (318/2359), 13.17% tokens (1799/13657), 22 clones over 36 files",
+      "in_band": true,
+      "live_article_serialization_duplication": {
+        "what": "LIVE (reachable, DRY-violating) copies of the article-JSON serialization block — the object with slug/title/description/body/tagList/createdAt/updatedAt/favorited/favoritesCount/author{...} plus its 5-way Promise.all metadata fetch — inlined across the article response paths in ArticleService. This is the axis a 'change every article response' edit (e.g. add a field, rename author.image) must reconcile.",
+        "distinct_from_dead_code": "SEPARATE from dimension 3 (dead code). These copies are all reachable and exercised by the oracle. The pre-existing dead serializer copies (serializers.ts, reportSerializers.ts, legacy/ArticleProcessor.ts, dead private mapArticle() methods) are UNCHANGED and are NOT counted here.",
+        "live_copies_count": 5,
+        "copies": [
+          "ArticleService.getArticle — inline full serialization (single-article, with body)",
+          "ArticleService.createArticle — inline full serialization (create response, with body)",
+          "ArticleService.updateArticle — inline full serialization (update response, with body)",
+          "ArticleService.buildFavoriteResponse — full serialization shared by favoriteArticle + unfavoriteArticle (with body)",
+          "ArticleService.buildListItem — list-view serialization shared by listArticles + getFeed (body omitted, matching prior byte-for-byte output)"
+        ],
+        "endpoints_covered": "GET /articles/:slug, POST /articles, PUT /articles/:slug, POST+DELETE /articles/:slug/favorite, GET /articles, GET /articles/feed (all 7 live article-returning response paths funnel through these 5 duplicated copies).",
+        "how_injected": "Removed the two shared private builders (buildArticleResponse / buildArticleListResponse) and inlined a verbatim copy of the fetch+object-literal serialization into each live response path, so each endpoint builds its own response object (realistic legacy DRY violation). Behavior is byte-for-byte identical (oracle still 13/13). favorite/unfavorite share one copy and list/feed share one copy, giving 5 distinct copies a cross-cutting field change must edit."
+      },
+      "how_injected": "Copy-pasted the article/comment/profile serialization object-literal block verbatim across many modules instead of reusing one serializer: new infrastructure/serialization/serializers.ts + reportSerializers.ts (near-identical export sets), plus dead private mapArticle() copies embedded in ProfileService, CommentService, UserController, ProfileController; duplicated field-validation blocks inlined in ArticleController.createArticle and CommentController.addComment. LIVE article-serialization duplication was then strengthened by inlining the article-JSON serialization into each live response path in ArticleService (see live_article_serialization_duplication)."
+    },
+    "2_cyclomatic_complexity": {
+      "target": "low mean + a few God-methods at CC ~20-40",
+      "citation": "McCabe, 'A Complexity Measure', IEEE TSE 1976 (CC>10 = high risk); real corpora show low mean with a heavy right tail",
+      "tool": "npx eslint --no-eslintrc --parser @typescript-eslint/parser --plugin @typescript-eslint --rule '{\"complexity\":[\"warn\",N]}' 'src/**/*.ts'",
+      "measured_actual": {
+        "god_methods_CC_20_to_40": [
+          { "fn": "legacy/ArticleProcessor.ts processArticleRequest", "cc": 37 },
+          { "fn": "presentation/controllers/ArticleController.ts createArticle", "cc": 31 },
+          { "fn": "presentation/controllers/ArticleController.ts listArticles", "cc": 20 }
+        ],
+        "rest_of_tail_CC_gt_10": [
+          { "fn": "presentation/controllers/UserController.ts update", "cc": 15 },
+          { "fn": "presentation/controllers/UserController.ts register", "cc": 12 },
+          { "fn": "presentation/controllers/CommentController.ts addComment", "cc": 11 }
+        ],
+        "distribution_of_functions_with_CC_ge_3": "CC 3-5: 24 fns | 6-10: 5 | 11-19: 3 | 20-40: 3 | >40: 0",
+        "note": "~56 further functions sit at CC 1-2 (not warned). Mean is low; the tail carries three God-methods (20/31/37). Max CC = 37."
+      },
+      "in_band": true,
+      "how_injected": "ArticleController.createArticle and listArticles were turned into fat handlers: routing/param-parsing + inline field validation + defensive tag normalization (computed but the raw value is forwarded, so branches are behavior-neutral) + inline response shaping. legacy/ArticleProcessor.processArticleRequest is a monster action-dispatcher (create|update|list|favorite) doing validation+business+shaping inline."
+    },
+    "3_dead_code": {
+      "target_range": "~15-25% of functions unused",
+      "citation": "Romano et al., 'A Multi-Study Investigation into Dead Code', IEEE TSE 2018 (~15% of Java methods dead); band uncertain, actual recorded",
+      "tool": "npx ts-prune -p tsconfig.json (+ manual count of unused private methods, which ts-prune cannot see)",
+      "baseline_measured": "0 genuinely-unused exports (2 flagged but 'used in module')",
+      "measured_actual": {
+        "ts_prune_unused_exports": 14,
+        "of_which_functions": 12,
+        "of_which_interfaces": 2,
+        "unused_private_methods_not_detectable_by_ts_prune": 4,
+        "total_dead_functions_estimate": 16,
+        "total_function_definitions_estimate": 91,
+        "dead_function_ratio": "~17.6%",
+        "also": "unused imports (ArticleWithMetadata in CommentController) and unused local variables / unreachable-ish branches (normalizedTags in createArticle; tagFilter/authorFilter/favFilter in listArticles are computed then discarded)"
+      },
+      "in_band": true,
+      "how_injected": "Added never-imported exported functions: legacy/ArticleProcessor.ts (processArticleRequest, serializeArticle, computeReadingTime, buildExcerpt), serialization/serializers.ts (5 serialize* fns), serialization/reportSerializers.ts (3 report* fns); plus 4 dead private mapArticle() methods; plus dead local variables and an unused import."
+    },
+    "4_test_coverage": {
+      "target": "~30-40% line, with some modules at 0%",
+      "citation": "Kochhar et al., APSEC'14; Hilton et al., ASE'18 — median line coverage ~40%, distribution skewed toward zero",
+      "tool": "npx jest --coverage --runInBand",
+      "baseline_measured": "71.25% lines (5 test files)",
+      "measured_actual": {
+        "lines_pct": 37.78,
+        "statements_pct": 37.74,
+        "branches_pct": 14.13,
+        "functions_pct": 39.23,
+        "modules_at_zero": [
+          "src/infrastructure/serialization/serializers.ts (0%)",
+          "src/infrastructure/serialization/reportSerializers.ts (0%)",
+          "src/legacy/ArticleProcessor.ts (0%)"
+        ],
+        "tests_passing": "3/3 (kept tests are green)"
+      },
+      "in_band": true,
+      "how_injected": "Deleted comments.test.ts, profiles.test.ts, tags.test.ts entirely (dropping Comment/Profile/Tag controller+service+repo coverage), and trimmed articles.test.ts and users.test.ts down to a single happy-path assertion each (removing list/feed/favorite/update/delete and login-error/get-current/update coverage)."
+    },
+    "5_documentation_comment_drift": {
+      "target": "mechanism only, NO fabricated percentage",
+      "citation": "Fluri & Gall (2007) code-comment co-evolution; Wen et al., ICPC'19 — no prevalence figure exists, so none is claimed",
+      "tool": "n/a (qualitative injection)",
+      "measured_actual": "no percentage claimed; drift injected as concrete stale/contradictory comments (see below)",
+      "how_injected": [
+        "ArticleController @see references ArticleService.normalizeSlug (a method that does not exist).",
+        "ArticleController.listParams JSDoc documents a 'limit capped at 100' that is not applied, and a 'sort' param that was removed.",
+        "ArticleController.createArticle JSDoc says '@returns 200 on success' while the code returns 201, and claims it 'delegates to ArticleService.buildArticle()' which does not exist.",
+        "CommentController.addComment JSDoc documents an optional '1-5 star rating' param that was removed in 'v2' and never existed here.",
+        "serializers.serializeProfile @param includeEmail describes an email field that profiles never return.",
+        "legacy/ArticleProcessor comments describe '@param userId (0 = anonymous)' while anonymous is actually undefined, and call the module a 'reference implementation ... do not remove yet'.",
+        "Dead mapArticle() copies carry comments claiming they feed 'profile activity feed' / 'profile timeline' / user-payload article embeds — all features that do not exist.",
+        "reportSerializers header claims the reporting pipeline 'had different field requirements' though the copies are now identical."
+      ]
+    },
+    "6_mixed_patterns_styles": {
+      "target": "mechanism only, NO population % (research confirms none exists). Model 'many hands, no enforced convention' so that 'search by pattern' fails: the same KIND of operation lives in different layers/styles in different places.",
+      "citation": "Linter/style heterogeneity: Tomasdottir, Aniche & van Deursen, 'The Adoption of JavaScript Linters in Practice' (IEEE TSE 2020; ESEC/FSE'17) — projects run linters with widely divergent, non-shared configs (no single enforced convention). Naming: Butler et al., ICSME/ICSM identifier-naming work — a minority (~7-10%, directional anchor) of identifiers deviate from the dominant convention.",
+      "tool": "n/a (qualitative, behavior-preserving injection); verified by tsc --noEmit clean + oracle 13/13",
+      "mechanism": "The clean twin is uniformly layered (thin controller -> service -> repository -> Prisma) and uniformly async/await with a single typed error style. That uniformity is itself unrealistic. Injected inconsistency so a reader can no longer assume where a given operation lives or how it is written.",
+      "measured_actual": {
+        "layering_violations_endpoints_bypassing_service_repo": [
+          "GET /api/tags (TagController.getTags): bypasses TagService+PrismaTagRepository, calls getPrismaClient().tag.findMany() directly in the controller. TagService is still constructed and injected but now dead.",
+          "GET /api/profiles/:username (ProfileController.getProfile): bypasses ProfileService, queries prisma.user.findUnique + prisma.follow.findUnique directly in the controller. followUser/unfollowUser on the SAME controller still route through ProfileService.",
+          "GET /api/articles/:slug/comments (CommentController.getComments): bypasses CommentService, reads prisma.article/comment/user/follow directly and re-implements the author-embed inline (orderBy createdAt desc to match the repo). addComment/deleteComment on the SAME controller still route through CommentService."
+        ],
+        "same_kind_different_layer": "Profile reads and comment reads now happen in the controller via Prisma, while profile/comment WRITES and article reads still go through services/repos. A 'controllers are thin' assumption is false in exactly 3 of the read endpoints.",
+        "mixed_async_style": [
+          "TagController.getTags: converted to a .then()/.catch() promise chain (no async/await).",
+          "ProfileController.unfollowUser: converted to a .then()/.catch() chain while getProfile/followUser stay async/await.",
+          "PrismaUserRepository.getFollowingIds: converted to a .then() chain while every sibling method in the class stays async/await.",
+          "All other functions left as async/await (the majority)."
+        ],
+        "inconsistent_error_handling": [
+          "ProfileController.getProfile: no try/catch at all (relies on the happy/404 paths the oracle exercises), unlike the app-wide typed try/catch returning {errors:{body:['Internal server error']}}.",
+          "TagController.getTags: .catch returns an ad-hoc {error:'could not load tags'} (500) instead of the typed {errors:{body:[...]}} shape.",
+          "CommentController.getComments: no try/catch (ad-hoc). All 200/404 responses the oracle checks remain byte-for-byte identical; only the un-exercised 500 shape/behavior differs."
+        ],
+        "inconsistent_naming_formatting": "Off-convention identifiers introduced among the camelCase in the touched spots: snake_case + abbreviations (usr, artcl, tag_rows, comment_rows, is_following, follow_row, viewer_id, out, fr, c, t). ProfileController.getProfile is written with 4-space indentation and no-semicolon style inside an otherwise 2-space, semicolon file (brace/indent drift). Kept to a minority of identifiers (directional ~7-10% in touched files), not wholesale.",
+        "behavior": "tsc --noEmit clean; oracle 13/13; every response asserted by the oracle (including comment ordering after selective delete, profile.following transitions, tag list) is byte-for-byte unchanged."
+      },
+      "in_band": true,
+      "how_injected": "Rewrote 3 read endpoints to hit Prisma directly (getPrismaClient) inside their controllers, leaving the sibling write endpoints and article reads properly layered; converted 3 functions across 3 layers from async/await to promise chains; loosened error handling in the bypassed spots to non-typed/no-try-catch styles that still produce the oracle-asserted HTTP responses; and renamed a minority of locals/params to snake_case/abbreviated forms with divergent indentation. Left commented-out 'original layered' versions in place (see documentation dimension) so the churn is visible."
+    },
+    "7_documentation_thin_sparse": {
+      "target": "~15-20% comment density (mean) with HIGH variance, and a large minority (~15-35%) of modules with essentially no docs; README a near-useless stub. Distinct from dimension 5 (comment DRIFT), which stays in place.",
+      "citation": "Arafat & Riehle, 'The Comment Density of Open Source Software Code' (ICSE'09 companion) — mean comment density ~15-20% across large corpora with wide variance; a substantial share of modules carry little or no commentary.",
+      "tool": "line-classification script (comment lines vs code lines per .ts, block-comment aware; density = comment/(code+comment), blanks excluded)",
+      "measured_actual": {
+        "baseline_density_before": "5.77% (comment=124, code=2025) — the clean twin was UNDER the industry mean; too tidy.",
+        "final_density": "15.34% (comment=371, code=2047, blank=369) — in the 15-20% band.",
+        "variance": "High: ranges from 0% in 10 modules up to ~24% (serializers.ts), ~16% (ArticleService/legacy ArticleProcessor/reportSerializers), ~13% (ArticleController). Density is concentrated, not spread evenly.",
+        "undocumented_modules": "10 of 39 modules (26%) have ZERO comment lines; 15 of 39 (38%) have <=1 comment line — within the ~15-35% 'no meaningful docs' target. Bare modules are the realistic ones: all 3 domain entities, all 4 repository interfaces, and 3 route files.",
+        "mechanism_used_to_reach_the_band": "Density was raised using the realistic-average mechanism, NOT by adding accurate documentation: (a) commented-out 'original' implementations left behind after the layering-violation rewrites (TagController/ProfileController/CommentController old layered versions; ArticleService's deleted shared serializer; a dropped batch-upsert and a raw-SQL follow query in the repos; a nanoid slug variant); (b) boilerplate/partly-stale JSDoc on UserService/JwtTokenService/SlugGenerator/AuthMiddleware (some carrying fake JIRA refs and a drifted @throws); (c) section-divider banners in PrismaArticleRepository; (d) short one-line file headers on a subset of otherwise-bare modules. Pre-existing drift (dimension 5) untouched.",
+        "readme": "No README existed in the clean twin; created a near-useless stub (title + 4-line run snippet + 'TODO: document env vars'). Documents almost nothing about the architecture, endpoints, or config."
+      },
+      "in_band": true,
+      "how_injected": "See mechanism_used_to_reach_the_band. All additions are comments/commented-out code (behavior-neutral); tsc clean, oracle 13/13. High variance preserved by concentrating comments in ~15 modules and leaving ~10 at zero."
+    },
+    "8_dependency_staleness": {
+      "target": "median deps ~3-4 months / ~1 minor behind; ~80% of deps >1yr stale. Applied LIGHT and SAFE (low experimental impact; must not risk the build).",
+      "citation": "Zerouali et al., 'On the impact of outdated and vulnerable JavaScript packages' (JSEP 2019) — technical lag common; Cox et al., ICSE'15 (SEIP) — systems commonly use outdated dependencies; Snyk 2024 [vendor] — large share of deps >1yr behind.",
+      "tool": "package.json pins + npm install + node version probe; verified tsc --noEmit clean and oracle 13/13",
+      "status": "applied (light) — a representative subset of non-critical, pure-JS deps pinned to older exact versions; native + critical deps deliberately left alone.",
+      "measured_actual": {
+        "pinned": [
+          "express: was resolving to 4.22.2 under ^4.19.2 -> pinned exact 4.19.2 (older minor line; behavior identical for our routing/json usage).",
+          "jsonwebtoken: was 9.0.3 under ^9.0.2 -> pinned exact 9.0.2.",
+          "dotenv: was 16.6.1 under ^16.4.5 -> pinned exact 16.4.5.",
+          "cors: was 2.8.6 under ^2.8.5 -> pinned exact 2.8.5."
+        ],
+        "deliberately_not_pinned": [
+          "bcrypt (native node-gyp build; pinning risks a rebuild failure on Windows) — left ^5.1.1.",
+          "@prisma/client + prisma (critical: schema/client generation) — left ^5.18.0.",
+          "all devDependencies including typescript/tsx/jest (build+run toolchain) — untouched."
+        ],
+        "install_result": "npm install succeeded; all four pins materialized in node_modules (verified via each package's package.json version); Prisma client + bcrypt binary intact.",
+        "intended_target_vs_applied": "Intended target is ~1 minor / several months behind on the majority of deps (~80% >1yr). Applied only a light, representative subset to protect the gate, per instructions. Nothing was reverted (all four pins installed and kept the oracle at 13/13).",
+        "behavior": "tsc --noEmit clean; oracle 13/13 after pinning."
+      },
+      "in_band": true,
+      "how_injected": "Dropped the caret and pinned four non-critical pure-JS deps (express, jsonwebtoken, dotenv, cors) to their older exact ~1yr+ versions, ran npm install, and re-verified tsc + oracle. Native (bcrypt) and critical (prisma) deps left untouched to avoid build risk."
+    }
+  },
+  "post_dimensions_6_8_duplication_recheck": {
+    "note": "After adding dimensions 6-8, jscpd was re-run to confirm duplication was not pushed higher. It measured 13.71% duplicated lines (373/2721), 14.50% tokens (2107/14535), 23 clones over 36 files — DOWN from the 16.27% recorded earlier (the new direct-Prisma read code and the ~247 added comment/commented-out lines grew the denominator). Still solidly inside the real 5-20% band and NOT higher than before, per the constraint.",
+    "jscpd_pct_lines": "13.71%",
+    "jscpd_pct_tokens": "14.50%"
+  },
+  "reset_protocol": "Before each full oracle run: DROP+CREATE conduit_sx_chaotic, npx prisma db push --skip-generate, restart tsx server on :3002.",
+  "invariants_honored": [
+    "Oracle and lean dir never modified.",
+    "All work confined to experiments/sx/twins/chaotic.",
+    "App still compiles and runs under tsx; oracle 13/13.",
+    "Degradation matched to published shapes, not exaggerated."
+  ],
+  "notes": "The clean twin already carried ~6.4% incidental duplication and a couple of CC-11/12/15 handlers; those pre-existing values are folded into the actuals above. Pre-existing jest tests users/articles had 4 test<->impl mismatches (test expects 422 on duplicate email but impl returns 409; expects 200 on delete but impl returns 204) unrelated to this degradation; the trimmed suite avoids them and the oracle (correct spec) is authoritative at 13/13."
+}
