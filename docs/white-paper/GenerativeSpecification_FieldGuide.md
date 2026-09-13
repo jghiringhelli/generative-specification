@@ -98,23 +98,68 @@ brownfield task this cut spec context ~82% (55k → 9.9k tokens) while raising e
 The stateless reader can't remember it hit the trap yesterday; these are how the repo remembers *for* it —
 the ratchet, pointed at the sentinel.
 
-### Grade the spec the way an AI reads it: seven properties
+### Two decision layers the tree routes to: ADR and EDR
 
-Seven properties, each named for a real production failure, each scored **0–2** for a 14-point total.
-Run it on any repo today:
+The sentinel routes to specs, but a spec answers *what* to build, not *why it is shaped this way* — and the
+stateless reader needs the *why*, or on its next visit it will "improve" a deliberate constraint into a bug.
+Two kinds of decision record carry that rationale, and keeping them distinct is what makes the tree legible
+instead of a single undifferentiated pile (a distinction most people, and most models on the first pass, miss
+until it is named):
 
-| # | Property | Ask of the spec | Removes |
+- **ADR — Architecture Decision Record.** The design envelope: the cross-cutting choices that govern *how the
+  system is built* — the language and stack, the structural style, which pattern resolves which class of
+  problem, the dependency direction. It answers "why is it shaped this way," and reading it wrong is what makes
+  an agent reach for the wrong pattern. This is the layer that needs an engineer who knows *how to implement*
+  the decision, not just name it.
+- **EDR — Engineering Decision Record.** The implementation layer, in two halves that must travel together: one
+  states, *functionally*, what a unit does; the other, *how* it is implemented. Bound side by side, small, they
+  hand the agent the full local context for a change without dragging in the whole system.
+
+The two complement each other: the ADR gives the global design frame, the EDR the local build detail. Keep
+each record **small and single-purpose** (the Bounded discipline applied to decisions themselves) so the
+relevant slice fits the reader's window. These records are also exactly what the **Auditable** property scores
+— the retrievable *why* — and what makes value attribution possible later: a decision you can trace is a
+decision you can tie an outcome to.
+
+### How to build the sentinel, in order
+
+Don't author the whole tree up front. Grow it in the order a stateless reader needs it:
+
+1. **Root `CLAUDE.md`** — the one door, the five categories above, near 250–300 lines. Identity and Routing first;
+   the rest accretes.
+2. **A first spec** for the initial slice, with its acceptance criteria decidable (prescriptive, not descriptive).
+3. **ADR-000** — the founding architecture decisions (stack, structural style, dependency direction), even if
+   short. This is the frame every later generation reads against.
+4. **EDRs as units land** — each meaningful implementation choice gets its two-part record, linked from the spec
+   and tagged with the files it governs (the doc-to-code index).
+5. **Split when a node outgrows its window** — a spec past ~500 lines becomes a spec-map; an architecture file
+   past its bound gets its own child sentinel (recursive Bounded). The root always points to the children.
+
+The test that it is working: hand a cold agent only the slice the tree routes it to, and it completes the task
+without reaching outside that slice. If it has to scan the whole repo, the tree is not yet doing its job.
+
+### Grade the spec the way an AI reads it: SAVED, and the layer beneath
+
+Grade the spec as a **report card** — a letter per property, evidence on the surface — not an invented number.
+Five properties are the ones anyone accountable for what ships can read; they spell **SAVED**. Beneath them is
+an engineering layer that keeps SAVED true, and together with two more (runtime and evolution) they form the
+fuller standard, the **decagon**. Run it on any repo today:
+
+| Group | Property | Ask of the spec | Removes |
 |---|----------|-----------------|---------|
-| 1 | **Self-describing** | Does each file announce its purpose and domain? | Hidden intent the reader must infer |
-| 2 | **Bounded** | Can a task load only its slice, not the whole system? | An unbounded surface nobody can scan |
-| 3 | **Verifiable** | Is "done" defined by passing gates, not "it compiled"? | Unchecked correctness |
-| 4 | **Defended** | Are rules *enforced* (hooks/CI), not advisory? | Rules the model treats as optional |
-| 5 | **Auditable** | Is the *why* recorded (ADRs, commits)? | Lost rationale |
-| 6 | **Composable** | Can a unit be understood and changed in isolation? | Tangled coupling |
-| 7 | **Executable** | Are contracts run against a live system, not assumed? | Specs never tested against reality |
+| **S** — SAVED | **Self-describing** | Does the system explain itself from its surface, without its author? | Hidden intent the reader must infer |
+| **A** — SAVED | **Auditable** | Is the *why* recorded and retrievable (ADRs, EDRs, commits)? | Lost rationale |
+| **V** — SAVED | **Verifiable** | Is correctness *computed* by gates, not claimed ("it compiled")? | Unchecked correctness |
+| **E** — SAVED | **Executable** | Are contracts run against a live system, not assumed? | Specs never tested against reality |
+| **D** — SAVED | **Defended** | Are rules *enforced* (they fail the build), not advisory? | Rules the model treats as optional |
+| eng. | **Bounded** | Can a task load only its slice, not the whole system? | An unbounded surface nobody can scan |
+| eng. | **Composable** | Can a unit be understood and changed in isolation? | Tangled coupling |
 
 **Self-describing** and **Bounded** carry most of the weight: a bounded, self-describing spec activates
-the model's *relevant* knowledge instead of its full prior.
+the model's *relevant* knowledge instead of its full prior. The five SAVED properties are what an auditor
+or non-engineer reads first; the engineering layer (and the runtime/evolution properties that complete the
+decagon) are how engineers keep it sound. The headline is a **maturity level** (L1 Ad-hoc → L5 Self-improving)
+with a letter per property beneath, never a bare score.
 
 **What the rubric does not measure — specify it anyway.** Architectural correctness and supply-chain safety
 are orthogonal. A repo can score full marks on all seven properties — perfect layers, full enforcement,
@@ -219,6 +264,10 @@ the paper and the linked experiments.
   and held even when the harness was *tool-generated*. *(measured)*
 - **Retrieval cost** — authored structure costs **up to 3× fewer tokens per query at higher accuracy**
   than dumping context or searching code at query time. *(measured)*
+- **Ordered vs. average code** — making the same change to a codebase carrying an average project's mess
+  (duplication, dead code, mixed patterns, calibrated to published norms) cost **~2.4× the tokens and 3.5×
+  the edits** of the clean version, *even with a navigation map on both*. Two levers: a map fixes *finding*
+  things; only removing the duplication removes the rest — no map recovers it. *(mechanism, n=2)*
 - **Model independence** — a mid-tier model matched a frontier model **149/149 at ≈6× lower cost**: the
   effect is a property of the specification, not the model. *(pilot)*
 - **Formal tier** — a compiler derived from its own specification, **386/386** acceptance tests.
