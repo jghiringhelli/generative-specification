@@ -1,0 +1,26 @@
+{
+  "twin": "chaotic",
+  "rep": 0,
+  "model": "claude-sonnet-4-5",
+  "condition": "S1",
+  "claude_rc": 0,
+  "tsc_pass": true,
+  "dbpush_rc": 0,
+  "server_ready": true,
+  "oracle_succeeded_files": 13,
+  "oracle_total": 13,
+  "coherence": "6/6",
+  "coherence_missed": [],
+  "regressions": [],
+  "metric": {
+    "localization_tokens": 590064,
+    "localization_read_breadth": 3,
+    "total_tokens": 2394170,
+    "total_read_breadth": 5,
+    "writes": 11,
+    "turns": 28,
+    "total_cost_usd": 0.6638953,
+    "result_usage_total_tokens": 1041504
+  },
+  "probe_error": null
+}

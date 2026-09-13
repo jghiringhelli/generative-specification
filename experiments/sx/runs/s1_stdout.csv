@@ -1,0 +1,3 @@
+twin,condition,rep,tsc_pass,oracle_ok_files,oracle_total,coherence,localization_tokens,localization_read_breadth,total_tokens,total_read_breadth,writes,turns,cost_usd
+lean,S1,0,true,13,13,6/6,201572,2,298446,2,2,5,0.1259125
+chaotic,S1,0,true,13,13,6/6,590064,3,2394170,5,11,28,0.6638953
