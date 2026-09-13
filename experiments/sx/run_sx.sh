@@ -10,6 +10,7 @@ set -uo pipefail
 
 K="${1:-2}"
 MODEL="${2:-claude-sonnet-4-5}"
+COND="${3:-S0}"   # sentinel ablation: S0=none, S1=lean-only, S2=both
 
 SX_DIR="C:/workspace/PragmaWorks/gs/generative-specification/experiments/sx"
 TWINS_DIR="$SX_DIR/twins"
@@ -53,7 +54,7 @@ wait_ready() {
   return 1
 }
 
-echo "twin,rep,tsc_pass,oracle_ok_files,oracle_total,coherence,localization_tokens,localization_read_breadth,total_tokens,total_read_breadth,writes,turns,cost_usd"
+echo "twin,condition,rep,tsc_pass,oracle_ok_files,oracle_total,coherence,localization_tokens,localization_read_breadth,total_tokens,total_read_breadth,writes,turns,cost_usd"
 
 for TWIN in lean chaotic; do
   DIR="$TWINS_DIR/$TWIN"
@@ -61,14 +62,22 @@ for TWIN in lean chaotic; do
   DB=$(twin_db "$TWIN")
 
   for REP in $(seq 0 $((K-1))); do
-    TAG="${TWIN}_rep${REP}"
+    TAG="${TWIN}_${COND}_rep${REP}"
     RAW="$OUT_DIR/${TAG}.raw"
     RUNJSON="$OUT_DIR/${TAG}.json"
     SERVERLOG="$OUT_DIR/${TAG}.server.log"
 
-    # --- S0: hide twin CLAUDE.md if present ---
-    HID=0
-    if [ -f "$DIR/CLAUDE.md" ]; then mv "$DIR/CLAUDE.md" "$DIR/CLAUDE.md.hidden"; HID=1; fi
+    # --- sentinel setup per condition (S0=none, S1=lean-only, S2=both) ---
+    # Natural state: lean HAS CLAUDE.md, chaotic has NONE.
+    SENT_ACTION="none"
+    case "$COND" in
+      S0) # no sentinel anywhere: hide if present
+        if [ -f "$DIR/CLAUDE.md" ]; then mv "$DIR/CLAUDE.md" "$DIR/CLAUDE.md.hidden"; SENT_ACTION="hidden"; fi ;;
+      S1) # sentinel on lean only: hide chaotic's if any, leave lean's
+        if [ "$TWIN" = "chaotic" ] && [ -f "$DIR/CLAUDE.md" ]; then mv "$DIR/CLAUDE.md" "$DIR/CLAUDE.md.hidden"; SENT_ACTION="hidden"; fi ;;
+      S2) # sentinel on both: chaotic gets a temp copy of lean's map
+        if [ "$TWIN" = "chaotic" ] && [ ! -f "$DIR/CLAUDE.md" ]; then cp "$TWINS_DIR/lean/CLAUDE.md" "$DIR/CLAUDE.md"; SENT_ACTION="tempcopy"; fi ;;
+    esac
 
     # --- snapshot src ---
     rm -rf "$DIR/.srcbak"
@@ -135,15 +144,18 @@ for TWIN in lean chaotic; do
     rm -rf "$DIR/src"
     mv "$DIR/.srcbak" "$DIR/src"
 
-    # --- restore CLAUDE.md ---
-    if [ "$HID" = "1" ] && [ -f "$DIR/CLAUDE.md.hidden" ]; then mv "$DIR/CLAUDE.md.hidden" "$DIR/CLAUDE.md"; fi
+    # --- restore sentinel state ---
+    case "$SENT_ACTION" in
+      hidden)   [ -f "$DIR/CLAUDE.md.hidden" ] && mv "$DIR/CLAUDE.md.hidden" "$DIR/CLAUDE.md" ;;
+      tempcopy) rm -f "$DIR/CLAUDE.md" ;;
+    esac
 
     # --- per-run JSON ---
     node -e '
       const fs=require("fs");
       const metric=(()=>{try{return require("'"$SX_DIR/runs/${TAG}.metric.json"'")}catch(e){return{error:String(e)}}})();
       const probe=(()=>{try{return require("'"$SX_DIR/runs/${TAG}.probe.json"'")}catch(e){return{error:String(e)}}})();
-      const rec={twin:"'"$TWIN"'",rep:'"$REP"',model:"'"$MODEL"'",condition:"S0",
+      const rec={twin:"'"$TWIN"'",rep:'"$REP"',model:"'"$MODEL"'",condition:"'"$COND"'",
         claude_rc:'"$CLAUDE_RC"',tsc_pass:'"$TSC_PASS"',dbpush_rc:'"$DBPUSH_RC"',server_ready:'"$SERVER_READY"',
         oracle_succeeded_files:'"${ORACLE_OK:-0}"',oracle_total:13,
         coherence:probe.coherence||null,coherence_missed:probe.missed||null,regressions:probe.regressions||null,
@@ -151,6 +163,6 @@ for TWIN in lean chaotic; do
       fs.writeFileSync("'"$RUNJSON"'",JSON.stringify(rec,null,2));
     '
 
-    echo "$TWIN,$REP,$TSC_PASS,${ORACLE_OK:-0},$ORACLE_TOTAL,$COHERENCE,$LT,$LRB,$TT,$TRB,$WR,$TURNS,$COST"
+    echo "$TWIN,$COND,$REP,$TSC_PASS,${ORACLE_OK:-0},$ORACLE_TOTAL,$COHERENCE,$LT,$LRB,$TT,$TRB,$WR,$TURNS,$COST"
   done
 done
