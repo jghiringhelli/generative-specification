@@ -1,0 +1,59 @@
+{
+  "host": "http://localhost:3001",
+  "paths": [
+    {
+      "id": "a_create",
+      "name": "POST /api/articles",
+      "expected": 2,
+      "present": true,
+      "correct": true,
+      "value": 2
+    },
+    {
+      "id": "b_get_single",
+      "name": "GET /api/articles/:slug",
+      "expected": 2,
+      "present": true,
+      "correct": true,
+      "value": 2
+    },
+    {
+      "id": "c_update",
+      "name": "PUT /api/articles/:slug",
+      "expected": 3,
+      "present": true,
+      "correct": true,
+      "value": 3
+    },
+    {
+      "id": "d_favorite",
+      "name": "POST /api/articles/:slug/favorite",
+      "expected": 3,
+      "present": true,
+      "correct": true,
+      "value": 3
+    },
+    {
+      "id": "e_unfavorite",
+      "name": "DELETE /api/articles/:slug/favorite",
+      "expected": 3,
+      "present": true,
+      "correct": true,
+      "value": 3
+    },
+    {
+      "id": "f_list",
+      "name": "GET /api/articles (list)",
+      "expected": 3,
+      "present": true,
+      "correct": true,
+      "value": 3
+    }
+  ],
+  "missed": [],
+  "coherence": "6/6",
+  "coherence_count": 6,
+  "coherence_total": 6,
+  "regressions": [],
+  "error": null
+}

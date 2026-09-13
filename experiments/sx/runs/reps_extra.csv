@@ -1,0 +1,13 @@
+=== S0 rep1 START 13:28:47 ===
+twin,condition,rep,tsc_pass,oracle_ok_files,oracle_total,coherence,localization_tokens,localization_read_breadth,total_tokens,total_read_breadth,writes,turns,cost_usd
+lean,S0,1,true,13,13,6/6,452664,4,2103757,5,11,27,0.55882565
+chaotic,S0,1,true,13,13,6/6,407980,4,2054149,5,11,24,0.5529259999999999
+=== S1 rep1 START 13:34:37 ===
+twin,condition,rep,tsc_pass,oracle_ok_files,oracle_total,coherence,localization_tokens,localization_read_breadth,total_tokens,total_read_breadth,writes,turns,cost_usd
+lean,S1,1,true,13,13,6/6,204607,2,403551,2,2,6,0.14518040000000001
+chaotic,S1,1,true,13,13,6/6,469266,3,1956059,5,10,25,0.49145540000000004
+=== S2 rep1 START 13:38:40 ===
+twin,condition,rep,tsc_pass,oracle_ok_files,oracle_total,coherence,localization_tokens,localization_read_breadth,total_tokens,total_read_breadth,writes,turns,cost_usd
+lean,S2,1,true,13,13,6/6,205946,2,304958,2,2,5,0.1427207
+chaotic,S2,1,true,13,13,6/6,212255,2,569095,2,7,10,0.2344651
+=== EXTRA REPS DONE ===

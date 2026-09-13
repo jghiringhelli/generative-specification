@@ -11,6 +11,7 @@ set -uo pipefail
 K="${1:-2}"
 MODEL="${2:-claude-sonnet-4-5}"
 COND="${3:-S0}"   # sentinel ablation: S0=none, S1=lean-only, S2=both
+RSTART="${4:-0}"  # first rep index (to add reps without overwriting earlier ones)
 
 SX_DIR="C:/workspace/PragmaWorks/gs/generative-specification/experiments/sx"
 TWINS_DIR="$SX_DIR/twins"
@@ -61,7 +62,7 @@ for TWIN in lean chaotic; do
   PORT=$(twin_port "$TWIN")
   DB=$(twin_db "$TWIN")
 
-  for REP in $(seq 0 $((K-1))); do
+  for REP in $(seq "$RSTART" $((RSTART+K-1))); do
     TAG="${TWIN}_${COND}_rep${REP}"
     RAW="$OUT_DIR/${TAG}.raw"
     RUNJSON="$OUT_DIR/${TAG}.json"

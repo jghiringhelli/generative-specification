@@ -1,0 +1,10 @@
+{
+  "localization_tokens": 205946,
+  "localization_read_breadth": 2,
+  "total_tokens": 304958,
+  "total_read_breadth": 2,
+  "writes": 2,
+  "turns": 5,
+  "total_cost_usd": 0.1427207,
+  "result_usage_total_tokens": 95463
+}
