@@ -19,9 +19,12 @@
 - **Conditions (per model, prospectively registered):** C1 naive prompt · C2 expert prompt (control) · C3
   GS v5.0 (sentinel + spec + gates, the mature discipline). Optionally C4 GS v5.0 with gates enforced in the
   loop (rework caught), to separate authoring from enforcement.
-- **Models (the cross-model axis):** at least one **frontier** (current Claude), one **mid** (a cheaper API
-  tier), and one **weak-local via Ollama** (a small code model + a small general model, e.g. the 3B/8B class).
-  Add a second vendor (GPT/Gemini) if API access exists — a second vendor strengthens RQ2 materially.
+- **Models (the cross-model axis) — cross-VENDOR, not just cross-capability** (this is what the competitive
+  set has and what makes RQ2 credible): a current **Claude** (frontier), a **GPT** family model (JC has
+  Copilot access; use the API or Copilot), and **Gemini** if reachable — three vendors defeats the
+  "single-vendor artifact" objection. Plus a **weak-local tier via Ollama** (a small code model + a small
+  general model, ~3B/8B) for the capacity axis (RQ3). Minimum viable: Claude + GPT + one Ollama model; add
+  Gemini and a second Ollama size if access allows.
 - **Benchmark:** RealWorld/Conduit (consistent with AX/EX/KX/TX/SX). **Stretch (addresses the single-benchmark
   risk):** a second, different spec (a non-CRUD domain) for generalization; mark as stretch, not required.
 - **n and power:** enough independent stateless runs per (condition x model) cell to report effect sizes with

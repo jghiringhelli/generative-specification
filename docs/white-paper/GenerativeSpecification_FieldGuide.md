@@ -168,6 +168,25 @@ The rubric grades how the AI *structured* what it produced, not what it *selecte
 constraint too: `npm audit` zero-HIGH as a P1 gate, plus an approved/forbidden library list. An executor
 handed no dependency policy is unconstrained in the supply-chain dimension — and will act like it.
 
+### When is your spec complete?
+
+Completeness is not length — it is **closing the output space to the correct programs**. A spec is complete
+when a stateless reader can derive the *right* thing from it alone; every open degree of freedom is a place it
+will guess (a descriptive spec floors the model to the literal minimum; a prescriptive one recovers full
+intent). **Assume nothing — but do not specify the how.**
+
+A complete spec MUST carry: identity and boundary (what it is and is not); per feature, **normative acceptance
+criteria** (RFC 2119 MUST/SHOULD/MAY — every MUST is a probe); closed decisions with their *why* (ADR/EDR);
+contracts (types, tests-as-spec); constraints and prohibitions; the sentinel routing; and the verifying gates.
+It MUST NOT carry: the implementation procedure (the executor derives it), over-marking (keyword only the
+load-bearing lines), or restated defaults the domain schema already implies — over-specification is the same
+harness excess that degrades any bounded artifact; match the *specificity dial* to the stakes.
+
+**The self-test, per requirement:** if you handed only this to a stranger with no context, would they build the
+right thing or guess? Where they would guess is the missing constraint — add it (reframe the defect as the
+specification-query that would have ruled it out). Full criterion, an audit-and-complete prompt, and an F-NNN
+template: `docs/spec-completeness.md`.
+
 ### Six pathologies you'll recognize — and the property that prevents each
 
 The rubric grades structure; the pathologies name what its absence *feels like* in a real repo. Practitioners
