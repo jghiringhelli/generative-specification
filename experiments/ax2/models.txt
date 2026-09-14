@@ -1,0 +1,23 @@
+# AX2 model roster — cross-vendor + capacity axis
+# Format: id | vendor | tier | runner | available_on_this_machine
+# Freeze this list before the first run. One cell = (model x condition).
+
+# --- Frontier (Claude) — READY ---
+claude-sonnet-4-5      | anthropic | frontier | claude-cli | yes
+
+# --- Cross-vendor (RQ2: defeat the single-vendor objection) — NEEDS A KEY ---
+# Provide ONE of these to unlock the cross-vendor axis. OpenAI is cheapest to script.
+gpt-4.1                | openai    | frontier | openai-api | no  (set OPENAI_API_KEY)
+gpt-4o-mini            | openai    | mid      | openai-api | no  (set OPENAI_API_KEY)
+gemini-2.5-pro         | google    | frontier | gemini-api | no  (set GEMINI_API_KEY; free tier exists)
+
+# --- Weak-local capacity tier (RQ3: gap widens as capability falls) — READY ---
+llama3.1:8b            | meta      | mid-local  | ollama | yes
+hermes3:8b             | nousres   | mid-local  | ollama | yes
+llama3.2:3b            | meta      | weak-local | ollama | yes
+# Optional code-specialized local tier (pull if wanted): qwen2.5-coder:7b
+
+# Minimum viable per PROTOCOL: Claude + one non-Anthropic vendor + one Ollama model.
+# Right now we can run: Claude (frontier) + llama3.1:8b + llama3.2:3b  = the RQ3
+# capacity spine, cross-CAPABILITY. RQ2 (cross-VENDOR) is blocked until a GPT or
+# Gemini key is provided.
