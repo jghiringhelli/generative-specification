@@ -1,0 +1,16 @@
+condition,rep,session_id,total_cost_usd,total_turns,tsc_errors,eslint_problems,cves,layer_violations,coverage_pct,coverage_passed,mutation_score,audit1_total,audit2_total,files_count,ts_files,test_files
+control,0,d68f29aa-62de-4a2c-9e91-aa8d60774985,1.4852,7,0,13,0,0,,false,,11,5,40,35,11
+control,1,a22d7346-0f96-4d6b-9ea3-74a889c4d4cf,1.3744,7,1,36,0,0,,false,,11,11,51,45,14
+control,2,c67d94ed-8051-4483-a2d2-0bc785211284,1.3388,7,0,13,0,46,,false,,10,5,42,37,14
+control,3,68f3a0de-5805-4afb-8210-3dea6d27b131,1.2717,7,0,15,3,0,,false,,10,10,40,33,11
+control,4,0be0b4b8-3f8e-442f-a8d3-03db251d2447,1.2834,7,0,28,0,52,,false,,9,10,41,35,10
+naive,0,522888a7-2106-40d1-9409-ab4266f1dc8b,0.6516,6,0,13,2,46,21.96,false,,5,5,19,14,5
+naive,1,278baac0-eb94-4b71-b765-30f22d834e4d,0.5323,6,0,10,2,43,0,false,,8,6,22,18,6
+naive,2,5fe15a7c-e351-4c53-ae93-e2c0bfb7954c,0.6857,6,0,28,2,40,0,false,,4,2,16,12,5
+naive,3,9a4492bc-9bdd-4d0e-80b3-3da81d2c2cb0,0.7172,6,0,34,5,46,16.94,false,,7,9,21,16,5
+naive,4,17af167c-8a89-449c-bd9a-937c82a6778d,0.5251,6,0,34,5,45,25.78,false,,5,8,21,16,5
+treatment,0,af9366fe-327e-408e-bec3-17a136400e92,1.9343,6,1,20,0,0,,false,,12,12,56,48,15
+treatment,1,70e07ef8-eef2-4cad-badb-2681dcf969ef,1.5333,7,1,52,0,0,,false,,11,11,53,45,15
+treatment,2,7613d37d-a4d3-4d94-99bb-160b4e124fc7,1.9579,6,0,21,0,0,,false,,10,6,55,34,11
+treatment,3,e30a812b-73f2-44d2-b1ca-74b40964b1a1,1.8104,6,0,16,5,0,,false,,3,5,40,28,13
+treatment,4,1a23e511-dced-4a47-a246-3395c72fccc2,1.8899,6,0,32,0,0,,false,,12,10,60,51,10

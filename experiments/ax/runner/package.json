@@ -1,0 +1,11 @@
+{
+  "name": "ax-runner",
+  "private": true,
+  "version": "1.0.0",
+  "description": "AX experiment runner (measurement toolchain, pinned)",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.69.0",
+    "@typescript-eslint/parser": "^8.69.0",
+    "eslint": "^8.57.1"
+  }
+}

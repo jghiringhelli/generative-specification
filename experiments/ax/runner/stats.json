@@ -1,0 +1,937 @@
+{
+  "conditions": [
+    "naive",
+    "control",
+    "treatment"
+  ],
+  "metrics": {
+    "tsc_errors": {
+      "direction": "lower_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            0.0
+          ],
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        },
+        "control": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            0.5
+          ],
+          "min": 0.0,
+          "max": 1.0,
+          "mean": 0.2
+        },
+        "treatment": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            1.0
+          ],
+          "min": 0.0,
+          "max": 1.0,
+          "mean": 0.4
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": -0.2,
+          "p_exact": 1.0,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 1.0
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": -0.4,
+          "p_exact": 0.44444,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 1.0
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.2,
+          "p_exact": 1.0,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 1.0
+        }
+      }
+    },
+    "audit_mean": {
+      "direction": "higher_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 6.5,
+          "iqr": [
+            4.0,
+            7.5
+          ],
+          "min": 3.0,
+          "max": 8.0,
+          "mean": 5.9
+        },
+        "control": {
+          "n": 5,
+          "median": 9.5,
+          "iqr": [
+            7.75,
+            10.5
+          ],
+          "min": 7.5,
+          "max": 11.0,
+          "mean": 9.2
+        },
+        "treatment": {
+          "n": 5,
+          "median": 11.0,
+          "iqr": [
+            6.0,
+            11.5
+          ],
+          "min": 4.0,
+          "max": 12.0,
+          "mean": 9.2
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": -0.88,
+          "p_exact": 0.02381,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.07143
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": -0.64,
+          "p_exact": 0.11111,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.22222
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.24,
+          "p_exact": 0.59524,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.59524
+        }
+      }
+    },
+    "cves": {
+      "direction": "lower_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 2.0,
+          "iqr": [
+            2.0,
+            5.0
+          ],
+          "min": 2.0,
+          "max": 5.0,
+          "mean": 3.2
+        },
+        "control": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            1.5
+          ],
+          "min": 0.0,
+          "max": 3.0,
+          "mean": 0.6
+        },
+        "treatment": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            2.5
+          ],
+          "min": 0.0,
+          "max": 5.0,
+          "mean": 1.0
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": 0.76,
+          "p_exact": 0.03175,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.09524
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": 0.68,
+          "p_exact": 0.04762,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.09524
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.04,
+          "p_exact": 1.0,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 1.0
+        }
+      }
+    },
+    "total_cost_usd": {
+      "direction": "lower_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 0.6516,
+          "iqr": [
+            0.5287,
+            0.7014
+          ],
+          "min": 0.5251,
+          "max": 0.7172,
+          "mean": 0.6224
+        },
+        "control": {
+          "n": 5,
+          "median": 1.3388,
+          "iqr": [
+            1.2776,
+            1.4298
+          ],
+          "min": 1.2717,
+          "max": 1.4852,
+          "mean": 1.3507
+        },
+        "treatment": {
+          "n": 5,
+          "median": 1.8899,
+          "iqr": [
+            1.6719,
+            1.9461
+          ],
+          "min": 1.5333,
+          "max": 1.9579,
+          "mean": 1.8252
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": -1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": -1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        }
+      }
+    },
+    "eslint_problems": {
+      "direction": "lower_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 28.0,
+          "iqr": [
+            11.5,
+            34.0
+          ],
+          "min": 10.0,
+          "max": 34.0,
+          "mean": 23.8
+        },
+        "control": {
+          "n": 5,
+          "median": 15.0,
+          "iqr": [
+            13.0,
+            32.0
+          ],
+          "min": 13.0,
+          "max": 36.0,
+          "mean": 21.0
+        },
+        "treatment": {
+          "n": 5,
+          "median": 21.0,
+          "iqr": [
+            18.0,
+            42.0
+          ],
+          "min": 16.0,
+          "max": 52.0,
+          "mean": 28.2
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": 0.0,
+          "p_exact": 1.0,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 1.0
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": -0.12,
+          "p_exact": 0.79365,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 1.0
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.44,
+          "p_exact": 0.28571,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.85714
+        }
+      }
+    },
+    "layer_violations": {
+      "direction": "lower_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 45.0,
+          "iqr": [
+            41.5,
+            46.0
+          ],
+          "min": 40.0,
+          "max": 46.0,
+          "mean": 44.0
+        },
+        "control": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            49.0
+          ],
+          "min": 0.0,
+          "max": 52.0,
+          "mean": 19.6
+        },
+        "treatment": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            0.0
+          ],
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": 0.28,
+          "p_exact": 0.52381,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.88889
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": 1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": 0.4,
+          "p_exact": 0.44444,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.88889
+        }
+      }
+    },
+    "files_count": {
+      "direction": "higher_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 21.0,
+          "iqr": [
+            17.5,
+            21.5
+          ],
+          "min": 16.0,
+          "max": 22.0,
+          "mean": 19.8
+        },
+        "control": {
+          "n": 5,
+          "median": 41.0,
+          "iqr": [
+            40.0,
+            46.5
+          ],
+          "min": 40.0,
+          "max": 51.0,
+          "mean": 42.8
+        },
+        "treatment": {
+          "n": 5,
+          "median": 55.0,
+          "iqr": [
+            46.5,
+            58.0
+          ],
+          "min": 40.0,
+          "max": 60.0,
+          "mean": 52.8
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": -1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": -1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.68,
+          "p_exact": 0.09524,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.09524
+        }
+      }
+    },
+    "test_files": {
+      "direction": "higher_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 5.0,
+          "iqr": [
+            5.0,
+            5.5
+          ],
+          "min": 5.0,
+          "max": 6.0,
+          "mean": 5.2
+        },
+        "control": {
+          "n": 5,
+          "median": 11.0,
+          "iqr": [
+            10.5,
+            14.0
+          ],
+          "min": 10.0,
+          "max": 14.0,
+          "mean": 12.0
+        },
+        "treatment": {
+          "n": 5,
+          "median": 13.0,
+          "iqr": [
+            10.5,
+            15.0
+          ],
+          "min": 10.0,
+          "max": 15.0,
+          "mean": 12.8
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": -1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": -1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.24,
+          "p_exact": 0.57143,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.57143
+        }
+      }
+    },
+    "audit1_total": {
+      "direction": "higher_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 5.0,
+          "iqr": [
+            4.5,
+            7.5
+          ],
+          "min": 4.0,
+          "max": 8.0,
+          "mean": 5.8
+        },
+        "control": {
+          "n": 5,
+          "median": 10.0,
+          "iqr": [
+            9.5,
+            11.0
+          ],
+          "min": 9.0,
+          "max": 11.0,
+          "mean": 10.2
+        },
+        "treatment": {
+          "n": 5,
+          "median": 11.0,
+          "iqr": [
+            6.5,
+            12.0
+          ],
+          "min": 3.0,
+          "max": 12.0,
+          "mean": 9.6
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": -1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": -0.6,
+          "p_exact": 0.13492,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.26984
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.28,
+          "p_exact": 0.57143,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.57143
+        }
+      }
+    },
+    "layer_per_ts": {
+      "direction": "lower_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 2.875,
+          "iqr": [
+            2.6007,
+            3.3095
+          ],
+          "min": 2.3889,
+          "max": 3.3333,
+          "mean": 2.9391
+        },
+        "control": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            1.3645
+          ],
+          "min": 0.0,
+          "max": 1.4857,
+          "mean": 0.5458
+        },
+        "treatment": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            0.0
+          ],
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": 1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": 1.0,
+          "p_exact": 0.00794,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.02381
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": 0.4,
+          "p_exact": 0.44444,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.44444
+        }
+      }
+    },
+    "eslint_per_ts": {
+      "direction": "lower_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 2.125,
+          "iqr": [
+            0.7421,
+            2.2291
+          ],
+          "min": 0.5556,
+          "max": 2.3333,
+          "mean": 1.6135
+        },
+        "control": {
+          "n": 5,
+          "median": 0.4545,
+          "iqr": [
+            0.3614,
+            0.8
+          ],
+          "min": 0.3514,
+          "max": 0.8,
+          "mean": 0.5555
+        },
+        "treatment": {
+          "n": 5,
+          "median": 0.6176,
+          "iqr": [
+            0.494,
+            0.8915
+          ],
+          "min": 0.4167,
+          "max": 1.1556,
+          "mean": 0.6778
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": 0.84,
+          "p_exact": 0.03175,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.09524
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": 0.6,
+          "p_exact": 0.13492,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.26984
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.28,
+          "p_exact": 0.5,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.5
+        }
+      }
+    },
+    "coverage_pct": {
+      "direction": "higher_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 16.94,
+          "iqr": [
+            0.0,
+            23.87
+          ],
+          "min": 0.0,
+          "max": 25.78,
+          "mean": 12.936
+        },
+        "control": {
+          "n": 0
+        },
+        "treatment": {
+          "n": 0
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": null,
+          "p_exact": null,
+          "n": [
+            5,
+            0
+          ],
+          "p_holm": null
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": null,
+          "p_exact": null,
+          "n": [
+            5,
+            0
+          ],
+          "p_holm": null
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": null,
+          "p_exact": null,
+          "n": [
+            0,
+            0
+          ],
+          "p_holm": null
+        }
+      }
+    },
+    "audit2_total": {
+      "direction": "higher_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 6.0,
+          "iqr": [
+            3.5,
+            8.5
+          ],
+          "min": 2.0,
+          "max": 9.0,
+          "mean": 6.0
+        },
+        "control": {
+          "n": 5,
+          "median": 10.0,
+          "iqr": [
+            5.0,
+            10.5
+          ],
+          "min": 5.0,
+          "max": 11.0,
+          "mean": 8.2
+        },
+        "treatment": {
+          "n": 5,
+          "median": 10.0,
+          "iqr": [
+            5.5,
+            11.5
+          ],
+          "min": 5.0,
+          "max": 12.0,
+          "mean": 8.8
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": -0.44,
+          "p_exact": 0.28571,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.64286
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": -0.52,
+          "p_exact": 0.21429,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.64286
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.24,
+          "p_exact": 0.64286,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 0.64286
+        }
+      }
+    },
+    "tsc_per_ts": {
+      "direction": "lower_better",
+      "by_condition": {
+        "naive": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            0.0
+          ],
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        },
+        "control": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            0.0111
+          ],
+          "min": 0.0,
+          "max": 0.0222,
+          "mean": 0.0044
+        },
+        "treatment": {
+          "n": 5,
+          "median": 0.0,
+          "iqr": [
+            0.0,
+            0.0215
+          ],
+          "min": 0.0,
+          "max": 0.0222,
+          "mean": 0.0086
+        }
+      },
+      "pairwise": {
+        "naive_vs_control": {
+          "cliffs_delta": -0.2,
+          "p_exact": 1.0,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 1.0
+        },
+        "naive_vs_treatment": {
+          "cliffs_delta": -0.4,
+          "p_exact": 0.44444,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 1.0
+        },
+        "control_vs_treatment": {
+          "cliffs_delta": -0.16,
+          "p_exact": 1.0,
+          "n": [
+            5,
+            5
+          ],
+          "p_holm": 1.0
+        }
+      }
+    }
+  },
+  "auditor_reliability": {
+    "weighted_kappa": 0.619,
+    "exact_agreement": 0.648,
+    "n_property_pairs": 105,
+    "n_reps": 15
+  }
+}
