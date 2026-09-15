@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  bio       String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articles  Article[] @relation("AuthorArticles")
+  comments  Comment[]
+  favorites Favorite[]
+
+  following Follow[] @relation("Follower")
+  followers Follow[] @relation("Following")
+}
+
+model Follow {
+  id          Int  @id @default(autoincrement())
+  follower    User @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  Int
+  following   User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId Int
+
+  @@unique([followerId, followingId])
+}
+
+model Article {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  description String
+  body        String
+  tagList     String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author   User @relation("AuthorArticles", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId Int
+
+  comments  Comment[]
+  favorites Favorite[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId Int
+
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId Int
+}
+
+model Favorite {
+  id        Int     @id @default(autoincrement())
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId Int
+
+  @@unique([userId, articleId])
+}

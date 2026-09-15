@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Commit hook gate: type-check, lint, security audit, and tests must all pass.
+npx tsc --noEmit
+npm run lint
+npm audit --audit-level=high
+npm test

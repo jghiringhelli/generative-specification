@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Commit Hooks gate: type-check + lint + security audit + tests
+npx tsc --noEmit
+npm run lint
+npm audit --audit-level=high
+npm test

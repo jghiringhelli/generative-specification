@@ -1,0 +1,10 @@
+{
+  "model": "claude-opus-4.8",
+  "vendor": "anthropic-via-copilot",
+  "harness": "github-copilot-cli-agent",
+  "condition": "C3-gs",
+  "rep": 1,
+  "prompts_dir": "experiments/ax2/prompts/C3-gs",
+  "timestamp": "2026-09-15T20:58:54Z",
+  "notes": "Generated via GitHub Copilot CLI task sub-agent with model override (claude-opus-4.8), NOT the VS Code model picker. Each rep is a fresh stateless sub-agent = fresh context/new chat, no memory across reps/conditions/vendors. Harness held identical across all vendors; only the vendor model differs. IMPORTANT harness-effect caveat: this claude-copilot cell runs Claude inside the Copilot CLI agent harness — it is NOT the same as the main-PC 'claude -p' CLI runs; the two Claude points differ by harness (the intended harness-effect measurement). Generation only: no npm install, tests, Hurl, or metrics run. meta.json authored by orchestrating harness. No refusals or truncation."
+}

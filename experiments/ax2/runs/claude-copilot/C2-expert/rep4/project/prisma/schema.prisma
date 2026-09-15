@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  bio       String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articles   Article[] @relation("AuthorArticles")
+  comments   Comment[] @relation("AuthorComments")
+  favorites  Article[] @relation("ArticleFavorites")
+  following  User[]    @relation("UserFollows")
+  followedBy User[]    @relation("UserFollows")
+}
+
+model Article {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  description String
+  body        String
+  tagList     String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  authorId    Int
+  author      User      @relation("AuthorArticles", fields: [authorId], references: [id], onDelete: Cascade)
+  comments    Comment[] @relation("ArticleComments")
+  favoritedBy User[]    @relation("ArticleFavorites")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  authorId  Int
+  author    User    @relation("AuthorComments", fields: [authorId], references: [id], onDelete: Cascade)
+  articleId Int
+  article   Article @relation("ArticleComments", fields: [articleId], references: [id], onDelete: Cascade)
+}
