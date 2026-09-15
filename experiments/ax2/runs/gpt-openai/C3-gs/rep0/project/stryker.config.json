@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "jest",
+  "coverageAnalysis": "perTest",
+  "mutate": ["src/**/*.ts", "!src/server.ts", "!src/infrastructure/prisma.ts"],
+  "thresholds": {
+    "high": 80,
+    "low": 65,
+    "break": 65
+  },
+  "reporters": ["clear-text", "progress"]
+}

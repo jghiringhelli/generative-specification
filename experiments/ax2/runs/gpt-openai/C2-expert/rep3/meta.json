@@ -1,0 +1,10 @@
+{
+  "model": "gpt-5.6-sol",
+  "vendor": "openai-via-copilot",
+  "harness": "github-copilot-cli-agent",
+  "condition": "C2-expert",
+  "rep": 3,
+  "prompts_dir": "experiments/ax2/prompts/C2-expert",
+  "timestamp": "2026-09-15T15:45:32Z",
+  "notes": "Generated via GitHub Copilot CLI task sub-agent with model override (gpt-5.6-sol), NOT the VS Code model picker. Each rep is a fresh stateless sub-agent = fresh context/new chat, no memory across reps/conditions/vendors. Harness held identical across all vendors; only the vendor model differs. Generation only: no npm install, tests, Hurl, or metrics run. meta.json authored by orchestrating harness (Copilot CLI / claude-opus-4.8). No refusals or truncation."
+}
