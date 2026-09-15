@@ -27,14 +27,28 @@ Do not proceed until all four print correct absolute paths.
 
 ---
 
-## 1. Pick and record the model (this is the whole point of this PC)
-- In the Copilot model picker, select the **newest GPT-family (OpenAI) model** your
-  Copilot offers (e.g. a GPT-4.1 / GPT-5-class model). This is the **cross-vendor**
-  data point (Anthropic is covered on the main PC).
-- **Record the exact model id string** the picker shows — it goes in every `meta.json`.
-- If your Copilot also offers a **Gemini** model, doing a second pass with it is a
-  bonus third vendor (optional; same procedure, different output folder). Do the
-  GPT pass first and completely before considering Gemini.
+## 1. The models — Copilot IS the cross-vendor engine (RQ2)
+Copilot's picker offers several vendors (OpenAI/ChatGPT, Google/Gemini, Anthropic/Claude,
+and more). That is exactly what makes this PC valuable: run **each vendor through the SAME
+Copilot harness**, so the only thing that changes between them is the model's vendor — a
+clean cross-vendor comparison (RQ2) with the harness held constant.
+
+Run these vendors, **in priority order**, each as a full pass (all conditions × reps
+below) before starting the next:
+1. **OpenAI / GPT** — pick the newest GPT-class model in the picker. **(Priority — do this
+   pass completely first.)**
+2. **Google / Gemini** — the newest Gemini-class model. (Second pass.)
+3. **Anthropic / Claude via Copilot** — optional, valuable: it lets us measure the
+   *harness* effect (Claude-via-Copilot here vs Claude-via-CLI on the main PC). Do it only
+   if you have time after 1 and 2.
+
+For each: **record the exact model id string** the picker shows — it goes in every
+`meta.json`. Output goes to a vendor-namespaced folder (see §3): `runs/gpt-openai/…`,
+`runs/gemini-google/…`, `runs/claude-copilot/…`.
+
+Scope realism: 3 conditions × 5 reps × 3 vendors = 45 builds is a lot to drive by hand.
+**Minimum viable RQ2 = GPT + Gemini at k=3.** More reps / the Claude-via-Copilot pass are
+strictly better but optional. Do complete passes (never a half-done vendor).
 
 ---
 
@@ -55,15 +69,17 @@ on the main PC — you do not run it.
 
 ## 3. The procedure
 Target power: **k = 5 reps per condition** (minimum 3 if time is short; more is better).
-So up to 15 independent builds for the GPT pass. Each rep is **independent**: a
-**fresh Copilot chat / cleared context** — no memory of any prior rep or condition.
+So up to 15 independent builds *per vendor pass*. Each rep is **independent**: a
+**fresh Copilot chat / cleared context** — no memory of any prior rep, condition, or vendor.
+
+Let `VENDOR_SLUG` be the folder for the vendor you are currently running:
+`gpt-openai`, `gemini-google`, or `claude-copilot`.
 
 For each `CONDITION` in {C1-naive, C2-expert, C3-gs}, for each `REP` in 0..k-1:
 
 1. **Fresh context.** New chat. The model must carry nothing from earlier reps.
 2. **Working directory** (create it):
-   `experiments/ax2/runs/gpt-openai/<CONDITION>/rep<REP>/project/`
-   (For a Gemini bonus pass, use `runs/gemini/...` instead of `runs/gpt-openai/...`.)
+   `experiments/ax2/runs/<VENDOR_SLUG>/<CONDITION>/rep<REP>/project/`
 3. **Feed the condition's prompts in order**, exactly as written, as your task —
    `01-*.md`, then `02-*.md`, and so on to the end of that condition's folder. Treat
    each file's contents as the user instruction for that step. Do not add guidance,
@@ -72,11 +88,11 @@ For each `CONDITION` in {C1-naive, C2-expert, C3-gs}, for each `REP` in 0..k-1:
    mode — write files directly; you need not paste code as chat markdown). The result
    should be a runnable project tree with a `package.json` at its root.
 5. **Do NOT** run `npm install`, tests, the Hurl oracle, or any metric. Generation only.
-6. **Write `experiments/ax2/runs/gpt-openai/<CONDITION>/rep<REP>/meta.json`:**
+6. **Write `experiments/ax2/runs/<VENDOR_SLUG>/<CONDITION>/rep<REP>/meta.json`:**
    ```json
    {
      "model": "<exact model id from the picker>",
-     "vendor": "openai-via-copilot",
+     "vendor": "<openai-via-copilot | google-via-copilot | anthropic-via-copilot>",
      "harness": "github-copilot-agent-vscode",
      "condition": "<CONDITION>",
      "rep": <REP>,
@@ -86,25 +102,31 @@ For each `CONDITION` in {C1-naive, C2-expert, C3-gs}, for each `REP` in 0..k-1:
    }
    ```
 
+Keep the harness identical across vendors — same Copilot agent mode, same steps — so the
+only thing that differs between `gpt-openai`, `gemini-google`, and `claude-copilot` is the
+model's vendor. That is what makes it a clean cross-vendor comparison.
+
 ---
 
 ## 4. Honesty note to carry (a real threat, recorded, not hidden)
-This cell tests **GPT *inside Copilot's agent harness***, not GPT raw. Copilot injects
-its own system prompt, tools, and file-editing loop. That is a legitimate real-world
-vendor stack (arguably more ecologically valid than a bare API call), but it is **not**
-a clean model-only swap versus the main PC's `claude -p` runs. That is exactly why the
-`harness` field exists in `meta.json` and why this stays a **named limitation** in the
-write-up. Do not try to neutralize it — just record what you did faithfully.
+Every vendor here runs **inside Copilot's agent harness**, not raw. Copilot injects its own
+system prompt, tools, and file-editing loop. Holding that harness constant across vendors is
+a *strength* for the cross-vendor comparison (only the model changes). But it also means the
+`claude-copilot` pass is **not** the same as the main PC's `claude -p` runs — those two
+Claude points differ by harness, which is exactly the (useful) harness-effect measurement.
+That is why the `harness` field exists in every `meta.json`. Do not try to neutralize any of
+this — just record what you did faithfully.
 
 ---
 
-## 5. Finish: commit and push
+## 5. Finish: commit and push (after each completed vendor pass)
 ```
-git add experiments/ax2/runs/gpt-openai            # + runs/gemini if you did the bonus
-git commit -m "ax2(gpt): OpenAI cross-vendor cell — <model id>, C1/C2/C3 x k reps"
+git add experiments/ax2/runs/<VENDOR_SLUG>
+git commit -m "ax2(<vendor>): cross-vendor cell — <model id>, C1/C2/C3 x k reps"
 git push
 ```
-Then tell JC it is pushed. On the main PC he pulls and runs the AX measurement
+Commit each vendor pass when it is complete (don't wait for all three). Then tell JC it is
+pushed. On the main PC he pulls and runs the AX measurement
 instrument (`experiments/ax/runner/` — materialize -> measure -> audit -> aggregate)
 over these `project/` trees, identically to the Claude and Ollama cells, then the
 Protocol-B stats.
