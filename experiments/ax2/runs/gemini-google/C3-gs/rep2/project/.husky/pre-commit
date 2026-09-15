@@ -1,0 +1,34 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running pre-commit checks..."
+
+# Type check
+npm run build --noEmit || npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo "TypeScript check failed"
+  exit 1
+fi
+
+# Lint
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "Lint check failed"
+  exit 1
+fi
+
+# Audit
+npm audit --audit-level=high
+if [ $? -ne 0 ]; then
+  echo "Security audit failed"
+  exit 1
+fi
+
+# Test gate
+npm test
+if [ $? -ne 0 ]; then
+  echo "Tests failed"
+  exit 1
+fi
+
+echo "All pre-commit checks passed."

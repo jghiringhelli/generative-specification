@@ -1,0 +1,90 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  username  String     @unique
+  password  String
+  bio       String?
+  image     String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  articles   Article[]
+  comments   Comment[]
+  favorites  Favorite[]
+  followedBy Follows[]  @relation("following")
+  following  Follows[]  @relation("follower")
+
+  @@map("users")
+}
+
+model Follows {
+  follower    User   @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  String
+  following   User   @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+
+  @@id([followerId, followingId])
+  @@map("follows")
+}
+
+model Article {
+  id          String     @id @default(uuid())
+  slug        String     @unique
+  title       String
+  description String
+  body        String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+
+  tags        Tag[]      @relation("ArticleTags")
+  comments    Comment[]
+  favoritedBy Favorite[]
+
+  @@map("articles")
+}
+
+model Tag {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  articles Article[] @relation("ArticleTags")
+
+  @@map("tags")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId String
+
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+
+  @@map("comments")
+}
+
+model Favorite {
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId String
+
+  @@id([userId, articleId])
+  @@map("favorites")
+}

@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: conduit_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Security audit
+        run: npm audit --audit-level=high
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run Prisma migrations
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/conduit_test
+        run: npx prisma migrate deploy
+
+      - name: Run tests with coverage
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/conduit_test
+          JWT_SECRET: supersecretjwtkey
+          PORT: 3000
+        run: npm run test:coverage
+
+      - name: Stryker mutation gate
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/conduit_test
+          JWT_SECRET: supersecretjwtkey
+        run: npx stryker run
