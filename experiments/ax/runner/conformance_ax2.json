@@ -1,0 +1,80 @@
+[
+  {
+    "slug": "gpt-openai",
+    "cond": "treatment",
+    "rep": 0,
+    "served": true,
+    "oracle_pass": 0,
+    "oracle_total": 13,
+    "reason": "oracle-0",
+    "entry": "src/server.ts",
+    "per_file": {
+      "articles": "fail",
+      "auth": "fail",
+      "comments": "fail",
+      "errors_articles": "fail",
+      "errors_auth": "fail",
+      "errors_authorization": "fail",
+      "errors_comments": "fail",
+      "errors_profiles": "fail",
+      "favorites": "fail",
+      "feed": "fail",
+      "pagination": "fail",
+      "profiles": "fail",
+      "tags": "fail"
+    },
+    "req_seen": 0
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "treatment",
+    "rep": 0,
+    "served": true,
+    "oracle_pass": 0,
+    "oracle_total": 13,
+    "reason": "oracle-0",
+    "entry": "src/server.ts",
+    "per_file": {
+      "articles": "fail",
+      "auth": "fail",
+      "comments": "fail",
+      "errors_articles": "fail",
+      "errors_auth": "fail",
+      "errors_authorization": "fail",
+      "errors_comments": "fail",
+      "errors_profiles": "fail",
+      "favorites": "fail",
+      "feed": "fail",
+      "pagination": "fail",
+      "profiles": "fail",
+      "tags": "fail"
+    },
+    "req_seen": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "treatment",
+    "rep": 0,
+    "served": true,
+    "oracle_pass": 0,
+    "oracle_total": 13,
+    "reason": "oracle-0",
+    "entry": "src/server.ts",
+    "per_file": {
+      "articles": "fail",
+      "auth": "fail",
+      "comments": "fail",
+      "errors_articles": "fail",
+      "errors_auth": "fail",
+      "errors_authorization": "fail",
+      "errors_comments": "fail",
+      "errors_profiles": "fail",
+      "favorites": "fail",
+      "feed": "fail",
+      "pagination": "fail",
+      "profiles": "fail",
+      "tags": "fail"
+    },
+    "req_seen": 0
+  }
+]

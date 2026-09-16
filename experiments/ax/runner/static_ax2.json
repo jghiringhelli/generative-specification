@@ -1,0 +1,857 @@
+[
+  {
+    "slug": "gpt-openai",
+    "cond": "naive",
+    "rep": 0,
+    "dup": 7.704918032786885,
+    "cc": {
+      "n": 37,
+      "mean": 2.97,
+      "p95": 7,
+      "max": 8,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 14,
+    "test": 1,
+    "layer": 32,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "naive",
+    "rep": 1,
+    "dup": 2.920723226703755,
+    "cc": {
+      "n": 48,
+      "mean": 1.94,
+      "p95": 4,
+      "max": 5,
+      "over10": 0
+    },
+    "dead": 2,
+    "ts": 20,
+    "test": 1,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "naive",
+    "rep": 2,
+    "dup": 2.2067363530778166,
+    "cc": {
+      "n": 75,
+      "mean": 2.36,
+      "p95": 5,
+      "max": 15,
+      "over10": 2
+    },
+    "dead": 0,
+    "ts": 22,
+    "test": 2,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "naive",
+    "rep": 3,
+    "dup": 8.185053380782918,
+    "cc": {
+      "n": 48,
+      "mean": 2.4,
+      "p95": 7,
+      "max": 10,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 15,
+    "test": 2,
+    "layer": 30,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "naive",
+    "rep": 4,
+    "dup": 5.007587253414264,
+    "cc": {
+      "n": 43,
+      "mean": 2.44,
+      "p95": 5,
+      "max": 7,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 13,
+    "test": 1,
+    "layer": 32,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "control",
+    "rep": 0,
+    "dup": 1.4443500424808835,
+    "cc": {
+      "n": 119,
+      "mean": 1.48,
+      "p95": 3,
+      "max": 5,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 44,
+    "test": 12,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 1
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "control",
+    "rep": 1,
+    "dup": 0,
+    "cc": {
+      "n": 117,
+      "mean": 1.53,
+      "p95": 3,
+      "max": 7,
+      "over10": 0
+    },
+    "dead": 4,
+    "ts": 47,
+    "test": 12,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 2
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "control",
+    "rep": 2,
+    "dup": 3.6283185840707963,
+    "cc": {
+      "n": 133,
+      "mean": 1.38,
+      "p95": 3,
+      "max": 10,
+      "over10": 0
+    },
+    "dead": 4,
+    "ts": 51,
+    "test": 13,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "control",
+    "rep": 3,
+    "dup": 2.711496746203905,
+    "cc": {
+      "n": 115,
+      "mean": 1.52,
+      "p95": 3,
+      "max": 4,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 36,
+    "test": 10,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "control",
+    "rep": 4,
+    "dup": 0,
+    "cc": {
+      "n": 117,
+      "mean": 1.47,
+      "p95": 3,
+      "max": 7,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 39,
+    "test": 10,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 1
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "treatment",
+    "rep": 0,
+    "dup": 1.3232514177693762,
+    "cc": {
+      "n": 125,
+      "mean": 1.43,
+      "p95": 3,
+      "max": 8,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 40,
+    "test": 9,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "treatment",
+    "rep": 1,
+    "dup": 1.0508849557522124,
+    "cc": {
+      "n": 297,
+      "mean": 1.34,
+      "p95": 2,
+      "max": 7,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 45,
+    "test": 6,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "treatment",
+    "rep": 2,
+    "dup": 1.708185053380783,
+    "cc": {
+      "n": 140,
+      "mean": 1.39,
+      "p95": 4,
+      "max": 7,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 54,
+    "test": 6,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "treatment",
+    "rep": 3,
+    "dup": 0,
+    "cc": {
+      "n": 133,
+      "mean": 1.38,
+      "p95": 3,
+      "max": 7,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 47,
+    "test": 6,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gpt-openai",
+    "cond": "treatment",
+    "rep": 4,
+    "dup": 0,
+    "cc": {
+      "n": 125,
+      "mean": 1.59,
+      "p95": 4,
+      "max": 7,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 40,
+    "test": 7,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "naive",
+    "rep": 0,
+    "dup": 19.453924914675767,
+    "cc": {
+      "n": 43,
+      "mean": 3.88,
+      "p95": 9,
+      "max": 16,
+      "over10": 1
+    },
+    "dead": 0,
+    "ts": 26,
+    "test": 5,
+    "layer": 35,
+    "filesOver300": 1,
+    "longFns": 4
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "naive",
+    "rep": 1,
+    "dup": 25.02099076406381,
+    "cc": {
+      "n": 41,
+      "mean": 4.51,
+      "p95": 12,
+      "max": 18,
+      "over10": 4
+    },
+    "dead": 6,
+    "ts": 21,
+    "test": 5,
+    "layer": 35,
+    "filesOver300": 1,
+    "longFns": 7
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "naive",
+    "rep": 2,
+    "dup": 12.386156648451731,
+    "cc": {
+      "n": 37,
+      "mean": 3.73,
+      "p95": 10,
+      "max": 13,
+      "over10": 1
+    },
+    "dead": 0,
+    "ts": 19,
+    "test": 5,
+    "layer": 35,
+    "filesOver300": 1,
+    "longFns": 3
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "naive",
+    "rep": 3,
+    "dup": 12.298959318826869,
+    "cc": {
+      "n": 38,
+      "mean": 5.11,
+      "p95": 13,
+      "max": 18,
+      "over10": 5
+    },
+    "dead": 0,
+    "ts": 15,
+    "test": 5,
+    "layer": 38,
+    "filesOver300": 1,
+    "longFns": 4
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "naive",
+    "rep": 4,
+    "dup": 16.263940520446095,
+    "cc": {
+      "n": 36,
+      "mean": 4.14,
+      "p95": 12,
+      "max": 14,
+      "over10": 2
+    },
+    "dead": 0,
+    "ts": 16,
+    "test": 1,
+    "layer": 34,
+    "filesOver300": 2,
+    "longFns": 5
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "control",
+    "rep": 0,
+    "dup": 2.525252525252525,
+    "cc": {
+      "n": 112,
+      "mean": 2.21,
+      "p95": 5,
+      "max": 16,
+      "over10": 2
+    },
+    "dead": 1,
+    "ts": 53,
+    "test": 15,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 1
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "control",
+    "rep": 1,
+    "dup": 0,
+    "cc": {
+      "n": 115,
+      "mean": 1.77,
+      "p95": 4,
+      "max": 13,
+      "over10": 1
+    },
+    "dead": 9,
+    "ts": 40,
+    "test": 9,
+    "layer": 0,
+    "filesOver300": 1,
+    "longFns": 1
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "control",
+    "rep": 2,
+    "dup": 4.451864218141346,
+    "cc": {
+      "n": 106,
+      "mean": 2.15,
+      "p95": 5,
+      "max": 11,
+      "over10": 2
+    },
+    "dead": 1,
+    "ts": 41,
+    "test": 10,
+    "layer": 0,
+    "filesOver300": 1,
+    "longFns": 0
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "control",
+    "rep": 3,
+    "dup": 1.2333965844402277,
+    "cc": {
+      "n": 132,
+      "mean": 1.7,
+      "p95": 4,
+      "max": 10,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 56,
+    "test": 16,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "control",
+    "rep": 4,
+    "dup": 4.778830963665087,
+    "cc": {
+      "n": 102,
+      "mean": 2.09,
+      "p95": 5,
+      "max": 9,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 41,
+    "test": 9,
+    "layer": 0,
+    "filesOver300": 1,
+    "longFns": 0
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "treatment",
+    "rep": 0,
+    "dup": 7.067510548523207,
+    "cc": {
+      "n": 128,
+      "mean": 2.22,
+      "p95": 6,
+      "max": 18,
+      "over10": 2
+    },
+    "dead": 1,
+    "ts": 44,
+    "test": 11,
+    "layer": 0,
+    "filesOver300": 1,
+    "longFns": 0
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "treatment",
+    "rep": 1,
+    "dup": 9.027777777777777,
+    "cc": {
+      "n": 137,
+      "mean": 2,
+      "p95": 6,
+      "max": 11,
+      "over10": 1
+    },
+    "dead": 3,
+    "ts": 49,
+    "test": 11,
+    "layer": 0,
+    "filesOver300": 2,
+    "longFns": 1
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "treatment",
+    "rep": 2,
+    "dup": 3.359375,
+    "cc": {
+      "n": 191,
+      "mean": 2.07,
+      "p95": 7,
+      "max": 11,
+      "over10": 2
+    },
+    "dead": 3,
+    "ts": 52,
+    "test": 11,
+    "layer": 0,
+    "filesOver300": 2,
+    "longFns": 0
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "treatment",
+    "rep": 3,
+    "dup": 6.933744221879815,
+    "cc": {
+      "n": 135,
+      "mean": 2.27,
+      "p95": 8,
+      "max": 12,
+      "over10": 1
+    },
+    "dead": 1,
+    "ts": 44,
+    "test": 11,
+    "layer": 0,
+    "filesOver300": 1,
+    "longFns": 0
+  },
+  {
+    "slug": "gemini-google",
+    "cond": "treatment",
+    "rep": 4,
+    "dup": 4.93573264781491,
+    "cc": {
+      "n": 126,
+      "mean": 2.63,
+      "p95": 8,
+      "max": 14,
+      "over10": 1
+    },
+    "dead": 1,
+    "ts": 44,
+    "test": 11,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "naive",
+    "rep": 0,
+    "dup": 8.28258221680877,
+    "cc": {
+      "n": 53,
+      "mean": 2.43,
+      "p95": 8,
+      "max": 9,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 20,
+    "test": 1,
+    "layer": 33,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "naive",
+    "rep": 1,
+    "dup": 11.587982832618025,
+    "cc": {
+      "n": 42,
+      "mean": 2.67,
+      "p95": 7,
+      "max": 8,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 16,
+    "test": 1,
+    "layer": 33,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "naive",
+    "rep": 2,
+    "dup": 10.488676996424315,
+    "cc": {
+      "n": 46,
+      "mean": 3.02,
+      "p95": 8,
+      "max": 14,
+      "over10": 1
+    },
+    "dead": 0,
+    "ts": 16,
+    "test": 1,
+    "layer": 35,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "naive",
+    "rep": 3,
+    "dup": 6.425233644859812,
+    "cc": {
+      "n": 76,
+      "mean": 1.99,
+      "p95": 7,
+      "max": 8,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 14,
+    "test": 1,
+    "layer": 31,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "naive",
+    "rep": 4,
+    "dup": 2.9350104821802936,
+    "cc": {
+      "n": 72,
+      "mean": 2.1,
+      "p95": 7,
+      "max": 9,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 18,
+    "test": 1,
+    "layer": 33,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "control",
+    "rep": 0,
+    "dup": 0,
+    "cc": {
+      "n": 119,
+      "mean": 1.53,
+      "p95": 3,
+      "max": 6,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 40,
+    "test": 9,
+    "layer": 0,
+    "filesOver300": 1,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "control",
+    "rep": 1,
+    "dup": 0,
+    "cc": {
+      "n": 119,
+      "mean": 1.63,
+      "p95": 4,
+      "max": 8,
+      "over10": 0
+    },
+    "dead": 3,
+    "ts": 40,
+    "test": 9,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 1
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "control",
+    "rep": 2,
+    "dup": 1.061836352279825,
+    "cc": {
+      "n": 120,
+      "mean": 1.46,
+      "p95": 3,
+      "max": 7,
+      "over10": 0
+    },
+    "dead": 0,
+    "ts": 43,
+    "test": 10,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 1
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "control",
+    "rep": 3,
+    "dup": 0,
+    "cc": {
+      "n": 109,
+      "mean": 1.48,
+      "p95": 3,
+      "max": 8,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 43,
+    "test": 10,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "control",
+    "rep": 4,
+    "dup": 4.086181277860327,
+    "cc": {
+      "n": 216,
+      "mean": 1.31,
+      "p95": 3,
+      "max": 16,
+      "over10": 1
+    },
+    "dead": 1,
+    "ts": 37,
+    "test": 7,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 1
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "treatment",
+    "rep": 0,
+    "dup": 0.3026372676178124,
+    "cc": {
+      "n": 134,
+      "mean": 1.58,
+      "p95": 4,
+      "max": 11,
+      "over10": 1
+    },
+    "dead": 1,
+    "ts": 58,
+    "test": 14,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 1
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "treatment",
+    "rep": 1,
+    "dup": 0,
+    "cc": {
+      "n": 127,
+      "mean": 1.46,
+      "p95": 3,
+      "max": 7,
+      "over10": 0
+    },
+    "dead": 6,
+    "ts": 53,
+    "test": 9,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "treatment",
+    "rep": 2,
+    "dup": 0,
+    "cc": {
+      "n": 126,
+      "mean": 1.46,
+      "p95": 4,
+      "max": 10,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 54,
+    "test": 12,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "treatment",
+    "rep": 3,
+    "dup": 1.336573511543135,
+    "cc": {
+      "n": 148,
+      "mean": 1.43,
+      "p95": 3,
+      "max": 10,
+      "over10": 0
+    },
+    "dead": 1,
+    "ts": 58,
+    "test": 13,
+    "layer": 0,
+    "filesOver300": 0,
+    "longFns": 0
+  },
+  {
+    "slug": "claude-copilot",
+    "cond": "treatment",
+    "rep": 4,
+    "dup": 0.2826455624646693,
+    "cc": {
+      "n": 132,
+      "mean": 1.55,
+      "p95": 4,
+      "max": 6,
+      "over10": 0
+    },
+    "dead": 3,
+    "ts": 58,
+    "test": 16,
+    "layer": 0,
+    "filesOver300": 1,
+    "longFns": 1
+  }
+]
