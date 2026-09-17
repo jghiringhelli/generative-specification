@@ -1,0 +1,41 @@
+{
+  "_comment": "Capacity ladder for the CR study. Ordered weak->strong. THIS ORDER IS THE PRE-REGISTERED INDEPENDENT VARIABLE (PREREGISTRATION section 1, 4). Do NOT re-order post hoc. a_priori_rank is the ordering justification; it is fixed before any run. Each rung's slug matches the runs/ cell prefix <slug>__<cond>.",
+  "constant": "3000 kg dry matter per animal-unit; 100 kg/AU/day intake",
+  "rungs": [
+    {
+      "id": 0,
+      "slug": "qwen25coder7b",
+      "label": "Qwen2.5-Coder 7B (local)",
+      "access": "ollama-local",
+      "ollama_model": "qwen2.5-coder:7b",
+      "a_priori_rank": "weakest rung. LiveCodeBench and Aider polyglot place 7B coders well below frontier; Qwen2.5-Coder-7B ~ low-50s% HumanEval+ tier, far under the frontier models. This is where the GS delta is predicted largest.",
+      "reference": "Qwen2.5-Coder technical report (arXiv 2409.12186); Aider LLM leaderboard (aider.chat/docs/leaderboards)"
+    },
+    {
+      "id": 1,
+      "slug": "qwen25coder32b",
+      "label": "Qwen2.5-Coder 32B (local, weak-mid)",
+      "access": "ollama-local",
+      "ollama_model": "qwen2.5-coder:32b",
+      "a_priori_rank": "weak-mid. 32B closes much of the gap to hosted mid-tier on Aider/LiveCodeBench but still trails the frontier; predicted intermediate GS delta. OMIT this rung if local VRAM cannot hold 32B (watch OOM) and rely on the 3-rung minimum.",
+      "reference": "Aider LLM leaderboard; LiveCodeBench (livecodebench.github.io)"
+    },
+    {
+      "id": 2,
+      "slug": "gpt-mid",
+      "label": "GPT mid tier (e.g. GPT-4.1-mini / o4-mini) via Copilot arm",
+      "access": "copilot-arm",
+      "a_priori_rank": "mid. Hosted mid models sit below flagships on SWE-bench Verified / Aider but well above local 7-32B; predicted small-to-moderate GS delta.",
+      "reference": "SWE-bench Verified leaderboard (swebench.com); Aider LLM leaderboard"
+    },
+    {
+      "id": 3,
+      "slug": "claude-frontier",
+      "label": "Claude frontier (Sonnet/Opus) via Copilot arm or CLI",
+      "access": "claude-cli",
+      "a_priori_rank": "frontier. Top of SWE-bench Verified / Aider polyglot at authoring time; predicted GS delta near zero on this small task (the saturation / capacity-absorption end of the curve).",
+      "reference": "SWE-bench Verified leaderboard; Aider LLM leaderboard"
+    }
+  ],
+  "note_min_rungs": "The design requires >=3 rungs spanning a real range. If the 32B rung is dropped for VRAM, rungs 0,2,3 still span weak-local -> mid -> frontier. Add a second frontier vendor (GPT/Gemini flagship) as extra points on the strong end if desired, but keep the a priori order by published coding-benchmark rank."
+}
