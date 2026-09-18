@@ -27,7 +27,9 @@ const path = require("path");
 const { spawn, spawnSync } = require("child_process");
 
 const RUNS = path.join(__dirname, "runs");
-const HURL = "C:\\PROGRA~1\\hurl\\hurl.exe";
+// Hurl binary. Env-overridable for portability; on Windows default to the 8.3 short path (spaces
+// in "C:\Program Files\Hurl" break under shell:true), elsewhere assume `hurl` is on PATH.
+const HURL = process.env.CR_HURL || (process.platform === "win32" ? "C:\\PROGRA~1\\hurl\\hurl.exe" : "hurl");
 const PROBE_DIR = path.resolve(__dirname, "..", "benchmark", "oracle", "probes");
 const BUSINESS = new Set(["g3_rule_rest", "g4_rule_capacity", "g5_rule_overlap"]);
 const PORT = 4147;

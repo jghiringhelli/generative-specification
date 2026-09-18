@@ -115,23 +115,25 @@ line but not by itself sufficient to confirm or reject the monotone law.
 
 ## What still needs analysis (open items, ranked)
 
-1. **Layer metric — validity fix required before the weak rungs.** `layer=0/0` is *real* at
-   mid+frontier (verified: data-client calls live in repository/service files, none in route
-   handlers, for both conditions). BUT the heuristic only scans files whose path matches
-   `routes/…|route.ts|controller`. A weak-rung naive **monolith** that inlines `prisma.*` in
-   `app.ts`/`server.ts`/`index.ts` would score 0 falsely (its handler file is never scanned).
-   Since this is the pre-registered metric GS is predicted to win on, **widen the file filter to
-   include app/server/index/main entrypoints before measuring qwen**, or the qwen naive
-   violations — the whole point — will be invisible. (At mid+frontier this changes nothing:
-   entrypoint data-calls ≈ 0.)
+1. **Layer metric — validity fix APPLIED this session (no results change).** `layer=0/0` is
+   *real* at mid+frontier (verified: data-client calls live in repository/service files, none in
+   route handlers, both conditions). The heuristic previously scanned only `routes/…|route.ts|
+   controller` files, so a weak-rung naive **monolith** inlining `prisma.paddock` in `app.ts`
+   would score 0 falsely. Fixed: `static_cr.cjs` now also scans entrypoint files
+   (`app|server|index|main.ts`, excluding data-layer dirs) with an **entity-only** pattern
+   (`LAYER_ENTITY_RE`, no raw `query|execute|…` verbs) so it catches monolith domain access
+   without false-positiving on startup boilerplate like `pool.query('SELECT 1')` health checks.
+   Re-checked across all 24 cells: **0 change at mid+frontier** — the fix only arms the metric
+   for the qwen monoliths, exactly where GS is predicted to win.
 2. **Duplication is real but benign for GS.** GS's higher dup (gemini 6.5% vs 2.9%) is
    **per-entity boilerplate symmetry** — repeated CRUD/mapper blocks *within* each repository and
    parallel validate→delegate→respond skeletons *across* route files (`herd.routes` ↔
    `paddock.routes`). Not duplicated business logic. It is the DRY-vs-explicit-layering trade GS
    makes (one module per entity). Worth reporting as a genuine (mild) GS cost, not an artifact.
-3. **The two oracle-0 GS cells** (below) drag the GS *mean* but not the median. A live re-serve
-   + curl of `/register` would confirm runtime-500 vs install artifact; if artifact, GS's gpt
-   oracle numbers rise. Deferred (disk).
+3. **The two oracle-0 GS cells — RESOLVED this session** (see the dedicated section below). Live
+   re-serve of `gpt-frontier gs/1` proved register works (201); the real cause is a **422 on
+   `/readings`** from over-strict `readingDate` datetime validation (spec §3.4 says `date`). A
+   genuine GS conformance miss, not a harness artifact. Median already handles it as an outlier.
 4. **Test metric = presence only.** `test` counts test *files*; it does not run them or measure
    assertions/mutation (MSI). GS's higher test count is not evidence the tests pass or assert —
    that needs the tests executed + Stryker, not done here. Treat "more tests" as scaffolding
@@ -139,17 +141,28 @@ line but not by itself sufficient to confirm or reject the monotone law.
 5. **cc / dup / tests still use the mean in the earlier console summary** — the record of truth
    is the **median [IQR]** table above (robust to the two outlier cells). Prefer it.
 
-## Two genuine oracle-0 cells (characterized, not fixed)
+## Two genuine oracle-0 cells — root cause verified by live re-serve
 
-`gpt-mid gs/2` and `gpt-frontier gs/1` served and migrated (prisma) but failed all 6 probe
-groups. Static forensic: both are surface-conformant — bare `/register` returning `{token}`
-201, correct error codes (`unauthenticated`/`forbidden`) with the spec's `{error:{code,
-message}}` shape, correct role gating. The all-groups cascade points to a **runtime 500 on
-`/register`** (no token captured → every downstream request 401s). Not a harness/secret gap:
-the harness provides `JWT_SECRET` (32+ chars), `DATABASE_URL`, `PORT`, and JWT-expiry vars to
-every cell equally. Root cause is a genuine runtime bug in those two GS builds (or a native
-dep that failed to build at install); confirming requires a live re-serve, deferred under
-disk pressure. Left untouched — the median statistic already absorbs them as outliers.
+`gpt-mid gs/2` and `gpt-frontier gs/1` served, migrated (prisma), and **register works**
+(`POST /register` → `201 {token}`, confirmed by a live re-serve of `gpt-frontier gs/1`:
+fresh `npm install`, clean schema reset, `prisma generate` + `migrate deploy`, then curl).
+So the earlier "runtime 500 on register" guess was **wrong** — corrected here.
+
+Running the six oracle probes against the live server reproduced 0/6 deterministically. The
+failing step (Hurl `--error-format long`) is `POST /readings` returning **`422 {"error":
+{"code":"validation","message":"Invalid ISO datetime"}}`**. The probe sends the
+spec-conformant `"readingDate":"2026-01-01"`, but this GS build validated `readingDate` as a
+strict ISO **datetime** and rejects a date-only value. **DOMAIN_SPEC §3.4 defines `readingDate`
+as a `date`**, so the app is over-strict and **genuinely non-conformant** to the data contract.
+Because every rule group (capacity/budget/overlap) needs a reading first, the 422 cascades to
+all six groups → oracle 0.
+
+This is a **real GS conformance miss** (a data-contract type error), not measurement noise, and
+it is a *GS-flavored* failure: the "strict validation / fail-fast" discipline pushed the model
+to `z.datetime()`, which then rejects a valid `date`. The naive gpt-frontier build accepts the
+date-only value and passes. The median statistic already treats these as the minority outliers
+they are (the cell's other reps pass), so no numbers change — but the cause is now documented,
+not guessed. Not "fixed" (editing generated cells would corrupt the sample).
 
 ## Instrument fixes applied this session (portability / hygiene — no DV bias)
 

@@ -28,6 +28,15 @@ const sh = (cmd, args, opts = {}) => spawnSync(cmd, args, { encoding: "utf8", ti
 // Pastura data-layer call signature (the layer-violation probe). Any data client (prisma/db/pool/
 // knex/drizzle) invoked with a Pastura entity or a raw query, inside a route/controller file.
 const LAYER_RE = /\b(prisma|db|pool|knex|drizzle|repo|sql)\s*\.\s*(paddock|herd|move|reading|forage|user|query|execute|\$queryRaw|select|insert|update|delete)/gi;
+// Entity-only variant for ENTRYPOINT files (app/server/index/main): a data client invoked with a
+// domain entity. Excludes the raw-verb alternation (query|execute|select|…) so startup boilerplate
+// like `pool.query('SELECT 1')` health checks or `prisma.$connect()` is NOT miscounted. This lets
+// the metric catch weak-rung naive MONOLITHS that access domain data straight from the entrypoint,
+// without false-positiving on layered apps whose entrypoint only wires/pings the DB.
+const LAYER_ENTITY_RE = /\b(prisma|db|pool|knex|drizzle|repo)\s*\.\s*(paddock|herd|move|reading|forage|user)s?\b/gi;
+const ROUTE_FILE_RE = /routes?[\\/].*\.ts$|route\.ts$|controller/i;
+const ENTRY_FILE_RE = /(^|[\\/])(app|server|index|main)\.ts$/i;
+const DATA_LAYER_DIR_RE = /[\\/](repositor|repos?|dal|data|db|prisma|models?|infra|adapters?|persistence|storage|domain|services?)[\\/]/i;
 
 function walk(dir, cb) {
   if (!fs.existsSync(dir)) return;
@@ -78,7 +87,8 @@ function structural(proj) {
     ts++; const isTest = /\.(test|spec)\.ts$/.test(f); if (isTest) test++;
     const src = fs.readFileSync(f, "utf8"); const lines = src.split(/\r?\n/);
     if (lines.length > 300) filesOver300++;
-    if (/routes?[\\/].*\.ts$|route\.ts$|controller/i.test(f) && !isTest) { const m = src.match(LAYER_RE); if (m) layer += m.length; }
+    if (!isTest && ROUTE_FILE_RE.test(f)) { const m = src.match(LAYER_RE); if (m) layer += m.length; }
+    else if (!isTest && ENTRY_FILE_RE.test(f) && !DATA_LAYER_DIR_RE.test(f)) { const m = src.match(LAYER_ENTITY_RE); if (m) layer += m.length; }
     let depth = 0, start = -1;
     lines.forEach((ln, i) => { if (/\b(function|=>|async)\b/.test(ln) && /\{/.test(ln) && depth === 0) start = i; depth += (ln.match(/\{/g) || []).length - (ln.match(/\}/g) || []).length; if (depth === 0 && start >= 0) { if (i - start > 50) longFns++; start = -1; } });
   });
