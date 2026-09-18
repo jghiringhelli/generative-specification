@@ -164,6 +164,54 @@ date-only value and passes. The median statistic already treats these as the min
 they are (the cell's other reps pass), so no numbers change — but the cause is now documented,
 not guessed. Not "fixed" (editing generated cells would corrupt the sample).
 
+## Decomposing the −1.0 oracle Δ: it is two specific misses, not broad degradation
+
+The oracle Δ(GS−naive) = −1.0 at gpt-mid, gpt-frontier, gemini looks like "GS builds worse
+software." The per-cell data refutes that reading.
+
+Per-cell oracle (pass/6), k=3:
+
+| rung | naive | GS |
+|---|---|---|
+| gpt-mid | 6, 6, 6 | 6, **0**, 5 |
+| gpt-frontier | 5, 6, 5 | **0**, 5, 4 |
+| gemini-frontier | 6, 6, 6 | 5, 5, 5 |
+| claude-frontier | 6, 6, 6 | 6, 5, 6 |
+
+Per-probe forensic (which group fails):
+
+- **The two zeros are the same `readingDate` over-strictness bug** (previous section) — one root
+  cause, cascading to all six groups. Not six independent failures.
+- **Every other GS miss is `g6_computed_reads`** — and only that group: gemini gs/1,2,3;
+  gpt-mid gs/3; gpt-frontier gs/2 all score exactly 5/6, failing `g6` alone. `g1`–`g5`
+  (auth/roles, validation/404, and all three business rules R1/R2/R3) **pass in every served GS
+  cell.** GS reliably builds a functional backend; it trips on one behavior: the §5 computed
+  reads (strict budget arithmetic / null-on-no-open-move / 422-on-no-reading / occupancy /
+  history order).
+- `g2_validation_404` also fails in gpt-frontier — but it fails in gpt-frontier **naive** too
+  (naive/1, naive/3). That is a model/vendor quirk at that rung, **not** a GS effect.
+
+**Ruled out — cascade fidelity.** The obvious hypothesis is that the GS cascade dropped a §5 edge
+during phase-collapse. Verified false: `gs/use-cases.md` UC-3/4/5 carry all five edges, and the
+budget formula is arithmetically identical to `DOMAIN_SPEC §5.1` (`animalUnits × 100` =
+`× 3000/30`; worked example → 120). The cascade does **not** lose the spec. So the systematic g6
+miss is an **implementation-level divergence**, not an information loss.
+
+**Why this is a pro-GS signal, not anti-GS.** naive's g2 failures are *stochastic* (present in
+some reps, absent in others, model-dependent). GS's g6 failure is *deterministic and identical
+across every vendor and rep*. The method makes the failure **systematic, reproducible, and
+diagnosable at the method level** rather than a matter of per-generation luck — a single
+method-level fix would lift every GS cell at once, whereas a stochastic miss cannot be. This is
+consistent with the phase-collapse thesis (GS should make behavior *at least as good* and more
+*consistent*): GS matches naive on 5/6 groups and concentrates its entire remaining gap in one
+reproducible behavior.
+
+**Open (needs one live re-serve to close):** which specific `g6` assertion fails — the strict
+budget arithmetic (`grazingDaysLeft == 120`), the `null`-on-no-open-move edge, the
+`422`-on-no-reading edge, occupancy, or history order. Re-serving one gemini-gs cell and running
+only `g6_computed_reads.hurl` with `--error-format long` names it in one shot. Not yet done
+(disk); does not change any median.
+
 ## Instrument fixes applied this session (portability / hygiene — no DV bias)
 
 The runner was authored for Git-Bash/Linux and would not run on Windows. All fixes below

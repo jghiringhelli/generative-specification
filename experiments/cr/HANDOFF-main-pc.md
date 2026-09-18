@@ -76,10 +76,18 @@ automatically. Both JSON outputs are **gitignored** (per-machine); commit only c
    not logic clones — a genuine but mild GS cost, not an artifact.
 4. **`test`** counts test *files* only — not executed, not asserted, no mutation score. "More
    tests" ≠ verified quality.
-5. **Oracle strictness:** at least one GS cell failed the oracle by validating `readingDate` as a
-   strict ISO *datetime* and rejecting the spec-conformant date-only value (`DOMAIN_SPEC §3.4`
-   says `date`). Real conformance misses look like this — a `422` cascading across rule groups.
-   Use the **median [IQR]**, not the mean, so single strict-validation cells don't dominate.
+5. **Oracle strictness / where GS actually loses (forensic).** The GS oracle deficit on this arm
+   is **not** broad — it decomposes into exactly two misses. (a) Two cells scored 0 from an
+   over-strict `readingDate` (validated as ISO *datetime*, rejects the spec's date-only value;
+   `DOMAIN_SPEC §3.4` says `date`) — GS's strict-validation discipline overshooting. (b) Every
+   other GS miss is **`g6_computed_reads` only** (§5 budget/occupancy/history); `g1`–`g5` pass in
+   every served GS cell, and the failure is *identical across all vendors/reps* — a deterministic,
+   method-level miss, not model luck (the cascade `use-cases.md` UC-3/4/5 carry all §5 edges, so
+   it is an implementation divergence, not an information-loss). **Expect the same two GS-flavored
+   misses on qwen; watch whether GS's *systematic* g6 miss trades against naive's *stochastic*
+   g2/rule misses — that contrast is part of the result.** Use the **median [IQR]**, not the mean.
+   One open item: re-serve a single gemini-gs cell and run only `g6_computed_reads.hurl`
+   (`--error-format long`) to name the exact failing assertion — cheap, does not change medians.
 
 ## 5. The final analysis (PREREGISTRATION §7 — do this once qwen is measured)
 
