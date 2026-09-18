@@ -63,7 +63,13 @@ function deadExports(proj) {
   const r = sh("npx", ["--yes", "ts-prune"], { cwd: proj, timeout: 90000 });
   if (r.status == null && !r.stdout) return null;
   const lines = (r.stdout || "").split(/\r?\n/).filter((l) => l.trim() && !/used in module/.test(l) && /\.ts:/.test(l));
-  return lines.length;
+  // raw = every unreferenced export; real = excluding index.ts barrel re-exports. ts-prune counts
+  // a barrel/public-API re-export as "dead" because consumers import the symbol from its source
+  // file, not through the barrel — so raw structurally over-counts codebases that expose a public
+  // API surface (index.ts, ports, DTOs). real is the barrel-aware count. Both are reported; raw is
+  // the pre-registered metric, real is the correction. Applied identically to naive and gs.
+  const real = lines.filter((l) => !/[\\/]index\.ts:/.test(l));
+  return { raw: lines.length, real: real.length };
 }
 function structural(proj) {
   let ts = 0, test = 0, layer = 0, filesOver300 = 0, longFns = 0;
@@ -84,7 +90,9 @@ function runCell(slug, cond, rep) {
   if (!fs.existsSync(proj)) { rec.note = "no-project"; return rec; }
   rec.dup = duplication(proj);
   rec.cc = complexity(proj);
-  rec.dead = deadExports(proj);
+  const dead = deadExports(proj);
+  rec.dead = dead ? dead.raw : null;
+  rec.dead_real = dead ? dead.real : null;
   Object.assign(rec, structural(proj));
   return rec;
 }
@@ -107,7 +115,7 @@ function discover() {
   const outFile = path.join(__dirname, "static_cr.json");
   const results = fs.existsSync(outFile) ? JSON.parse(fs.readFileSync(outFile, "utf8")) : [];
   const done = new Set(results.map((r) => `${r.slug}__${r.cond}/${r.rep}`));
-  console.log("slug                 cond   rep  dup%  cc.mean cc.max cc>10 dead  layer tsF  testF f>300 fn>50");
+  console.log("slug                 cond   rep  dup%  cc.mean cc.max cc>10 dead dreal layer tsF  testF f>300 fn>50");
   for (const { slug, cond, rep } of discover()) {
     const key = `${slug}__${cond}/${rep}`;
     if (filter && !key.includes(filter)) continue;
@@ -115,15 +123,15 @@ function discover() {
     const r = runCell(slug, cond, rep); results.push(r);
     fs.writeFileSync(outFile, JSON.stringify(results, null, 2));
     const cc = r.cc || {};
-    console.log(`${slug.padEnd(20)} ${cond.padEnd(6)} ${r.rep}  ${String(r.dup ?? "-").padStart(4)}  ${String(cc.mean ?? "-").padStart(6)} ${String(cc.max ?? "-").padStart(5)} ${String(cc.over10 ?? "-").padStart(4)} ${String(r.dead ?? "-").padStart(4)}  ${String(r.layer ?? "-").padStart(4)} ${String(r.ts ?? "-").padStart(3)} ${String(r.test ?? "-").padStart(4)} ${String(r.filesOver300 ?? "-").padStart(4)} ${String(r.longFns ?? "-").padStart(4)}`);
+    console.log(`${slug.padEnd(20)} ${cond.padEnd(6)} ${r.rep}  ${String(r.dup ?? "-").padStart(4)}  ${String(cc.mean ?? "-").padStart(6)} ${String(cc.max ?? "-").padStart(5)} ${String(cc.over10 ?? "-").padStart(4)} ${String(r.dead ?? "-").padStart(4)} ${String(r.dead_real ?? "-").padStart(5)} ${String(r.layer ?? "-").padStart(4)} ${String(r.ts ?? "-").padStart(3)} ${String(r.test ?? "-").padStart(4)} ${String(r.filesOver300 ?? "-").padStart(4)} ${String(r.longFns ?? "-").padStart(4)}`);
   }
   const agg = {};
   for (const r of results) { (agg[`${r.slug}|${r.cond}`] = agg[`${r.slug}|${r.cond}`] || []).push(r); }
   const m = (g, fn) => { const v = g.map(fn).filter((x) => x != null && !isNaN(x)); return v.length ? (v.reduce((a, b) => a + b, 0) / v.length).toFixed(1) : "-"; };
   console.log("\n=== STATIC summary (mean over reps) — convention-free, per rung x condition ===");
-  console.log("slug|condition                 n  dup%  cc.mean cc>10  dead  layer  test-files");
+  console.log("slug|condition                 n  dup%  cc.mean cc>10  dead  dreal  layer  test-files");
   for (const k of Object.keys(agg).sort()) {
     const g = agg[k];
-    console.log(`${k.padEnd(28)} ${g.length}  ${m(g, (x) => x.dup).padStart(4)}  ${m(g, (x) => x.cc && x.cc.mean).padStart(6)}  ${m(g, (x) => x.cc && x.cc.over10).padStart(4)}  ${m(g, (x) => x.dead).padStart(4)}  ${m(g, (x) => x.layer).padStart(4)}  ${m(g, (x) => x.test).padStart(5)}`);
+    console.log(`${k.padEnd(28)} ${g.length}  ${m(g, (x) => x.dup).padStart(4)}  ${m(g, (x) => x.cc && x.cc.mean).padStart(6)}  ${m(g, (x) => x.cc && x.cc.over10).padStart(4)}  ${m(g, (x) => x.dead).padStart(4)}  ${m(g, (x) => x.dead_real).padStart(5)}  ${m(g, (x) => x.layer).padStart(4)}  ${m(g, (x) => x.test).padStart(5)}`);
   }
 })();

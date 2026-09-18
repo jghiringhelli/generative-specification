@@ -21,161 +21,248 @@
       "frontier"
     ]
   ],
+  "generated": "2026-09-18T20:33:09.463Z",
+  "note": "Copilot arm (mid+frontier) only; qwen weak rungs measured on main PC. dead_real=barrel-aware (ts-prune excl index.ts). Delta oriented so + = GS better.",
   "delta": {
-    "oracle/6": [
-      [
-        "gpt-mid",
-        2,
-        -1
-      ],
-      [
-        "gpt-frontier",
-        3,
-        -1
-      ],
-      [
-        "gemini-frontier",
-        3,
-        -1
-      ],
-      [
-        "claude-frontier",
-        3,
-        0
-      ]
+    "oracle": [
+      {
+        "slug": "gpt-mid",
+        "rank": 2,
+        "naive": 6,
+        "gs": 5,
+        "delta_gs_benefit": -1
+      },
+      {
+        "slug": "gpt-frontier",
+        "rank": 3,
+        "naive": 5,
+        "gs": 4,
+        "delta_gs_benefit": -1
+      },
+      {
+        "slug": "gemini-frontier",
+        "rank": 3,
+        "naive": 6,
+        "gs": 5,
+        "delta_gs_benefit": -1
+      },
+      {
+        "slug": "claude-frontier",
+        "rank": 3,
+        "naive": 6,
+        "gs": 6,
+        "delta_gs_benefit": 0
+      }
     ],
-    "rules/3": [
-      [
-        "gpt-mid",
-        2,
-        0
-      ],
-      [
-        "gpt-frontier",
-        3,
-        0
-      ],
-      [
-        "gemini-frontier",
-        3,
-        0
-      ],
-      [
-        "claude-frontier",
-        3,
-        0
-      ]
+    "rules": [
+      {
+        "slug": "gpt-mid",
+        "rank": 2,
+        "naive": 3,
+        "gs": 3,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "gpt-frontier",
+        "rank": 3,
+        "naive": 3,
+        "gs": 3,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "gemini-frontier",
+        "rank": 3,
+        "naive": 3,
+        "gs": 3,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "claude-frontier",
+        "rank": 3,
+        "naive": 3,
+        "gs": 3,
+        "delta_gs_benefit": 0
+      }
     ],
-    "dup%": [
-      [
-        "gpt-mid",
-        2,
-        0
-      ],
-      [
-        "gpt-frontier",
-        3,
-        -1.23
-      ],
-      [
-        "gemini-frontier",
-        3,
-        -3.5400000000000005
-      ],
-      [
-        "claude-frontier",
-        3,
-        0
-      ]
+    "dup": [
+      {
+        "slug": "gpt-mid",
+        "rank": 2,
+        "naive": 0,
+        "gs": 0,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "gpt-frontier",
+        "rank": 3,
+        "naive": 0,
+        "gs": 1.23,
+        "delta_gs_benefit": -1.23
+      },
+      {
+        "slug": "gemini-frontier",
+        "rank": 3,
+        "naive": 2.94,
+        "gs": 6.48,
+        "delta_gs_benefit": -3.54
+      },
+      {
+        "slug": "claude-frontier",
+        "rank": 3,
+        "naive": 0,
+        "gs": 0,
+        "delta_gs_benefit": 0
+      }
     ],
-    "cc.mean": [
-      [
-        "gpt-mid",
-        2,
-        0.15000000000000013
-      ],
-      [
-        "gpt-frontier",
-        3,
-        0.1499999999999999
-      ],
-      [
-        "gemini-frontier",
-        3,
-        0.06999999999999984
-      ],
-      [
-        "claude-frontier",
-        3,
-        0.15999999999999992
-      ]
+    "cc_mean": [
+      {
+        "slug": "gpt-mid",
+        "rank": 2,
+        "naive": 1.85,
+        "gs": 1.7,
+        "delta_gs_benefit": 0.15
+      },
+      {
+        "slug": "gpt-frontier",
+        "rank": 3,
+        "naive": 1.72,
+        "gs": 1.57,
+        "delta_gs_benefit": 0.15
+      },
+      {
+        "slug": "gemini-frontier",
+        "rank": 3,
+        "naive": 2.11,
+        "gs": 2.04,
+        "delta_gs_benefit": 0.07
+      },
+      {
+        "slug": "claude-frontier",
+        "rank": 3,
+        "naive": 1.65,
+        "gs": 1.49,
+        "delta_gs_benefit": 0.16
+      }
     ],
-    "dead": [
-      [
-        "gpt-mid",
-        2,
-        -2
-      ],
-      [
-        "gpt-frontier",
-        3,
-        0
-      ],
-      [
-        "gemini-frontier",
-        3,
-        -22
-      ],
-      [
-        "claude-frontier",
-        3,
-        -2
-      ]
+    "dead_raw": [
+      {
+        "slug": "gpt-mid",
+        "rank": 2,
+        "naive": 0,
+        "gs": 2,
+        "delta_gs_benefit": -2
+      },
+      {
+        "slug": "gpt-frontier",
+        "rank": 3,
+        "naive": 0,
+        "gs": 0,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "gemini-frontier",
+        "rank": 3,
+        "naive": 1,
+        "gs": 23,
+        "delta_gs_benefit": -22
+      },
+      {
+        "slug": "claude-frontier",
+        "rank": 3,
+        "naive": 1,
+        "gs": 3,
+        "delta_gs_benefit": -2
+      }
+    ],
+    "dead_real": [
+      {
+        "slug": "gpt-mid",
+        "rank": 2,
+        "naive": 0,
+        "gs": 2,
+        "delta_gs_benefit": -2
+      },
+      {
+        "slug": "gpt-frontier",
+        "rank": 3,
+        "naive": 0,
+        "gs": 0,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "gemini-frontier",
+        "rank": 3,
+        "naive": 0,
+        "gs": 0,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "claude-frontier",
+        "rank": 3,
+        "naive": 1,
+        "gs": 0,
+        "delta_gs_benefit": 1
+      }
     ],
     "layer": [
-      [
-        "gpt-mid",
-        2,
-        0
-      ],
-      [
-        "gpt-frontier",
-        3,
-        0
-      ],
-      [
-        "gemini-frontier",
-        3,
-        0
-      ],
-      [
-        "claude-frontier",
-        3,
-        0
-      ]
+      {
+        "slug": "gpt-mid",
+        "rank": 2,
+        "naive": 0,
+        "gs": 0,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "gpt-frontier",
+        "rank": 3,
+        "naive": 0,
+        "gs": 0,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "gemini-frontier",
+        "rank": 3,
+        "naive": 0,
+        "gs": 0,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "claude-frontier",
+        "rank": 3,
+        "naive": 0,
+        "gs": 0,
+        "delta_gs_benefit": 0
+      }
     ],
     "tests": [
-      [
-        "gpt-mid",
-        2,
-        0
-      ],
-      [
-        "gpt-frontier",
-        3,
-        3
-      ],
-      [
-        "gemini-frontier",
-        3,
-        2
-      ],
-      [
-        "claude-frontier",
-        3,
-        2
-      ]
+      {
+        "slug": "gpt-mid",
+        "rank": 2,
+        "naive": 1,
+        "gs": 1,
+        "delta_gs_benefit": 0
+      },
+      {
+        "slug": "gpt-frontier",
+        "rank": 3,
+        "naive": 2,
+        "gs": 5,
+        "delta_gs_benefit": 3
+      },
+      {
+        "slug": "gemini-frontier",
+        "rank": 3,
+        "naive": 4,
+        "gs": 6,
+        "delta_gs_benefit": 2
+      },
+      {
+        "slug": "claude-frontier",
+        "rank": 3,
+        "naive": 6,
+        "gs": 8,
+        "delta_gs_benefit": 2
+      }
     ]
-  },
-  "generated": "2026-09-18T03:28:55.052Z"
+  }
 }
