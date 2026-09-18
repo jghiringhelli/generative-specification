@@ -206,11 +206,21 @@ consistent with the phase-collapse thesis (GS should make behavior *at least as 
 *consistent*): GS matches naive on 5/6 groups and concentrates its entire remaining gap in one
 reproducible behavior.
 
-**Open (needs one live re-serve to close):** which specific `g6` assertion fails — the strict
-budget arithmetic (`grazingDaysLeft == 120`), the `null`-on-no-open-move edge, the
-`422`-on-no-reading edge, occupancy, or history order. Re-serving one gemini-gs cell and running
-only `g6_computed_reads.hurl` with `--error-format long` names it in one shot. Not yet done
-(disk); does not change any median.
+**Closed — the exact `g6` assertion, named by live re-serve.** Re-served `gemini-frontier gs/1`
+(fresh `npm install`, `npm run migrate`, `npx tsx src/server.ts`) and ran only
+`g6_computed_reads.hurl` with `--error-format long`. **Five of six computed-read assertions pass**
+— the strict budget arithmetic (`grazingDaysLeft == 120`), the `null`-on-no-open-move edge (P21),
+occupancy (P23), and history newest-first (P24) are all correct. The single failing assertion is
+**P22 (line 138): `GET /paddocks/:id/budget` on a paddock with NO reading must return `422`**
+(`DOMAIN_SPEC §5.1`: "If no reading: 422"). The GS build instead returns **`200
+{"grazingDaysLeft": null}`** — it conflates the two null-ish edges, treating *no reading* the same
+as *no open move* rather than distinguishing "unmeasured → reject (422)" from "measured but idle →
+null". Note the direction: here GS is **too lax** (200 where the spec wants 422), the mirror image
+of the `readingDate` cell where GS was **too strict**. So GS's misses are edge-case *interpretation*
+divergences, not a single "over-strict" theme — and each is a one-line, method-level fix (add the
+`if (!latestReading) → 422` branch to the budget handler), which would lift the g6-only cells
+across every vendor at once. Named on gemini-gs/1; the identical g6-only signature across
+gpt-mid/gpt-frontier/gemini reps makes this the shared cause.
 
 ## Instrument fixes applied this session (portability / hygiene — no DV bias)
 

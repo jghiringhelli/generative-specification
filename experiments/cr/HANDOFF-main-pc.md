@@ -86,8 +86,11 @@ automatically. Both JSON outputs are **gitignored** (per-machine); commit only c
    it is an implementation divergence, not an information-loss). **Expect the same two GS-flavored
    misses on qwen; watch whether GS's *systematic* g6 miss trades against naive's *stochastic*
    g2/rule misses — that contrast is part of the result.** Use the **median [IQR]**, not the mean.
-   One open item: re-serve a single gemini-gs cell and run only `g6_computed_reads.hurl`
-   (`--error-format long`) to name the exact failing assertion — cheap, does not change medians.
+   The exact g6 assertion is now named (re-served gemini-gs/1): **P22 — `GET /budget` on a paddock
+   with no reading must be `422` (§5.1), but the GS build returns `200 {grazingDaysLeft:null}`**
+   (conflates "unmeasured" with "measured-but-idle"). 5/6 computed-read assertions pass; only this
+   edge fails, cross-vendor. It is a one-line handler fix — do NOT patch generated cells (would
+   corrupt the sample), just expect this exact g6 signature on qwen-gs too.
 
 ## 5. The final analysis (PREREGISTRATION §7 — do this once qwen is measured)
 
