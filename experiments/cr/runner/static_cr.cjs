@@ -40,7 +40,8 @@ function walk(dir, cb) {
 function duplication(proj) {
   const src = path.join(proj, "src"); if (!fs.existsSync(src)) return null;
   const out = path.join(proj, ".jscpd-out");
-  sh("npx", ["--yes", "jscpd", src, "--reporters", "json", "--output", out, "--min-lines", "5", "--silent"], { cwd: proj, timeout: 90000 });
+  // jscpd's fast-glob treats Windows backslashes as escapes; scan/output relative to cwd (=proj).
+  sh("npx", ["--yes", "jscpd", "src", "--reporters", "json", "--output", ".jscpd-out", "--min-lines", "5", "--silent"], { cwd: proj, timeout: 90000 });
   try { const rep = JSON.parse(fs.readFileSync(path.join(out, "jscpd-report.json"), "utf8")); return +rep.statistics.total.percentage; }
   catch { return null; } finally { try { fs.rmSync(out, { recursive: true, force: true }); } catch {} }
 }
@@ -49,7 +50,7 @@ function complexity(proj) {
   const bin = path.join(AXRUNNER, "node_modules", ".bin", process.platform === "win32" ? "eslint.cmd" : "eslint");
   if (!fs.existsSync(bin)) return null;
   const r = sh(bin, [src, "--no-eslintrc", "--parser", "@typescript-eslint/parser", "--resolve-plugins-relative-to", AXRUNNER,
-    "--rule", '{"complexity":["error",0]}', "--ext", ".ts", "-f", "json"], { cwd: proj, timeout: 120000, env: { ...process.env, ESLINT_USE_FLAT_CONFIG: "false" } });
+    "--rule", '{"complexity":["error",0]}', "--ext", ".ts", "-f", "json"], { cwd: AXRUNNER, timeout: 120000, env: { ...process.env, ESLINT_USE_FLAT_CONFIG: "false" } });
   let j; try { const s = r.stdout.slice(r.stdout.indexOf("[")); j = JSON.parse(s.slice(0, s.lastIndexOf("]") + 1)); } catch { return null; }
   const vals = [];
   for (const file of j) for (const m of file.messages || []) { const mm = /complexity of (\d+)/.exec(m.message); if (mm) vals.push(+mm[1]); }

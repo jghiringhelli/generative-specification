@@ -27,7 +27,7 @@ const path = require("path");
 const { spawn, spawnSync } = require("child_process");
 
 const RUNS = path.join(__dirname, "runs");
-const HURL = "/c/Program Files/Hurl/hurl.exe";
+const HURL = "C:\\PROGRA~1\\hurl\\hurl.exe";
 const PROBE_DIR = path.resolve(__dirname, "..", "benchmark", "oracle", "probes");
 const BUSINESS = new Set(["g3_rule_rest", "g4_rule_capacity", "g5_rule_overlap"]);
 const PORT = 4147;
@@ -73,25 +73,71 @@ function waitReady(p, ms = 45000) {
   return false;
 }
 
+function discoverSqlMigrations(proj) {
+  // The DOMAIN_SPEC allows any ORM/mechanism; find raw .sql schema/migration files wherever the
+  // model chose to put them, apply them in filename order. Skip down/rollback and seed-only files.
+  const dirs = ["", "sql", "db", "src/db", "database", "migrations", "db/migrations", "prisma/migrations", "src/migrations", "src/database"];
+  const found = new Set();
+  const collect = (dir) => {
+    if (!fs.existsSync(dir)) return;
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (/^(node_modules|\.git|dist|build|coverage|\.next|out)$/i.test(e.name)) continue;
+      const f = path.join(dir, e.name);
+      if (e.isDirectory()) collect(f);
+      else if (/\.sql$/i.test(e.name) && !/(down|rollback|revert|undo|seed|fixture)/i.test(e.name)) found.add(f);
+    }
+  };
+  for (const d of dirs) collect(path.join(proj, d));
+  return [...found].sort();
+}
+function applySqlFiles(files) {
+  if (!files.length) return null;
+  for (const f of files) {
+    const r = sh("docker", ["exec", "-i", DB.name, "psql", "-v", "ON_ERROR_STOP=1", "-U", DB.user, "-d", DB.db, "-f", "-"], { input: fs.readFileSync(f, "utf8"), timeout: 60000 });
+    if (r.status !== 0) return null;
+  }
+  return `sql:${files.length}`;
+}
+function resetDb() {
+  // Guarantee a clean database per cell so results are independent of cell order. The prisma
+  // path uses --force-reset, but the raw-SQL/npm-script paths do not; reset here covers all.
+  // SQL goes via stdin (not -c): under shell:true on Windows, a spaced -c argument is not quoted
+  // and would be split apart, silently skipping the reset.
+  sh("docker", ["exec", "-i", DB.name, "psql", "-U", DB.user, "-d", DB.db], { input: "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;\n", timeout: 30000 });
+}
+function prismaCli(proj) {
+  // Prefer a locally-installed prisma CLI. If the model declared @prisma/client but forgot the
+  // matching `prisma` devDependency, npx would otherwise fetch the LATEST prisma — currently a
+  // broken 8.x release-candidate. Pin npx to the installed client's version so `generate` uses a
+  // compatible, stable CLI. This is an environment/turnkey fix, not a change to conformance rules.
+  if (fs.existsSync(path.join(proj, "node_modules", ".bin", process.platform === "win32" ? "prisma.cmd" : "prisma"))) return "prisma";
+  try {
+    const v = JSON.parse(fs.readFileSync(path.join(proj, "node_modules", "@prisma", "client", "package.json"), "utf8")).version;
+    if (v) return `prisma@${v}`;
+  } catch {}
+  return "prisma";
+}
 function migrate(proj, env) {
+  resetDb();
   if (fs.existsSync(path.join(proj, "prisma", "schema.prisma"))) {
-    sh("npx", ["prisma", "generate"], { cwd: proj, env, timeout: 120000 });
-    const push = sh("npx", ["prisma", "db", "push", "--force-reset", "--skip-generate", "--accept-data-loss"], { cwd: proj, env, timeout: 120000 });
-    return push.status === 0 ? "prisma" : null;
+    const cli = prismaCli(proj);
+    sh("npx", ["--yes", cli, "generate"], { cwd: proj, env, timeout: 180000 });
+    const push = sh("npx", ["--yes", cli, "db", "push", "--force-reset", "--skip-generate", "--accept-data-loss"], { cwd: proj, env, timeout: 180000 });
+    if (process.env.CR_DEBUG) console.error(`[mig] prisma(${cli}) push status=${push.status}`);
+    if (push.status === 0) return "prisma";
+    // prisma push failed (e.g. no migrate CLI wiring) — fall through to raw SQL / npm scripts below.
   }
   const scripts = pkgScripts(proj);
-  for (const name of ["db:push", "db:migrate", "migrate", "migration:run", "db:reset", "setup", "db:setup"]) {
-    if (scripts[name]) { const r = sh("npm", ["run", name], { cwd: proj, env, timeout: 180000 }); if (r.status === 0) return `npm:${name}`; }
+  const scriptNames = Object.keys(scripts).filter((n) => /^(db|prisma|migrat|schema)[:_-]?|migration/i.test(n) && !/(down|rollback|revert|undo|seed|studio|generate|status)/i.test(n));
+  for (const name of scriptNames) {
+    const r = sh("npm", ["run", name], { cwd: proj, env, timeout: 180000 });
+    if (r.status === 0) return `npm:${name}`;
   }
-  // a raw schema.sql applied via docker exec psql
-  const sqlCandidates = ["schema.sql", "db/schema.sql", "src/db/schema.sql", "migrations/schema.sql"];
-  for (const c of sqlCandidates) {
-    const f = path.join(proj, c);
-    if (fs.existsSync(f)) {
-      const r = sh("docker", ["exec", "-i", DB.name, "psql", "-U", DB.user, "-d", DB.db, "-f", "-"], { input: fs.readFileSync(f, "utf8"), timeout: 60000 });
-      if (r.status === 0) return `sql:${c}`;
-    }
-  }
+  const sqlFiles = (resetDb(), discoverSqlMigrations(proj));
+  if (process.env.CR_DEBUG) console.error(`[mig] sqlFiles=${JSON.stringify(sqlFiles)}`);
+  const sqlApplied = applySqlFiles(sqlFiles);
+  if (process.env.CR_DEBUG) console.error(`[mig] sqlApplied=${sqlApplied}`);
+  if (sqlApplied) return sqlApplied;
   return null;
 }
 function serve(proj, entry, env) {
@@ -120,13 +166,15 @@ function runCell(slug, cond, rep) {
     if (inst.status !== 0) { rec.reason = "npm-install-failed"; return rec; }
   }
   const migResult = migrate(proj, env);
-  if (!migResult) { rec.reason = "no-migration"; return rec; }
-  rec.migration = migResult;
+  // A null result means no EXTERNAL migration mechanism was found. Many valid apps self-migrate on
+  // boot (run their DDL at startup), so do not abort here — resetDb already gave a clean schema;
+  // proceed to serve and let the oracle decide. Record the mechanism honestly.
+  rec.migration = migResult || "self-or-none";
 
   const srv = serve(proj, entry, env);
-  if (!srv) { rec.reason = "no-entry"; return rec; }
+  if (!srv) { rec.reason = migResult ? "no-entry" : "no-migration"; return rec; }
   const ready = waitReady(PORT);
-  if (!ready) { rec.reason = "no-serve"; try { srv.kill(); } catch {} killPort(PORT); return rec; }
+  if (!ready) { rec.reason = migResult ? "no-serve" : "no-migration"; try { srv.kill(); } catch {} killPort(PORT); return rec; }
   rec.served = true;
 
   rec.per_file = {};
