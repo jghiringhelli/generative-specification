@@ -193,6 +193,13 @@ this model — and both sharpen it:
    The triple **surfaces the generator's variance** — a leading indicator of silent defects a lucky
    single sample conceals. Some practices' value is measuring *epistemic uncertainty of the
    generator*, not only catching a wrong output; the model should credit that.
+4. **`c_res` is ALSO model-conditioned — a weaker executor is not uniformly better (powered run).**
+   On the k=4 powered contrast, N-version was a powered-dead on Sonnet (λ=0) and revived on qwen7b
+   (100% catch, 0 false positives), but qwen produced a **44% dead-version rate** — you often cannot
+   assemble three *live* versions, so you must over-generate. A weaker model raises λ (more to catch)
+   **and** raises the practice's residual (more waste to discard). So both `λ` and `c_res` depend on
+   the model, and they can move together against you: `revival` peaks in a *middle* capability band,
+   not at the weakest model. The formula should carry `c_res(P, model)`, not a model-flat constant.
 
 ## 10. Status
 v1 model, parameters provisional. Next: (a) fix the `F` catalog and each `P_j` profile against
