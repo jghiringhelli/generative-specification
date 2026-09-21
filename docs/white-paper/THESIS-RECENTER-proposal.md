@@ -1,5 +1,10 @@
-# Thesis Re-Center — Proposal v2 (unified thesis; for JC's sign-off before rewriting the Compendium)
+# Thesis Re-Center — Proposal v2 (unified thesis) — SIGNED 2026-09-21
 
+> **STATUS: SIGNED by JC 2026-09-21**, with two amendments now folded in: (i) the stateless reader is
+> *central but underlying, not load-bearing* (§1); (ii) the trajectory carries **no prediction claim** —
+> it was reasonable, not foreseen; the speed astonished; the internalization we did not foresee (§5).
+> The Compendium re-center to this arc is authorized.
+>
 > 2026-09-21. Replaces the earlier two-paper split (retired). A proposal to re-center the canonical
 > Compendium and every derivative around ONE unified thesis. **Nothing in the Compendium is touched
 > until JC signs off (§10).** Grounded in this session: the master line, the discipline-revival model
@@ -23,9 +28,11 @@ a stronger, more honest narrative than a list of contributions.
 > everything from a single entry point, the value that outlives any model is the guardrail kept
 > OUTSIDE the model and a spec imprint from which the code is regenerable.**
 
-- **Premise (perennial):** the *stateless reader* — the executor derives only from what is
-  externalized. (Framed as **derivability**, the invariant that survives even as models gain
-  memory; "statelessness" is the vivid case, not the load-bearing term.)
+- **Underlying premise (central but NOT load-bearing):** the *stateless reader* — the executor
+  derives only from what is externalized. It is the *rationale* for why each project's authored
+  internal structure derives the rubric's attributes; it sits beneath the thesis, it is not the
+  headline contribution. (Framed as **derivability**, the invariant that survives even as models
+  gain memory; "statelessness" is the vivid case, not the load-bearing term.)
 - **Achieved goal:** correct programs ratified from the spec/contracts/trace, not the code.
 - **What expanded:** the definition of correctness. The seven properties *are* that expanded
   definition (Executable, Auditable, Defended, … beyond "compiles").
@@ -71,11 +78,18 @@ fail (the risk JC wants), positioned INSIDE the unified thesis, not as a separat
 
 The early findings the frontier has since absorbed — the bridge (better order), sentinel (retrieval),
 phase collapse (correctness reconstituted by gates), even better-than-naive code — are reported as a
-**documented trajectory**, and they confer legitimacy *only when anchored to the dated experiments*:
-"we measured improvement X in AX/SX at time T; the frontier subsequently absorbed it (the receding in
-CR/AX2)." The legitimacy is the honest longitudinal record, not the assertion "we called it." Framed
-this way, the absorption VALIDATES that we pointed at real levers — and sharpens the focus onto what
-did not recede. This is a section of the arc, not a headline.
+**documented trajectory of what we measured**, with three honest framings and **no claim of
+prediction** (we registered no forecast anywhere — do not say or imply "we called it"):
+1. It was **reasonable** that the frontier would solve these problems — the levers were real, which is
+   why they were worth naming; that the frontier absorbed them confirms they were real levers.
+2. What was **astonishing was the SPEED** — how fast the absorption happened.
+3. The **direction we did NOT foresee**: that the field would move to solve everything *internally*,
+   from a single entry point, without an external harness or guardrails. We did not predict the
+   internalization.
+And it is precisely that unforeseen internalization that makes our position durable: when everything
+moves inside one entry point that is also its own verifier, the guardrail kept OUTSIDE the model and
+the regenerable spec imprint become the differentiator. This is a section of the arc — the honest
+record of what we measured and what surprised us — not a headline, and never a prediction claim.
 
 ## 6. Naming and scope discipline
 
