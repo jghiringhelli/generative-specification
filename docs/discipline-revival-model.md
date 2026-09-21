@@ -170,6 +170,30 @@ here — reported as *still-dead for this project*). PCA confirms tests and deci
 near-orthogonal while a second static-analysis pass is ~redundant with the detectors already
 run.
 
+## 10b. First calibration from a real revival experiment (NX, 2026-09-21)
+
+The N-version revival experiment (`experiments/nx/`) supplied the first *measured* refinements to
+this model — and both sharpen it:
+
+1. **`λ` is conditioned on the model AND the task difficulty, not just the project.** N-version was
+   dead on Sonnet (λ≈0) and *still* mostly dead on qwen7b (a competent coder — the problems were
+   within its single-shot competence). Exposure did not open by weakening the model alone; the lever
+   is **problem difficulty** (edge-density beyond the generator's reliable competence). So write
+   `λ_f(π, model) = exposure of failure f, given this project AND this generator` — the
+   capacity-relative axis (CR) now lives *inside* the formula as a model argument to λ.
+2. **`cov` and `c_res` for a practice can be excellent while effective benefit is ~0.** In the one
+   window where λ>0 (the edge-dense problem), N-version caught **100% of majority-wrong inputs with
+   zero false positives** — `cov(logic-error) ≈ 1`, `c_res ≈ 0`. The practice is near-perfect *when
+   triggered*; effective benefit `= cov · λ`, and λ is the gate. A cheap, high-coverage practice with
+   nothing to catch is still dead. This is the non-obvious core: **revival is exposure-gated, not
+   cost-gated.**
+3. **N-version's real product is uncertainty, not just defects (new).** A *single* generation on a
+   task where the model is unreliable is a coin flip: it may sample a correct impl and **hide** the
+   risk (baseline looked 0% while an independent triple was majority-wrong 52% on the same problem).
+   The triple **surfaces the generator's variance** — a leading indicator of silent defects a lucky
+   single sample conceals. Some practices' value is measuring *epistemic uncertainty of the
+   generator*, not only catching a wrong output; the model should credit that.
+
 ## 10. Status
 v1 model, parameters provisional. Next: (a) fix the `F` catalog and each `P_j` profile against
 the real detectors + 7-thermometer; (b) pull `κ`, `h0` from a real `chronicle.db`; (c) a first
