@@ -1,142 +1,126 @@
-# Thesis Re-Center — Proposal (for JC's sign-off before rewriting the Compendium)
+# Thesis Re-Center — Proposal v2 (unified thesis; for JC's sign-off before rewriting the Compendium)
 
-> 2026-09-20. A proposal to re-center the canonical Compendium (and every derivative — IEEE,
-> WhitePaper, FieldGuide, course) around what GS matured into. **Nothing in the Compendium is
-> touched until JC signs off on this structure.** Grounded in this session: the CR result
-> (capacity-relative, bounded, structural-only), the master line (`soma/docs/gtm/
-> gs-positioning-master.md`), and the discipline-revival model (`docs/discipline-revival-model.md`).
+> 2026-09-21. Replaces the earlier two-paper split (retired). A proposal to re-center the canonical
+> Compendium and every derivative around ONE unified thesis. **Nothing in the Compendium is touched
+> until JC signs off (§10).** Grounded in this session: the master line, the discipline-revival model
+> (`docs/discipline-revival-model.md`), the experiment ledger (`docs/white-paper/EXPERIMENT-LEDGER.md`),
+> and the NX revival experiment (`experiments/nx/`).
 
-## 0. Why re-center — the honest situation
+## 0. The move — one unified thesis, not two papers
 
-Two things happened to the original contribution, and only one is a loss:
+The prior split ("Paper 1 = what receded, Paper 2 = the new bet") framed the maturation as loss.
+It is not loss. The original aim was **correct programs without writing or reading the
+implementation** — and that aim is met. What grew along the way was the **definition of
+correctness** and the discovery of what **endures beyond the model**. That is one coherent arc, and
+a stronger, more honest narrative than a list of contributions.
 
-1. **The code-quality contribution genuinely receded.** "Structural disciplines used as a
-   generation guide produce better code" is *capacity-relative*: it shrinks as models
-   internalize navigation, planning, and forced cycles via subtasks. AX2 and CR confirm it
-   (ties or loses to a strong prompt at the frontier).
-2. **We changed evaluators — and that is maturity, not loss.** Six months ago an LLM reading the
-   white paper returned extraordinary reviews; LLMs are sycophantic to ambitious framing. When we
-   switched to adversarial evaluation (stateless judges, the CR experiment, honest reviewers) the
-   "extraordinary" deflated — because we stopped believing our own framing and started measuring.
-   Peer review is adversarial, not sycophantic: it rewards evidence, not seduction.
+## 1. The central thesis (the arc)
 
-The seed idea ("disciplines guide the generator") was **one instance** of a more general law that
-**grows** as executors get cheaper. That law is the new trunk.
+> **We set out to produce correct programs that a person ratifies from the specification, the
+> contracts, and the audit trail — without reading the implementation. That aim is achieved. Along
+> the way the meaning of "correct" deepened — from *compiles/runs* to *verified, reproducible,
+> auditable, governable* — and the durable core emerged: in a world where the assistant does
+> everything from a single entry point, the value that outlives any model is the guardrail kept
+> OUTSIDE the model and a spec imprint from which the code is regenerable.**
 
-## 1. The new trunk (the central academic abstraction)
+- **Premise (perennial):** the *stateless reader* — the executor derives only from what is
+  externalized. (Framed as **derivability**, the invariant that survives even as models gain
+  memory; "statelessness" is the vivid case, not the load-bearing term.)
+- **Achieved goal:** correct programs ratified from the spec/contracts/trace, not the code.
+- **What expanded:** the definition of correctness. The seven properties *are* that expanded
+  definition (Executable, Auditable, Defended, … beyond "compiles").
+- **What endures:** external guardrails (the model cannot be its own trustworthy verifier) + the
+  regenerable spec imprint (code as residue). This is the differentiator in the single-entry-point
+  world every company is drifting toward.
 
-> **Required rigor is a function of the project (stakes, longevity, team, verifiability, stack).
-> The cheap executor shifts the entire affordability frontier of rigor — reviving a class of
-> constructive practices that were validated but abandoned purely for cost — and a calculable
-> portfolio model predicts, per project, *which* practices to revive and *how much* rigor to
-> apply.**
+## 2. The spine (ordered structure the Compendium adopts)
 
-Three fused ideas, one abstraction:
-- **Cheap rigor** (the economic inversion): the executor makes viable constructive costs that did
-  not survive contact with reality. It **grows** with model capability — the inverse of the
-  receding code-quality delta.
-- **The rigor dial** (how much): rigor/specificity is dialed to project need, bounded by required
-  assurance (more AI latitude → lighter verification; higher stakes → heavier control). This is
-  the 1-D projection.
-- **The revival formula** (which): the portfolio model — submodular, covariance-aware, PCA-diagnosed,
-  under a human-effort budget — computes the optimal *set* of practices given the project's inputs.
-  This is the full multi-dimensional selection; the dial is its scalar summary.
+premise (**stateless reader / derivability**) → the discipline (**GS: the artifacts that make a
+program derivable and ratifiable**) → **the expanded definition of correctness** (the seven
+properties) → **the mechanism of "how much rigor"** (cheap rigor + the revival model — §4) → **the
+durable core** (external guardrails + regenerable imprint in the single-entry-point world).
 
-The abstraction is testable, grows over time, and absorbs the rest as instances.
+## 3. The enduring contribution (lead with this)
 
-## 2. The contributions (restated, honest)
+In the single-entry-point world, two things do not recede:
+1. **The guarantee lives outside the model.** An LLM cannot be its own trustworthy verifier; the
+   check must be a non-LLM gate. GS is the discipline that makes the artifacts checkable by it.
+2. **The intent/decision trace persists outside the session.** The model's reasoning evaporates; the
+   spec, decisions, gates, and ledger persist for governance, and the code regenerates from them.
+This is the master line, and it is the paper's durable claim — an argument backed by EX (the gate
+catching 15 defects against a live system) and the governance framing, presented as a conceptual
+contribution, not an over-claimed empirical one.
 
-- **C1 — The stateless reader and derivability at the pragmatic tier.** *Perennial.* A structural
-  fact about AI-assisted development; the problem the discipline exists for. Keep it — it is the
-  strongest, least-contested foundation. (On "pragmatic programming": see §4.)
-- **C2 — The governance layer as the irreducible durable value.** *Perennial, structural.* Two
-  reasons it doesn't recede: an LLM cannot be its own trustworthy verifier (the guarantee needs a
-  non-LLM checker), and the model's reasoning evaporates (the trace must persist outside it). The
-  revival model *explains* this cleanly: governance practices are "always-worth-it," not revivals,
-  because their impact κ scales with team/audit exposure, not with model capability.
-- **C3 — Cheap rigor + the rigor dial + the revival portfolio model.** *The new, growing trunk.*
-  The central abstraction of §1. This is the PhD-worthy claim: a law + a predictive model + a
-  validation methodology.
+## 4. Cheap rigor + the revival model — the falsifiable mechanism (kept inside, the scientific risk)
 
-## 3. The early empirical findings — kept, reframed as a documented trajectory
+As correctness deepens, the live question becomes *how much rigor, which practices, for this
+project*. Cheap rigor answers it economically (the executor revives practices abandoned for cost),
+and the revival model answers it calculably (a project → the portfolio of practices worth applying,
+what each buys). This is the paper's **falsifiable spine** — the part that can be tested and can
+fail (the risk JC wants), positioned INSIDE the unified thesis, not as a separate paper.
+- Instances/evidence: **Loom** (formal spec → compiler, the extreme revival), **NX** (N-version:
+  revival is *exposure-gated* not cost-gated; the value is a *capability hump*, not monotone; and it
+  *surfaces generator uncertainty*), **CR** (structural cleanliness, receding). The key finding:
+  **a practice's revival value = f(capability gap), and its SHAPE depends on the practice class** —
+  governance = flat/durable, defect-catching = hump, structural = receding.
+- Novelty positioning (avoid the "obvious" trap): not "AI is cheap" but the *class characterization*
+  (validated-but-dead-on-cost), the *predictive model*, its *validation*, and the *surprising
+  negatives* (which stay dead, and why).
 
-Per JC: mention the initial findings, honestly, conceding the diminishing delta as an academic
-curiosity. This is a mature and genuinely novel move — few papers track the *decay* of their own
-benefit, and doing so inoculates against "but models do this now" (already conceded, made part of
-the story). The record:
+## 5. Research residue / legitimacy (the honest trajectory)
 
-| Early finding | Mechanism | Honest status now |
-|---|---|---|
-| Better order/correctness | the **bridge** (disciplines as generation guide) | receded at the frontier; large on weak models (CR: structural cleanliness) |
-| Security / forbidden ops blocked | **hooks / Defended** | durable (a non-LLM gate; part of C2 governance) |
-| Reduced retrieval cost | the **sentinel** | durable on large/messy codebases (KX); the navigation lever |
-| Correctness under phase collapse | **quality gates reconstitute the lost RED phase** | durable as a *mechanism*; the guarantee, not the code |
-| Better code than naive | full cascade | receded vs a strong expert prompt (saturation, pre-registered) |
+The early findings the frontier has since absorbed — the bridge (better order), sentinel (retrieval),
+phase collapse (correctness reconstituted by gates), even better-than-naive code — are reported as a
+**documented trajectory**, and they confer legitimacy *only when anchored to the dated experiments*:
+"we measured improvement X in AX/SX at time T; the frontier subsequently absorbed it (the receding in
+CR/AX2)." The legitimacy is the honest longitudinal record, not the assertion "we called it." Framed
+this way, the absorption VALIDATES that we pointed at real levers — and sharpens the focus onto what
+did not recede. This is a section of the arc, not a headline.
 
-Framed as: *"the value did not disappear — it migrated, from a code-quality delta that the frontier
-absorbed to a rigor-economics and governance layer that it does not. This paper documents that
-migration and gives the model that predicts where the value now lives."* The trajectory itself is a
-finding.
+## 6. Naming and scope discipline
 
-## 4. On "pragmatic programming" — refocus, do not lead with it
+- **Do not coin a new paradigm** — that is the "grandiose coinage" reviewers punish; great paradigms
+  are named by the community after adoption. Keep **"Generative Specification"** as the method's name;
+  use **"cheap rigor"** as the phenomenon's frame-name; anchor the position to the known lineage
+  (declarative / pragmatic-tier / specification-driven).
+- **Sharpen "without reading code"** everywhere to *"ratified from the spec/contracts/trace, without
+  reading the implementation."*
+- **One spine, residue relegated** (§5). Resist the over-bundling the reviewers flagged: the paper
+  has one arc, not five competing contributions.
 
-Keep the **pragmatic tier** (Morris) as the home of the stateless-reader problem (C1) — it is
-solid and locates the contribution precisely. But: (a) **do not name the discipline "pragmatic
-programming"** — it collides with Hunt & Thomas's *The Pragmatic Programmer* and reads as
-borrowed; (b) subordinate the tier framing to the trunk: the pragmatic tier is *where* the problem
-lives; cheap rigor is the *economic engine* that makes the solution viable and growing. Refocus,
-don't retire.
+## 7. What changes in each derivative
 
-## 5. The experiment that makes C3 load-bearing (required)
+- **Compendium (canonical master):** re-order to the §2 spine. Keep §III (stateless reader/derivability)
+  as the premise. Re-frame the seven properties as the *expanded definition of correctness*. Add cheap
+  rigor + the revival model as the mechanism (§4), with Loom/NX/CR. Elevate the durable core (§3) to the
+  lead durable claim. Fold the early findings into a **trajectory** section (§5).
+- **IEEE:** this becomes the paper — re-centered to the arc; the contribution list = derivability +
+  expanded-correctness/governance (durable) + the revival model (falsifiable mechanism), with the
+  trajectory as the honest longitudinal record. Related work now includes the revived practices'
+  literature (formal methods, N-version/Avizienis, Cleanroom, PBR/Basili) — filling the 13→30-50 gap.
+- **WhitePaper / FieldGuide:** lead with the durable core + "how much rigor does YOUR project need"
+  (the revival model = the product's Assessment output; paper and product tell one story).
+- **Course (GS Core):** a canon change → a G-row to the course board; C15 ("what you're buying") hosts
+  the durable-core + cheap-rigor reframe.
 
-Promoting cheap rigor from a frame to the trunk **obliges** the empirical spine, or it is exactly
-the grandiose coinage reviewers punish. The experiment:
+## 8. Experiments — evidenced now vs owed
 
-> Take 2–3 practices abandoned purely for cost (formal property specification, N-version, PBR,
-> exhaustive mutation testing). Show that, executed by AI, they now beat the standard baseline on
-> real tasks — with human cost as the variable that changed — **and** show which do *not* revive,
-> with the revival model predicting both. The negatives are the evidence: not "everything revives",
-> but "these revive, these stay dead, and here is the calculable reason (the human residual)."
+- **Evidenced today:** derivability (RX), retrieval (KX), governance/gate (EX), the seven properties
+  (BX), the early wins + saturation (AX), the receding (AX2/CR), and the first revival datum (NX).
+- **Owed (the risk):** generalize revival to a 2nd/3rd practice (mutation, PBR, formal-spec) with
+  harder problems (λ>0 on the frontier); calibrate/validate the model against measured outcomes (the
+  `chronicle-ledger` dataset); human validation (DX2 redesigned). The paper states the revival model
+  as *model + hypothesis with instances*, promoted to a proven law only as these land.
 
-Risky (a practice may stay dead), important (reframes SE economics), valid (falsifiable, controlled).
-CR is one datum inside this frame (structural cleanliness revives on weak models); Loom (ALX) is the
-extreme instance (formal spec → compiler). The product's `chronicle-ledger` supplies the validation
-dataset (Δ-quality, hours saved, ROI vs t0).
+## 9. Risks and guardrails (honest)
+- **Over-bundling** (reviewers' own flag) → §6 scope discipline.
+- **Legitimacy-from-absorption** unfalsifiable if asserted → §5 anchor to dated experiments only.
+- **"Without reading code" over-claim** → §6 scoping.
+- **Cheap-rigor grandiosity** → §4 novelty positioning + the owed experiments before "law".
 
-## 6. What changes in each derivative
-
-- **Compendium (canonical master):** re-order to the §1 trunk. Keep §III (stateless reader) as C1.
-  Add a cheap-rigor + dial + revival-model section as the trunk (C3). Reframe the bridge and the
-  seven properties as the *operationalization* of C3 (intra-code demands → extra-code properties)
-  and the early findings (§3) as a documented trajectory. Elevate governance (C2) from scattered to
-  a named contribution.
-- **IEEE:** the contribution list already moved #4 to the bounded CR result; add C3 (cheap rigor +
-  model) as the lead novel contribution, C1/C2 as the frame and the durable value, and present the
-  early findings as the honest trajectory. Related-work must now cover the revived practices'
-  original literature (formal methods, N-version/Avizienis, Cleanroom, PBR/Basili) — this also fills
-  the "13→30-50 refs" gap productively.
-- **WhitePaper / FieldGuide:** lead with cheap rigor + the dial ("how much rigor does *your* project
-  need, and which practices are worth reviving") — this is also the product's Assessment output, so
-  paper and product tell one story.
-- **Course (GS Core):** the trunk shift is a canon change → a G-row to the course board; most micros
-  stand (they teach the mechanisms, which become instances). C15 ("what you're buying") is the
-  natural home for the cheap-rigor + governance reframe.
-
-## 7. Risks and honest guardrails
-
-- **Grandiose-coinage risk:** cheap rigor without the §5 experiment is a slogan. The promotion to
-  trunk *requires* the experiment; until it runs, the Compendium states C3 as a *model + hypothesis*
-  with Loom + CR as preliminary instances, not a proven law.
-- **Novelty-positioning risk:** "AI makes things cheap" is obvious. The defensible core is the
-  *class characterization* (validated-but-dead-on-cost), the *predictive model*, the *validation*,
-  and the *surprising negatives*. Lead with those, never with "AI is cheap".
-- **Calibration bias:** the revival model's `a` (coverage) and `c_res` (human residual) are the bias
-  surface — estimate from data (the ledger), flag provisional defaults, or a reviewer discards them.
-
-## 8. Decision requested
-
-Sign off on: (a) the §1 trunk and the three contributions (§2); (b) keeping the early findings as a
-documented trajectory (§3); (c) refocusing the pragmatic tier (§4); (d) committing to the §5
-experiment as the condition for promoting C3. On sign-off, the next step is to rewrite the
-Compendium §-structure to this and propagate to the derivatives — one deliberate pass, not scattered
-edits.
+## 10. Decision requested
+Sign off on: (a) the unified thesis and the §2 spine; (b) the durable core as the lead contribution
+(§3); (c) cheap rigor + the revival model as the falsifiable mechanism inside (§4); (d) the early
+findings as documented trajectory/legitimacy anchored to dated experiments (§5); (e) the naming/scope
+discipline (§6). On sign-off, I rewrite the Compendium §-structure to this arc and propagate to the
+derivatives in one deliberate pass.
