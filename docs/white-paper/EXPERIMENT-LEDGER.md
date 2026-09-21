@@ -22,6 +22,7 @@
 | **MX** (§7.8.H) | Model cost / tiering boundary | tiering economics (cost lever) | verify design | **KEEP as supporting, Paper 2** (the cost axis of the revival model). Verify before featuring. |
 | **BX** | The rubric / seven-property study | the rubric as instrument (operationalization) | verify | **KEEP as operationalization**, not a headline result. |
 | **DX1** | Mitikah / 58-dev field study | (was: field adoption) | **weak design + employer-confidentiality** | **RETIRED already** — out of all public materials. Honest retirement, documented. |
+| **NX** (new) | N-version revival: Avizienis, single-vs-triple, Sonnet + qwen7b, k=1/2 | **the revival model's core prediction**: benefit is **exposure-gated (λ), not cost-gated** — dead on frontier (λ≈0), revives only where the generator errs; **N-version surfaces generator uncertainty** (a lucky single gen hides variance the triple exposes) | k small, single practice, one weak + one frontier model, problems within model competence (need harder for λ>0) | **KEEP, Paper 2** — the first *measured* revival datum + a novel angle; a mechanism demonstration, not powered. `experiments/nx/`. |
 | **DX2** | Two-arm human study (designed) | would be: human validation | designed, **not run** | **Candidate for the human-validation the reviewers asked for** — Paper 2, if run. |
 
 ## The honest pruning rule (what "ignore" means here)
@@ -33,7 +34,7 @@
 ## What the ledger says we still owe (the experiments to run)
 
 Paper 1 is **fully evidenced today** (AX, KX, EX, RX + the CR/AX2 receding = the value-migration story). Paper 2 needs:
-1. **The revival experiment** — 2-3 dead-on-cost practices (formal property spec, N-version, PBR, mutation) shown to beat baseline under AI execution, **and which do not**, the model predicting both. Loom is one instance; this generalizes it.
+1. **The revival experiment** — 2-3 dead-on-cost practices (formal property spec, N-version, PBR, mutation) shown to beat baseline under AI execution, **and which do not**, the model predicting both. Loom is one instance; **NX (N-version) is the first run** — result: *exposure-gated* (revives only where the generator errs; dead when λ≈0), plus a novel uncertainty-surfacing angle. Still owed: **harder problems (λ>0 even on the frontier)** and **a 2nd/3rd practice** to generalize beyond N-version.
 2. **The model-validation** — does predicted revival correlate with measured benefit across (practice × project) cells? Bootstrap from the ledger above (each row is a coarse datum); prospective validation via `chronicle-ledger`.
 3. **Human validation** (DX2, redesigned) — the independent-rater/control the reviewers asked for.
 
