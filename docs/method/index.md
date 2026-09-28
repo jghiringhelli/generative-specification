@@ -18,6 +18,7 @@ The concepts, stated once and defined by what a machine can check. The papers ([
 | [Quality gates](gates/) | The non-LLM checks that make the discipline enforceable |
 | [The evidence](evidence/) | What the experiments established, with the bounds on each claim |
 | [The course](course/) | GS Core: theory intercut with five hands-on labs |
+| [The Andon Method](andon/) | A proposed method built on the same thesis: the machine builds, a gate stops the line, the human judges. Team process not yet defined |
 
 Looking for the practice (how to do it on a real project)? See the [workflow recipes](/docs/recipes/).
 
