@@ -143,7 +143,7 @@ const files = fs.readdirSync(GATES_DIR)
 
 const gates = [];
 for (const file of files) {
-  const raw  = parseGateYaml(fs.readFileSync(path.join(GATES_DIR, file), 'utf8'));
+  const raw  = parseGateYaml(fs.readFileSync(path.join(GATES_DIR, file), 'utf8').replace(/^﻿/, ''));
   const gate = toRemoteGate(raw);
   if (gate && gate.id) gates.push(gate);
 }

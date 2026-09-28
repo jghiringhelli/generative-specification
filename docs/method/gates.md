@@ -92,7 +92,7 @@ Each new defect that slips through becomes a new blocking gate, derived from a r
 
 ## The community library
 
-The [`quality-gates/`](/quality-gates/) directory is an open library of structured gates, each mapped to a GS property, with a schema and a contribution path. The hub table lists 32 gates; the directory has since grown, so treat the folder as the authoritative list. The library also holds gates for academic papers (for example `claim-scope-calibration`, `notation-audit`), which apply the same idea to a document instead of code.
+The [`quality-gates/`](/quality-gates/) directory is an open library of structured gates, each mapped to a GS property, with a schema and a contribution path. The gate files are the source of truth: the [library page](/quality-gates/) is generated from them, so it is always the current list, and this page deliberately states no count. The library also holds gates for academic papers (for example `claim-scope-calibration`, `notation-audit`), which apply the same idea to a document instead of code.
 
 A note on classification: the library files some gates under a different property than the grouping above (for example `no-any-type` under Bounded, `typescript-strict-mode` under Executable). The grouping here follows what each gate defends in the method; the library follows its schema. Composable is the least represented property and the highest-value place to contribute.
 

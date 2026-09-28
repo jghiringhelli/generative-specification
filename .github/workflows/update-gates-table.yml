@@ -24,15 +24,22 @@ jobs:
 
       - run: pip install pyyaml
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Generate gates table
         run: python scripts/generate-gates-table.py
+
+      - name: Generate registry index
+        run: node scripts/generate-registry.js
 
       - name: Commit if changed
         run: |
           git config user.name "Juan Carlos Ghiringhelli"
           git config user.email "jcghiri@gmail.com"
-          git diff --quiet README.md || (
-            git add README.md &&
+          git diff --quiet README.md quality-gates/index.md quality-gates/index.json || (
+            git add README.md quality-gates/index.md quality-gates/index.json &&
             git commit -m "chore(gates): auto-update quality gates table [skip ci]"  &&
             git push
           )

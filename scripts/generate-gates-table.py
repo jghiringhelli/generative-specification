@@ -2,7 +2,7 @@
 """
 Reads all YAML files from quality-gates/gates/, generates a sorted markdown
 table, and replaces the section between GATES_TABLE_START / GATES_TABLE_END
-markers in README.md.
+markers in each file listed in TARGETS.
 
 Run from the repository root:
     python scripts/generate-gates-table.py
@@ -14,7 +14,10 @@ import sys
 import yaml
 
 GATES_DIR = "quality-gates/gates"
-README_PATH = "README.md"
+TARGETS = [
+    ("README.md", "quality-gates/gates/"),
+    ("quality-gates/index.md", "https://github.com/jghiringhelli/generative-specification/blob/main/quality-gates/gates/"),
+]
 START_MARKER = "<!-- GATES_TABLE_START -->"
 END_MARKER = "<!-- GATES_TABLE_END -->"
 
@@ -65,7 +68,7 @@ def sort_gates(gates: list) -> list:
     return sorted(gates, key=sort_key)
 
 
-def build_table(gates: list) -> str:
+def build_table(gates: list, link_prefix: str) -> str:
     rows = []
     rows.append("| Gate | Description | GS Property | Tags | Phase | Trigger |")
     rows.append("|---|---|---|---|---|---|")
@@ -78,7 +81,7 @@ def build_table(gates: list) -> str:
         tags_str = ", ".join(tags) if isinstance(tags, list) else str(tags)
         phase = gate.get("phase", "—")
         trigger = gate.get("trigger", "—")
-        file_link = f"quality-gates/gates/{gate['_file']}"
+        file_link = f"{link_prefix}{gate['_file']}"
 
         rows.append(
             f"| [{gate_id}]({file_link}) | {description} | {prop} | {tags_str} | {phase} | {trigger} |"
@@ -100,7 +103,7 @@ def build_table(gates: list) -> str:
     return header + "\n".join(rows) + "\n" + note
 
 
-def update_readme(readme_path: str, table: str) -> bool:
+def update_readme(readme_path: str, table: str, gate_count: int) -> bool:
     with open(readme_path, encoding="utf-8") as f:
         content = f.read()
 
@@ -125,18 +128,18 @@ def update_readme(readme_path: str, table: str) -> bool:
         sys.exit(1)
 
     if new_content == content:
-        print("README already up to date.")
+        print(f"{readme_path} already up to date.")
         return False
 
     with open(readme_path, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-    print(f"README updated with {len(gates)} gates.")
+    print(f"{readme_path} updated with {gate_count} gates.")
     return True
 
 
 if __name__ == "__main__":
     gates = load_gates(GATES_DIR)
     gates = sort_gates(gates)
-    table = build_table(gates)
-    update_readme(README_PATH, table)
+    for target, link_prefix in TARGETS:
+        update_readme(target, build_table(gates, link_prefix), len(gates))
