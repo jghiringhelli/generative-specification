@@ -15,7 +15,7 @@ June-2026 pilots (MX, RND-1) extend it to model-cost economics and to behaviour 
 |---|---|---|
 | [**AX — Adversarial**](ax/) | Quality as a function of specification completeness. Eight conditions, naive through ForgeCraft treatment v7. RealWorld Conduit benchmark. | ✅ Complete |
 | [**BX — Benchmark**](bx/) | Rubric validity. Three Conduit implementations scored blind against the GS rubric — two never exposed to GS. Establishes the rubric captures real quality. | ✅ Complete |
-| [**CX — Patchability**](cx/) | GS-specified codebases are more patchable. SWE-bench-style patch tasks on two quality tiers characterized by BX. | ✅ Complete |
+| [**CX — Patchability**](cx/) | SWE-bench-style patch tasks on two quality tiers characterized by BX. Result: identical pass rate (5/5 vs 5/5); the GS codebase differs in where patches land and in type-enforced correctness, not in whether they succeed. | ✅ Complete |
 | [**RX — Replication**](rx/) | Any reader can reproduce 104 passing tests against a live PostgreSQL instance from a GS document alone. No ForgeCraft required. | ✅ Complete |
 | [**EX — Executable Sprint**](ex/) | Full L1–L4 tier proof on the live RealWorld Conduit benchmark. 13/13 behavioral probes, 3/3 env probes, k6 ramp — all green on Railway production. Single session. | ✅ Complete |
 | [**KX — Knowledge Retrieval**](kx/) | Routed navigation-tree retrieval beats RAG-dump and no-structure on accuracy and token cost; the CKG divergence replicates on software. | ✅ Complete |

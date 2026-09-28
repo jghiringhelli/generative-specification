@@ -67,7 +67,7 @@ Every experiment is committed with its pre-registration timestamp and raw eviden
 |---|---|---|
 | [**AX**](experiments/ax/) | Specification completeness vs. structural quality, eight conditions on the RealWorld Conduit benchmark | Complete |
 | [**BX**](experiments/bx/) | Author-independence of the rubric: three implementations scored blind | Complete |
-| [**CX**](experiments/cx/) | Patchability: a GS-specified codebase resolves 5/5 patch tasks vs. 1/5 for the reference | Complete |
+| [**CX**](experiments/cx/) | Patchability: a GS-specified and a non-GS codebase both resolve 5/5 patch tasks. No pass-rate advantage; the difference is where the patches land (the architecture directed each one to the right layer) | Complete |
 | [**RX**](experiments/rx/) | Reproducibility: anyone with Docker and an API key can reproduce 104 passing tests | Complete |
 | **KX · SX · TX · EX · ALX** | Sentinel and retrieval economics · navigation vs. bounding · the bridge · production · the formal tier | Complete or reported in the Compendium |
 | **MX · RND-1 · NX · CR** | Model-agnosticism · prescriptive specs · N-version revival · capacity-relative datum | Pilots |
@@ -92,7 +92,8 @@ The video lessons are being published; the course page tracks them.
 
 | Section | Contents |
 |---|---|
-| [Quality Gates](quality-gates/) | 32-gate community library, contribute via PR |
+| [The Method](method/) | The rubric, spec completeness, quality gates, the evidence, the course |
+| [Gate library](quality-gates/) | Community gate library, contribute via PR |
 | [Workflow Recipes](docs/recipes/) | Step-by-step guides for the practitioner scenarios |
 | [Domain Guides](domains/) | FINTECH · ML · GAME · Creative · CLI |
 | [ForgeCraft](https://github.com/jghiringhelli/forgecraft-mcp) | The open tool that implements the method |

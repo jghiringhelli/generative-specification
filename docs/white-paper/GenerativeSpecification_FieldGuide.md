@@ -185,7 +185,7 @@ harness excess that degrades any bounded artifact; match the *specificity dial* 
 **The self-test, per requirement:** if you handed only this to a stranger with no context, would they build the
 right thing or guess? Where they would guess is the missing constraint — add it (reframe the defect as the
 specification-query that would have ruled it out). Full criterion, an audit-and-complete prompt, and an F-NNN
-template: `docs/spec-completeness.md`.
+template: [genspec.dev/method/spec-completeness/](/method/spec-completeness/).
 
 ### Six pathologies you'll recognize — and the property that prevents each
 
