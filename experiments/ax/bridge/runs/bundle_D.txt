@@ -1,0 +1,686 @@
+You are given below the COMPLETE material you are allowed to use to understand a RealWorld "Conduit" API backend: a navigation map, the port/interface definitions (if any), and the behavioral test suite. You do NOT have the implementation source and you have no tools. From ONLY the material below, answer:
+
+1. What guarantee does the API make about an article's slug?
+2. How does an article or profile response reflect the REQUESTING user's relationship to the author (following, favorited), including for anonymous/unauthenticated requests?
+3. What makes an incoming request authenticated, and what happens when the token is missing or invalid?
+
+Answer each in 1-2 sentences. If the provided material is INSUFFICIENT to determine an answer, say exactly "INSUFFICIENT: <what is missing>" for that question instead of guessing.
+
+=== BEGIN MATERIAL ===
+
+--- NAVIGATION MAP (CLAUDE.md) ---
+# Conduit API — navigation (hexagonal / ports and adapters)
+
+Each concern has a known location:
+
+- `src/domain/entities/` — domain entities (Article, User, Comment).
+- `src/domain/repositories/` — repository INTERFACES (ports): IArticleRepository, IUserRepository, ICommentRepository, ITagRepository.
+- `src/application/services/` — business logic / use-cases: ArticleService, UserService, ProfileService, CommentService, TagService. Article response building, which includes the `favorited` and author `following` flags, is in `ArticleService`.
+- `src/infrastructure/repositories/` — Prisma repository ADAPTERS (PrismaArticleRepository, ...).
+- `src/infrastructure/security/` — `JwtTokenService` (token sign / verify), `PasswordHasher`.
+- `src/infrastructure/utils/` — `SlugGenerator` (slug generation and uniqueness).
+- `src/presentation/controllers/` — HTTP controllers.
+- `src/presentation/routes/` — Express route wiring.
+- `src/presentation/middleware/AuthMiddleware.ts` — authentication middleware (verifies the request token).
+- `src/DependencyContainer.ts` — composition root.
+- `prisma/schema.prisma` — data model (Article.slug is unique).
+
+--- PORT / REPOSITORY INTERFACES ---
+import { Article } from '../entities/Article';
+
+export interface CreateArticleData {
+  slug: string;
+  title: string;
+  description: string;
+  body: string;
+  authorId: number;
+}
+
+export interface UpdateArticleData {
+  slug?: string;
+  title?: string;
+  description?: string;
+  body?: string;
+}
+
+export interface ArticleFilters {
+  tag?: string;
+  authorId?: number;
+  favoritedByUserId?: number;
+}
+
+export interface IArticleRepository {
+  create(data: CreateArticleData): Promise<Article>;
+  findBySlug(slug: string): Promise<Article | null>;
+  findMany(filters: ArticleFilters, limit: number, offset: number): Promise<Article[]>;
+  count(filters: ArticleFilters): Promise<number>;
+  findFeed(followingIds: number[], limit: number, offset: number): Promise<Article[]>;
+  countFeed(followingIds: number[]): Promise<number>;
+  update(slug: string, data: UpdateArticleData): Promise<Article>;
+  delete(slug: string): Promise<void>;
+  addTag(articleId: number, tagName: string): Promise<void>;
+  getTags(articleId: number): Promise<string[]>;
+  isFavorited(articleId: number, userId: number): Promise<boolean>;
+  getFavoritesCount(articleId: number): Promise<number>;
+  favorite(articleId: number, userId: number): Promise<void>;
+  unfavorite(articleId: number, userId: number): Promise<void>;
+}
+import { Comment } from '../entities/Comment';
+
+export interface CreateCommentData {
+  body: string;
+  authorId: number;
+  articleId: number;
+}
+
+export interface ICommentRepository {
+  create(data: CreateCommentData): Promise<Comment>;
+  findById(id: number): Promise<Comment | null>;
+  findByArticleId(articleId: number): Promise<Comment[]>;
+  delete(id: number): Promise<void>;
+}
+export interface ITagRepository {
+  findAll(): Promise<string[]>;
+  findOrCreate(name: string): Promise<number>;
+}
+import { User } from '../entities/User';
+
+export interface CreateUserData {
+  email: string;
+  username: string;
+  password: string;
+}
+
+export interface UpdateUserData {
+  email?: string;
+  username?: string;
+  password?: string;
+  bio?: string | null;
+  image?: string | null;
+}
+
+export interface IUserRepository {
+  create(data: CreateUserData): Promise<User>;
+  findById(id: number): Promise<User | null>;
+  findByEmail(email: string): Promise<User | null>;
+  findByUsername(username: string): Promise<User | null>;
+  update(id: number, data: UpdateUserData): Promise<User>;
+  isFollowing(followerId: number, followingId: number): Promise<boolean>;
+  follow(followerId: number, followingId: number): Promise<void>;
+  unfollow(followerId: number, followingId: number): Promise<void>;
+  getFollowingIds(userId: number): Promise<number[]>;
+}
+
+--- BEHAVIORAL TEST SUITE (contracts) ---
+import request from 'supertest';
+import app from '../index';
+
+describe('Articles', () => {
+  let authToken: string;
+  let articleSlug: string;
+
+  beforeAll(async () => {
+    const user = await request(app)
+      .post('/api/users')
+      .send({
+        user: {
+          email: 'article-test@test.com',
+          username: 'articleuser',
+          password: 'password123'
+        }
+      });
+    authToken = user.body.user.token;
+  });
+
+  describe('POST /api/articles', () => {
+    it('should create an article', async () => {
+      const article = {
+        title: 'Test Article',
+        description: 'This is a test',
+        body: 'Article body content',
+        tagList: ['test', 'node']
+      };
+
+      const response = await request(app)
+        .post('/api/articles')
+        .set('Authorization', `Token ${authToken}`)
+        .send({ article });
+
+      expect(response.status).toBe(201);
+      expect(response.body.article).toHaveProperty('slug');
+      expect(response.body.article).toHaveProperty('title', article.title);
+      expect(response.body.article).toHaveProperty('description', article.description);
+      expect(response.body.article).toHaveProperty('body', article.body);
+      expect(response.body.article.tagList).toEqual(expect.arrayContaining(article.tagList));
+      expect(response.body.article).toHaveProperty('favorited', false);
+      expect(response.body.article).toHaveProperty('favoritesCount', 0);
+      expect(response.body.article.author).toHaveProperty('username', 'articleuser');
+
+      articleSlug = response.body.article.slug;
+    });
+
+    it('should fail without authentication', async () => {
+      const response = await request(app)
+        .post('/api/articles')
+        .send({ article: { title: 'Test', description: 'Test', body: 'Test' } });
+
+      expect(response.status).toBe(401);
+    });
+
+    it('should fail with missing required fields', async () => {
+      const response = await request(app)
+        .post('/api/articles')
+        .set('Authorization', `Token ${authToken}`)
+        .send({ article: { title: 'Test' } });
+
+      expect(response.status).toBe(422);
+    });
+  });
+
+  describe('GET /api/articles/:slug', () => {
+    it('should get an article by slug', async () => {
+      const response = await request(app).get(`/api/articles/${articleSlug}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.article).toHaveProperty('slug', articleSlug);
+      expect(response.body.article).toHaveProperty('body');
+    });
+
+    it('should return 404 for non-existent article', async () => {
+      const response = await request(app).get('/api/articles/nonexistent-slug');
+
+      expect(response.status).toBe(404);
+    });
+  });
+
+  describe('GET /api/articles', () => {
+    it('should list articles', async () => {
+      const response = await request(app).get('/api/articles');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('articles');
+      expect(response.body).toHaveProperty('articlesCount');
+      expect(Array.isArray(response.body.articles)).toBe(true);
+      expect(response.body.articles.length).toBeGreaterThan(0);
+      expect(response.body.articles[0]).not.toHaveProperty('body');
+    });
+
+    it('should filter by tag', async () => {
+      const response = await request(app).get('/api/articles?tag=test');
+
+      expect(response.status).toBe(200);
+      expect(response.body.articles.every((a: any) => 
+        a.tagList.includes('test')
+      )).toBe(true);
+    });
+
+    it('should filter by author', async () => {
+      const response = await request(app).get('/api/articles?author=articleuser');
+
+      expect(response.status).toBe(200);
+      expect(response.body.articles.every((a: any) => 
+        a.author.username === 'articleuser'
+      )).toBe(true);
+    });
+
+    it('should support pagination', async () => {
+      const response = await request(app).get('/api/articles?limit=1&offset=0');
+
+      expect(response.status).toBe(200);
+      expect(response.body.articles.length).toBeLessThanOrEqual(1);
+    });
+  });
+
+  describe('PUT /api/articles/:slug', () => {
+    it('should update an article', async () => {
+      const updates = {
+        title: 'Updated Title',
+        description: 'Updated description'
+      };
+
+      const response = await request(app)
+        .put(`/api/articles/${articleSlug}`)
+        .set('Authorization', `Token ${authToken}`)
+        .send({ article: updates });
+
+      expect(response.status).toBe(200);
+      expect(response.body.article).toHaveProperty('title', updates.title);
+      expect(response.body.article).toHaveProperty('description', updates.description);
+    });
+
+    it('should fail without authentication', async () => {
+      const response = await request(app)
+        .put(`/api/articles/${articleSlug}`)
+        .send({ article: { title: 'Updated' } });
+
+      expect(response.status).toBe(401);
+    });
+  });
+
+  describe('POST /api/articles/:slug/favorite', () => {
+    it('should favorite an article', async () => {
+      const response = await request(app)
+        .post(`/api/articles/${articleSlug}/favorite`)
+        .set('Authorization', `Token ${authToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.article).toHaveProperty('favorited', true);
+      expect(response.body.article).toHaveProperty('favoritesCount', 1);
+    });
+  });
+
+  describe('DELETE /api/articles/:slug/favorite', () => {
+    it('should unfavorite an article', async () => {
+      const response = await request(app)
+        .delete(`/api/articles/${articleSlug}/favorite`)
+        .set('Authorization', `Token ${authToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.article).toHaveProperty('favorited', false);
+      expect(response.body.article).toHaveProperty('favoritesCount', 0);
+    });
+  });
+
+  describe('GET /api/articles/feed', () => {
+    it('should get feed of followed users articles', async () => {
+      const response = await request(app)
+        .get('/api/articles/feed')
+        .set('Authorization', `Token ${authToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('articles');
+      expect(response.body).toHaveProperty('articlesCount');
+    });
+
+    it('should fail without authentication', async () => {
+      const response = await request(app).get('/api/articles/feed');
+
+      expect(response.status).toBe(401);
+    });
+  });
+
+  describe('DELETE /api/articles/:slug', () => {
+    it('should delete an article', async () => {
+      const response = await request(app)
+        .delete(`/api/articles/${articleSlug}`)
+        .set('Authorization', `Token ${authToken}`);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('should return 404 after deletion', async () => {
+      const response = await request(app).get(`/api/articles/${articleSlug}`);
+
+      expect(response.status).toBe(404);
+    });
+  });
+});
+import request from 'supertest';
+import app from '../index';
+
+describe('Comments', () => {
+  let authToken: string;
+  let articleSlug: string;
+  let commentId: number;
+
+  beforeAll(async () => {
+    const user = await request(app)
+      .post('/api/users')
+      .send({
+        user: {
+          email: 'comment-test@test.com',
+          username: 'commentuser',
+          password: 'password123'
+        }
+      });
+    authToken = user.body.user.token;
+
+    const article = await request(app)
+      .post('/api/articles')
+      .set('Authorization', `Token ${authToken}`)
+      .send({
+        article: {
+          title: 'Article for Comments',
+          description: 'Test article',
+          body: 'Article body'
+        }
+      });
+    articleSlug = article.body.article.slug;
+  });
+
+  describe('POST /api/articles/:slug/comments', () => {
+    it('should add a comment', async () => {
+      const response = await request(app)
+        .post(`/api/articles/${articleSlug}/comments`)
+        .set('Authorization', `Token ${authToken}`)
+        .send({ comment: { body: 'Great article!' } });
+
+      expect(response.status).toBe(201);
+      expect(response.body.comment).toHaveProperty('id');
+      expect(response.body.comment).toHaveProperty('body', 'Great article!');
+      expect(response.body.comment).toHaveProperty('createdAt');
+      expect(response.body.comment).toHaveProperty('updatedAt');
+      expect(response.body.comment.author).toHaveProperty('username', 'commentuser');
+
+      commentId = response.body.comment.id;
+    });
+
+    it('should fail without authentication', async () => {
+      const response = await request(app)
+        .post(`/api/articles/${articleSlug}/comments`)
+        .send({ comment: { body: 'Test' } });
+
+      expect(response.status).toBe(401);
+    });
+
+    it('should fail with missing body', async () => {
+      const response = await request(app)
+        .post(`/api/articles/${articleSlug}/comments`)
+        .set('Authorization', `Token ${authToken}`)
+        .send({ comment: {} });
+
+      expect(response.status).toBe(422);
+    });
+  });
+
+  describe('GET /api/articles/:slug/comments', () => {
+    it('should get comments for an article', async () => {
+      const response = await request(app).get(
+        `/api/articles/${articleSlug}/comments`
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('comments');
+      expect(Array.isArray(response.body.comments)).toBe(true);
+      expect(response.body.comments.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('DELETE /api/articles/:slug/comments/:id', () => {
+    it('should delete a comment', async () => {
+      const response = await request(app)
+        .delete(`/api/articles/${articleSlug}/comments/${commentId}`)
+        .set('Authorization', `Token ${authToken}`);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('should fail without authentication', async () => {
+      const response = await request(app).delete(
+        `/api/articles/${articleSlug}/comments/999`
+      );
+
+      expect(response.status).toBe(401);
+    });
+  });
+});
+import request from 'supertest';
+import app from '../index';
+
+describe('Profiles', () => {
+  let user1Token: string;
+  let user2Token: string;
+  const user1 = {
+    email: 'user1@test.com',
+    username: 'user1',
+    password: 'password123'
+  };
+  const user2 = {
+    email: 'user2@test.com',
+    username: 'user2',
+    password: 'password123'
+  };
+
+  beforeAll(async () => {
+    const res1 = await request(app).post('/api/users').send({ user: user1 });
+    user1Token = res1.body.user.token;
+
+    const res2 = await request(app).post('/api/users').send({ user: user2 });
+    user2Token = res2.body.user.token;
+  });
+
+  describe('GET /api/profiles/:username', () => {
+    it('should get profile without auth', async () => {
+      const response = await request(app).get(`/api/profiles/${user1.username}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.profile).toHaveProperty('username', user1.username);
+      expect(response.body.profile).toHaveProperty('following', false);
+    });
+
+    it('should return 404 for non-existent user', async () => {
+      const response = await request(app).get('/api/profiles/nonexistent');
+
+      expect(response.status).toBe(404);
+    });
+  });
+
+  describe('POST /api/profiles/:username/follow', () => {
+    it('should follow a user', async () => {
+      const response = await request(app)
+        .post(`/api/profiles/${user2.username}/follow`)
+        .set('Authorization', `Token ${user1Token}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.profile).toHaveProperty('username', user2.username);
+      expect(response.body.profile).toHaveProperty('following', true);
+    });
+
+    it('should fail without authentication', async () => {
+      const response = await request(app).post(
+        `/api/profiles/${user2.username}/follow`
+      );
+
+      expect(response.status).toBe(401);
+    });
+
+    it('should fail when trying to follow yourself', async () => {
+      const response = await request(app)
+        .post(`/api/profiles/${user1.username}/follow`)
+        .set('Authorization', `Token ${user1Token}`);
+
+      expect(response.status).toBe(422);
+    });
+  });
+
+  describe('DELETE /api/profiles/:username/follow', () => {
+    it('should unfollow a user', async () => {
+      const response = await request(app)
+        .delete(`/api/profiles/${user2.username}/follow`)
+        .set('Authorization', `Token ${user1Token}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.profile).toHaveProperty('following', false);
+    });
+  });
+});
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+beforeAll(async () => {
+  // Clean database before tests
+  await prisma.$executeRaw`TRUNCATE TABLE "Comment" CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Favorite" CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "ArticleTag" CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Article" CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Tag" CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "Follow" CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE "User" CASCADE`;
+});
+
+afterAll(async () => {
+  await prisma.$disconnect();
+});
+import request from 'supertest';
+import app from '../index';
+
+describe('Tags', () => {
+  let authToken: string;
+
+  beforeAll(async () => {
+    const user = await request(app)
+      .post('/api/users')
+      .send({
+        user: {
+          email: 'tags-test@test.com',
+          username: 'tagsuser',
+          password: 'password123'
+        }
+      });
+    authToken = user.body.user.token;
+
+    await request(app)
+      .post('/api/articles')
+      .set('Authorization', `Token ${authToken}`)
+      .send({
+        article: {
+          title: 'Article with Tags',
+          description: 'Test',
+          body: 'Body',
+          tagList: ['javascript', 'typescript', 'node']
+        }
+      });
+  });
+
+  describe('GET /api/tags', () => {
+    it('should get list of all tags', async () => {
+      const response = await request(app).get('/api/tags');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('tags');
+      expect(Array.isArray(response.body.tags)).toBe(true);
+      expect(response.body.tags).toEqual(
+        expect.arrayContaining(['javascript', 'typescript', 'node'])
+      );
+    });
+  });
+});
+import request from 'supertest';
+import app from '../index';
+
+describe('Users & Authentication', () => {
+  let authToken: string;
+  let testUser = {
+    email: 'test@test.com',
+    username: 'testuser',
+    password: 'password123'
+  };
+
+  describe('POST /api/users - Registration', () => {
+    it('should register a new user', async () => {
+      const response = await request(app)
+        .post('/api/users')
+        .send({ user: testUser });
+
+      expect(response.status).toBe(201);
+      expect(response.body.user).toHaveProperty('email', testUser.email);
+      expect(response.body.user).toHaveProperty('username', testUser.username);
+      expect(response.body.user).toHaveProperty('token');
+      expect(response.body.user).toHaveProperty('bio', null);
+      expect(response.body.user).toHaveProperty('image', null);
+      expect(response.body.user).not.toHaveProperty('password');
+      
+      authToken = response.body.user.token;
+    });
+
+    it('should fail with duplicate email', async () => {
+      const response = await request(app)
+        .post('/api/users')
+        .send({ user: testUser });
+
+      expect(response.status).toBe(422);
+      expect(response.body.errors).toBeDefined();
+    });
+
+    it('should fail with missing fields', async () => {
+      const response = await request(app)
+        .post('/api/users')
+        .send({ user: { email: 'test2@test.com' } });
+
+      expect(response.status).toBe(422);
+    });
+  });
+
+  describe('POST /api/users/login - Login', () => {
+    it('should login successfully', async () => {
+      const response = await request(app)
+        .post('/api/users/login')
+        .send({ user: { email: testUser.email, password: testUser.password } });
+
+      expect(response.status).toBe(200);
+      expect(response.body.user).toHaveProperty('token');
+      expect(response.body.user).toHaveProperty('email', testUser.email);
+    });
+
+    it('should fail with wrong password', async () => {
+      const response = await request(app)
+        .post('/api/users/login')
+        .send({ user: { email: testUser.email, password: 'wrongpassword' } });
+
+      expect(response.status).toBe(401);
+    });
+
+    it('should fail with non-existent user', async () => {
+      const response = await request(app)
+        .post('/api/users/login')
+        .send({ user: { email: 'nonexistent@test.com', password: 'password' } });
+
+      expect(response.status).toBe(401);
+    });
+  });
+
+  describe('GET /api/user - Get Current User', () => {
+    it('should get current user with valid token', async () => {
+      const response = await request(app)
+        .get('/api/user')
+        .set('Authorization', `Token ${authToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.user).toHaveProperty('email', testUser.email);
+      expect(response.body.user).toHaveProperty('username', testUser.username);
+    });
+
+    it('should fail without token', async () => {
+      const response = await request(app).get('/api/user');
+
+      expect(response.status).toBe(401);
+    });
+
+    it('should fail with invalid token', async () => {
+      const response = await request(app)
+        .get('/api/user')
+        .set('Authorization', 'Token invalidtoken');
+
+      expect(response.status).toBe(401);
+    });
+  });
+
+  describe('PUT /api/user - Update User', () => {
+    it('should update user profile', async () => {
+      const updates = {
+        bio: 'I am a test user',
+        image: 'https://example.com/image.jpg'
+      };
+
+      const response = await request(app)
+        .put('/api/user')
+        .set('Authorization', `Token ${authToken}`)
+        .send({ user: updates });
+
+      expect(response.status).toBe(200);
+      expect(response.body.user).toHaveProperty('bio', updates.bio);
+      expect(response.body.user).toHaveProperty('image', updates.image);
+    });
+
+    it('should fail without authentication', async () => {
+      const response = await request(app)
+        .put('/api/user')
+        .send({ user: { bio: 'test' } });
+
+      expect(response.status).toBe(401);
+    });
+  });
+});
+
+=== END MATERIAL ===

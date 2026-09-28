@@ -1,0 +1,14 @@
+{
+  "twin": "D",
+  "rep": 0,
+  "net_lines": 21,
+  "tsc": 1,
+  "wired": 1,
+  "success": true,
+  "cost": 0.0912464,
+  "cost_per_line": 0.004345066666666667,
+  "read_breadth": 6,
+  "writes": 5,
+  "turns": 14,
+  "out_tokens": 3916
+}

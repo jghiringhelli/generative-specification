@@ -1,0 +1,14 @@
+{
+  "twin": "M",
+  "model": "llama3.2:3b",
+  "rep": 0,
+  "extracted": 1,
+  "tsc": 1,
+  "tsc_errs": 0,
+  "wired": 1,
+  "resp_chars": 5695,
+  "code_chars": 5678,
+  "orig_chars": 11676,
+  "eval_count": 1342,
+  "ms": 10334
+}

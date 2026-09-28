@@ -1,0 +1,21 @@
+{
+  "K": 4,
+  "MODEL": "claude-sonnet-4-5",
+  "totalGen": 16,
+  "failGen": 0,
+  "totalCost": 1.556247,
+  "results": [
+    {
+      "id": "business-days-add",
+      "category": "subtle",
+      "baselineDefectRate": 0,
+      "flagged": 0,
+      "majWrongRate": 0,
+      "disagreementCatch": null,
+      "falsePositive": 0,
+      "baseDefectCatch": null,
+      "kBase": 4,
+      "kTriples": 4
+    }
+  ]
+}

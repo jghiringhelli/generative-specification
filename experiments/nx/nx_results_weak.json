@@ -1,0 +1,23 @@
+{
+  "K": 4,
+  "MODEL": "qwen2.5-coder:7b",
+  "totalGen": 16,
+  "failGen": 0,
+  "deadVersions": 7,
+  "liveVersions": 9,
+  "totalCost": 0,
+  "results": [
+    {
+      "id": "business-days-add",
+      "category": "subtle",
+      "baselineDefectRate": 0.08714596949891068,
+      "flagged": 0.13071895424836602,
+      "majWrongRate": 0.13071895424836602,
+      "disagreementCatch": 1,
+      "falsePositive": 0,
+      "baseDefectCatch": null,
+      "kBase": 3,
+      "kTriples": 2
+    }
+  ]
+}

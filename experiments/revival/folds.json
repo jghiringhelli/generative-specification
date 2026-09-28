@@ -1,0 +1,17 @@
+{
+  "_note": "Committed BEFORE any generation (pre-registration §7). Provisional model parameters (a, c_res) may be refined ONLY on FIT problems. The F4 predicted-vs-measured correlation is computed ONLY on HOLDOUT. No re-assigning a problem after seeing results.",
+  "holdout_fraction_target": 0.3,
+  "stratified_by": "tier",
+  "FIT": {
+    "T0": ["sum-array", "reverse-string", "max-array"],
+    "T1": ["money-split", "rle", "palindrome-clean"],
+    "T2": ["merge-intervals", "reschedule-conflict", "most-frequent"],
+    "T3": ["business-days-add", "roman-numeral"]
+  },
+  "HOLDOUT": {
+    "T0": ["count-vowels"],
+    "T1": ["chunk-array"],
+    "T2": ["parse-duration"],
+    "T3": ["luhn-check", "expand-ranges"]
+  }
+}
