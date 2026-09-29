@@ -75,7 +75,7 @@ The [`quality-gates/`](quality-gates/) directory is a community-maintained libra
 
 <!-- GATES_TABLE_START -->
 
-#### Current Gate Library (49 gates)
+#### Current Gate Library (51 gates)
 
 | Gate | Description | GS Property | Tags | Phase | Trigger |
 |---|---|---|---|---|---|
@@ -95,6 +95,8 @@ The [`quality-gates/`](quality-gates/) directory is a community-maintained libra
 | [no-any-type](quality-gates/gates/no-any-type.yaml) | No explicit ': any' type annotations appear in non-test TypeScript source files. | Bounded | typescript | development | commit |
 | [no-direct-db-in-routes](quality-gates/gates/no-direct-db-in-routes.yaml) | Route handlers do not import or call database clients (Prisma, Sequelize, TypeORM, mongoose, raw SQL) directly. | Bounded | node, typescript, javascript, api, express, fastify | development | commit |
 | [no-duplicate-string-literals](quality-gates/gates/no-duplicate-string-literals.yaml) | String values that appear more than three times in the codebase must be extracted into named constants. | Bounded | javascript, typescript, node, any | development | commit |
+| [no-duplicated-code-in-diff](quality-gates/gates/no-duplicated-code-in-diff.yaml) | Copy-pasted code multiplies the places a change must touch. | Bounded | javascript, typescript, node, any | development | pr |
+| [no-unused-exports-dead-code](quality-gates/gates/no-unused-exports-dead-code.yaml) | Code that nothing uses still has to be read, searched and reconciled. | Bounded | javascript, typescript, node | development | pr |
 | [api-error-envelope-resource-scoped](quality-gates/gates/api-error-envelope-resource-scoped.yaml) | API validation errors must be returned under a key that names the failing resource, not a generic "body" key. | Verifiable | api, rest, node, typescript, javascript | development | pr |
 | [api-nullable-field-coercion](quality-gates/gates/api-nullable-field-coercion.yaml) | Optional profile fields (bio, image) must be stored and returned as null when the client sends an empty string. | Verifiable | api, rest, node, typescript, javascript, database | development | commit |
 | [contract-tests-against-live-env](quality-gates/gates/contract-tests-against-live-env.yaml) | The committed API contract test suite must pass against the live target environment (staging, CAE, or production candidate) before promotion. | Verifiable | api, rest, any | staging | release |
