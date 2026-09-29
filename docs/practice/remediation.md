@@ -13,6 +13,8 @@ description: "Oracle tests, prioritized remediation and strangler-style replacem
 
 This is how an existing system is renewed: protect it with oracle tests, remediate in priority order under cascade discipline, and, for large systems, replace it module by module rather than rewriting it. When remediation is done, the remediated module can be treated as a new project.
 
+For the recurring part, when each structural check runs and how a finding is fixed without weakening the gate, see [Run structural gates and remediate](../structural-gates/).
+
 ## Prerequisites
 
 You cannot safely remediate code that isn't yet protected. This page assumes the existing project already has the three things below. If it doesn't, install them first: [Existing project](../existing-project/) walks all three in sequence (steps 03 to 06), starting from the audit you ran in [Orient](../orient/).

@@ -141,6 +141,12 @@ After loop 3, run `start_hardening` for pre-release hardening gates.
 
 ---
 
+## Smallest change that works
+
+Before closing the change, check that it is the smallest one that does the job: nothing unnecessary added, no second copy of something that already exists, nothing left dead behind, and the structure where a reader would look for it. Smaller and ordered is cheaper to read and to change. This is a design principle of the method, not a measured result; see [Smallest change that works](/practice/structural-gates/#step-03-smallest-change-that-works).
+
+---
+
 ## What to Expect
 
 A well-filled spec produces ~85% of the implementation with minimal back-and-forth. The main sources of AI drift are:

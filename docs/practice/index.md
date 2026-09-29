@@ -22,6 +22,7 @@ description: "Tool-free, paste-and-run guides for applying Generative Specificat
 | Not sure what you have | [Orient](orient/): read what exists, or ground the idea before specifying |
 | Want the reasoning behind the structure | [Structural disciplines](structural-disciplines/) |
 | Existing system already under spec and verification | [Remediate an existing system](remediation/) |
+| Structural checks (complexity, duplication, dead code, cycles) at the right moment | [Run structural gates and remediate](structural-gates/): pre-commit, pre-push, CI, and a safe remediation loop |
 
 New to the whole thing? Grade a codebase first with the free audit at [pragmaworks.dev/audit](https://pragmaworks.dev/audit), then pick a row above.
 

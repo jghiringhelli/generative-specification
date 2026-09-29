@@ -100,6 +100,12 @@ forgecraft_actions({
 
 ---
 
+## Smallest change that works
+
+Before closing the change, check that it is the smallest one that does the job: nothing unnecessary added, no second copy of something that already exists, nothing left dead behind, and the structure where a reader would look for it. Smaller and ordered is cheaper to read and to change. This is a design principle of the method, not a measured result; see [Smallest change that works](/practice/structural-gates/#step-03-smallest-change-that-works).
+
+---
+
 ## Common Pitfalls
 
 **Pitfall**: Adding code without updating the spec. The audit will catch this on the next run, but the drift accumulates silently between runs.

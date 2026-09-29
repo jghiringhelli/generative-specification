@@ -1745,6 +1745,10 @@ An earlier public statement of the method, the "Harness Manifesto" (June 2026), 
 
 These principles describe practice, not process. The team-level process that would turn them into named roles, artifacts and ceremonies is being designed separately and is not part of the claims of this document (see the Andon Method page at genspec.dev/method/andon/).
 
+### 8.18 Guides and sensors (Böckeler)
+
+Böckeler (2026) describes an agent as a model plus a harness, and divides the harness's controls in two: *guides* (feedforward, steering the agent before it acts) and *sensors* (feedback, observing after it acts), each either *computational* (deterministic: linters, type checkers, structural tests) or *inferential* (LLM-based). Her "harness" therefore covers everything around the model. In this canon the word was used more narrowly, for the verification and enforcement layer only, which is her sensors. To avoid two meanings of one word, we now prefer her terms: the **sentinel, the specifications, AGENTS.md and similar instruction files, and skills are guides**; the **tests, linters, structural checks and quality gates that judge the result are sensors**. We keep "harness" only when quoting or citing her, or in names that already exist. Two consequences follow. First, guides differ in force: an instruction file is advisory (the model may not follow it), while a hook is deterministic. Second, both layers should derive from the same ratified specification, and the guides should stay minimal, since an over-built harness degrades the agent it is meant to help.
+
 ---
 
 ## 9. Convergence, Stability, and Forward Extension
@@ -1932,6 +1936,7 @@ The author named the doors. The AI supplied the contents of the rooms. Both cont
 - Bass, L., Clements, P., & Kazman, R. (2003). *Software Architecture in Practice* (2nd ed.). Addison-Wesley.
 - Beck, K. (2003). *Test-Driven Development: By Example.* Addison-Wesley.
 - Beck, K., Beedle, M., van Bennekum, A., Cockburn, A., Cunningham, W., Fowler, M., Grenning, J., Highsmith, J., Hunt, A., Jeffries, R., Kern, J., Marick, B., Martin, R.C., Mellor, S., Schwaber, K., Sutherland, J., & Thomas, D. (2001). *Manifesto for Agile Software Development.* https://agilemanifesto.org
+- Böckeler, B. (2026). Harness engineering. martinfowler.com, 2 April 2026. https://martinfowler.com/articles/harness-engineering.html
 - Brooks, F.P. (1987). No Silver Bullet: Essence and Accidents of Software Engineering. *Computer, 20*(4), 10–19.
 - Brown, S. (2018). *The C4 Model for Software Architecture.* leanpub.com.
 - Chomsky, N. (1957). *Syntactic Structures.* Mouton.

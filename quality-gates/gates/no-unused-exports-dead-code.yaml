@@ -1,0 +1,20 @@
+id: no-unused-exports-dead-code
+name: No unused exports or dead code
+description: >
+  Code that nothing uses still has to be read, searched and reconciled. A stateless reader
+  cannot tell vestigial code from live code, so dead code widens what must be read and can
+  hide the copies that matter. This gate runs knip, which reports unused files, exports and
+  dependencies in a JavaScript or TypeScript project, and fails when it finds any that were
+  not present in the reviewed baseline. It is advisory: knip needs correct entry-point
+  configuration, and a wrong configuration produces false positives. Promote it to blocking
+  only after a clean run on the target codebase with no false positives. Removing code is
+  part of the minimal-footprint check, so a finding is resolved by deletion, not by
+  suppression.
+property: Bounded
+tags: [javascript, typescript, node]
+phase: development
+trigger: pr
+blocking: false
+check:
+  type: script
+  command: "npx knip --no-progress"

@@ -11,6 +11,8 @@ description: "The deterministic, non-LLM checkers that make Generative Specifica
 
 A specification is only as strong as what a machine can **verify**. Gates are the deterministic checkers that make the method enforceable: standard CI hooks, grouped here by the [rubric](../rubric/) property each one defends. An LLM may write the code, but a **non-LLM checker verifies it**. These are those checkers. They are the verification and enforcement layer of the substrate (the *harness*), the part that keeps the guarantee outside the model.
 
+**Terminology: guides and sensors.** Böckeler (2026) divides an agent's harness into *guides* (feedforward) and *sensors* (feedback), each computational or inferential. Here the sentinel, specifications, instruction files and skills are guides; tests, linters, structural checks and gates are sensors, and "harness" used for the verification layer means the sensors. An instruction file is advisory, a hook is deterministic; both layers should derive from the same ratified specification, with the guides kept minimal. Böckeler, B. (2026). Harness engineering. martinfowler.com. https://martinfowler.com/articles/harness-engineering.html
+
 You do not need a proprietary tool. Point a capable assistant at the [white paper](https://doi.org/10.5281/zenodo.21726017) and this page, and ask it to wire the gates that apply to your stack. The tools below are the JavaScript/TypeScript defaults; the assistant substitutes per language.
 
 **Blocking versus advisory.** A *blocking* gate fails the build. An *advisory* gate reports and does not stop the merge. A gate that can be skipped under deadline pressure is a suggestion, which is the failure the rubric calls Open Gates. Advisory rows below are the ones where a hard threshold is still project-specific.
@@ -28,8 +30,8 @@ The library column names real gates in [`quality-gates/`](/quality-gates/), wher
 | File length | `wc` / loc | at most about 300 lines | blocking | `file-length-max-300` |
 | Function length and parameters | `eslint` | `max-lines-per-function`, `max-params` | blocking | `function-length-max-50`, `max-function-parameters` |
 | Cyclomatic complexity | `eslint` complexity | function complexity at most 10 | blocking | `cyclomatic-complexity-max-10` |
-| Code duplication | `jscpd` | ceiling of about 5-10% | advisory | none |
-| Dead code | `ts-prune` / `knip` | no unused exports | advisory | none |
+| Code duplication | `jscpd` | no new duplication in the diff above a stored baseline (ratchet) | advisory | `no-duplicated-code-in-diff` |
+| Dead code | `ts-prune` / `knip` | no unused exports | advisory | `no-unused-exports-dead-code` |
 
 ### Composable
 
@@ -85,6 +87,8 @@ Defended has a human ceiling. CI can verify six of the seven properties automati
 | TDD phase order | commit-history hook | `test:[RED]` before `feat:` | advisory | none |
 
 ---
+
+When to run each check, and how to remediate a finding without weakening the gate: [Run structural gates and remediate](/practice/structural-gates/).
 
 ## The ratchet
 

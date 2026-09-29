@@ -1,0 +1,22 @@
+id: no-duplicated-code-in-diff
+name: No new duplicated code in the diff (ratchet)
+description: >
+  Copy-pasted code multiplies the places a change must touch. In the SX experiment, a
+  codebase carrying an average project's duplication (article serialization duplicated
+  across five live copies) cost about 2.4 times the tokens and 3.5 times the edits of the
+  clean twin for the same change, even with a navigation map on both (n=2, single
+  benchmark, one frontier model; a mechanism, not an effect size). This gate runs jscpd
+  over the files changed against the base branch and fails when duplication in those files
+  is above the stored baseline, so the legacy backlog does not block new work. The baseline
+  lives in .gs/jscpd-baseline as a percentage and is only lowered, never raised, by a
+  reviewed change. It is advisory until false positives are measured on the target
+  codebase. Limit: it compares changed files with each other, so a copy of code that lives
+  in an untouched file can slip through; the weekly review runs the whole-repo report.
+property: Bounded
+tags: [javascript, typescript, node, any]
+phase: development
+trigger: pr
+blocking: false
+check:
+  type: script
+  command: "FILES=$(git diff --name-only origin/main...HEAD -- '*.ts' '*.js'); [ -z \"$FILES\" ] || npx jscpd $FILES --threshold $(cat .gs/jscpd-baseline 2>/dev/null || echo 10)"

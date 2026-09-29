@@ -210,6 +210,8 @@ contract, SLO) plus AI-as-QA run against the *live* application, not assumed fro
 verify step is **generative execution**: the agent operates the real machine — runs the tests, hits the
 endpoints, reads the logs — and checks output against the specification.
 
+**Terminology: guides and sensors.** Böckeler (2026) divides an agent's harness into *guides* (feedforward) and *sensors* (feedback), each computational or inferential. Here the sentinel, specifications, instruction files and skills are guides; tests, linters, structural checks and gates are sensors, and "harness" used for the verification layer means the sensors. An instruction file is advisory, a hook is deterministic; both layers should derive from the same ratified specification, with the guides kept minimal. Böckeler, B. (2026). Harness engineering. martinfowler.com. https://martinfowler.com/articles/harness-engineering.html
+
 **Why the verify step insists on mutation testing.** An AI that writes its own tests *knowing the
 implementation* will write them to pass, not to catch. Line coverage rewards exactly that: a suite that
 executes every line but asserts nothing scores 100% coverage and 0% mutation score. In one project an

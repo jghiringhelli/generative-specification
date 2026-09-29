@@ -24,7 +24,7 @@ This table is generated from the gate files by `scripts/generate-gates-table.py`
 
 <!-- GATES_TABLE_START -->
 
-#### Current Gate Library (49 gates)
+#### Current Gate Library (51 gates)
 
 | Gate | Description | GS Property | Tags | Phase | Trigger |
 |---|---|---|---|---|---|
@@ -77,6 +77,8 @@ This table is generated from the gate files by `scripts/generate-gates-table.py`
 | [tsc-no-emit-exits-zero](https://github.com/jghiringhelli/generative-specification/blob/main/quality-gates/gates/tsc-no-emit-exits-zero.yaml) | tsc --noEmit exits 0 on every commit. | Executable | typescript | development | commit |
 | [typescript-strict-mode](https://github.com/jghiringhelli/generative-specification/blob/main/quality-gates/gates/typescript-strict-mode.yaml) | The project's tsconfig.json has compilerOptions.strict set to true. | Executable | typescript | development | commit |
 | [no-redundant-deploy-pipelines](https://github.com/jghiringhelli/generative-specification/blob/main/quality-gates/gates/no-redundant-deploy-pipelines.yaml) | Warns when a project has both a platform deploy config (railway.toml, vercel.json, fly.toml, render.yaml) and a .github/workflows/ directory. | convergence | any | development | pr |
+| [no-duplicated-code-in-diff](https://github.com/jghiringhelli/generative-specification/blob/main/quality-gates/gates/no-duplicated-code-in-diff.yaml) | Copy-pasted code multiplies the places a change must touch. | Bounded | javascript, typescript, node, any | development | pr || [no-unused-exports-dead-code](https://github.com/jghiringhelli/generative-specification/blob/main/quality-gates/gates/no-unused-exports-dead-code.yaml) | Code that nothing uses still has to be read, searched and reconciled. | Bounded | javascript, typescript, node | development | pr |
+| [no-unused-exports-dead-code](https://github.com/jghiringhelli/generative-specification/blob/main/quality-gates/gates/no-unused-exports-dead-code.yaml) | Code that nothing uses still has to be read, searched and reconciled. | Bounded | javascript, typescript, node | development | pr |
 
 *Underrepresented properties (highest-value contribution targets): Composable.*
 <!-- GATES_TABLE_END -->

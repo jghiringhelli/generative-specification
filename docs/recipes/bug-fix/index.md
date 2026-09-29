@@ -91,6 +91,12 @@ If the bug revealed a systemic issue (e.g., error handling is inconsistent acros
 
 ---
 
+## Smallest change that works
+
+Before closing the change, check that it is the smallest one that does the job: nothing unnecessary added, no second copy of something that already exists, nothing left dead behind, and the structure where a reader would look for it. Smaller and ordered is cheaper to read and to change. This is a design principle of the method, not a measured result; see [Smallest change that works](/practice/structural-gates/#step-03-smallest-change-that-works).
+
+---
+
 ## What Not to Do
 
 - Do not add `try/catch` around the broken code to silence the error. Find the root cause.

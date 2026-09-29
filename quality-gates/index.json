@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-28T22:16:55.597Z",
+  "generatedAt": "2026-09-29T19:01:14.788Z",
   "version": "1",
-  "gateCount": 49,
+  "gateCount": 51,
   "tags": [
     "ACADEMIC-PAPER",
     "ANY",
@@ -557,6 +557,24 @@
       "status": "approved"
     },
     {
+      "id": "no-duplicated-code-in-diff",
+      "title": "No new duplicated code in the diff (ratchet)",
+      "description": "Copy-pasted code multiplies the places a change must touch. In the SX experiment, a codebase carrying an average project's duplication (article serialization duplicated across five live copies) cost about 2.4 times the tokens and 3.5 times the edits of the clean twin for the same change, even with a navigation map on both (n=2, single benchmark, one frontier model; a mechanism, not an effect size). This gate runs jscpd over the files changed against the base branch and fails when duplication in those files is above the stored baseline, so the legacy backlog does not block new work. The baseline lives in .gs/jscpd-baseline as a percentage and is only lowered, never raised, by a reviewed change. It is advisory until false positives are measured on the target codebase. Limit: it compares changed files with each other, so a copy of code that lives in an untouched file can slip through; the weekly review runs the whole-repo report.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "development",
+      "hook": "pr",
+      "check": "FILES=$(git diff --name-only origin/main...HEAD -- '*.ts' '*.js'); [ -z \\\"$FILES\\\" ] || npx jscpd $FILES --threshold $(cat .gs/jscpd-baseline 2>/dev/null || echo 10)",
+      "passCriterion": "Copy-pasted code multiplies the places a change must touch.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "NODE",
+        "ANY"
+      ],
+      "status": "approved"
+    },
+    {
       "id": "no-hardcoded-secrets",
       "title": "No hardcoded secrets in source",
       "description": "No credentials, API keys, JWT secrets, passwords, or connection strings appear as literal values in source files. Secret detection runs on every commit. Hardcoded secrets are not a code smell — they are a security boundary violation. Any secret committed to version control is compromised by definition. Secrets must be injected via environment variables validated at startup, never embedded in code or committed config files.",
@@ -597,6 +615,23 @@
       "check": "|",
       "passCriterion": "Warns when a project has both a platform deploy config (railway.",
       "tags": [],
+      "status": "approved"
+    },
+    {
+      "id": "no-unused-exports-dead-code",
+      "title": "No unused exports or dead code",
+      "description": "Code that nothing uses still has to be read, searched and reconciled. A stateless reader cannot tell vestigial code from live code, so dead code widens what must be read and can hide the copies that matter. This gate runs knip, which reports unused files, exports and dependencies in a JavaScript or TypeScript project, and fails when it finds any that were not present in the reviewed baseline. It is advisory: knip needs correct entry-point configuration, and a wrong configuration produces false positives. Promote it to blocking only after a clean run on the target codebase with no false positives. Removing code is part of the minimal-footprint check, so a finding is resolved by deletion, not by suppression.",
+      "category": "Bounded",
+      "gsProperty": "Bounded",
+      "phase": "development",
+      "hook": "pr",
+      "check": "npx knip --no-progress",
+      "passCriterion": "Code that nothing uses still has to be read, searched and reconciled.",
+      "tags": [
+        "JAVASCRIPT",
+        "TYPESCRIPT",
+        "NODE"
+      ],
       "status": "approved"
     },
     {

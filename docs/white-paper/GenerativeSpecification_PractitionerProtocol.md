@@ -49,6 +49,8 @@ The dev-time harness inside T1 is **executable specification**: T1 spec contract
 
 What some frameworks call "Harness Engineering" — the AI behavioral guardrails, CLAUDE.md rules, prompt constraints — is the *authoring half* of T1: it specifies how the AI should behave. The dev-time harness is T1's *verification half*: it certifies the live system did it. Both halves are T1; the spec authors, the harness verifies, in one cycle. The same pairing repeats at every higher tier with the appropriate verification mechanism for that stage.
 
+**Terminology: guides and sensors.** Böckeler (2026) divides an agent's harness into *guides* (feedforward) and *sensors* (feedback), each computational or inferential. Here the sentinel, specifications, instruction files and skills are guides; tests, linters, structural checks and gates are sensors, and "harness" used for the verification layer means the sensors. An instruction file is advisory, a hook is deterministic; both layers should derive from the same ratified specification, with the guides kept minimal. Böckeler, B. (2026). Harness engineering. martinfowler.com. https://martinfowler.com/articles/harness-engineering.html
+
 **Starting at T1 is correct.** Most practitioners run T1 indefinitely and reach excellent results. T2 becomes relevant when staging or infrastructure state is complex enough to drift. T3 becomes relevant when the system is in production long enough to accumulate observable behavior. Do not force the cascade depth — let the project's failure modes tell you which tier to activate next.
 
 ### The three-layer recording model

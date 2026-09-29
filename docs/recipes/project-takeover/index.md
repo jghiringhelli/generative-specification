@@ -106,6 +106,12 @@ The difference: some Loop 1 behaviors may already have implementations. In that 
 
 ---
 
+## Smallest change that works
+
+Before closing the change, check that it is the smallest one that does the job: nothing unnecessary added, no second copy of something that already exists, nothing left dead behind, and the structure where a reader would look for it. Smaller and ordered is cheaper to read and to change. This is a design principle of the method, not a measured result; see [Smallest change that works](/practice/structural-gates/#step-03-smallest-change-that-works).
+
+---
+
 ## Managing Technical Debt
 
 The takeover recipe is not a license to rewrite everything. GS methodology works incrementally:
