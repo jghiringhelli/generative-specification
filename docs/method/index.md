@@ -19,6 +19,7 @@ The concepts, stated once and defined by what a machine can check. The papers ([
 | [The evidence](evidence/) | What the experiments established, with the bounds on each claim |
 | [The course](course/) | GS Core: theory intercut with five hands-on labs |
 | [The Andon Method](andon/) | A proposed method built on the same thesis: the machine builds, a gate stops the line, the human judges. Team process not yet defined |
+| [Twelve working principles](principles/) | How a practitioner works under the method, in twelve lines; two carry evidence caveats |
 
 Looking for the practice (how to do it on a real project)? See the [workflow recipes](/docs/recipes/).
 

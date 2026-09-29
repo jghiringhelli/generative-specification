@@ -1726,6 +1726,25 @@ The §4.1.e art generation pipeline is the canonical positive illustration: the 
 
 The failure mode is one of structural signal. The AI is not making an error of reasoning; it is making an inference from an ambiguous structure. The fix is to remove the ambiguity from the structure: build the engine, ship the sample as its first real outcome. This ambiguity is detectable at specification time — a seed deliverable that can be produced without the mechanism is the diagnostic signal — and is one of the structural checks the accompanying tooling enforces at specification review.
 
+### 8.17 Twelve Working Principles (from the retired Harness Manifesto)
+
+An earlier public statement of the method, the "Harness Manifesto" (June 2026), was retired in September 2026 because it carried a signatory table that no third party had signed, and because its vocabulary predates the canon: in the canon, "harness" names only the verification and enforcement layer of the substrate, not the whole discipline. Its twelve principles remain useful as a compact statement of how a practitioner works under GS, and are preserved here as working principles, not as a manifesto and not as findings. Two carry evidence caveats, stated inline.
+
+1. **The specification is the prompt.** Every AI session, and every new team member, derives from the same written source of truth. Context never depends on who is in the room.
+2. **The specification is written before the code it governs.** A spec written to describe existing behavior is documentation; a spec written to direct behavior not yet built is discipline.
+3. **A bounded specification delivers only what is relevant to the current task.** Bounded is not a length limit; it is a relevance contract. *Caveat: the mechanism (the model silently deprioritizes distant instructions such as tests and architectural rules) is a hypothesis, not a measured result.*
+4. **The test suite proves what the system does under real conditions, not that it compiles.** Green CI on broken behavior is not passing; it is Test Theater.
+5. **Every non-obvious architectural decision has a recorded rationale.** The AI cannot correct what it was never told was intentional.
+6. **Irreversible operations have human confirmation gates.** Consequence is classified in the specification, not inferred at runtime.
+7. **New contributors, human or AI, derive full context from artifacts alone.** Knowledge that requires a colleague to transmit it is Bus Factor debt.
+8. **Given the same specification and the same requirement, structural decisions converge.** When sessions diverge, the specification is incomplete. *Caveat: supported directionally by AX and AX2 only; not established as a general property.*
+9. **Technical debt exists in auditable artifacts or it does not exist for the AI.**
+10. **Every interface between systems is a written contract, not an implicit agreement.** The contract must exist in an artifact, not in the memory of the engineer who built both sides. (The 1999 Mars Climate Orbiter loss is the standard illustration of an implicit unit contract between two teams.)
+11. **Code and specification are mirrors of each other.** When either changes, the other must follow.
+12. **AI amplifies what the specification directs.** Without a specification it amplifies whatever preceded the session, including every prior mistake.
+
+These principles describe practice, not process. The team-level process that would turn them into named roles, artifacts and ceremonies is being designed separately and is not part of the claims of this document (see the Andon Method page at genspec.dev/method/andon/).
+
 ---
 
 ## 9. Convergence, Stability, and Forward Extension

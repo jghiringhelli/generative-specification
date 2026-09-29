@@ -93,6 +93,7 @@ The video lessons are being published; the course page tracks them.
 | Section | Contents |
 |---|---|
 | [The Method](method/) | The rubric, spec completeness, quality gates, the evidence, the course |
+| [Practice](practice/) | Paste-and-run guides: new project, existing project, join a codebase, migrate a stack |
 | [Gate library](quality-gates/) | Community gate library, contribute via PR |
 | [Workflow Recipes](docs/recipes/) | Step-by-step guides for the practitioner scenarios |
 | [Domain Guides](domains/) | FINTECH · ML · GAME · Creative · CLI |

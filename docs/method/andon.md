@@ -21,7 +21,7 @@ Three methods, invented separately, decades apart.
 
 **Correctness by Construction** (Praxis, in SPARK/Ada): write a formal specification, refine it toward code, and let a prover discharge whole classes of error, such as no runtime exceptions and contracts satisfied. Used where failure is not an option (the C-130J avionics; the Tokeneer secure-station study for the NSA). It worked for decades and stayed boutique, because writing the contracts and finding the invariants took engineers there were never enough of.
 
-**The B-method**, which still runs a driverless line under Paris: prove the refinement from abstract model to implementation, then generate the code from the proven implementation. Line 14 (Météor, 1998) is about 110,000 lines of B model refined to about 86,000 lines of Ada, with no defect found in operation since it opened.
+**The B-method**, which still runs a driverless line under Paris: prove the refinement from abstract model to implementation, then generate the code from the proven implementation. Line 14 (Météor, 1998) is about 110,000 lines of B model refined to about 86,000 lines of Ada, a project-reported record (we have not independently checked it) of no defect found in operation since it opened.
 
 They differ in one way that matters later. Cleanroom certifies partly by human review and partly by statistics, while Correctness by Construction and B certify by mechanical proof a machine can check. But all three share one sequence: state the intent precisely, derive the system from it, certify by evidence and not by confidence. Each was buried for the same reason. Not that it failed, but that the human labor it demanded outweighed what that labor was worth.
 
