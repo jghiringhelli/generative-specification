@@ -27,7 +27,7 @@ The library column names real gates in [`quality-gates/`](/quality-gates/), wher
 
 | Gate | Standard tool | Rule | Level | Library gate |
 |---|---|---|---|---|
-| File length | `wc` / loc | at most about 300 lines | blocking | `file-length-max-300` |
+| File length | `wc` / loc | a reasonable limit the team declares in its spec and keeps; it depends on the language and the team's tolerance (example: about 300 lines for TypeScript) | blocking | `file-length-max-300` |
 | Function length and parameters | `eslint` | `max-lines-per-function`, `max-params` | blocking | `function-length-max-50`, `max-function-parameters` |
 | Cyclomatic complexity | `eslint` complexity | function complexity at most 10 | blocking | `cyclomatic-complexity-max-10` |
 | Code duplication | `jscpd` | no new duplication in the diff above a stored baseline (ratchet) | advisory | `no-duplicated-code-in-diff` |
