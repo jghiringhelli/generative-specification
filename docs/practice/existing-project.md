@@ -18,7 +18,7 @@ Eight steps to bring an existing codebase under GS discipline — starting with 
 
 *Orient: what does the AI know about your system right now?*
 
-Open a fresh AI session with no context — no CONSTITUTION.md (CLAUDE.md / AGENTS.md for your tool), no briefing. Ask it three questions in sequence. The answers reveal exactly what's implicit vs. what needs to be written down. This is the diagnostic gap.
+Open a fresh AI session with no context — no sentinel (your tool's entry file, for example CLAUDE.md or AGENTS.md), no briefing. Ask it three questions in sequence. The answers reveal exactly what's implicit vs. what needs to be written down. This is the diagnostic gap.
 
 **Open a new AI session** in your project folder with no prior context. Paste the cold read prompt below.
 
@@ -130,7 +130,7 @@ Acceptance criteria:
 
 ## Quality Gates
 - Test coverage minimum: 80%
-- Max file length: 400 lines
+- Max file length: a limit the team declares (for example 400 lines)
 - Max function length: 50 lines
 - Commit format: Conventional Commits (feat/fix/chore/refactor/test/docs)
 - Pre-commit: lint + type check
@@ -167,7 +167,7 @@ GS Audit letters from Step 02, lowest first: [e.g. Auditable D, Defended D]
 [Empty at the existing-code baseline]
 
 ## Next Session Entry Point
-Read docs/spec/SPEC.md → read CONSTITUTION.md → begin at Step 04 cascade documents.
+Read docs/spec/SPEC.md → read the sentinel → begin at Step 04 cascade documents.
 
 ────────────────────────────────────────────────
 After writing both files, list every [TODO] marker and why it needs
@@ -271,15 +271,15 @@ After creating all files, confirm:
 
 ## Step 05: Generate Sentinel
 
-*Specify (final part) · CONSTITUTION.md — CNT on docs + existing code structure + disciplines*
+*Specify (final part) · the sentinel — CNT on docs + existing code structure + disciplines*
 
-Same as [New project](../new-project/), but now the sentinel's code navigation CNT describes the real structure that exists, not an ideal. The structural disciplines manifesto sets the target: where the code doesn't meet it today, the harness and remediation will close the gap.
+Same as [New project](../new-project/), but now the sentinel's code navigation CNT describes the real structure that exists, not an ideal. The sentinel is your tool's entry file; other files are fine as long as it references them. The structural disciplines manifesto sets the target: where the code doesn't meet it today, the harness and remediation will close the gap.
 
 **Prompt: Generate Sentinel**
 
 ```
 Read docs/spec/SPEC.md and docs/manifest.yaml.
-Generate the complete sentinel: CONSTITUTION.md (CLAUDE.md / AGENTS.md for your tool).
+Generate the complete sentinel, as your tool's entry file (for example CLAUDE.md or AGENTS.md).
 
 For the code navigation CNT: describe the structure that EXISTS today.
 Note any deviations from the target discipline in square brackets:
@@ -290,7 +290,7 @@ The sentinel must include all four sections:
 ────────────────────────────────────────────────
 SECTION 1 — Project identity and spec pointer
 ────────────────────────────────────────────────
-# [Project Name] — Architectural Constitution
+# [Project Name] — Sentinel
 
 > Read docs/spec/SPEC.md before every session. This file is the grammar.
 > SPEC.md is the source of truth. When in conflict, SPEC.md wins.
@@ -381,7 +381,7 @@ git checkout -b gs-discipline-[date]
 Install the harness on this branch. Note: existing code does not need to
 be compliant — the hooks apply to commits made FROM NOW.
 
-Read CONSTITUTION.md and docs/spec/SPEC.md.
+Read the sentinel and docs/spec/SPEC.md.
 Now install the enforcement harness.
 
 ─────────────────────────────────────────────
@@ -460,7 +460,7 @@ Before changing anything structural, install oracle tests at the system boundary
 **Prompt: Install Oracle Tests**
 
 ```
-Read docs/spec/SPEC.md and CONSTITUTION.md.
+Read docs/spec/SPEC.md and the sentinel.
 Install oracle tests at the system boundary BEFORE any structural changes.
 
 For each HTTP endpoint (or equivalent system boundary):
@@ -486,7 +486,7 @@ Apply the remediation plan from Step 02 under full cascade discipline. Work in p
 **Prompt: Remediation Plan Execution**
 
 ```
-Read docs/spec/SPEC.md, CONSTITUTION.md, and the GS audit report from Step 02.
+Read docs/spec/SPEC.md, the sentinel, and the GS audit report from Step 02.
 Apply the remediation plan in priority order.
 
 Rules:
@@ -515,7 +515,7 @@ Once remediation is complete, all future work follows the same three patterns as
 **Feature prompt**
 
 ```
-Read docs/spec/SPEC.md, then CONSTITUTION.md, then STATUS.md. Confirm you have read all three.
+Read docs/spec/SPEC.md, then the sentinel, then STATUS.md. Confirm you have read all three.
 
 New feature request: [describe the feature in one sentence].
 
@@ -537,7 +537,7 @@ Commit: feat(scope): [description]
 **Fix prompt**
 
 ```
-Read CONSTITUTION.md.
+Read the sentinel.
 Bug: [describe the bug — what happens, what should happen instead].
 1. Write a failing test that reproduces the bug exactly. Commit: test(scope): reproduce [bug-slug]
 2. Create docs/decisions/[YYYY-MM-DD]-fix-[bug-slug].md — one paragraph: root cause.
@@ -550,7 +550,7 @@ Bug: [describe the bug — what happens, what should happen instead].
 **Refactor prompt**
 
 ```
-Read CONSTITUTION.md and docs/spec/SPEC.md.
+Read the sentinel and docs/spec/SPEC.md.
 Refactoring task: [describe what to clean up — duplication / dead code / structure / rename].
 1. Write ADR at docs/adrs/active/ADR-[NNN]-[slug].md:
    Context (why this refactor) / Decision (what changes) / Consequences (easier/harder)

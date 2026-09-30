@@ -95,7 +95,7 @@ The Yarmoluk–McCreary CKG benchmark (April 2026) compared retrieval from a pre
 
 ## Enforce it
 
-The disciplines are enforced by the verification layer, not by willpower. The sentinel (CONSTITUTION.md) names them in its structural-disciplines section. Hooks reject violations before they land. The CI gate fails the build.
+The disciplines are enforced by the verification layer, not by willpower. The sentinel (your tool's entry file) names them in its structural-disciplines section. Hooks reject violations before they land. The CI gate fails the build.
 
 ## Where to go next
 

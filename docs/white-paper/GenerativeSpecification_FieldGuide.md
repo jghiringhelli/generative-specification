@@ -327,7 +327,7 @@ to prevent, measured by a group that never tested GS.
 ## 4. Start here — this week
 
 1. **Create the sentinel** (`CLAUDE.md` at the repo root) with the five categories. One door.
-2. **Write the architectural constitution** before the first agent session — identity, layers and their
+2. **Write the sentinel** before the first agent session — identity, layers and their
    ownership, the schema, a skeleton decision record.
 3. **Turn on the harness** — hooks + CI that gate on tests, types, and lint. "Done" = gates pass.
    **ForgeCraft** installs these quality gates in CI — the **Defended** property made installable.

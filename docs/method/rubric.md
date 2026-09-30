@@ -34,7 +34,7 @@ Each property below gives a one-line definition, what a checker looks at, and it
 
 - **A checker looks at:** an explicit statement of intent and an explicit statement of scope boundary (both must be present); conventions for naming, placement and routing written down, not inferred; whether a stateless reader could say what the system is *not* for before writing a line.
 - **F grade: Empty Map.** Intent lives in the original author's head. No document says what the system is for or what it must never do. A new session reconstructs intent from the shape of the code, which yields a reconstruction, not a memory: it infers what the code does but not why its constraints exist, and "optimizes" them away, a little more each session.
-- **Cure:** write the specification and the architectural constitution; test them by asking where a stateless reader would have to ask a colleague.
+- **Cure:** write the specification and the sentinel; test them by asking where a stateless reader would have to ask a colleague.
 
 ### Auditable
 
@@ -81,7 +81,7 @@ Each property below gives a one-line definition, what a checker looks at, and it
 - **A checker looks at:** each specification artifact against the assistant's read budget (the Compendium works with roughly 300 lines, and a root index well under that); size limits declared in the spec and enforced in CI; machine-counted boundary violations such as a service reaching straight into the database; and whether the [sentinel](/#the-core-in-five-lines) tree is present with all five categories, including explicit tool sequencing.
 - **Why the limit is mechanical.** An assistant's file reads are capped. A file over the budget is silently truncated, and the agent edits against an incomplete view. A specification artifact over the budget is, to the executor, one that does not exist.
 - **F grade: Spreading Boundary.** Responsibilities creep outward with every AI-generated addition. Files outgrow the read budget, the AI edits against the part it can see, and adds code that contradicts the part it could not. The pattern compounds: the more is added, the less the AI sees, the worse the additions.
-- **Cure:** declare size limits in the constitution and enforce them as gates; give every module one declared responsibility.
+- **Cure:** declare size limits in the spec, reachable from the sentinel, and enforce them as gates; give every module one declared responsibility.
 
 ### Composable
 
@@ -90,7 +90,7 @@ Each property below gives a one-line definition, what a checker looks at, and it
 - **A checker looks at:** dependency direction declared in the spec and enforced by a tool (no inward-pointing violations, no cycles, no route straight to the database); a duplication metric, since reinvented units inflate it; explicit interface and contract artifacts; whether the impact set of an interface change is confined to its boundary.
 - **Why it matters here.** AI search tools match strings, not symbols. In a tangled system a rename or interface change reaches callers, re-exports and dynamic imports that search cannot reliably find. Bounded and Composable together close that gap.
 - **F grade: Tangled Web.** Circular imports; one change that cascades into five other modules; no declared direction of dependency. The AI cannot model the blast radius without reading everything, so it assumes a boundary exists and acts as if it does. Changes that are safe in isolation break dependencies it never saw.
-- **Cure:** declare module interfaces and the allowed dependency direction in the constitution, and enforce no-cycles in CI.
+- **Cure:** declare module interfaces and the allowed dependency direction in the sentinel, and enforce no-cycles in CI.
 
 ---
 

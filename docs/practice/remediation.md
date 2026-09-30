@@ -22,7 +22,7 @@ You cannot safely remediate code that isn't yet protected. This page assumes the
 | Prerequisite | What it is | Where |
 | --- | --- | --- |
 | **Spec from code** | `docs/spec/SPEC.md` generated from what exists | [Existing project, step 03](../existing-project/) |
-| **Sentinel** | `CONSTITUTION.md`: navigation tree over docs, code and disciplines | [Existing project, step 05](../existing-project/) |
+| **Sentinel** | your tool's entry file (for example CLAUDE.md or AGENTS.md): navigation tree over docs, code and disciplines | [Existing project, step 05](../existing-project/) |
 | **Verification layer** | hooks, CI and quality gates | [Existing project, step 06](../existing-project/) |
 
 **Already have all three?** Continue with step 01. The oracle tests you write next are the one piece of the verification layer that remediation itself adds: characterization tests that pin current behavior before you change it.
@@ -36,7 +36,7 @@ Before changing anything structural, install oracle tests at the system boundary
 **Prompt: install oracle tests**
 
 ```
-Read docs/spec/SPEC.md and CONSTITUTION.md.
+Read docs/spec/SPEC.md and the sentinel.
 Install oracle tests at the system boundary BEFORE any structural changes.
 
 For each HTTP endpoint (or equivalent system boundary):
@@ -62,7 +62,7 @@ Apply the remediation plan from your audit under full cascade discipline. Work i
 **Prompt: execute the remediation plan**
 
 ```
-Read docs/spec/SPEC.md, CONSTITUTION.md, and the GS audit report from
+Read docs/spec/SPEC.md, the sentinel, and the GS audit report from
 the audit step.
 Apply the remediation plan in priority order.
 

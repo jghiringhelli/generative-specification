@@ -131,7 +131,7 @@ FILE 2: STATUS.md
 ## In Progress: [to be filled]
 ## Completed: [empty at start]
 ## Next Session Entry Point
-Read docs/spec/SPEC.md → CONSTITUTION.md → STATUS.md → begin at F-001.
+Read docs/spec/SPEC.md → the sentinel → STATUS.md → begin at F-001.
 
 After writing both files, print the first-session entry prompt.
 ```
@@ -187,9 +187,9 @@ Confirm: "Cascade documents ready. docs/ structure ✓ ADR-000 ✓ manifest.yaml
 
 ## Step 04: Generate Sentinel
 
-*Specify (final part) · CONSTITUTION.md — CNT on docs + code + disciplines*
+*Specify (final part) · the sentinel — CNT on docs + code + disciplines*
 
-The sentinel is the complete AI navigation system for your project. It can only be generated now — after the cascade documents exist — because it points to them. It contains three things: a bounded context tree (CNT) on your cascade documents, a CNT on your code folder structure, and the structural disciplines manifesto that the AI reads every session. This file is called **CONSTITUTION.md** in the methodology. Your AI tool reads it as **CLAUDE.md** (Claude Code), **AGENTS.md** (OpenAI / most tools), **.cursor/rules/** (Cursor), or **.github/copilot-instructions.md** (Copilot).
+The sentinel is the complete AI navigation system for your project, and it is where everything starts. It can only be generated now — after the cascade documents exist — because it points to them. It contains three things: a bounded context tree (CNT) on your cascade documents, a CNT on your code folder structure, and the structural disciplines manifesto that the AI reads every session. The sentinel is your tool's entry file: **CLAUDE.md** (Claude Code), **AGENTS.md** (OpenAI / most tools), **.cursor/rules/** (Cursor), or **.github/copilot-instructions.md** (Copilot). After it, the team can keep any other files it wants, as long as the sentinel references them, directly or indirectly. (Older versions of this recipe called the sentinel CONSTITUTION.md; that is not a required name.)
 
 **Prompt: Generate sentinel**
 
@@ -197,12 +197,13 @@ The sentinel is the complete AI navigation system for your project. It can only 
 Read docs/spec/SPEC.md and docs/adrs/ADR-000-initial-architecture.md.
 Generate the sentinel — the complete AI navigation system for this project.
 
-FILE 1: CONSTITUTION.md (the agnostic canonical constitution)
-Also generate these tool-specific copies with identical content:
+Write it as your tool's entry file:
   CLAUDE.md               (Claude Code)
   AGENTS.md               (OpenAI Agents and most other tools)
+If the team uses several tools, write identical copies. Other files are fine
+as long as this file references them, directly or indirectly.
 
-# [Project Name] — Architectural Constitution
+# [Project Name] — Sentinel
 
 > Read docs/spec/SPEC.md before every session. This file is the grammar.
 > SPEC.md is the source of truth. When in conflict, SPEC.md wins.
@@ -241,14 +242,14 @@ Apply these at all times. No exceptions.
 [From ADR-000: layered structure, key constraints]
 
 ## Standards
-[From SPEC.md: language, framework, coverage 80%, max file 400 lines, max fn 50 lines]
+[From SPEC.md: language, framework, coverage 80%, and the size limits the team declares (for example max file 400 lines, max fn 50 lines)]
 
 ## The AI Must Never
 [Mirror from SPEC.md Constraints]
 
 ## Session Protocol
 1. Read docs/spec/SPEC.md
-2. Read this file (CONSTITUTION.md)
+2. Read this file (the sentinel)
 3. Read STATUS.md
 4. Confirm you have read all three before beginning work.
 
@@ -268,7 +269,7 @@ The harness is the enforcement layer. It makes the cascade rules mechanical: con
 **Prompt: Install harness**
 
 ```
-Read docs/manifest.yaml and CONSTITUTION.md.
+Read docs/manifest.yaml and the sentinel.
 Install the harness enforcement infrastructure.
 
 1. .git/hooks/commit-msg — enforce Conventional Commits:
@@ -333,7 +334,7 @@ Open a new AI session. Paste the entry prompt first — the AI reads your three 
 **Prompt: session entry (paste first)**
 
 ```
-Read docs/spec/SPEC.md, then CONSTITUTION.md, then STATUS.md.
+Read docs/spec/SPEC.md, then the sentinel, then STATUS.md.
 Confirm you have read all three before beginning work.
 ```
 
@@ -377,7 +378,7 @@ Every new feature starts with a spec file. The AI reads SPEC.md first to check p
 **Feature prompt**
 
 ```
-Read docs/spec/SPEC.md, then CONSTITUTION.md, then STATUS.md. Confirm you have read all three.
+Read docs/spec/SPEC.md, then the sentinel, then STATUS.md. Confirm you have read all three.
 
 New feature request: [describe the feature in one sentence].
 
@@ -401,7 +402,7 @@ Every fix starts with a failing test that reproduces the bug. The test is commit
 **Fix prompt**
 
 ```
-Read CONSTITUTION.md.
+Read the sentinel.
 Bug: [describe the bug — what happens, what should happen instead].
 1. Write a failing test that reproduces the bug exactly. Commit: test(scope): reproduce [bug-slug]
 2. Create docs/decisions/[YYYY-MM-DD]-fix-[bug-slug].md — one paragraph: root cause.
@@ -416,7 +417,7 @@ Structural changes always start with an ADR. No behavior changes — only struct
 **Refactor prompt**
 
 ```
-Read CONSTITUTION.md and docs/spec/SPEC.md.
+Read the sentinel and docs/spec/SPEC.md.
 Refactoring task: [describe what to clean up — duplication / dead code / structure / rename].
 1. Write ADR at docs/adrs/active/ADR-[NNN]-[slug].md:
    Context (why this refactor) / Decision (what changes) / Consequences (easier/harder)
