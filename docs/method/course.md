@@ -4,12 +4,12 @@ title: The course
 parent: The Method
 nav_order: 5
 permalink: /method/course/
-description: "GS Core: the open path into Generative Specification. Fifteen short theory lessons intercut with five hands-on labs, ending with a small project running under the method."
+description: "GS Core: the open path into Generative Specification. Sixteen short theory lessons intercut with five hands-on labs, ending with a small project running under the method."
 ---
 
 # The course: GS Core
 
-The open path into the method. Fifteen short theory lessons intercut with five hands-on labs. You do not need the course to benefit from the work (a [readiness assessment or remediation](https://pragmaworks.dev/services) puts the method on your codebase for you), but if you want to practice it yourself, this is the way in.
+The open path into the method. Sixteen short theory lessons intercut with five hands-on labs. You do not need the course to benefit from the work (a [readiness assessment or remediation](https://pragmaworks.dev/services) puts the method on your codebase for you), but if you want to practice it yourself, this is the way in.
 
 ## What you finish with
 
@@ -45,7 +45,7 @@ Lessons are marked **C** (theory) and **P** (practice lab).
 | # | Title | What it covers |
 |---|---|---|
 | P0 | Prepare your project (optional) | Pick your lane: follow along on Cancha Libre, or prepare your own project |
-| C1 | The stateless reader | The Mars Climate Orbiter loss as a case of a contract nobody could ratify |
+| C1 | The $327 million contract | The Mars Climate Orbiter loss as a case of a contract nobody could ratify |
 | C2 | The inversion | Build top-down: write the what, let the machine derive the how |
 | C3 | Why only now | Spec-driven development is old; what changed to make it viable |
 | P1 | Turn the order around in ten minutes | Lab: the same request with and without a written spec |
@@ -65,6 +65,7 @@ Lessons are marked **C** (theory) and **P** (practice lab).
 | C14 | The rubric | The seven properties and the stranger test |
 | P5 | Score your spec | Lab: a reader with only your spec scores it |
 | C15 | What you're buying | What changes in value and in cost when the specification is the work |
+| C16 | What is left to you | Specify, generate and verify are one movement; what stays human is turning a conversation into a complete spec, and signing off on the evidence |
 
 ## After the course
 

@@ -55,6 +55,8 @@ A Conduit backend was deployed and checked at three levels: 13 of 13 behavioural
 
 **Bound.** A single-project demonstration. It shows the Executable property working end to end against a running system. It does not say how often such a gate catches defects on other projects.
 
+**Provenance.** The author confirms that the AI wrote the tests in this experiment. The repository history supports that only at the level of the whole commit: the experiment is one commit (`10532b5`, 2026-04-17, 141 files) carrying a `Co-Authored-By: Claude Sonnet 4.6` trailer, and it contains the source, the unit tests, the integration tests and the 13 behavioural probes together. Timestamps show ordering, not authorship, and this history shows no ordering between tests and source, no per-file authorship and no stored session transcript. So the claim rests on the author's confirmation plus the commit-level trailer. It also means the tests came from the same AI that wrote the code, which is the circular-oracle risk that a person must ratify against.
+
 ## 7. Authored structure beats inferred structure on structural queries (KX)
 
 Forty-five queries generated from the project's own artifacts, three retrieval conditions, fresh session per query. Routed navigation scored macro F1 0.808 at 78.6k tokens per query; the in-context dump scored 0.611 at 100.2k; the no-structure code-search condition 0.431 at 233.6k. The no-structure condition was the most expensive, and on entity lookups, the negative control, code search did best of the three.

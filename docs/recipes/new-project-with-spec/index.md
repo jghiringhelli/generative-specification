@@ -30,7 +30,7 @@ This generates:
 - `docs/PRD.md` — product requirements scaffold
 - `docs/use-cases.md` — use case template
 - `docs/roadmap.md` — milestone scaffold
-- `.claude/` — CNT context navigation tree
+- `.claude/` — CNT canonical navigational tree (the sentinel)
 - `CLAUDE.md` — 3-line redirect to `.claude/index.md`
 
 ---

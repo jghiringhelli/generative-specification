@@ -223,6 +223,13 @@ Every defect becomes a permanent test and a named rule. This is **the ratchet**:
 grows, and each fixed bug makes its class of failure unreachable. A defect is not "the method failed" —
 it is a **specification query**: *what constraint, had it been written, would have ruled this out?*
 
+**Definitions: no new debt per change, and criteria coverage.** Two definitions, so the claims mean something checkable. They are design, not results.
+
+- *No new debt per change.* For a change *c* and each tool-measured measure *i* (duplicated lines in the diff, complexity of touched functions, unused exports, layer-rule violations, touched lines without coverage): `delta_i(c) = m_i(after) - m_i(before)`, and the change is admitted only if `delta_i <= 0` for every blocking measure. Advisory measures are reported and do not block until their false-positive rate is measured and near zero. The baseline is stored and the executor cannot edit it. It does **not** mean zero debt overall: it means a change may not make the measured debt worse, and only a run against the stored baseline counts, not a sentence in a status file.
+- *Criteria coverage.* `coverage = criteria with a verification method and a passing check / all ratified criteria`. A criterion with no way to verify it counts as uncovered. A person in the product or business role ratifies the criteria; the executor cannot edit them or the gates.
+
+Not covered yet: keeping the lights on, and disposal. Post-mortem and auditability are partial. Full table with evidence tiers: Compendium 8.19 and genspec.dev/method/lifecycle/.
+
 ### The horizon: what you stop doing
 
 Why bother building all this structure? Because each tier it unlocks removes a whole class of work from your

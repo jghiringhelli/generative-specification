@@ -466,7 +466,7 @@ The rubric's contribution is neither the practices nor even the mapping, but the
 **Bounded.**Every unit of work has explicit scope and seams. Functions do one thing. Modules own one concern. The line limit carries a mechanical justification: AI tool read operations are capped at a fixed line budget — a file that exceeds it is silently truncated, and the agent edits against an incomplete view. A specification artifact that exceeds the tool's read budget is, from the executor's perspective, equivalent to one that does not exist. Anthropic's MEMORY.md index is hard-capped at 200 lines for exactly the same reason: the startup context cannot load what exceeds it. The 300-line specification limit and the 200-line memory index cutoff are the same constraint at two layers. Bounded addresses the *structural layer* — the distinction from Self-describing: a well-annotated system with blurry module boundaries fails Bounded; a structured system with no architectural constitution fails Self-describing. The property operationalizes Parnas's information hiding principle (1972) at the specification level.
 
 *Bounded: The Sentinel Navigational Tree.*
-At scale, Bounded applies to the session context itself. Loading all specification artifacts into a single context window produces the same pathology the property prevents at the file level — and, per Liu et al. (2023), degrades accuracy for information not near the leading position while consuming token budget on context the current task does not need. The structural solution is a **sentinel navigational tree**: a hierarchy of specification files where each node declares its own scope and routes to children. The root is always loaded (must stay within the bounded line limit); the AI descends only the path relevant to the current task. The tree is lossless — joining all leaf nodes yields the full specification — but each session receives only the slice it needs, eliminating both degradation and unnecessary token cost. Every well-formed tree must collectively contain five categories:
+At scale, Bounded applies to the session context itself. Loading all specification artifacts into a single context window produces the same pathology the property prevents at the file level — and, per Liu et al. (2023), degrades accuracy for information not near the leading position while consuming token budget on context the current task does not need. The structural solution is a **sentinel navigational tree** (also called the canonical navigational tree, **CNT**): a hierarchy of specification files where each node declares its own scope and routes to children. The root is always loaded (must stay within the bounded line limit); the AI descends only the path relevant to the current task. The tree is lossless — joining all leaf nodes yields the full specification — but each session receives only the slice it needs, eliminating both degradation and unnecessary token cost. Every well-formed tree must collectively contain five categories:
 
 | Category | What it covers |
 |----------|---------------|
@@ -1748,6 +1748,46 @@ These principles describe practice, not process. The team-level process that wou
 ### 8.18 Guides and sensors (Böckeler)
 
 Böckeler (2026) describes an agent as a model plus a harness, and divides the harness's controls in two: *guides* (feedforward, steering the agent before it acts) and *sensors* (feedback, observing after it acts), each either *computational* (deterministic: linters, type checkers, structural tests) or *inferential* (LLM-based). Her "harness" therefore covers everything around the model. In this canon the word was used more narrowly, for the verification and enforcement layer only, which is her sensors. To avoid two meanings of one word, we now prefer her terms: the **sentinel, the specifications, AGENTS.md and similar instruction files, and skills are guides**; the **tests, linters, structural checks and quality gates that judge the result are sensors**. We keep "harness" only when quoting or citing her, or in names that already exist. Two consequences follow. First, guides differ in force: an instruction file is advisory (the model may not follow it), while a hook is deterministic. Second, both layers should derive from the same ratified specification, and the guides should stay minimal, since an over-built harness degrades the agent it is meant to help.
+
+### 8.19 Definitions: debt per change, criteria coverage, and lifecycle coverage
+
+These are definitions, not results. They state what three recurring claims mean so that each can be checked, and so that this document says no more than a run produced.
+
+**No new debt per change.** Let *M* be a fixed set of objective, tool-measured measures, and *B* the subset that blocks. For a change *c*, and for each measure *i* in *M*, scoped to the code the change touches:
+
+```
+delta_i(c) = m_i(after c) - m_i(before c)
+the change is admitted iff delta_i(c) <= 0 for every i in B
+```
+
+Examples of measures are duplicated lines introduced in the diff, cyclomatic complexity of touched functions, unused exports introduced, layer-rule violations and import cycles, and touched lines without test coverage; the tools are those of the structural-gates practice page (genspec.dev/practice/structural-gates/). Measures that exist only at repository level, such as an import cycle, are compared on the repository. Advisory measures are reported and do not block until their false-positive rate has been measured and is near zero. The baseline is stored and the executor cannot edit it; it only moves downward. The definition holds only if a run produced numbers against the stored baseline and the result is in the audit trail; a sentence in a status file is not a gate. It does **not** mean zero debt overall: a repository with a large debt remains admissible but cannot get worse through new changes, and repaying existing debt needs a separate remediation scope. Design quality, pattern fit, naming, and erosion beyond the written rules are not measured by any tool and stay review-only. Status: design. What was measured is the cost of duplicated code (Section 7.8, SX: about 2.4 times the tokens and 3.5 times the edits, n=2, one benchmark, one frontier model), not the ratchet as a whole.
+
+**Criteria coverage.** For one build in one environment, with *C* the set of ratified acceptance criteria:
+
+```
+coverage = |{ c in C : c has a verification method and its derived check passes }| / |C|
+```
+
+A criterion with no verification method counts as uncovered and stays in the denominator. A verification method is an executable probe, a static gate, or a manual check signed with a date and its evidence. The criteria, and the acceptance examples derived from them, are ratified by a person in the product or business role; the executor has no write access to them or to the gate configuration, or the check would not be independent of what it judges. Full coverage means every ratified criterion has a passing check; it says nothing about criteria that were never written, which is the ratifier's judgment. Status: design only.
+
+**Lifecycle coverage.** Evidence tiers: **E** = experiment or case study in our own material, with its n and design limits; **C** = case study or self-reported production use; **D** = design only.
+
+| Stage | State | Evidence |
+|---|---|---|
+| Ideation | Partly: spec-first step covered; a pre-spec intent artifact is not | Spec-first: E. Intent layer: D |
+| Creation | Covered | E (AX series, self-application); C (greenfield cases, one builder) |
+| Extension | Covered | C; SX shows the cost of extending average code, not the cascade itself |
+| Environments and release | Covered for one stack; intent-to-staging traceability not in canon | C (one project); no controlled study |
+| Evolution in production | Covered | C for production; evolution is self-application, not independent |
+| Keep the lights on | **Not yet covered** (only implicit dependency and CVE deltas) | D |
+| Brownfield remediation | Covered by practice pages and recipes | E for the cost mechanism (n=2); C for takeover cases (one engineer each) |
+| Migration | Covered by a practice page and a recipe | C: one case, no comparison arm |
+| Disposal | **Not yet covered** | D |
+| Post-mortem | Partly: hotfix loop and ratchet; no incident template | D for the template |
+| Constant auditability | Partly: ADRs, commit trail, gate results; a single "chain for change X" query is not verified | C |
+| Debt per change | Definition only | E for the cost of duplication; D for the combined gate |
+
+The published version of these definitions is at genspec.dev/method/lifecycle/.
 
 ---
 
