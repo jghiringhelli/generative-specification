@@ -4,10 +4,10 @@ title: Lifecycle and debt
 parent: The Method
 nav_order: 9
 permalink: /method/lifecycle/
-description: "Three working definitions: no new debt per change, criteria coverage, and what the method covers across the software lifecycle, with what is not yet covered stated plainly."
+description: "Six working definitions: no new debt per change, criteria coverage, what the method covers across the software lifecycle, the triage of a failure, what 'governed as of' means for a score, and how to measure spec completeness, with what is not yet covered stated plainly."
 ---
 
-# Lifecycle and debt: three definitions
+# Lifecycle and debt: six definitions
 
 These are **definitions**, not results. They say what a claim means so that it can be checked, and so that no page here can say more than a run produced. Where the method does not yet cover something, the table says so.
 
@@ -81,5 +81,86 @@ Evidence tiers: **E** = experiment or case study in our own material, with its n
 | Debt per change | Definition only | Section 1 above | E for the cost of duplication; D for the combined gate |
 
 Absence of a hit in our search is not proof that nothing exists elsewhere; it is what we found.
+
+## 4. Triage of a failure (which case is it)
+
+For a failure or a missing element `f`, and the ratified specification `S`, the case depends on one predicate: does `S` require the correct behavior?
+
+```
+case(f) = a  if S requires the correct behavior and the implementation violates it
+          b  if S is silent or ambiguous about it
+          c  if S requires something other than what was intended
+          d  if f is a missing tool or sensor
+          e  if f is a way around an existing gate
+```
+
+| Case | Required artifact | Spec change? |
+|---|---|---|
+| a | A regression test that cites the violated criterion, seen failing against the current code | No |
+| b | The gap stated as a criterion or a numbered fix entry, ratified by a person, then the derived test | Yes |
+| c | A change event: the decision recorded, ratified again, every check rerun | Yes |
+| d | The tool or sensor added and named in the sentinel, ratified by a person | No |
+| e | A new permanent test case for the gate; the count of such cases never decreases | No |
+
+Rules:
+
+- The case is **stated before** the change, not inferred afterward.
+- Only b and c change the specification. A defect that is real but that no criterion covers is case b, not case a.
+- In a, b and c the test is seen failing against the current code **before** the design changes. A test that cannot load is not a failing test.
+- A person ratifies b, c and d. A hook can require a marker of that ratification; it cannot verify it.
+
+What it does not mean: it does not say the agent will classify correctly, and it does not remove the need for review. Skipping local hooks (`--no-verify`) is not stopped by any local check; only a check on the shared branch stops it.
+
+Status: definition, design. The rule was checked deterministically on one small sample project, with crafted commits accepted or rejected for the intended reason, and run once with a real agent that stated the case for two of five findings. It is not a measured effect. The working rule and the enforcement table are on [Refine the spec, triage first](/practice/refinement/).
+
+## 5. Governed as of (a score is a snapshot)
+
+A project is never finished. Code, specification and environment keep changing, so a score describes one moment, not the project. "Done" belongs to a feature (every one of its criteria has a passing check), never to a project or to a score.
+
+A report is a snapshot against the specification in force:
+
+```
+snapshot = ( level, grade per property, score ± confidence,
+             rubric version, commit, spec version, date )
+```
+
+Written as one line: `level · score ± confidence @ rubric vX @ commit <sha> @ spec vN @ date`. It extends the form the [rubric](../rubric/) already uses (`level · score ± confidence @ rubric vX`) with the commit and the spec version, because the same repository scores differently a week later and against a different spec.
+
+- **"Governed as of `<date>`"** means: at that commit and against that spec version, the measured properties meet the target the team declared, and the evidence is in the audit trail. It says nothing about later commits and nothing about what the spec does not state. A repository can be governed against a thin spec.
+- **The target is a team decision.** For example, a maturity level on a stated set of properties. This page does not fix it; it must be recorded next to the specification. *Pending: to be decided.*
+- **A snapshot ages.** Every commit can change the result. A report states how many commits separate it from the current head, so a stale snapshot is not read as the present.
+- **Inferential scoring.** Where a property is scored by an AI reader, the score is a guide. Run it independently more than once and quote the range, not one value.
+
+Status: definition, design. No gate or report yet produces this exact line; the sensors used in the course produce part of the evidence behind it (see [Run structural gates at the right moment](/practice/structural-gates/)).
+
+## 6. Spec completeness (three numbers, kept apart)
+
+A specification is complete when a stateless reader can derive the right program from it alone ([Spec completeness](../spec-completeness/)). That page gives the self-test; this section makes it something that can be reported at a snapshot. For the specifications `S` in force at time `t`:
+
+```
+completeness(S, t) = ( coverage(S, t), open(S, t), gaps(S, t) )
+```
+
+| Number | What it counts | Where it comes from |
+|---|---|---|
+| `coverage` | Ratified criteria with a passing check, over all ratified criteria | Section 2 of this page; the criteria-coverage sensor |
+| `open` | Unresolved `OPEN` markers in the specification files in force | The open-questions sensor; a spec with any open marker is not implemented |
+| `gaps` | Places where a stateless reader guessed, listed one by one | A stranger test on `S` alone: a fresh session with only the spec, requirement by requirement |
+
+Rules:
+
+- **The three stay separate.** No single score: they answer different questions, and a combined number would hide which one is failing.
+- Each gap is a missing constraint or criterion. It goes back into the spec (case b of the [triage](#4-triage-of-a-failure-which-case-is-it)), and a person ratifies it.
+- `gaps` comes from an inferential reader. Report the count, the list and the identity of the run, and repeat the run to see the spread.
+- "Complete as of the snapshot" means coverage 100%, no open markers and no gaps in the runs made. It is a snapshot, not a proof.
+
+What it does not measure:
+
+- **What nobody thought of.** It counts what is written and what a reader guesses. A reader that shares the model's blind spots will not guess where the model is confident and wrong. Asking the model what dimensions of correctness the spec does not yet address (meta-completeness querying, Compendium §8.10) helps, and is also inferential.
+- **Enough for the stakes.** How complete is complete enough depends on what an error costs and whether it can be undone; a directional relation, not a threshold (Compendium §9.4).
+
+Related models, both directional and not results: the expected-cost relation `I ∝ (1 − S) / S`, and the RND-1 comparison of a descriptive and a prescriptive spec (n=3, one benchmark) on the [evidence page](../evidence/).
+
+Status: definition, design. The coverage and open-question counts come from sensors checked on two small sample projects. The gap count has been produced in two runs on one sample specification (13 and 14 places, one of them with git history visible to the reader); that shows the count can be produced, not that it is stable.
 
 See also: [the rubric](../rubric/), [quality gates](../gates/), [the evidence](../evidence/).

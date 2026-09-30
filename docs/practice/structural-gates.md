@@ -42,6 +42,8 @@ The library holds the matching gates: `cyclomatic-complexity-max-10`, `no-circul
 
 A red gate is an incident, not a state: it has an owner and a time-to-green.
 
+Before you remediate, name the case. If the spec already required the right behavior, a regression test seen failing first is enough and the spec does not change. If the spec was silent, refine it first and derive the test from the new rule. A newly found way around a gate becomes a permanent test case for that gate. [Refine the spec, triage first](/practice/refinement/) sets out the five cases and what a hook can and cannot enforce.
+
 ## Step 03: smallest change that works
 
 *Order and the least functional code that does the job are part of the method.*

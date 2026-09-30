@@ -105,13 +105,13 @@ GS is also distinct from the spec-driven *tooling* now entering the mainstream �
 
 ## 3. The Seven Properties
 
-The discipline is operationalized as seven properties, each named for a class of failure observed in production, each scored 0–2 for a 14-point total. The rubric is the teachable spine of the method: a project is graded the way an AI reads it. Each property below is anchored to a **public, verifiable exemplar** — drawn from the open experiments or the public `pragmaworks` reference project, so a reader can inspect the evidence directly.
+The discipline is operationalized as seven properties, each named for a class of failure observed in production, each scored 0–2 for a 14-point total (the instrument the experiments in this paper were measured with; since retired as a scorecard in favor of letter grades and a task list). The rubric is the teachable spine of the method: a project is graded the way an AI reads it. Each property below is anchored to a **public, verifiable exemplar** — drawn from the open experiments or the public `pragmaworks` reference project, so a reader can inspect the evidence directly.
 
 | # | Property | What it removes | Public exemplar |
 |---|----------|-----------------|-----------------|
 | 1 | **Self-describing** | Hidden purpose; the reader must infer what the system is | `pragmaworks` `CLAUDE.md` — a navigation root where every document location announces its domain (screaming architecture) |
 | 2 | **Bounded** | Unbounded surface and context; the reader must scan everything | KX (`experiments/kx`): a routed navigation tree loads only the slice a query needs — measured cheaper *and* more accurate than dumping the whole codebase (macro-F1 0.808 vs 0.431) |
-| 3 | **Verifiable** | Unchecked correctness; "it compiles" mistaken for "it works" | AX (`experiments/ax`): a Stryker mutation gate drove the mutation score from 58.6% to 93.1% MSI — proving *detection*, not merely line execution |
+| 3 | **Verifiable** | Unchecked correctness; "it compiles" mistaken for "it works" | AX (`experiments/ax`): a post-experiment Stryker check on the services layer took the mutation score from 58.6% to 93.1% MSI over two rounds of test fixes, showing that *detection* is a different measure from line execution (the 93.1% coverage in the model's own documentation was never measured; measured line coverage was 27.6%) |
 | 4 | **Defended** | Advisory rules the model treats as optional | AX (`experiments/ax`): Defended moved 0/2 → 2/2 only once gates were emitted as fenced file templates (the "First Response Requirements") — structural enforcement, measured |
 | 5 | **Auditable** | Lost rationale; intentional decisions look like debt | `pragmaworks` ADR library (`docs/adrs/0001…0006`, each with context/decision/consequences) plus conventional-commit history |
 | 6 | **Composable** | Tangled coupling that cannot recombine | AX (`experiments/ax`): interface-based dependency injection — the GS contribution over expert prompting — lets a stateless reader work a unit in isolation |

@@ -50,6 +50,8 @@ Per requirement, ask:
 - Is any acceptance criterion missing a MUST, SHOULD or MAY? Is any decision still open? Is anything here the *how* that should be derived instead?
 - For every past defect: state the constraint that, had it been present, would have ruled it out. Add that constraint to the spec.
 
+To report completeness at a point in time, as three separate numbers (criteria coverage, open questions, places a stranger guessed), see [Lifecycle and debt, section 6](../lifecycle/#6-spec-completeness-three-numbers-kept-apart). It is a snapshot, not a proof, and it does not measure what nobody has thought of.
+
 ---
 
 ## Template: a complete feature spec

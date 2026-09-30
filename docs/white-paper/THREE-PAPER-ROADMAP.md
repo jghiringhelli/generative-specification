@@ -22,7 +22,7 @@ COMPENDIUM (canonical master, superset, hypotheses marked)
    ├── PAPER 2  (EXTENSION #1)             ── cheap rigor + the revival model   (cites P1)
    └── PAPER 3  (EXTENSION #2)             ── the externalized guarantee        (cites P1)
 
-INDUSTRIAL BODY (not journal papers): field guide + product (Companion/Ledger) +
+INDUSTRIAL BODY (not journal papers): field guide + product (Companion/Chronicle Leader) +
    an experience/industry-track report (e.g. ICSE SEIP) + Substack
 ```
 

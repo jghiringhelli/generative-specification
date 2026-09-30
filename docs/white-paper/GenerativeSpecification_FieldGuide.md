@@ -210,7 +210,7 @@ contract, SLO) plus AI-as-QA run against the *live* application, not assumed fro
 verify step is **generative execution**: the agent operates the real machine — runs the tests, hits the
 endpoints, reads the logs — and checks output against the specification.
 
-**Terminology: guides and sensors.** Böckeler (2026) divides an agent's harness into *guides* (feedforward) and *sensors* (feedback), each computational or inferential. Here the sentinel, specifications, instruction files and skills are guides; tests, linters, structural checks and gates are sensors, and "harness" used for the verification layer means the sensors. An instruction file is advisory, a hook is deterministic; both layers should derive from the same ratified specification, with the guides kept minimal. Böckeler, B. (2026). Harness engineering. martinfowler.com. https://martinfowler.com/articles/harness-engineering.html
+**Terminology: guides and sensors.** Böckeler (2026) divides an agent's harness into *guides* (feedforward) and *sensors* (feedback), each computational or inferential. Here the sentinel, specifications, instruction files and skills are guides; tests, linters, structural checks and gates are sensors, and "harness" used for the verification layer means the sensors. An instruction file is advisory, a hook is deterministic; both layers should derive from the same ratified specification, with the guides kept minimal. Böckeler, B. (2026). Harness engineering for coding agent users. martinfowler.com. https://martinfowler.com/articles/harness-engineering.html
 
 **Why the verify step insists on mutation testing.** An AI that writes its own tests *knowing the
 implementation* will write them to pass, not to catch. Line coverage rewards exactly that: a suite that
@@ -223,12 +223,17 @@ Every defect becomes a permanent test and a named rule. This is **the ratchet**:
 grows, and each fixed bug makes its class of failure unreachable. A defect is not "the method failed" —
 it is a **specification query**: *what constraint, had it been written, would have ruled this out?*
 
-**Definitions: no new debt per change, and criteria coverage.** Two definitions, so the claims mean something checkable. They are design, not results.
+**Six definitions, so the claims mean something checkable.** They are design, not results. The first two are below; the triage, the snapshot and completeness follow.
 
 - *No new debt per change.* For a change *c* and each tool-measured measure *i* (duplicated lines in the diff, complexity of touched functions, unused exports, layer-rule violations, touched lines without coverage): `delta_i(c) = m_i(after) - m_i(before)`, and the change is admitted only if `delta_i <= 0` for every blocking measure. Advisory measures are reported and do not block until their false-positive rate is measured and near zero. The baseline is stored and the executor cannot edit it. It does **not** mean zero debt overall: it means a change may not make the measured debt worse, and only a run against the stored baseline counts, not a sentence in a status file.
 - *Criteria coverage.* `coverage = criteria with a verification method and a passing check / all ratified criteria`. A criterion with no way to verify it counts as uncovered. A person in the product or business role ratifies the criteria; the executor cannot edit them or the gates.
 
-Not covered yet: keeping the lights on, and disposal. Post-mortem and auditability are partial. Full table with evidence tiers: Compendium 8.19 and genspec.dev/method/lifecycle/.
+- *Lifecycle coverage.* Not covered yet: keeping the lights on, and disposal. Post-mortem and auditability are partial. The table with evidence tiers is in the Compendium.
+- *Triage of a failure.* When something fails, say which case it is before acting: does the ratified spec already require the right behavior? If yes, a regression test seen failing first is enough and the spec does not change. If the spec was silent, state the gap as a criterion, have a person ratify it, and derive the test from it. If the spec itself was wrong, record the change and ratify it again. A missing tool is added and named in the sentinel. A newly found way around a gate becomes a permanent test case whose count never goes down. Local hooks can be skipped, and only a check on the shared branch enforces. It was checked on one sample project and one real agent run; it is not a measured effect.
+- *Governed as of.* A project is never finished, so a score is a snapshot: say which commit and which spec version it was measured against. "Governed as of a date" means the measured properties met the target the team declared at that snapshot, and nothing about later commits. The target is a team decision.
+- *Spec completeness.* Keep three numbers apart: criteria with a passing check, open questions, and places a stranger would guess. Each place goes back into the spec, and a person ratifies it. The numbers count what is written, not what nobody has thought of yet.
+
+Full text, evidence tiers and the lifecycle table: Compendium 8.19 and genspec.dev/method/lifecycle/.
 
 ### The horizon: what you stop doing
 
@@ -288,7 +293,7 @@ path unreachable. It is the prescriptive move applied to a whole session.
 What the discipline buys. Each result is committed, reproducible evidence — *how* each was produced is in
 the paper and the linked experiments.
 
-- **Structure** — naive prompting scored **3/14** on the rubric; GS-structured output reached **14/14**,
+- **Structure** — naive prompting scored **3/14** on the legacy 14-point rubric (retired as a scorecard; it is what the experiments used); GS-structured output reached **14/14**,
   and held even when the harness was *tool-generated*. *(measured)*
 - **Retrieval cost** — authored structure costs **up to 3× fewer tokens per query at higher accuracy**
   than dumping context or searching code at query time. *(measured)*

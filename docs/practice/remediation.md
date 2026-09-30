@@ -92,3 +92,5 @@ after-score.
 *Remediation feeds back into orientation.*
 
 Once remediated, the module is spec-governed, verified and disciplined. New work on it follows the ongoing loop from [New project](../new-project/). Then repeat from [Orient](../orient/) for the next seam or the next phase: re-audit, orient, specify, build, remediate.
+
+See also: [Refine the spec, triage first](/practice/refinement/), for deciding whether a failure needs a spec change or only a regression test before you remediate it.

@@ -42,7 +42,7 @@ Read the codebase to answer — do not ask me.
 
 *Orient: SAVED report card, structural disciplines, architecture issues*
 
-Run the GS Audit Report on your codebase. Grades all seven GS properties (a letter grade each, A–F), structural disciplines (SOLID, TDD, hexagonal, doc-first cascade), test pyramid, and documentation health. Produces an overall grade with Strengths, Weaknesses, and a prioritized remediation plan. No tools required — one prompt.
+Run the GS Audit Report on your codebase. Grades all seven GS properties (a letter grade each, A–F), structural disciplines (SOLID, TDD, hexagonal, doc-first cascade), test pyramid, and documentation health. Produces Strengths, Weaknesses, and a prioritized remediation plan. No tools required — one prompt.
 
 - [Run the GS Audit](https://pragmaworks.dev/audit): grade your codebase on all seven properties. 30 minutes, one prompt (also available in Spanish).
 
@@ -154,7 +154,7 @@ STATUS.md
 Phase [N]: [Phase Name]
 
 ## Existing-Code Baseline
-GS Audit overall grade from Step 02: [B-]
+GS Audit letters from Step 02, lowest first: [e.g. Auditable D, Defended D]
 [TODO] markers requiring team clarification: [count]
 
 ## Last Session
@@ -473,7 +473,7 @@ For each HTTP endpoint (or equivalent system boundary):
 
 Commit: test(oracle): install boundary tests before remediation
 
-After all oracle tests pass: run the GS audit again — the overall grade is
+After all oracle tests pass: run the GS audit again — the letters are
 your baseline.
 ```
 

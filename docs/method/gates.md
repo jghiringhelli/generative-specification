@@ -48,7 +48,7 @@ The library column names real gates in [`quality-gates/`](/quality-gates/), wher
 | Line and branch coverage | `c8` / istanbul | at or above a target | blocking | `coverage-threshold-80` |
 | Mutation score | `stryker` | at or above a target (the library uses 65% overall, 70% on changed files) | advisory on the site's reference set; blocking in the library | `mutation-score-threshold` |
 
-Coverage and mutation score are complementary, not interchangeable. Coverage measures execution; mutation score measures detection. In the AX study the first GS treatment reported 93.1% line coverage but a 58.62% mutation score; after three rounds of assertion improvements the mutation score converged to 93.10%. Both gates are needed.
+Coverage and mutation score are complementary, not interchangeable. Coverage measures execution; mutation score measures detection. In the AX study the first GS treatment's own documentation claimed 93.1% line coverage; measured line coverage was 27.63%, so the claim was the model's estimate and not a measurement. A post-experiment Stryker check on its services layer scored 58.62% on the original tests, 68.97% after a first round of test fixes and 93.10% after a second (`experiments/ax/RESULTS.md`). Both gates are needed.
 
 ### Executable
 

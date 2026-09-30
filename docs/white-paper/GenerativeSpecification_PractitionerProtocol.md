@@ -607,6 +607,8 @@ A change is allowed if and only if its layer above explains it. This is the oper
 
 The principle is symmetric. A `docs:` PR that touches `src/` emits scope drift. A `test:` PR that touches application code emits the same. The gate does not assume the practitioner's intent — it reads the commit type and enforces what that type promised.
 
+**Triage before the change.** Not every failure needs the specification touched. Before a fix, the practitioner (or the agent) states which case it is, by one question: does the ratified specification already require the correct behavior? If yes (case a), a regression test that cites the violated criterion and is seen failing against the current code is enough, and the specification does not change. If the specification was silent or ambiguous (case b), the gap is written as a criterion or a numbered fix entry, a person ratifies it, and the test is derived from it. If the specification required something other than what was intended (case c), the change is recorded and ratified again. A missing tool or sensor is added and named in the sentinel (case d), and a newly found way around a gate becomes a permanent test case whose count never decreases (case e). The hook can require that the case is declared and that a ratification marker is present; it cannot verify that a person ratified, and no local hook stops `--no-verify`, which is why the PR-time check above is the enforcement. Status: design, checked on one sample project and one real agent run; see the Compendium (Section 8.19) and genspec.dev/practice/refinement/.
+
 ---
 
 ### 8.4 Hook Chain Reference

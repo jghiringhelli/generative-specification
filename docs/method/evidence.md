@@ -15,6 +15,8 @@ Each finding below is stated with the bound that goes with it. Read the bounds a
 
 The index is the [experiment ledger](/docs/white-paper/EXPERIMENT-LEDGER.md); the full account, including the threats-to-validity discussion, is in [Compendium §7.8](/docs/white-paper/GenerativeSpecification_Compendium.html).
 
+**A note on the scores.** Scores on this page such as "13/14" or "3 to 14 out of 14" come from the legacy 14-point rubric (0, 1 or 2 per property). It is retired as a scorecard, and the [rubric page](../rubric/) describes the current letter grades. It stays here because it is the instrument these experiments were measured with.
+
 **One structural concern first.** The method defines the seven properties, guides the assistant to satisfy them, and scores the result. That is a define/build/measure loop, and no amount of outside checking removes the circularity entirely. The mitigations are partial: tool-computed metrics the rubric never specified (compiler errors, lint, `npm audit`, a community-authored 104-test suite), a blind scoring of three implementations the method never guided (BX), and observational field corroboration. A controlled human-participant study that closes the loop directly is future work.
 
 ---
