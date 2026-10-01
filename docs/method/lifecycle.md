@@ -168,4 +168,4 @@ Related models, both directional and not results: the expected-cost relation `I 
 
 Status: definition, design. The coverage and open-question counts come from sensors checked on two small sample projects. The gap count has been produced in two runs on one sample specification (13 and 14 places, one of them with git history visible to the reader); that shows the count can be produced, not that it is stable.
 
-See also: [the rubric](../rubric/), [quality gates](../gates/), [the evidence](../evidence/).
+See also: [the rubric](../rubric/), [quality gates](../gates/), [the evidence](../evidence/), [coherence between spec and code](../coherence/).

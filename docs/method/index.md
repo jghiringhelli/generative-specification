@@ -21,6 +21,7 @@ The concepts, stated once and defined by what a machine can check. The papers ([
 | [The Andon Method](andon/) | A proposed method built on the same thesis: the machine builds, a gate stops the line, the human judges. Team process not yet defined |
 | [Twelve working principles](principles/) | How a practitioner works under the method, in twelve lines; two carry evidence caveats |
 | [Lifecycle and debt](lifecycle/) | Six definitions: no new debt per change, criteria coverage, what the method covers across the lifecycle (with what is not yet covered), the triage of a failure, what "governed as of" means for a score, and the three numbers of spec completeness |
+| [Coherence between spec and code](coherence/) | Five checks, none using a model, that detect when the spec and the code stopped saying the same thing: identifiers in both directions, a derivation fingerprint, a co-change gate, an inverse inventory and an intent diff. Design, verified on one sample project |
 
 Looking for the practice (how to do it on a real project)? See the [workflow recipes](/docs/recipes/).
 
