@@ -64,4 +64,8 @@ Executable) can be read along a second axis, separating those that face the arti
 and the stakeholders who must inspect it over time from those that are internal invariants of its
 construction. Further lifecycle-facing properties exist beyond these seven. Both the finer partition
 and the additional properties are the subject of a companion treatment and are out of scope here,
-where the seven suffice to support the derivability argument.
+where the seven suffice to support the derivability argument. This partition (five lifecycle-facing,
+two internal) classifies the properties by audience. It is distinct from the classification of the
+disciplines that satisfy them by function, used in Subsection IV.E: verify (Verifiable, Defended,
+Executable) and retrieve (legibility: Self-describing, Composable; bounding: Bounded; decision memory:
+Auditable). The two groupings answer different questions and cut across each other on purpose.
