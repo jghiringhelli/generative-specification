@@ -2,14 +2,27 @@
 
 2026-10-02. Repository (worktree of this branch): `C:\workspace\PragmaWorks\gs\gs-experiment-protocol`. Canonical location after merge: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\PREREG-HOWTO.md`. Protocol section 4 (what each mechanism proves): `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\EXPERIMENT-PROTOCOL.md`. Registration files: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-0.md`, `SDX-1.md`, `SDX-1-ARMS.md`.
 
+## 0. The sequence before freeze day (JC decision 2026-10-02: budget is no object, refine longer, vendor-diverse critics)
+
+Role definitions, what each independent person or model does and sees: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\ROLES.md`. Runbooks: `COPILOT-CRITIC-RUNBOOK.md`, `COPILOT-PRACTITIONER-RUNBOOK.md`, `PRACTITIONER-HANDLING.md`, `HUMAN-PRACTITIONER-BRIEF.md`, all in `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\`.
+
+1. **Vendor-diverse critic rounds** on SDX-1 and SDX-1-ARMS (at least 3 vendors per round, at least 2 not Anthropic, fresh stateless sessions, the fixed prompt in the critic runbook; outputs in `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\critiques\`). After each round: adjudicate every finding (ACCEPTED, ACCEPTED-AS-DECLARED-LIMIT, REJECTED with written refutation, DEFERRED), revise, commit, new round.
+2. **Practitioner artifacts**: human A6 then A5, then the L appendix and flat file; model-authored A5-m1 and A5-m2 per non-Anthropic vendor; **leak checks** (M1: independent human plus a different-vendor judge) and **strength checks** (M2).
+3. **SDX-0 pilot** (harness validity, cost and variance). Needs JC's budget approval.
+4. **SESOI and n fixed** from SDX-0, with the written justification (SDX-1 section 13 items 4 and 5).
+5. **Final critic round** on the complete package (values filled, artifacts, manifest, probe rule output). No accepted BLOCKER may remain.
+6. **Freeze**: commit, tag `prereg/SDX-1-v1`, push, build the zip, **OSF registration of record, Zenodo mirror** (JC has both accounts), log everything; only then the first main-run session.
+
+**Refinement stop rule.** The critic phase before SDX-0 ends when two consecutive vendor-diverse rounds each leave no ACCEPTED BLOCKER. A structural change (an arm, hypothesis, readout, oracle or probe rule, decision-table row) resets the count; wording changes do not. Maximum four rounds before SDX-0; if round four still has an accepted BLOCKER, stop and JC chooses: freeze with the blocker written verbatim in the threats section, reduce to Core, or shelve (a fifth round needs a written reason). The final round (step 5) is separate and mandatory: one round, at most one targeted re-review of the changed parts if it finds an accepted BLOCKER, and any material change after it voids it. Full text in `ROLES.md` section 6.
+
 ## 1. Who does what
 
 | The assistant can do alone | Only JC can do |
 |---|---|
-| Write and revise the registration files; run stateless critics; commit with atomic messages | Create and own the OSF and/or Zenodo account (the assistant must not create accounts) |
+| Write and revise the registration files; run stateless Claude critics; adjudicate every critic finding in a written log (JC decides contested items); run the deterministic checks on practitioner texts; commit with atomic messages | Create and own the OSF and/or Zenodo account (the assistant must not create accounts) |
 | Create the annotated tag `prereg/<ID>-v<N>` and push branch and tag to the public repo (when JC says push) | Press the final Register / Publish button at OSF or Zenodo, and choose public vs embargo |
 | Build the frozen archive and its SHA-256 with `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\scripts\build-frozen-package.js`; run the hash dry check before each run batch | **Name the external practitioner** (author of A5) and the **independent reviewer**; both must be neither JC nor an agent |
-| Fill the logbook after JC pastes the DOI/URL, date and confirmation | Provide API access for a different-vendor judge (M1) or name a person to run it |
+| Fill the logbook after JC pastes the DOI/URL, date and confirmation | Drive the Copilot sessions on the second PC (one fresh chat per model: critics, then practitioner variants m1 and m2) and paste the exact model id strings; provide API access for a different-vendor judge (M1) or name a person to run it |
 | Draft the OSF form answers and the Zenodo description text for JC to paste | **Approve the budget** and choose scope, Core or Full (SDX-1 section 11, 13) |
 | Run the pilot SDX-0 once JC approves its budget | **The freeze decision** for SDX-0 and for SDX-1; the registration is irreversible |
 
@@ -23,8 +36,8 @@ Order for SDX-1 on freeze day: finish files, commit, tag, push, build the zip, O
 
 ## 3. Freeze-day steps (both registries)
 
-1. In the worktree, confirm the open items in SDX-1 section 13 are closed or consciously waived (practitioner and reviewer named, A5 text and its attestation present, M1 and M2 results committed, budget approved, scope chosen, SESOI and n filled, model ids filled).
-2. Write the file list `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\prereg-frozen\SDX-1-v1.list.txt`, one repo-relative path per line (directories allowed): the five prereg files (`docs/experiments/prereg/SDX-1.md`, `SDX-1-ARMS.md`, `SDX-0.md`, `SDX-REVIEW.md`, and the deviations-log file, empty), the protocol, change texts, scaffold and its hash, oracle and manifest and tolerance rules, content manifest with G and L tags and parity and leak results, frozen A5 text plus attestation, A1 appendix, flat file, substrate, detector and analysis scripts, model id and CLI version file.
+1. In the worktree, confirm the open items in SDX-1 section 13 are closed or consciously waived (practitioner and reviewer named, A5 text and its attestation present, M1 and M2 results committed, budget approved, scope chosen, SESOI and n filled, model ids filled), and that the sequence of section 0 is complete: the stop rule was met (counter and round log in `SDX-REVIEW.md`), the final critic round shows no accepted BLOCKER, SDX-0 is closed.
+2. Write the file list `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\prereg-frozen\SDX-1-v1.list.txt`, one repo-relative path per line (directories allowed): the five prereg files (`docs/experiments/prereg/SDX-1.md`, `SDX-1-ARMS.md`, `SDX-0.md`, `SDX-REVIEW.md`, and the deviations-log file, empty), `docs/experiments/ROLES.md`, the whole `docs/experiments/critiques/` folder (rejected findings included), `experiments/sdx1/practitioner/` (human and model texts, attestations, deletion-check and judge outputs, `meta.json` files), the protocol, change texts, scaffold and its hash, oracle and manifest and tolerance rules, content manifest with G and L tags and parity and leak results, frozen A5 text plus attestation, A1 appendix, flat file, substrate, detector and analysis scripts, model id and CLI version file.
 3. Commit everything. Tag: `git tag -a prereg/SDX-1-v1 -m "SDX-1 registration v1"`. Push: `git push origin <branch>` and `git push origin prereg/SDX-1-v1` (assistant, on JC's word).
 4. Build: `node C:\workspace\PragmaWorks\gs\gs-experiment-protocol\scripts\build-frozen-package.js build --id SDX-1 --version 1 --root C:\workspace\PragmaWorks\gs\gs-experiment-protocol --list C:\workspace\PragmaWorks\gs\gs-experiment-protocol\prereg-frozen\SDX-1-v1.list.txt --out C:\workspace\PragmaWorks\gs\gs-experiment-protocol\prereg-frozen`. It refuses a dirty tree. It writes `SDX-1-v1-registration.zip`, `.zip.sha256` and `.MANIFEST.json`. The zip is deterministic: the same inputs give the same hash (tested). Build once, on the committed tree, on one machine; line-ending conversion by git on another machine would change bytes.
 5. Registration of record at OSF (below), then Zenodo mirror (below).

@@ -13,6 +13,10 @@ Rules: entries are appended, never rewritten; corrections are dated notes; every
 
 Outcome labels: SUPPORTED, REFUTED, NULL, INCONCLUSIVE, INVALID-DESIGN, DEMONSTRATION (no hypothesis test). Tiers: A registered externally before data; B in-repo tag pushed before data; C design text before data in history or no registration (author-attested); D demonstration or observation.
 
+## Pre-freeze sequence and refinement stop rule for SDX-1 (added 2026-10-02)
+
+Standing sequence, in order: vendor-diverse critic rounds, revise, practitioner artifacts with leak and strength checks, SDX-0 pilot, SESOI and n fixed, final critic round, freeze with the OSF registration of record and the Zenodo mirror (JC holds both accounts). Stop rule: the critic phase before SDX-0 ends when two consecutive vendor-diverse rounds (at least 3 vendors, at least 2 not Anthropic) each leave no accepted BLOCKER; a structural change resets the count; maximum four rounds, then JC chooses freeze-with-declared-limits, Core scope or shelve; the final pre-freeze round is separate and mandatory. Definitions, who may fill each role and what each sees: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\ROLES.md`. Mechanics: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\PREREG-HOWTO.md` section 0. Each round and each role is logged in the SDX-1 entry (section "Roles and independence record"), in the format given in `ROLES.md` section 6.
+
 ## Index
 
 | Id | Hypothesis or question | Status | Registration (tag / commit) | Result | Entry |
@@ -34,7 +38,7 @@ Outcome labels: SUPPORTED, REFUTED, NULL, INCONCLUSIVE, INVALID-DESIGN, DEMONSTR
 | MX | Model tiering vs all-strong vs all-mid | CLOSED, backfilled | none found | Quality: INVALID-DESIGN (ceiling); tiering: INCONCLUSIVE. Tier C/D | [MX](MX.md) |
 | RND-1 | Which GS arm suppresses pressure failure modes | CLOSED, backfilled | none found | Prescriptive spec: SUPPORTED (near-definitional); bounded context: INVALID-DESIGN (ceiling); test-faking: NULL by floor. Tier C/D | [RND-1](RND-1.md) |
 | SDX-0 | Harness-validity pilot for SDX-1 (rev 2: adds the expert-minus-GS arm, a state-in-text positive control and validity checks V10 to V13) | DESIGN-REVIEWED, draft rev 2, not frozen | none yet | none | [SDX-0](SDX-0.md) |
-| SDX-1 | Does a persistent structured enforced substrate (A4) add over an expert prompt with none of the load-bearing GS elements (A5), and is A5 different from naive (rev 2; earlier contrasts A4 vs A1, A4 vs A3 kept as secondary) | DESIGN-REVIEWED, draft rev 2, not frozen | none yet | none | [SDX-1](SDX-1.md) |
+| SDX-1 | Does a persistent structured enforced substrate (A4) add over an expert prompt with none of the load-bearing GS elements (A5), and is A5 different from naive (rev 2; earlier contrasts A4 vs A1, A4 vs A3 kept as secondary) | DESIGN-REVIEWED by Claude critics only, draft rev 2, not frozen; vendor-diverse critic round 1 pending | none yet | none | [SDX-1](SDX-1.md) |
 
 ## Reading the index honestly
 

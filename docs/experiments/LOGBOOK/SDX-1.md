@@ -34,3 +34,18 @@ Hypothesis changed. Old (revision 1): A4 beats A1, A1 being an expert prompt bui
 Files: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-1.md`, `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-1-ARMS.md` (load-bearing list L1 to L5 with evidence tiers or "hypothesized only", arms, authorship procedure, checks M1 leak and M2 strength), `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-0.md` (V1 to V13, 24 chains), review dispositions in `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-REVIEW.md` section 2.
 Intuition (falsifiable form): a mid-tier agent under generic expert prompting alone loses state-dependent behaviour by at least the SESOI more than under the substrate, and does better than naive on state-independent hidden correctness. Pre-stated gap ranges: SDX-1 section 2a. Note recorded now: prior behavioural evidence gives no precedent for H2 above about 3 points, so JC's expectation that the expert prompt differs from naive may show only on targeted structure metrics, which do not count; and the modal outcome for H1 is POSITIVE-SMALL, SIZE-UNRESOLVED or INCONCLUSIVE.
 Open: external practitioner and independent reviewer not named (A5 and A6 do not exist); different-vendor critic and judge owed (only Claude critics have reviewed revision 2); no freeze.
+
+### 2026-10-02, pre-freeze process added (assistant, on JC's decision)
+JC decided that budget is no object, that the experiment is refined longer before freezing, and that critics must include models from other vendors (every critic so far was Claude). Added, with no change to the hypotheses or the design text: the role definitions (`C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\ROLES.md`: expert practitioner, critics, independent reviewer, blind judges), a runbook for independent critiques by Copilot models on the second PC, a runbook and handling file for model-authored expert prompts (A5-m1 told that the assistant has no memory between sessions, A5-m2 not told; the leak question is unresolved so both are produced), a one-page brief for the human practitioner, the sequence critic rounds, revise, practitioner artifacts and checks, SDX-0, SESOI and n, final critic round, freeze (OSF plus Zenodo), and a refinement stop rule (two consecutive vendor-diverse rounds with no accepted BLOCKER, maximum four rounds, then JC chooses). No run has happened and no model has been contacted.
+
+## Roles and independence record (appended, never rewritten)
+
+Format in `ROLES.md` section 6. Rows are added as roles are filled.
+
+| Role | Person or exact model id | Vendor | Exposure to GS | Relationship to JC | Paid | Session or date | Artifact path and SHA-256 | Hours | AI tools disclosed | Independence statement |
+|---|---|---|---|---|---|---|---|---|---|---|
+| (none yet) | | | | | | | | | | |
+
+| Critic round | Commit | Vendors and model ids | Findings by severity | Accepted / declared limit / rejected / deferred | Accepted BLOCKERs | Consecutive clean rounds |
+|---|---|---|---|---|---|---|
+| (none yet; round 1 pending) | | | | | | 0 |
