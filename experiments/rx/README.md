@@ -1,5 +1,7 @@
 ﻿---
 layout: default
+nav_exclude: false
+search_exclude: false
 title: "RX - Replication"
 parent: Experiments
 nav_order: 4

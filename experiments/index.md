@@ -1,5 +1,7 @@
 ---
 layout: default
+nav_exclude: false
+search_exclude: false
 title: Experiments
 nav_order: 2
 has_children: true

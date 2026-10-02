@@ -1,5 +1,7 @@
 ---
 layout: default
+nav_exclude: false
+search_exclude: false
 title: "RND-1 - Failure Modes Under Pressure"
 parent: Experiments
 nav_order: 8

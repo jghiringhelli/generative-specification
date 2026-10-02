@@ -3,6 +3,7 @@ layout: default
 title: "KX + AX-T8 — White Paper Findings"
 parent: Experiments
 nav_exclude: false
+search_exclude: false
 description: "Consolidated, citation-ready findings from the T8 generative-execution run and the KX knowledge-retrieval replication, for incorporation into the GS white paper."
 ---
 

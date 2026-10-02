@@ -21,3 +21,13 @@ footer_content: "&copy; 2026 J.C. Ghiringhelli. Distributed under <a href=\"http
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
+
+# Research artifacts under experiments/ (agent-built sample projects, prompts, outputs)
+# are rendered by GitHub Pages (jekyll-optional-front-matter) and keep their URLs,
+# but must not appear in the sidebar nav or in the search index.
+defaults:
+  - scope:
+      path: "experiments"
+    values:
+      nav_exclude: true
+      search_exclude: true
