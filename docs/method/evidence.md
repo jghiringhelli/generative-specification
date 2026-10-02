@@ -90,7 +90,7 @@ Under delivery pressure, a descriptive spec floored the model to the literal min
 ## 11. Cheap execution revives some disciplines, where the failure occurs (ALX, NX)
 
 - **ALX.** A compiler was derived from the formal specification of its own language. The first pass scored 0.000 because the spec omitted the public API surface; each correction was a spec addition; the run reached 386 of 386 acceptance tests across six phases. **Bound:** one artifact, one author; the correction log is the finding.
-- **NX.** N-version generation is dead on a frontier model, where the generator does not err, and revives on a weak one, where it does. Benefit is gated by exposure to the failure, not by cost alone. **Bound:** small k, one practice, two models, a mechanism demonstration and not powered. The pre-registered revival grid, which tests this across practices, has its design frozen and is not yet run.
+- **NX.** N-version generation is dead on a frontier model, where the generator does not err, and revives on a weak one, where it does. Exposure is necessary for benefit (true by definition at zero exposure), but not sufficient. **Bound:** small k, one practice, two models, logbook tier C/D, inconclusive on the registered hypothesis; one post-hoc problem illustrates the revival model and does not test it. The pre-registered revival grid, which tests this across practices, has its design frozen and is not yet run.
 
 ## 12. What patchability showed (CX)
 
@@ -110,7 +110,7 @@ Metrics are objective and tool-computed: mutation score, branch coverage, cyclom
 
 ## What has not been measured
 
-- **The relation I ∝ (1 − S) / S** is a mental model. The AX series is directionally consistent with it; a cross-practitioner test is future work, and no constant is claimed.
+- **The relation I ∝ (1 − S) / S** is a mental model. No experiment tests it (AX did not record correction cycles and was iterated by the author, logbook tier D for the later conditions); a cross-practitioner test is future work, and no constant is claimed. S there is completeness, not the specificity of section 10.
 - **A controlled human-participant study** (specification written by someone other than its author) is designed and not run.
 - **Cross-model replication** beyond the pilots above, and a powered flagship, are still owed.
 - **The weak-model coherence-failure arm** of SX, and the **weak-local tier** of AX2, are outstanding.

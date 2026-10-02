@@ -63,7 +63,7 @@ Status: definition, design only. It is not yet a published gate or report.
 
 ## 3. What the lifecycle covers today
 
-Evidence tiers: **E** = experiment or case study in our own material, with its n and design limits; **C** = case study or self-reported production use; **D** = design only, no evidence.
+Compendium evidence levels (not the experiment-logbook tiers A to D; see [Models and equations](/formulas/)): **E** = experiment or case study in our own material, with its n and design limits; **C** = case study or self-reported production use; **D** = design only, no evidence.
 
 | Stage | State | Where it is covered | Evidence |
 |---|---|---|---|
