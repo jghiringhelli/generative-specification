@@ -1,5 +1,8 @@
 ---
 layout: default
+permalink: /domains/creative/
+redirect_from:
+  - /domains/creative.html
 title: Creative & Generative
 parent: Domain Guides
 nav_order: 4

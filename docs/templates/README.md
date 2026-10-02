@@ -1,11 +1,14 @@
 ---
 layout: default
 title: Templates
-nav_order: 6
-has_children: false
+nav_order: 11
+parent: Practice
+permalink: /templates/
+redirect_from:
+  - /docs/templates/README.html
+  - /docs/templates/
 description: "CLAUDE.md three-tier template hierarchy for GS projects"
 ---
-
 These templates implement the three-tier CLAUDE.md hierarchy described in the Generative Specification methodology.
 
 Each tier has one job. Claude reads them in cascade from the current working directory upward, so all three are active simultaneously during a session.

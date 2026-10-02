@@ -1,8 +1,9 @@
 ---
 layout: default
-title: White Paper (v5.0)
-nav_order: 2
-description: "Generative Specification: A Discipline of Derivability for the Stateless Reader — the publication white paper. A discipline that lets you describe a system precisely enough that an AI agent builds it correctly, regenerates it on demand, and proves it against reality."
+title: White paper (working text)
+nav_order: 7
+parent: Evidence and papers
+description: "Long-form working text of the white paper. The paper is being split into a base paper and focused derivatives; see the paper tree."
 ---
 
 # Generative Specification: A Discipline of Derivability for the Stateless Reader

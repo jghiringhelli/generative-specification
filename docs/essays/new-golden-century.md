@@ -1,3 +1,13 @@
+---
+layout: default
+title: "The New Golden Century"
+parent: Essays and ideas
+grand_parent: Learn
+nav_exclude: true
+nav_order: 7
+description: "What Athens understood about leisure that the industrial era made us forget."
+---
+
 # The New Golden Century
 
 ### What Athens understood about leisure that the industrial era made us forget

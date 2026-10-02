@@ -2,7 +2,7 @@
 layout: default
 title: Gate library
 parent: The Method
-nav_order: 6
+nav_order: 4
 permalink: /quality-gates/
 description: "The open community library of structured quality gates for Generative Specification: one YAML file per gate, mapped to a rubric property, with a schema and a contribution path."
 ---

@@ -1,5 +1,8 @@
 ---
 layout: default
+permalink: /domains/cli/
+redirect_from:
+  - /domains/cli.html
 title: CLI Tools
 parent: Domain Guides
 nav_order: 5

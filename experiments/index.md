@@ -3,8 +3,9 @@ layout: default
 nav_exclude: false
 search_exclude: false
 title: Experiments
-nav_order: 2
-has_children: true
+nav_order: 3
+has_children: false
+parent: Evidence and papers
 description: "GS methodology experiments — adversarial, benchmark, patchability, replication, and human practitioner studies"
 ---
 
@@ -20,9 +21,9 @@ June-2026 pilots (MX, RND-1) extend it to model-cost economics and to behaviour 
 | [**CX — Patchability**](cx/) | SWE-bench-style patch tasks on two quality tiers characterized by BX. Result: identical pass rate (5/5 vs 5/5); the GS codebase differs in where patches land and in type-enforced correctness, not in whether they succeed. | ✅ Complete |
 | [**RX — Replication**](rx/) | Any reader can reproduce 104 passing tests against a live PostgreSQL instance from a GS document alone. No ForgeCraft required. | ✅ Complete |
 | [**EX — Executable Sprint**](ex/) | Full L1–L4 tier proof on the live RealWorld Conduit benchmark. 13/13 behavioral probes, 3/3 env probes, k6 ramp — all green on Railway production. Single session. | ✅ Complete |
-| [**KX — Knowledge Retrieval**](kx/) | Routed navigation-tree retrieval beats RAG-dump and no-structure on accuracy and token cost; the CKG divergence replicates on software. | ✅ Complete |
-| [**MX — Model Cost & Tiering**](mx/) | Once GS-specified, a mid-tier model (Sonnet) matches a strong model (Opus) at ~6× lower cost on the full Conduit; model-tiering is unjustified when the mid model one-shots the task. | ✅ Pilot (Jun 2026) |
-| [**RND-1 — Spec / Verify / Context under Pressure**](rnd-1/) | Which GS arm suppresses under-pressure failure modes (literal-minimum under-spec; test-faking). Prescriptive spec confirmed; verification & bounded-context arms return honest, bounding nulls. | ✅ Pilot (Jun 2026) |
+| [**KX — Knowledge Retrieval**](kx/README.html) | Routed navigation-tree retrieval beats RAG-dump and no-structure on accuracy and token cost; the CKG divergence replicates on software. | ✅ Complete |
+| [**MX — Model Cost & Tiering**](mx/README.html) | Once GS-specified, a mid-tier model (Sonnet) matches a strong model (Opus) at ~6× lower cost on the full Conduit; model-tiering is unjustified when the mid model one-shots the task. | ✅ Pilot (Jun 2026) |
+| [**RND-1 — Spec / Verify / Context under Pressure**](rnd-1/README.html) | Which GS arm suppresses under-pressure failure modes (literal-minimum under-spec; test-faking). Prescriptive spec confirmed; verification & bounded-context arms return honest, bounding nulls. | ✅ Pilot (Jun 2026) |
 
 ---
 

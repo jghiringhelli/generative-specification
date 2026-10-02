@@ -1,8 +1,8 @@
 ---
 layout: default
 title: The evidence
-parent: The Method
-nav_order: 4
+parent: Evidence and papers
+nav_order: 1
 permalink: /method/evidence/
 description: "The load-bearing findings behind Generative Specification, each stated with its bound. Proponent-authored, small, mostly single-benchmark experiments, published so a reader can re-run them."
 ---

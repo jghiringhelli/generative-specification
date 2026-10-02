@@ -1,6 +1,6 @@
 ﻿---
 layout: default
-nav_exclude: false
+nav_exclude: true
 search_exclude: false
 title: "AX - Adversarial Study"
 parent: Experiments

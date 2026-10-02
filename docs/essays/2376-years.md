@@ -1,3 +1,13 @@
+---
+layout: default
+title: "2,376 Years"
+parent: Essays and ideas
+grand_parent: Learn
+nav_exclude: true
+nav_order: 1
+description: "Einstein, the speed of light, and where intelligence lives: in remembering, or in reasoning."
+---
+
 # 2,376 Years
 
 *Originally published on Substack.*

@@ -1,7 +1,8 @@
 ---
 layout: default
-title: Field Guide
-nav_order: 3
+title: Field guide
+nav_order: 5
+parent: Evidence and papers
 description: "Generative Specification — A Field Guide. The theory, what to do, and the numbers. The short, technical version."
 ---
 

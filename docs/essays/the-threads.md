@@ -1,3 +1,13 @@
+---
+layout: default
+title: "The Threads"
+parent: Essays and ideas
+grand_parent: Learn
+nav_exclude: true
+nav_order: 6
+description: "A personal account of how Generative Specification came together."
+---
+
 # The Threads
 
 *A personal account of how Generative Specification came together*

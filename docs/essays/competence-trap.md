@@ -1,3 +1,13 @@
+---
+layout: default
+title: "The Competence Trap"
+parent: Essays and ideas
+grand_parent: Learn
+nav_exclude: true
+nav_order: 3
+description: "Why the most experienced developers can be the most resistant to AI-assisted development."
+---
+
 # The Competence Trap
 
 *Why the most experienced developers are the most resistant to the tool that was always going to exist*

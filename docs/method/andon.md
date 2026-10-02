@@ -2,7 +2,7 @@
 layout: default
 title: The Andon Method
 parent: The Method
-nav_order: 7
+nav_order: 6
 permalink: /method/andon/
 description: "A proposed method for software built by the machine and judged by the people: state the intent, derive the system, stop the line on a failing check. A thesis and a set of principles; a team process is not yet defined."
 ---
@@ -33,7 +33,7 @@ The graveyard disciplines also demanded careful labor: writing specs, finding in
 
 ## The machine does not certify itself
 
-Generation is cheap; assurance is not cheap by the same act. A model can draft a spec, propose an invariant, even propose a proof, and do each of those wrongly while looking right. So the executor writes and something else judges: a sound checker, a type system, a test oracle, a prover discharging obligations, a statistical test against a real usage profile. The guarantee lives in the gate, never in the author. When we say rigor is cheap, we mean the writing is cheap and the checking is automatable, not that the model's confidence counts as proof. This is the [externalized guarantee](/#the-papers) of the paper tree.
+Generation is cheap; assurance is not cheap by the same act. A model can draft a spec, propose an invariant, even propose a proof, and do each of those wrongly while looking right. So the executor writes and something else judges: a sound checker, a type system, a test oracle, a prover discharging obligations, a statistical test against a real usage profile. The guarantee lives in the gate, never in the author. When we say rigor is cheap, we mean the writing is cheap and the checking is automatable, not that the model's confidence counts as proof. This is the [externalized guarantee](/evidence/#the-papers) of the paper tree.
 
 ## Toyota already named it
 

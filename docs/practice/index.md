@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Practice
-nav_order: 3
+nav_order: 4
 has_children: true
 permalink: /practice/
 description: "Tool-free, paste-and-run guides for applying Generative Specification: a new project, an existing one, joining a codebase, migrating a stack, and the disciplines that hold it together."

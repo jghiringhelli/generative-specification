@@ -1,3 +1,11 @@
+---
+layout: default
+title: "Your first hour"
+parent: Start here
+nav_order: 1
+description: "A working Generative Specification setup on your own project in under an hour: a spec, a constitution file for the assistant, and quality gates. No tools required."
+---
+
 # Start Here — Apply Generative Specification to Your Project
 
 This is the practical entry point. You can get a working GS setup on your own project in under an hour. No tools required beyond what you already use.
@@ -90,7 +98,7 @@ repeat them.]
 
 ### Step 3: Apply quality gates
 
-Copy the relevant gates from this repository's [`quality-gates/gates/`](quality-gates/gates/) into your project's `.forgecraft/gates/` directory, or reference them in your CI pipeline. Start with:
+Copy the relevant gates from this repository's [`quality-gates/gates/`](https://github.com/jghiringhelli/generative-specification/tree/main/quality-gates/gates) into your project's `.forgecraft/gates/` directory, or reference them in your CI pipeline. Start with:
 
 - [`conventional-commits.yaml`](quality-gates/gates/conventional-commits.yaml) — enforces commit discipline
 - [`adr-files-emitted.yaml`](quality-gates/gates/adr-files-emitted.yaml) — ensures decisions are documented

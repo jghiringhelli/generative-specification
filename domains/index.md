@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Domain Guides
-nav_order: 5
+nav_order: 6
 has_children: true
 description: "GS methodology applied to specific problem domains: FINTECH, ML, GAME, Creative, CLI"
 ---

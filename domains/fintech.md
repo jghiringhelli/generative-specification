@@ -1,5 +1,8 @@
 ---
 layout: default
+permalink: /domains/fintech/
+redirect_from:
+  - /domains/fintech.html
 title: Fintech & Optimization
 parent: Domain Guides
 nav_order: 1

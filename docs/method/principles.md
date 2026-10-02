@@ -2,7 +2,7 @@
 layout: default
 title: Twelve Working Principles
 parent: The Method
-nav_order: 8
+nav_order: 7
 permalink: /method/principles/
 description: "Twelve working principles for specification-governed practice, carried over from the retired Harness Manifesto. Practice, not process; two carry evidence caveats."
 ---
@@ -11,7 +11,7 @@ description: "Twelve working principles for specification-governed practice, car
 
 *How a practitioner works under Generative Specification. Carried over from the "Harness Manifesto" of June 2026, which has been retired.*
 
-> **Status.** These are working principles, not findings and not a process. The original page carried a signatory table that no third party had signed, so no signatures are carried over. Its vocabulary predates the current canon, in which "harness" names only the verification and enforcement layer of the substrate. The same text appears as §8.17 of the [Compendium](/#the-papers). The team-level process that would turn them into roles, artifacts and ceremonies is a separate, still-unproven effort: see [The Andon Method](../andon/).
+> **Status.** These are working principles, not findings and not a process. The original page carried a signatory table that no third party had signed, so no signatures are carried over. Its vocabulary predates the current canon, in which "harness" names only the verification and enforcement layer of the substrate. The same text appears as §8.17 of the [Compendium](/evidence/#the-papers). The team-level process that would turn them into roles, artifacts and ceremonies is a separate, still-unproven effort: see [The Andon Method](../andon/).
 
 1. **The specification is the prompt.** Every AI session, and every new team member, derives from the same written source of truth. Context never depends on who is in the room.
 2. **The specification is written before the code it governs.** A spec written to describe existing behavior is documentation; a spec written to direct behavior not yet built is discipline.

@@ -1,7 +1,8 @@
 ---
 layout: default
-title: Compendium (v5.0)
-nav_order: 3
+title: Compendium
+nav_order: 4
+parent: Evidence and papers
 description: "Generative Specification: A Pragmatic Programming Paradigm for the Stateless Reader — the canonical compendium; the white paper, the Onwards essay, and conference submissions derive from it. Preprint, September 2026."
 ---
 

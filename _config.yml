@@ -1,33 +1,90 @@
-﻿remote_theme: just-the-docs/just-the-docs@v0.10.0
+remote_theme: just-the-docs/just-the-docs@v0.10.0
 
 title: Generative Specification
-description: "Community home for the Generative Specification methodology - the first programming discipline of the pragmatic dimension, designed for a stateless reader."
+description: "The open home of Generative Specification: learn to specify software so an AI can build it and a check outside the model can verify it. A free, open method."
 url: https://genspec.dev
 
 search_enabled: true
 heading_anchors: true
 color_scheme: sala-de-control
 
+# Header links. The Zenodo record is an archived preprint of July 2026; the
+# current paper is being split into a base paper and focused derivatives
+# (see Evidence and papers). No version label is shown on the public site.
 aux_links:
-  "White Paper (Zenodo)": "https://doi.org/10.5281/zenodo.21726017"
-  "ForgeCraft on GitHub": "https://github.com/jghiringhelli/forgecraft-mcp"
+  "White paper (Zenodo)": "https://doi.org/10.5281/zenodo.21726017"
+  "GitHub": "https://github.com/jghiringhelli/generative-specification"
 
 aux_links_new_tab: true
 back_to_top: true
 back_to_top_text: "Back to top"
 
-footer_content: "&copy; 2026 J.C. Ghiringhelli. Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. Citation: <a href=\"https://doi.org/10.5281/zenodo.21726017\">Zenodo</a>"
+footer_content: "&copy; 2026 J.C. Ghiringhelli. Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. Citation: <a href=\"https://doi.org/10.5281/zenodo.21726017\">Zenodo (archived preprint)</a>"
 
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
+  - jekyll-redirect-from
 
-# Research artifacts under experiments/ (agent-built sample projects, prompts, outputs)
-# are rendered by GitHub Pages (jekyll-optional-front-matter) and keep their URLs,
-# but must not appear in the sidebar nav or in the search index.
+# ---------------------------------------------------------------------------
+# Navigation and search policy (see soma/docs/site-ia-2026-10-02.md)
+#
+# GitHub Pages renders every .md (jekyll-optional-front-matter) and titles it from
+# its first heading (jekyll-titles-from-headings), so unlisted files would appear in
+# the sidebar. Everything below keeps its URL; it only leaves the sidebar and the
+# search index. Pages that carry their own front matter override these defaults.
+# ---------------------------------------------------------------------------
 defaults:
-  - scope:
-      path: "experiments"
-    values:
-      nav_exclude: true
-      search_exclude: true
+  # Research artifacts (agent-built sample projects, prompts, outputs).
+  - scope: { path: "experiments" }
+    values: { nav_exclude: true, search_exclude: true }
+  # Internal drafts: IEEE Access section drafts, supplement drafts, reference
+  # logs, submission checklists, figures.
+  - scope: { path: "docs/white-paper/ieee-access" }
+    values: { nav_exclude: true, search_exclude: true }
+  # Internal planning for the book.
+  - scope: { path: "docs/book" }
+    values: { nav_exclude: true, search_exclude: true }
+  # Language specification draft (v0.1) and Onwards! submission drafts and notes.
+  - scope: { path: "docs/loom" }
+    values: { nav_exclude: true, search_exclude: true }
+  - scope: { path: "docs/essays/onwards.md" }
+    values: { nav_exclude: true, search_exclude: true }
+  - scope: { path: "docs/essays/onwards-before-edits.md" }
+    values: { nav_exclude: true, search_exclude: true }
+  - scope: { path: "docs/essays/onwards-edit-notes.md" }
+    values: { nav_exclude: true, search_exclude: true }
+  # Internal paper planning and decision records.
+  - scope: { path: "docs/white-paper/PAPER-DECISIONS.md" }
+    values: { nav_exclude: true, search_exclude: true }
+  - scope: { path: "docs/white-paper/THESIS-RECENTER-proposal.md" }
+    values: { nav_exclude: true, search_exclude: true }
+  - scope: { path: "docs/white-paper/THREE-PAPER-ROADMAP.md" }
+    values: { nav_exclude: true, search_exclude: true }
+  - scope: { path: "docs/white-paper/v4-revision-notes.md" }
+    values: { nav_exclude: true, search_exclude: true }
+  - scope: { path: "docs/white-paper/GenerativeSpecification_WhitePaper.LONGFORM.md" }
+    values: { nav_exclude: true, search_exclude: true }
+  # Repository readmes: GitHub front pages, not site pages.
+  - scope: { path: "README.md" }
+    values: { nav_exclude: true, search_exclude: true }
+  # Public documents that carry no front matter of their own: nav placement is set here
+  # so the source files (some of them papers) stay untouched.
+  - scope: { path: "docs/white-paper/PAPER-TREE.md" }
+    values: { title: "The paper tree", parent: "Evidence and papers", nav_order: 2 }
+  - scope: { path: "docs/white-paper/EXPERIMENT-LEDGER.md" }
+    values: { title: "Experiment ledger", parent: "Evidence and papers", nav_order: 6 }
+  - scope: { path: "docs/white-paper/GenerativeSpecification_PractitionerProtocol.md" }
+    values: { title: "Practitioner protocol", parent: "Evidence and papers", nav_order: 8 }
+  - scope: { path: "docs/white-paper/GS_Rubric_ScoringGuide.md" }
+    values: { title: "Rubric scoring guide", parent: "Evidence and papers", nav_order: 9 }
+  - scope: { path: "docs/white-paper/GS_Experiment_Supplement.md" }
+    values: { title: "Experiment supplement", parent: "Evidence and papers", nav_order: 10 }
+  - scope: { path: "docs/white-paper/EXPERIMENT-PUBLISHING-PLAYBOOK.md" }
+    values: { title: "Replicate an experiment", parent: "Evidence and papers", nav_order: 11 }
+  - scope: { path: "docs/discipline-revival-model.md" }
+    values: { title: "The revival model (working document)", parent: "Formulas", nav_order: 5 }
+  - scope: { path: "docs/gate-template.md" }
+    values: { title: "Portable gate template", parent: "The Method", nav_order: 5 }
+  - scope: { path: "docs/repository-discipline.md" }
+    values: { title: "Repository discipline", parent: "Practice", nav_order: 10 }

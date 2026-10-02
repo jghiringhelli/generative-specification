@@ -1,5 +1,8 @@
 ---
 layout: default
+permalink: /domains/ml/
+redirect_from:
+  - /domains/ml.html
 title: Machine Learning
 parent: Domain Guides
 nav_order: 2

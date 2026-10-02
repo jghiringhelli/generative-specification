@@ -13,7 +13,7 @@ Completeness is not length. A specification is complete when a **stateless reade
 
 **Assume nothing, but do not specify the how.** Specify intent and constraint, and let the executor derive the implementation.
 
-**What the evidence says, with its bound.** In RND-1, a descriptive, ambiguous spec floored the model to the literal minimum (0 of 3 runs matched the held-out intent), while a prescriptive spec with postconditions recovered the full intent (3 of 3), at equal token cost. That is n=3 on one benchmark, single-shot, proponent-authored. It supports the direction, not a magnitude. The [evidence page](../evidence/) has the full bound. The [expected-cost relation](/#the-formulas) I ∝ (1 − S) / S is the mental model behind this: the more of the output space the spec leaves open, the more correction cycles to expect. It gives a direction only, with no constant.
+**What the evidence says, with its bound.** In RND-1, a descriptive, ambiguous spec floored the model to the literal minimum (0 of 3 runs matched the held-out intent), while a prescriptive spec with postconditions recovered the full intent (3 of 3), at equal token cost. That is n=3 on one benchmark, single-shot, proponent-authored. It supports the direction, not a magnitude. The [evidence page](../evidence/) has the full bound. The [expected-cost relation](/formulas/) I ∝ (1 − S) / S is the mental model behind this: the more of the output space the spec leaves open, the more correction cycles to expect. It gives a direction only, with no constant.
 
 ---
 

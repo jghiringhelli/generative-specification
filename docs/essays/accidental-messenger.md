@@ -1,3 +1,13 @@
+---
+layout: default
+title: "The Accidental Messenger"
+parent: Essays and ideas
+grand_parent: Learn
+nav_exclude: true
+nav_order: 2
+description: "On code written for a machine that a human has to read tomorrow."
+---
+
 # The Accidental Messenger
 
 Every developer has written code for a machine that a human has to read tomorrow.

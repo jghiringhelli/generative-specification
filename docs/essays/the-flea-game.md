@@ -1,3 +1,13 @@
+---
+layout: default
+title: "The Flea Game"
+parent: Essays and ideas
+grand_parent: Learn
+nav_exclude: true
+nav_order: 4
+description: "A small game for a daughter, and the question of whether a program should be correct."
+---
+
 # The Flea Game
 
 *Originally published on Substack.*

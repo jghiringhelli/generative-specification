@@ -1,5 +1,8 @@
 ---
 layout: default
+permalink: /domains/game/
+redirect_from:
+  - /domains/game.html
 title: Game Development
 parent: Domain Guides
 nav_order: 3

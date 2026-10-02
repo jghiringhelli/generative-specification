@@ -1,3 +1,11 @@
+---
+layout: default
+title: "Two-page introduction"
+parent: Start here
+nav_order: 2
+description: "The problem, the idea and the method of Generative Specification in two pages, for people who build things or lead teams."
+---
+
 # Generative Specification: A Two-Page Introduction
 
 *For people who build things, lead teams, or work in any domain where AI is changing how work gets done — and who don't have time to read a forty-page paper.*

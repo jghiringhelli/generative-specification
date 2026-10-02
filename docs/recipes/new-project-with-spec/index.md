@@ -45,7 +45,7 @@ Open `docs/PRD.md` and `docs/use-cases.md`. Fill them with your existing require
 - Use cases (UC-NNN with precondition, actor, action, postcondition)
 - Constraints (performance, regulatory, platform)
 
-If your existing document is a prose description, paste it into the PRD and then use an AI session to restructure it into the GS format. The [spec document format](../../experiments/ax/) is described in the AX experiment materials.
+If your existing document is a prose description, paste it into the PRD and then use an AI session to restructure it into the GS format. The [spec document format](/experiments/ax/) is described in the AX experiment materials.
 
 ---
 

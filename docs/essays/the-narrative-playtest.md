@@ -1,3 +1,13 @@
+---
+layout: default
+title: "The Narrative Playtest"
+parent: Essays and ideas
+grand_parent: Learn
+nav_exclude: true
+nav_order: 5
+description: "Four simulated players read a board game's rules cold and found the last-mile bugs."
+---
+
 # The Narrative Playtest
 
 *How four imaginary players caught fifteen bugs in my unreleased board game — and what it says about the last mile of any creative project.*
