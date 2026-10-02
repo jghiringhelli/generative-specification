@@ -1,142 +1,199 @@
-# SDX-1: does persistent, structured, enforced project state matter once the project lives? (main preregistration)
+# SDX-1: what does a persistent, structured, enforced substrate add over an expert prompt that lacks GS, once the project lives? (main preregistration)
 
-Status: **DRAFT, NOT FROZEN.** Freezing (git tag `prereg/SDX-1-v1`, push, external timestamp) is JC's decision and requires SDX-0 to be closed. Every bracketed value `[FROM SDX-0]` is filled from pilot measurements before freezing; no value may be changed after the freeze. Protocol: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\EXPERIMENT-PROTOCOL.md`. Pilot: `...\prereg\SDX-0.md`. Review and dispositions: `...\prereg\SDX-REVIEW.md`. Logbook entry: `...\LOGBOOK\SDX-1.md`.
+Status: **DRAFT, NOT FROZEN.** Revision 2 (2026-10-02): adds the expert-minus-GS arm and its contrasts, then incorporates the first round of stateless critics (dispositions in `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-REVIEW.md` section 2). Freezing (git tag `prereg/SDX-1-v1`, push, external timestamp) is JC's decision and requires SDX-0 to be closed. Every bracketed value `[FROM SDX-0]` is filled from pilot measurements before freezing; no value may be changed after the freeze. Protocol: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\EXPERIMENT-PROTOCOL.md`. Pilot: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-0.md`. Load-bearing list, arm definitions, authorship and manipulation checks: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-1-ARMS.md` (part of this registration). Logbook entry: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\LOGBOOK\SDX-1.md`. Mechanics of registering: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\PREREG-HOWTO.md`. 
 
 ## 1. Question and why this experiment
 
-Earlier single-shot experiments (AX, AX2) found that a disciplined prompt beats a naive one and ties a strong expert prompt. A single shot cannot separate GS content delivered in a prompt from GS content delivered as a persistent, structured, enforced substrate (sentinel tree, specs, recorded decisions, gates). The two should differ only where state must outlive the prompt: a growing project, a changed rule, a reversed decision.
+Earlier single-shot experiments (AX, AX2) found that a disciplined prompt beats a naive one and ties an expert prompt that was itself written from GS content. They could not separate (a) generic engineering expertise, (b) GS content delivered in a prompt, and (c) GS content delivered as a persistent, structured, enforced substrate. SDX-1 separates them on a growing project in which only the repository carries state between sessions.
 
-SDX-1 asks one question: **on facts that a fresh session can only get right by using state recorded in the repository earlier in the project's life, does the substrate (A4) beat an expert prompt (A1), and does it beat the same content held in one flat context file (A3)?** The second comparison is the one that matters for the claim; the first is a sanity check that persistence matters at all.
+Questions, in the order JC asked them:
 
-The construct is deliberately narrow: probe-level correctness on state-dependent behavior, with state-independent behavior as the within-chain control. It does not measure code quality, human maintainability, governance, handoff to a new person, or cost-effectiveness at production scale.
+1. Does an expert prompt that contains none of the load-bearing aspects of GS (arm A5, elements L1 to L5, SDX-1-ARMS section 1) behave differently from naive (A0)? JC's field expectation: yes, but less than a year ago, because frontier models have improved. (The "less than a year ago" part is not testable here: one model generation, one date. Only "different from naive now, on this model" is.)
+2. Is it also clearly short of the substrate (A4)? JC's field expectation: yes. If not, the value of the substrate on this evidence is governance, not correctness.
+3. (Secondary) Does the same content in a prompt (A1), or in one file (A3), close the gap, and what does an unconstrained expert (A6) get?
 
-## 2. Hypotheses, falsifiers, controls
+Construct, deliberately narrow: hidden-oracle correctness of a 10-change invented project. Not code quality, human maintainability, governance, handoff, or production cost-effectiveness. Public wording of any H1 result must say "an expert prompt without project-state documents", because A5 is constrained by design.
 
-Primary readout, defined once: for each chain, E1-SD = share of **state-dependent probes** passed by the final state, and E1-SI = share of **state-independent probes** passed by the final state, both from the sealed oracle (section 6). Probes are tagged state-dependent or state-independent before any chain runs, by the oracle author, blind to arm. Definition: a probe is state-dependent if a correct answer requires information that was introduced in an earlier change request or an earlier recorded decision and is not stated in the base spec or in the current change request text.
+Intuition, in falsifiable form (guard f, stage 1): "A mid-tier coding agent working a growing project under generic expert prompting alone loses state-dependent behaviour by at least the SESOI more than under the substrate, and does better than naive on state-independent hidden correctness." It is contradicted by H1 EQUIVALENT or REVERSED, or by H2 EQUIVALENT. The versions that nothing could contradict ("the expert prompt is GS-lite", "structure helps") are not the hypothesis.
 
-Statistic: D = E1-SD minus E1-SI per chain (within-chain control removes general capability and the head start an arm may have). Contrast of interest per pair of arms: difference in mean D, by stratified permutation test (strata = nothing in stage 1, single vendor), with a bootstrap interval.
+## 2. Hypotheses, readouts, falsifiers, controls
 
-| ID | Claim | Test | Falsified (REFUTED) if | Equivalence (NULL) if |
+### 2.1 Readouts, defined once
+
+Scoring is per change: after the last attempt of change k the harness snapshots the working tree and runs the sealed oracle: "fresh" probes (introduced by change k) and "carried" probes (introduced earlier). Probe tags, fixed before any chain runs, by the mechanical rule in section 6: **state-dependent (SD)**: a correct answer needs information introduced by an earlier change text or recorded decision and absent from the base spec and the current change text (the supersession at change 6 on each earlier surface that used the old rule, the decisions of changes 3 and 7, the reversal at change 9). **State-independent (SI)**: everything else.
+
+- E1-SD = share of SD probes passed, aggregated over snapshots 6 to 10 (where SD probes exist). Conditional scoring: an SD probe counts for a chain only if its antecedent behaviour passed at the antecedent's own snapshot (otherwise the probe would pass vacuously, for example the reversal of a move that was never built); the number of excluded probes is reported per arm and an unconditional (ITT, excluded counts as fail) analysis is a registered sensitivity.
+- E1-SI = share of SI probes passed over all snapshots (general capability).
+- E1-ALL = share of all probes passed at the final snapshot.
+- A chain that fails to build on 2 consecutive changes is collapsed: all later probes score zero (ITT); completers-only is the sensitivity analysis.
+- **Primary readout for H1: E1-SD adjusted for E1-SI** (chain-level ANCOVA, E1-SD on arm plus E1-SI). Reported beside it: unadjusted E1-SD and D = E1-SD minus E1-SI (exploratory). Reason for adjustment: removes the head start an arm may have from general capability. Limit stated: E1-SI is itself affected by arm (gates may raise it), so the adjusted contrast is the state-specific part, and the unadjusted one the total.
+- **Readout for H2: E1-SI** (general capability, the construct "is generic expertise better than naive", uncontaminated by state). E1-ALL is reported beside it.
+
+### 2.2 Classification of any contrast
+
+Delta = mean difference X minus Y per chain, with a 95% interval for secondary contrasts and a 97.5% interval for the two co-primaries (alpha 0.025 each, Bonferroni). Interval [L, U], point estimate p, SESOI delta:
+
+| Class | Rule |
+|---|---|
+| POSITIVE-RELEVANT | L > 0 and p >= delta |
+| POSITIVE-SMALL | L > 0 and U <= delta (measurable, below the decision-relevant size) |
+| POSITIVE-SIZE-UNRESOLVED | L > 0, p < delta < U |
+| EQUIVALENT | L <= 0 <= U and the whole interval inside minus delta to plus delta (TOST at half the alpha per side; a small nonzero effect may exist) |
+| REVERSED | U < 0 (size reported; REVERSED-RELEVANT if p <= minus delta) |
+| INCONCLUSIVE | everything else |
+
+The decision rows treat all three POSITIVE classes as "X is better" with the size class stated; the SESOI governs equivalence and the size wording.
+
+SESOI: on E1-SD (adjusted) 10 percentage points, on E1-SI 5 percentage points, both provisional. Justification to be written at the SDX-0 freeze (open: an expert prompt is nearly free to adopt, so a smaller E1-SI delta may be defensible; that raises n). Tests: Monte Carlo permutation test (100,000 permutations, seed registered, no stratification: one vendor, one model), BCa bootstrap interval (10,000 replicates, seed registered).
+
+| ID | Role | Contrast and readout | Prediction (can fail) | Fails (falsifier) |
 |---|---|---|---|---|
-| H1 (primary, sanity) | A4 has a higher D than A1: persistence matters | A4 minus A1 on D | upper 95% bound of A4 minus A1 below the SESOI [FROM SDX-0] | not used for NULL; if A4 does not beat A1 the A4 vs A3 question is uninterpretable and the experiment stops with `INCONCLUSIVE` or `NULL` on H1 |
-| H5 (key secondary, gatekept: tested only if H1 is SUPPORTED) | A4 has a higher D than A3: structure and enforcement add beyond the same content in one file | A4 minus A3 on D | upper 95% bound below SESOI | TOST equivalence: both one-sided tests reject at the SESOI bound, then the conclusion is "A3 is as good as A4 on this construct here" |
+| H1 | co-primary | A4 minus A5 on E1-SD adjusted: does the substrate add state-dependent correctness beyond generic expertise | POSITIVE (any size); range in section 2a | EQUIVALENT (row iii) or REVERSED (row iv) |
+| H2 | co-primary | A5 minus A0 on E1-SI: is generic expertise different from naive on general hidden correctness | POSITIVE; range in section 2a | EQUIVALENT (row i). A difference only on treatment-targeted structure metrics (layer violations and similar) does not count (guard b) |
+| H3 | secondary, Full only, gated by H1 positive, alpha 0.05 | A4 minus A3 on E1-SD adjusted | POSITIVE; EQUIVALENT also informative | n/a (both reported) |
+| H4 | secondary, Full only | A4 minus A1 on E1-SD adjusted | POSITIVE | EQUIVALENT or REVERSED |
+| H5 | secondary, Full only | A1 minus A5 on E1-SD adjusted (GS content in a prompt vs generic expertise) | small POSITIVE or EQUIVALENT | none attached |
+| H6 | secondary, Full only | A6 minus A5 on E1-SD adjusted (what documentation instinct buys) and A4 minus A6 | none pre-stated beyond "report" | none attached |
 
-SESOI: provisional 10 percentage points on D, justified as the smallest difference that would change a buyer's decision on whether to maintain a substrate; confirmed or revised from the pilot's measured SD before freeze. Registered power statement and n: `n = [FROM SDX-0]` chains per arm, computed for the SESOI at 80% power with the measured between-chain SD and collapse rate; if the required n exceeds 20 per arm, SDX-1 is reduced in scope (fewer arms) rather than run underpowered. Planning figure before the pilot: 15 per arm.
+Exploratory, labelled, no verdict: each contrast on the other readouts (a table of contrasts by readout; where the secondary readout points to a different decision row the result says "readout-dependent" and nothing is strengthened); SD split into propagation probes (recoverable from code by search) and decision probes (information that exists only in the product-owner replies and recorded decisions); dose-response (gap vs distance since the antecedent); introduction-change index as covariate (guards against the late-vs-early confound); recovery share (A4 minus A5) divided by (A0S minus A5); change-failure rate; regression flips; tokens and dollars per hidden-correct change; hidden-suite kill rate; mixed logistic model at probe level; emergent-substrate counts per arm (SDX-1-ARMS section 4); questions asked per arm. Treatment-targeted metrics are reported, never carry a verdict.
 
-Secondary and exploratory (labelled in the entry, cannot carry a verdict): dose-response (gap on state-dependent probes versus distance in changes since the antecedent); spec-change propagation share (probes on surfaces that used the superseded rule); change-failure rate (share of changes whose accepted snapshot fails hidden probes of that change or flips an earlier-passing probe); regression flips per change; tokens and dollars per change and per hidden-correct change (no prediction attached); hidden-suite kill rate on a fixed set of mutants. Treatment-targeted metrics are reported but never carry a verdict: layer violations, duplication, complexity tail, residue of the superseded rule in code and docs, mutation score with the arm's own tests, documentation-claim accuracy, gate-circumvention events.
+### 2a. Pre-stated gap sizes (percentage points), with reasons and why each could be wrong
 
-Controls (guard a):
-- Negative control A1b: identical to A1, separate seed and run order. The A1 vs A1b difference on D estimates noise. If it is at least the SESOI, the experiment is `INVALID-DESIGN` (noise exceeds the effect).
-- Positive control A4x (amnesia): A4 with the substrate files (sentinel, specs, ADRs, ledger, lock) deleted from the repository immediately before change 6 (the spec change), code left in place. A known large effect is expected: A4x should fall to about A1 on D from change 6 onward. If A4 minus A4x on D is less than 20 percentage points, the experiment cannot detect a known state effect: `INVALID-DESIGN`.
-- Floor and ceiling: if A1 or A3 has E1-SD at or above (100 - SESOI)% at the final change, H1 and H5 cannot be tested: `INVALID-DESIGN`. If A0 is at or above 95% on E1 overall or below 5%, the benchmark does not discriminate: `INVALID-DESIGN`.
+Written before any run from public evidence only (LOGBOOK AX, AX2, CR, SX, TX, RND-1) and mechanism reasoning. Estimates, not commitments; their purpose is that a result cannot later be called "as expected" without having been stated.
+
+| Gap | Range | Reasoning | Why this range could be wrong |
+|---|---|---|---|
+| A0S minus A0 on E1-SD (positive control) | at least 20 (validity), expected 25 to 50 | the antecedent information is restated in each later change text, an effect known by construction and independent of any substrate | if code and tests already carry the state the gap is small: then state is not scarce at this size, which is a finding about the benchmark (the experiment cannot reach the SESOI) |
+| **H1: A4 minus A5, E1-SD adjusted** | **4 to 18, central about 9** | at 2 to 3 kLOC code and tests carry most state; SX shows a frontier agent finds every duplicated copy itself and the map saves cost, not correctness; what code cannot carry is decisions and the reversal text that names no targets; models have improved since AX | lower (0 to 3) if agents recover everything from code and tests; higher (20 to 35) if the mid-tier model drops propagation, as TX showed for a weak model. The central value is near the SESOI: the modal outcome is POSITIVE-SMALL or POSITIVE-SIZE-UNRESOLVED or INCONCLUSIVE. That is a property of the design, and JC should decide before spending whether such a design is worth its price |
+| **H2: A5 minus A0, E1-SI** | **0 to 8, central about 3** | AX2: naive vs disciplined separated on structure, not on behaviour (that oracle was invalid); CR: GS no better than naive on behaviour at hosted rungs. No behavioural precedent exists for a generic-prompt uplift on this model class | higher (8 to 15) if validation and error-contract guidance matters for a mid-tier model; zero if naive is near ceiling. **JC's expectation that A5 differs from naive is not supported by prior behavioural evidence; it may show only on targeted structure metrics, which do not count** |
+| A5 minus A0 on E1-SD adjusted (exploratory) | minus 3 to 6 | clean generic structure makes earlier rules easier to find and change | emergent notes by the agent would raise it |
+| H3: A4 minus A3 | 0 to 8 | same content; structure and enforcement may matter little at this size | enforcement could matter more if agents leave failing states |
+| H4: A4 minus A1 | 4 to 18 | like H1 plus whatever prompt-delivered L content buys | as H1 |
+| H5: A1 minus A5 | 0 to 6 | L instructions need persistence to act; "update the README" may yield an emergent record | larger means prompt-delivered GS content matters without a substrate |
+| H6: A6 minus A5 | 0 to 8 | documentation instinct creates a partial substrate | larger if natural expert practice already approximates much of L |
+
+These ranges are for a mid-tier model on purpose. A frontier model would likely shrink H1 and H2; that is the capacity-relative claim and a separate cell (SDX-2).
+
+Power. n per contrast arm for 80% power to get L > 0 at a true gap of delta: n = 2 (3.08 x SD / delta)^2 (z 2.24 for alpha 0.025 plus 0.84). E1-SD adjusted, delta 10: SD 8 gives 12, SD 10 gives 19, SD 12 gives 27, SD 15 gives 43. E1-SI, delta 5: SD 4 gives 12, SD 6 gives 27. (If E1-SI strongly predicts E1-SD, the adjusted SD is smaller than the raw one; measured in SDX-0.) The registered rule powers for "direction established", not for the point estimate reaching delta; at a true gap equal to delta, P(POSITIVE-RELEVANT) is about 50% even at planned n. SD estimates from 3 pilot chains per arm are unreliable (interval about 0.5 to 6 times); therefore n is computed from the SD pooled across arms and its upper 80% confidence limit, and one blinded re-estimation (pooled variance, no arm labels, no outcome contrast) is allowed at the interim look, able only to raise n within the approved budget cap. Planning n = 20. If n exceeds 25, delta may be raised only with written justification before freeze, otherwise scope is cut to Core. Equivalence needs the whole interval inside plus or minus delta: at n = 20 and SD 10 the 97.5% half-width is about 7, so a true gap of 3 or less can show EQUIVALENT.
+
+### 2b. Controls (guard a)
+
+- **Positive control A0S ("state in text"):** A0 with the antecedent information (earlier change texts and the product-owner replies relevant to the change) restated in each later change text; its effect is known by construction and does not depend on any substrate. Valid only if A0S minus A0 on E1-SD is at least 20 points; otherwise the experiment cannot detect a known state effect: INVALID-DESIGN. (Replaces the amnesia control as the validity gate, which could not distinguish a failed experiment from the true world "code carries the state".)
+- **Exploratory mechanism check A4x (Full only, k=10):** each chain forked from an A4 chain after change 5 with the substrate files, and any hook, script or lock reference to them, removed, then verified to build; reported, not a gate.
+- **Negative control A5b:** independent run of A5 (the CLI has no seed parameter; independence comes from separate sessions and interleaved order), n = 10. Noise trigger: |point difference A5 minus A5b| at least delta on E1-SD adjusted and the 95% interval excludes zero: then noise exceeds the effect, INVALID-DESIGN. Stated limit: noise is measured for A5 only; A4 may vary more (gate blocking), and the pooled SD is reported per arm.
+- **Floor and ceiling:** if the weaker comparator of a contrast is at or above (100 minus delta)% on its readout (for H1: A5 on E1-SD; for H2: A0 on E1-SI; H3 to H6 the comparator arm) the contrast cannot be tested; if the stronger arm of H1 (A4) is below delta on E1-SD, or E1-SI is at the ceiling in every arm, likewise. A strong arm at the ceiling with a weak one clearly below is not a defect. If A0 is at or above 95% or below 5% on E1-ALL the benchmark does not discriminate: INVALID-DESIGN.
+- **Manipulation checks M1 and M2**, SDX-1-ARMS section 4, at freeze and on run outputs.
 
 ## 3. Arms
 
-Every change is a fresh session; only the repository carries state. Vendor memory features, user-level instruction files, web and MCP disabled; clean configuration directory.
+Every change is a fresh session in a fresh configuration directory with auto-memory off, a unique repository path per chain, and no resume; only the repository carries state; vendor memory features, user-level instruction files, web and MCP disabled. SDX-0 verifies this with a planted memory (V13). The harness commits after each change with a neutral message identical in every arm (no arm is told to write informative commit messages; A4's own commit protocol runs through its hooks). The harness never writes substrate content: A4's ledger, specs and decision records are written by the agent under A4's protocol. Content composition (generic G, load-bearing L) and authorship: SDX-1-ARMS sections 2 and 3.
 
 | Arm | What the session gets | Persistent state beyond code |
 |---|---|---|
-| A0 naive (floor check only, k=3) | the base spec and the change request text | none |
-| A1 expert prompt (reused) | A0 plus P_expert (frozen; GS content as a prompt: layering, spec first, tests first, update the README, ask before changing a rule). The agent is free to edit any file including documentation (not forbidden, not instructed) | whatever the agent chooses to write |
-| A1b A/A duplicate of A1 | identical to A1 | same |
-| A3 flat context file | A0 plus one auto-loaded file (`CLAUDE.md`), the best structured single file a practitioner would write, carrying the same total content as the substrate flattened; the agent may edit it | the one file |
-| A4 substrate, gates in the loop | A0 plus sentinel tree, feature specs with acceptance criteria, recorded decisions, fixes ledger, spec lock, commit and push hooks from the Open Diamond sensors, fixture ratchet, red-first, triage rule | the full tree, enforced |
-| A4x amnesia (positive control) | A4 until change 5, then the substrate files removed | code only from change 6 |
+| A0 naive | the base spec and the change text | none |
+| **A5 expert minus GS** | A0 plus the externally authored generic prompt, none of L1 to L5 | none instructed |
+| A5b | identical to A5, independent run (negative control) | same |
+| A0S | A0 with antecedent information restated in later change texts (positive control) | none |
+| A1 expert plus GS content (Full) | A5's prompt plus the L appendix | whatever the agent chooses to write |
+| A3 flat context file (Full) | A0 plus one auto-loaded file carrying G and L flattened | the one file |
+| A6 expert unconstrained (Full) | A0 plus the same practitioner's natural prompt (no constraint) | whatever the agent chooses |
+| A4 substrate, gates in the loop | A0 plus sentinel tree, feature specs with acceptance criteria, recorded decisions, fixes ledger, spec lock, hooks, fixture ratchet, red-first, triage rule | the full tree, enforced |
+| A4x (Full, exploratory) | fork of A4 after change 5 with the substrate removed | code only |
 
-Artifact authorship (R2 of the review): P_expert and the flat file are written by an external practitioner given the content manifest and the instruction "write the strongest possible artifact for this task"; the substrate is built from the same manifest. All three get the same pilot transcripts and the same revision budget (3), and every revision is made by someone blind to which arm it favors. If no external practitioner is available the experiment is not frozen (it would be tier C at best).
+Scope, chosen by JC at freeze and then fixed: **Core** = A0, A5, A5b, A0S, A4 (H1, H2 and both controls). **Full** = Core plus A1, A3, A6, A4x (H3 to H6). Arms are never dropped after freeze.
 
-Content parity (guard against construct leak): a manifest of about 25 items (rules, constraints, structure decisions, process rules) drawn from the Pastura cascade. A stateless judge from a different family confirms every item is present in each arm artifact. A second check confirms no artifact states a fact that is not derivable from the base spec, the change texts, or the agent's own recorded decisions, by comparing it with the oracle probe list. Artifact sizes (tokens) and setup effort (author hours) are recorded and reported per arm; sizes are not forced equal (rationale in the review, R1).
+Decision points: the scripted product-owner reply for changes 3 and 7 is appended unconditionally to that change's text in every arm (headless sessions cannot ask mid-session); whether the agent also asked, and how often, is logged as a secondary metric. Retry rule (identical for all arms, at most 3 attempts): retry only if the build fails, the server does not start, or the base-spec smoke check fails; never on the arm's own test results. Per-session limits identical `[FROM SDX-0]`; a differential cap-hit above 10 points is an INVALID-DESIGN trigger.
+
+Parity and leaks: SDX-1-ARMS section 4. Artifact sizes and author hours reported per arm; sizes not forced equal (review R1). Authoring tools per artifact are disclosed (threat in section 12).
 
 ## 4. Benchmark, scaffold, horizon
 
-- Domain: Pastura (invented; no public corpus). Reuse `C:\workspace\PragmaWorks\gs\generative-specification\experiments\cr\benchmark\DOMAIN_SPEC.md` and the canary probe `...\experiments\cr\runner\canary_probe.md` (run cold per model; recall near zero required; result logged; recall above zero is an `INVALID-DESIGN` trigger for the affected model).
-- Locked scaffold, identical bytes in every arm, hash-checked after every change (tampering reverted and logged): Node + TypeScript strict + `node:http` + `node:sqlite` + vitest; `npm start` on `PORT`; `POST /__reset`; route registration helper and single data client at fixed paths; pure rule functions in `src/rules/` with fixed names and signatures. Internal architecture beyond that is free; layering is part of the treatment content, not imposed.
-- Horizon: CR0 (initial build) plus 9 changes. Original ids refer to the 12-change draft (private). Tag SD/SI is provisional until the oracle author, blind to arm, finalizes it in SDX-0.
+Pastura (invented; no public corpus; `C:\workspace\PragmaWorks\gs\generative-specification\experiments\cr\benchmark\DOMAIN_SPEC.md`, canary probe `C:\workspace\PragmaWorks\gs\generative-specification\experiments\cr\runner\canary_probe.md`, run cold per model, recall above zero is INVALID-DESIGN for that model); locked scaffold, identical bytes in every arm, hash-checked after each change (Node, TypeScript strict, `node:http`, `node:sqlite`, vitest, fixed paths and rule-function signatures; Node version and model snapshot pinned, no aliases); horizon CR0 plus 10 changes (table); at least 3 of 10 change texts written or reviewed by an independent person who does not know the arm artifacts. Change 10 is new (critic round 1): a late state-independent feature matched in size to change 4, so state dependence is not confounded with lateness.
 
-| # | Change (orig id) | State dependence of its probes | Stress |
+| # | Change (orig id) | State dependence | Stress |
 |---|---|---|---|
-| 1 | Forage budget from the latest reading (1) | SI | duplication trap; creates constants reused later |
+| 1 | Forage budget from the latest reading (1) | SI | duplication trap; constants reused later |
 | 2 | Role restrictions across endpoints (2) | SI | cross-cutting rule |
-| 3 | Owner emergency move overriding the rest rule, with reason; under-specified on purpose (4) | SI; creates recorded decision D1 | decision point |
+| 3 | Owner emergency move overriding the rest rule, with reason (4); the scripted reply fixes the open choice | SI; creates recorded decision D1 | decision point |
 | 4 | Occupancy report over a date range (5) | SI | reuse and layering |
-| 5 | Herd split and merge (6) | SI | invariants (overlap, stocking) |
-| 6 | SPEC CHANGE: rest period depends on season and forage state, supersedes the earlier constant (7) | SD on every earlier surface that used the old rule | propagation |
-| 7 | Paddock subdivision (8) | SD (capacity and rest interplay; decision D2) | decision point |
-| 8 | Low-forage alert list (10) | SD (reuse of the change-1 logic under the new rule) | reuse across changes |
-| 9 | Retire the emergency move (11) | SD (everything change 3 touched; the change text does not enumerate it) | reversal |
+| 5 | Herd split and merge (6) | SI | invariants |
+| 6 | SPEC CHANGE: rest period depends on season and forage state, supersedes the constant (7) | SD on every earlier surface using the old rule | propagation |
+| 7 | Paddock subdivision (8); scripted reply | SD (decision D2) | decision point |
+| 8 | Low-forage alert list (10) | SD (reuse of change-1 logic under the new rule) | reuse |
+| 9 | Retire the emergency move (11) | SD (everything change 3 touched; the text names no targets) | reversal |
+| 10 | Late independent feature (new; for example a veterinary visit log), no interaction with rest or forage rules | SI | position control |
 
-At least 3 of the 9 change texts are written or reviewed by an independent person who does not know the arm artifacts; the whole list is reviewed by an independent reader for ambiguity and for including cases where heavy process is a cost (a small throwaway change is allowed in place of change 4 if the independent reviewer asks).
-
-- Decision points (3 and 7): a single scripted product-owner reply, identical for every arm that asks, is available in-session. Whether an arm asked, and how often, is logged.
-- Acceptance and scored state: for every arm the harness snapshots the working tree after the final attempt of each change (at most 3 attempts; a retry sees only the arm's own test output, never the oracle). Hooks may block commits; the scored state is the working tree, not HEAD, so a hook cannot act as free rollback. A chain that fails to build on 2 consecutive changes is `collapsed`: remaining probes score zero (intention to treat); a completers-only sensitivity analysis is also reported.
-- Per-session limits identical across arms: [FROM SDX-0] turns, minutes, token cap. Cap-hit rate per arm is logged; a differential above 10 percentage points is a registered `INVALID-DESIGN` trigger.
-- Test deletion, weakening and fixture editing are logged in every arm, not only A4.
+Acceptance and scored state: the working tree after the last attempt of each change, same rule for every arm; hooks may block commits but the scored state is the working tree, so a hook is not free rollback. Test deletion, weakening and fixture editing are logged in every arm.
 
 ## 5. Model
 
-Stage 1: one vendor, one mid-tier model in the vendor's headless CLI, model id, CLI version and dates recorded; all chains in a short window; arm order randomized in blocks. A second vendor is a replication (SDX-2), not pooled. Generator and any judge are different vendors where a judge is used (parity and leak checks only).
+One vendor, one mid-tier model through its headless CLI; dated snapshot id, CLI version and Node version recorded; all chains in a short window; arm order randomized in blocks with A5b interleaved. A second vendor is a replication (SDX-2), not pooled. Judges (M1, parity) are a different vendor from the generator. **One-vendor scope is a stated limit**: the manipulation judge has to come from another vendor, none is installed on this machine, so JC must supply API access before freezing (section 13).
 
 ## 6. Oracle (sealed, outside every repo, HTTP level)
 
-- Probes derived only from the base spec and change texts 1..k. Status-class tolerance (any 2xx accept, any 4xx reject); bodies checked only for field names fixed in the per-change contract.
-- Paired probes (must accept X, must reject Y) and a 2xx/4xx balance per rule, so an always-rejecting or always-accepting server cannot score well.
-- Probes versioned per change: the probe manifest lists those retired or inverted at change 6 (supersession) and change 9 (reversal); intended changes never count as regression flips.
-- Cumulative scoring: probes of changes 1..k at change k; about 8 to 10 probes per change; sealed holdout (never shown to artifact authors).
-- Validation in SDX-0 (reference implementation, degenerate stubs, hand mutants) is a precondition.
+Probes derived only from the base spec and change texts 1..k; status-class tolerance (2xx accept, 4xx reject) plus value and list-membership checks wherever the per-change contract defines them (alert-list membership, budget values); fields checked only by names fixed in the contract. Paired probes scored as a pair (accept X and reject Y both required); 2xx/4xx balance is required overall and **within the SD subset**. **SD probes are enumerated by a mechanical rule**, not chosen by the oracle author: one probe per supersession or reversal and per surface listed from the reference implementation's call graph, plus one per recorded decision; the list is frozen before any substrate artifact is designed. Probes versioned at change 6 and change 9: retired or inverted probes are listed in the manifest and never count as regression flips. About 8 to 10 probes per change; sealed holdout; validation in SDX-0 with a reference implementation, degenerate stubs and hand mutants is a precondition.
 
 ## 7. Judges
 
-No primary metric is judged. Judges (a different vendor from the generator) are used for the parity and leak checks only, and any probe or script that can decide a question replaces a judge. Governance, reconstruction and defect-detection questions are SDX-3.
+No primary metric is judged. Judges (a different vendor) are used for M1 leak and parity classification only, with the independent human reviewer as the second instrument. Deterministic scripts replace judges wherever they can decide (emergent-substrate detector, hash checks). Governance, reconstruction and defect-detection questions are SDX-3.
 
 ## 8. Analysis plan, exactly as registered
 
-1. Check controls and triggers (section 10 INVALID-DESIGN rows) before any contrast.
-2. H1: stratified permutation test and bootstrap interval for A4 minus A1 on D; effect size reported.
-3. If H1 is SUPPORTED: H5: A4 minus A3 on D with interval and TOST at the SESOI.
-4. Report collapse rate per arm; ITT and completers-only.
-5. Secondary and exploratory analyses as listed, labelled.
-6. No correction across hypotheses (H5 is gatekept by H1). Multiplicity inside the secondary list is not corrected and nothing in it carries a verdict.
+1. Controls, manipulation checks and INVALID-DESIGN triggers (section 10) before any contrast.
+2. H1 and H2 at the 97.5% level; classify as in section 2.2; assign the decision row from the pair.
+3. If H1 is positive and scope is Full: H3 (alpha 0.05). Then H4 to H6 at 95%.
+4. Report collapse rate per arm (ITT and completers-only), conditional vs unconditional SD scoring, the contrast-by-readout table, emergent-substrate counts, circumvention events (A4 results are kept under intention to treat; per-protocol is a sensitivity), exploratory list labelled.
+5. No further correction; nothing in the secondary list carries a verdict.
 
 ## 9. Stopping rules
 
-Fixed n per arm, no optional stopping, no extra chains after seeing outcome data. One interim validity look at roughly half the chains, executed by a script that outputs only these flags and never arm-level outcomes: ceiling/floor flags, harness failure rate above 15%, cost above 2x estimate, differential cap-hit rate, canary. Budget rule: if the pilot's cost per chain exceeds 3x the estimate, amend before freeze.
+Fixed n per arm at freeze, no optional stopping, no extra chains after seeing outcome data, except the single blinded variance re-estimation (section 2a). One interim validity look at about half the chains by a script that prints only flags: ceiling or floor, harness failure rate above 15% (action: fix the harness, rerun the affected cells, disclose), cost above 2x (action: stop and amend budget with JC), differential cap-hit, canary, A5 emergence counts. It never prints arm-level outcomes. Budget: if the pilot's cost per chain exceeds 3x the estimate, amend before freeze.
 
-## 10. Decision table
+## 10. Decision table (registered)
 
-Evidence tiers assume freeze and external timestamp precede data.
+Rows are assigned by the co-primary pair (H1 on E1-SD adjusted, H2 on E1-SI) after the validity row is cleared. "Positive" means any POSITIVE class with its size class stated. "Claim the paper and offer may then make" is a scope-bound permission, not sales copy; anything not listed is not permitted. **The validity audit (re-run of the stage-2 questions, controls, oracle, harness logs, arm artifacts) is mandatory for every verdict row, favourable ones included**; the falsifiability audit of the intuition is added whenever a result contradicts field experience. Tiers assume freeze and external timestamp precede data.
 
-| Observed | Permitted conclusion | Forbidden conclusion |
-|---|---|---|
-| INVALID-DESIGN triggers: positive control A4x not detected; A/A difference at or above SESOI; A1 or A3 at ceiling; A0 at ceiling or floor; differential collapse or cap-hit above threshold; parity judge finds a gap after the fact; oracle leak found in an artifact; canary recall above zero; CLI or model version changed mid-window; circumvention in A4 above [FROM SDX-0]% (then A4 is not "enforced"); pilot or run shows the state-dependent probes reward one resolution of a decision point | `INVALID-DESIGN`, naming the trigger; this experiment could not answer; redesign and register a new linked experiment | Any conclusion about the substrate |
-| H1 SUPPORTED, H5 SUPPORTED | Under this construct, in this vendor, on this invented 9-change project, the structured enforced substrate preserves state-dependent behavior better than both a prompt and the same content in one file | "Durability is demonstrated" in general; production-scale claims; other vendors; human maintainers |
-| H1 SUPPORTED, H5 NULL by equivalence | Persistence of content is the active ingredient on this construct; structure and gates are not shown necessary here | "Structure and enforcement are useless" (they were measured only on D); "the flat file is enough" beyond this horizon |
-| H1 SUPPORTED, H5 INCONCLUSIVE | Not enough evidence to separate structure from content; state the n that would | Either direction on H5 |
-| H1 NULL or REFUTED (A4 does not beat the expert prompt on D) | On this construct and horizon, persistence did not matter for the agent; run guard-f audits; consider a longer horizon or larger repository (scale threshold, BACKLOG) | "The substrate has no value" (only: no value on this construct, here); reinterpreting D after the fact |
-| H1 INCONCLUSIVE | Report; do not continue to H5 | Either direction |
-| A1 beats A4 on D with controls valid | The gate friction or overhead cost more than they bought at this size; report prominently; cost secondary becomes central | Rescuing the claim by naming untested regimes (larger teams, weaker models) as the explanation |
-| The result contradicts field experience | Guard-f audits first, both logged | Dismissal of either |
-| The experiment turns out to be the wrong one (for example D does not isolate state, or probes were found to encode information only available through one arm) | `INVALID-DESIGN` with the named defect; linked redesign | Counting it as support or refutation |
+| Row | Observed | Permitted conclusion (this construct, vendor and model, invented 10-change project) | Claim the paper and offer may then make | Forbidden conclusion |
+|---|---|---|---|---|
+| (v) INVALID | Any trigger: A0S minus A0 under 20 points; A5 vs A5b noise trigger; ceiling or floor as in 2b; A5 leak (M1); A5 weak by construction (M2) after budget (invalid for H1, H2, H5, H6 only); differential collapse or cap-hit above threshold; parity gap or oracle leak found in an artifact; canary recall above zero; model, CLI or Node changed mid-window; harness persistence found (V13) ; SD probes found to reward one resolution of a decision point; practitioner independence or authorship rule broken | `INVALID-DESIGN`, naming the trigger; redesign and register a linked experiment | none; not cited as evidence either way | Any conclusion about A5, A4 or the substrate |
+| (i) | H2 EQUIVALENT and H1 positive | Generic expert prompting adds nothing measurable to general hidden correctness here; the substrate adds state-dependent correctness | "On this construct a generic expert prompt without a project-state mechanism did not beat naive on hidden correctness, while the substrate beat it on state-dependent behaviour." Scope stated, size class stated | "Prompting does not matter" (structure metrics not tested for a verdict); frontier models |
+| (ii) | H2 positive and H1 positive | A5 sits between naive and the substrate; the load-bearing elements (as a bundle) are the remaining gap. Both gap sizes with intervals | "Generic expertise helps; the substrate adds a further measured amount on state-dependent behaviour. Which element acts is not shown." SDX-2 ablation named as next step | "Each of L1 to L5 is load-bearing"; production-scale durability |
+| (iii) | H1 EQUIVALENT, any H2 | The substrate adds no measurable state-dependent correctness beyond strong generic expertise here; its value, if any, lies outside what was measured (governance, continuity, audit, regenerability, read cost). **Contradicts field observation: the falsifiability audit of the intuition is mandatory in addition to the validity audit** (10a) | The paper drops "the substrate improves durable correctness" and keeps governance and continuity as hypotheses owed to SDX-3. The offer sells assurance, conformance and governance evidence, not "better code than a strong prompt". Field reports stay labelled observational | "The substrate is useless"; rescuing the claim by regimes not pre-registered in 10a |
+| (iv) | H1 REVERSED | Gate friction or overhead cost more than they bought at this size; cost secondary becomes central | as (iii), plus a stated cost caveat on enforcement | Rescue by regimes beyond 10a |
+| (vi) | H1 INCONCLUSIVE, any H2 | Not enough evidence; state the n that would resolve it from the observed SD | none beyond "inconclusive at n" | Either direction |
+| (vi-a) | H1 positive and H2 INCONCLUSIVE or REVERSED | The substrate beats generic expertise on state-dependent behaviour; A5 versus naive is undetermined (or A5 worse, reported prominently) | only the H1 statement | That A5 is between naive and the substrate |
+| (vi-b) | A5 self-induced a substrate: at least half of A5 chains show three or more of L1 to L5 at the final state | This is a finding about the expert prompt, not an invalid arm: ITT verdict on H1 and H2 stands, and the arm is described as "an expert prompt that induced its own substrate"; report emergence as a mediator | verdict stands with that description | Calling A5 "minus GS in practice" |
+| (vii) | H1 positive and H3 positive (Full) | Structure and enforcement add beyond the same content in one file | as (ii) with the flat-file comparison | "Durability is demonstrated" in general |
+| (viii) | H1 positive, H3 EQUIVALENT | Persistence of content is the active ingredient; structure and gates are not shown necessary here | "content persisted in a repository file is enough on this construct and horizon" | "Structure and enforcement are useless" |
+| (ix) | Result contradicts field experience (any row) | Both audits, logged, before anything else | none until audits done | Dismissal of the result or of the experience without them |
+| (x) | The experiment turns out to be the wrong one | `INVALID-DESIGN` with the named defect; linked redesign | none | Counting it as support or refutation |
+| (xi) | A4 circumvention above `[FROM SDX-0]`% | A4 verdict kept under ITT; the word "enforced" is withdrawn for A4; per-protocol sensitivity reported | verdict with that wording | Calling A4's gates enforced |
 
-Honest limit across every row: a win shows state-dependent correctness on a 9-change invented project, with one vendor and a mid-tier model, not durability of production systems; a null shows only that this design did not find it.
+### 10a. Regimes pre-registered as untested (the only ones that may be named after row iii or iv)
 
-## 11. Cost and time (estimate, to be replaced from SDX-0)
+(a) A repository larger than a fresh session reads (BACKLOG B6; at 2 to 3 kLOC this regime is excluded by construction, and a 24-change contingency is registered for SDX-2); (b) multiple contributors or rotating people; (c) governance and audit outcomes (SDX-3); (d) weaker models (CR) and frontier models (SDX-2). Naming one is a statement of what was not tested; a claim about it needs its own registered experiment. Listing them now, before data, is what stops them being post-hoc rescues.
 
-Planning: 5 arms of interest x 15 chains + A0 k=3, about 80 chains x 10 steps x about 1.25 attempts, about 1,000 sessions at $0.4 to $1.2: roughly $400 to $1,200; wall clock 20 to 30 hours with 3 to 4 chains in parallel. Preparation is carried over from SDX-0.
+Honest limit across every row: a win shows state-dependent correctness on a 10-change invented project with one vendor and a mid-tier model, not durability of production systems; a null shows only that this design did not find it.
+
+## 11. Cost and time (estimate; replace from SDX-0)
+
+Sessions = chains x 11 steps (CR0 plus 10 changes) x about 1.25 attempts = about 13.75 per chain; $0.4 to $1.2 per session (measured anchor $0.43 for a substrate session). Planning n = 20 per contrast arm, controls 10. **Core:** A0, A5, A4 at 20; A5b, A0S at 10 = 80 chains, about 1,100 sessions, about $440 to $1,320. **Full:** adds A1, A3, A6 at 20 and A4x at 10 = 150 chains, about 2,060 sessions, about $825 to $2,475. If the pilot requires n = 27: Core 101 chains (about $555 to $1,670), Full 192 chains (about $1,060 to $3,170). Judge runs for M1 about $20 to $60. Wall clock 25 to 60 hours with 3 to 4 chains in parallel. All guesses until SDX-0 measures them.
 
 ## 12. Threats to validity (declared)
 
-Proponent-authored substrate, sensors and oracle (mitigated by registration, the external artifact author, parity and leak checks, an independent change reviewer, published artifacts, and an independent rerun of the primary contrast as the stated next step; not eliminated). The strength of "the expert prompt" is unbounded. Toy scale (about 2 to 3 kLOC): a null may be a horizon or size effect. One invented domain and one fixed change order; order effects unknown. One vendor and one CLI harness. Agents may circumvent gates (counted, reported). Locked scaffold may blunt architecture differences. The state-dependence tag is an author construct (finalized blind to arm, audited in SDX-0). Parity is on content, not form: form is the thing under test.
+Proponent-authored substrate, sensors, oracle and change list (mitigated by registration, external practitioner, mechanical SD probe rule frozen before the substrate is designed, substrate builder blind to the change texts, parity and leak checks, independent reviewer, published artifacts, an independent rerun as next step; not eliminated). Authoring asymmetry: A4 is built by the GS side, A1, A3, A5, A6 by an outsider, so vehicle is confounded with author skill in H3 and H4 (declared; not resolved). Authoring tools per artifact are disclosed; an artifact drafted with the generator's own vendor may be read more easily by it. "The expert prompt" is not one object: A5 is one practitioner's prompt under a stated constraint. The substrate is tested as a bundle. A5's lack of persistence is by instruction; agents may build their own (detector, row vi-b). Toy scale: a fresh session can read the whole repository, which excludes the regime where the substrate is claimed to matter most. One invented domain, one change order. One vendor, one CLI harness, a judge from another vendor still owed. D and E1-SD adjusted rely on E1-SI as covariate, itself post-treatment. Parity is on content, not form: form is the thing under test. The pre-stated ranges come from a small, mostly tier-C evidence base.
 
 ## 13. Open items before freezing (decisions)
 
-1. External practitioner for P_expert and the flat file (mandatory).
-2. Independent author or reviewer for at least 3 of 9 change texts and a read of the whole list.
-3. A reviewer from a different vendor family to re-read this file (the design review used one family).
-4. Budget approval (SDX-0 about $90 to $260 plus preparation; SDX-1 about $400 to $1,200).
-5. SESOI confirmation and n from SDX-0.
-6. External timestamp route: OSF Registries or Zenodo deposit (the protocol, section 4), and whether to also submit to a Registered Report track.
-7. Registration of vendor and model ids at freeze time.
+1. **Name the external practitioner** (authors A6 first, then A5 derived under the constraint, then the L appendix and flat file) and **the independent reviewer**; both different from JC and from any agent (SDX-1-ARMS section 3).
+2. Independent author or reviewer for at least 3 of 10 change texts and a read of the whole list; an independent author for the mechanical SD probe rule check.
+3. **A different-vendor critic must re-read this file and SDX-1-ARMS before freezing**, and a different-vendor judge (API key) must be available for M1. Revision 2 was reviewed by Claude critics only; vendor diversity is still owed.
+4. Budget approval (SDX-0 about $130 to $400; SDX-1 Core or Full as in section 11) and a decision on whether a design whose modal outcome is POSITIVE-SMALL or INCONCLUSIVE (section 2a) is worth its price.
+5. SESOI confirmation with written justification (E1-SD adjusted, E1-SI) and n from SDX-0.
+6. Scope choice, Core or Full.
+7. External timestamp route (OSF Registries recommended; PREREG-HOWTO) and whether to try a Registered Report track.
+8. Vendor, dated model snapshot and Node version at freeze.
 
 ## 14. Registration checklist
 
-Commit and tag `prereg/SDX-1-v1`: this file, change texts and order, scaffold hash, oracle and its manifest and tolerance rules, content manifest and parity result, frozen P_expert, flat file, substrate, analysis scripts, model id and CLI version, SESOI and n, deviations-log file (empty). Push. External timestamp citing tag, commit hash and the SHA-256 of the registration zip. Log tag, commit, DOI or URL and date in `...\LOGBOOK\README.md`.
+Commit and tag `prereg/SDX-1-v1`: this file, SDX-1-ARMS.md, change texts and order, scaffold hash, oracle with probe manifest and the mechanical SD rule and its output, content manifest (G and L tags), parity and leak results, frozen A6 and A5 texts with authorship attestation, A1 appendix, flat file, A4 initial substrate (hashed), detector and analysis scripts with seeds, model snapshot, CLI and Node versions, SESOI and n, deviations-log file (empty). Build the package with `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\scripts\build-frozen-package.js` and follow `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\PREREG-HOWTO.md`. Log tag, commit, DOI or URL, date and archive SHA-256 in `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\LOGBOOK\README.md`.
