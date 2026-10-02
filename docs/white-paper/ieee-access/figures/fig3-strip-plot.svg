@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 260" font-family="Arial,Helvetica,sans-serif" font-size="11">
+<rect width="100%" height="100%" fill="white"/>
+<text x="10" y="18" font-size="13" font-weight="bold">Fig. 3. Individual runs, k = 5 per condition (replication; source: experiments/ax/runner/results.csv)</text>
+<text x="40" y="34" font-size="11" font-weight="bold">Layer-boundary violations (lower better)</text>
+<line x1="40" y1="200" x2="230" y2="200" stroke="#444"/>
+<line x1="40" y1="40" x2="40" y2="200" stroke="#444"/>
+<line x1="37" y1="200.0" x2="40" y2="200.0" stroke="#444"/><text x="34" y="204.0" text-anchor="end" font-size="9">0</text>
+<line x1="37" y1="120.0" x2="40" y2="120.0" stroke="#444"/><text x="34" y="124.0" text-anchor="end" font-size="9">27.5</text>
+<line x1="37" y1="40.0" x2="40" y2="40.0" stroke="#444"/><text x="34" y="44.0" text-anchor="end" font-size="9">55</text>
+<circle cx="59.7" cy="83.6" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="65.7" cy="74.9" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="71.7" cy="69.1" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="77.7" cy="66.2" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="83.7" cy="66.2" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<text x="71.7" y="214" text-anchor="middle" font-size="10">Naive</text>
+<circle cx="123.0" cy="200.0" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="129.0" cy="200.0" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="135.0" cy="200.0" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="141.0" cy="66.2" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="147.0" cy="48.7" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<text x="135.0" y="214" text-anchor="middle" font-size="10">Expert prompt</text>
+<circle cx="186.3" cy="200.0" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="192.3" cy="200.0" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="198.3" cy="200.0" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="204.3" cy="200.0" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="210.3" cy="200.0" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<text x="198.3" y="214" text-anchor="middle" font-size="10">GS v1</text>
+<text x="250" y="34" font-size="11" font-weight="bold">Files emitted</text>
+<line x1="250" y1="200" x2="440" y2="200" stroke="#444"/>
+<line x1="250" y1="40" x2="250" y2="200" stroke="#444"/>
+<line x1="247" y1="200.0" x2="250" y2="200.0" stroke="#444"/><text x="244" y="204.0" text-anchor="end" font-size="9">0</text>
+<line x1="247" y1="120.0" x2="250" y2="120.0" stroke="#444"/><text x="244" y="124.0" text-anchor="end" font-size="9">32.5</text>
+<line x1="247" y1="40.0" x2="250" y2="40.0" stroke="#444"/><text x="244" y="44.0" text-anchor="end" font-size="9">65</text>
+<circle cx="269.7" cy="160.6" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="275.7" cy="153.2" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="281.7" cy="148.3" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="287.7" cy="148.3" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="293.7" cy="145.8" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<text x="281.7" y="214" text-anchor="middle" font-size="10">Naive</text>
+<circle cx="333.0" cy="101.5" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="339.0" cy="101.5" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="345.0" cy="99.1" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="351.0" cy="96.6" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="357.0" cy="74.5" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<text x="345.0" y="214" text-anchor="middle" font-size="10">Expert prompt</text>
+<circle cx="396.3" cy="101.5" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="402.3" cy="69.5" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="408.3" cy="64.6" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="414.3" cy="62.2" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="420.3" cy="52.3" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<text x="408.3" y="214" text-anchor="middle" font-size="10">GS v1</text>
+<text x="460" y="34" font-size="11" font-weight="bold">Seven-property audit, session 1 (0-14)</text>
+<line x1="460" y1="200" x2="650" y2="200" stroke="#444"/>
+<line x1="460" y1="40" x2="460" y2="200" stroke="#444"/>
+<line x1="457" y1="200.0" x2="460" y2="200.0" stroke="#444"/><text x="454" y="204.0" text-anchor="end" font-size="9">0</text>
+<line x1="457" y1="120.0" x2="460" y2="120.0" stroke="#444"/><text x="454" y="124.0" text-anchor="end" font-size="9">7</text>
+<line x1="457" y1="40.0" x2="460" y2="40.0" stroke="#444"/><text x="454" y="44.0" text-anchor="end" font-size="9">14</text>
+<circle cx="479.7" cy="154.3" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="485.7" cy="142.9" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="491.7" cy="142.9" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="497.7" cy="120.0" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="503.7" cy="108.6" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<text x="491.7" y="214" text-anchor="middle" font-size="10">Naive</text>
+<circle cx="543.0" cy="97.1" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="549.0" cy="85.7" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="555.0" cy="85.7" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="561.0" cy="74.3" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="567.0" cy="74.3" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<text x="555.0" y="214" text-anchor="middle" font-size="10">Expert prompt</text>
+<circle cx="606.3" cy="165.7" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="612.3" cy="85.7" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="618.3" cy="74.3" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="624.3" cy="62.9" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="630.3" cy="62.9" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<text x="618.3" y="214" text-anchor="middle" font-size="10">GS v1</text>
+<text x="670" y="34" font-size="11" font-weight="bold">Generation cost, USD per run</text>
+<line x1="670" y1="200" x2="860" y2="200" stroke="#444"/>
+<line x1="670" y1="40" x2="670" y2="200" stroke="#444"/>
+<line x1="667" y1="200.0" x2="670" y2="200.0" stroke="#444"/><text x="664" y="204.0" text-anchor="end" font-size="9">0</text>
+<line x1="667" y1="120.0" x2="670" y2="120.0" stroke="#444"/><text x="664" y="124.0" text-anchor="end" font-size="9">1.1</text>
+<line x1="667" y1="40.0" x2="670" y2="40.0" stroke="#444"/><text x="664" y="44.0" text-anchor="end" font-size="9">2.2</text>
+<circle cx="689.7" cy="161.8" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="695.7" cy="161.3" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="701.7" cy="152.6" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="707.7" cy="150.1" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<circle cx="713.7" cy="147.8" r="3.5" fill="#b45309" fill-opacity="0.85"/>
+<text x="701.7" y="214" text-anchor="middle" font-size="10">Naive</text>
+<circle cx="753.0" cy="107.5" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="759.0" cy="106.7" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="765.0" cy="102.6" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="771.0" cy="100.0" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<circle cx="777.0" cy="92.0" r="3.5" fill="#2563eb" fill-opacity="0.85"/>
+<text x="765.0" y="214" text-anchor="middle" font-size="10">Expert prompt</text>
+<circle cx="816.3" cy="88.5" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="822.3" cy="68.3" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="828.3" cy="62.6" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="834.3" cy="59.3" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<circle cx="840.3" cy="57.6" r="3.5" fill="#15803d" fill-opacity="0.85"/>
+<text x="828.3" y="214" text-anchor="middle" font-size="10">GS v1</text>
+</svg>

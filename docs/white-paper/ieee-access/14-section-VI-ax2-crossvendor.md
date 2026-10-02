@@ -1,49 +1,30 @@
-# Section VI.I. Cross-vendor structural robustness (AX2)
+# §VI.H-I — Cross-vendor replication (AX2) and capacity ladder (CR) (v0.3)
 
-**Research question.** Does the disciplined-specification advantage hold across model vendors, or is it a
-single-model artifact? A recurring reviewer concern for methods evaluated on one model family is external
-validity across vendors. AX2 addresses this directly.
+### H. Cross-vendor structural replication, AX2 (tier B)
 
-**Design.** We generated 45 implementations of the RealWorld/Conduit backend specification (TypeScript,
-Express, Prisma/PostgreSQL). Three vendors (an OpenAI GPT model, a Google Gemini model, and an Anthropic
-Claude model) each produced five independent implementations under each of three prompting conditions:
-naive prompting (C1), an expert prompt (C2, control), and mature Generative Specification (C3). All three
-vendors ran inside the same agent harness (GitHub Copilot agent mode), holding the authoring harness constant
-so that the only variable across vendors is the model itself.
+**Question.** Is the structural separation a single-model artifact? **Design.** 45 Conduit backends: three vendors, three conditions (naive, expert prompt, mature GS), five independent runs each. The model identifiers recorded in the run metadata are `gpt-5.6-sol`, `gemini-3.8-flash` and `claude-opus-4.8`, each run as a fresh sub-agent inside one agent harness (GitHub Copilot CLI), so the comparison is across vendors within one harness. **Metrics.** Only convention-independent static metrics are comparable across heterogeneous projects, so only they are reported: layer-boundary violations, duplication (jscpd), cyclomatic complexity (eslint) and test files.
 
-**Metrics of record.** Because the 45 implementations are independently generated and heterogeneous in their
-runtime conventions and test infrastructure, we report only **convention-independent, statically computed**
-metrics, which are comparable across implementations by construction: architectural layer-boundary violations
-(data-access calls made directly inside route or controller files), code duplication (jscpd), cyclomatic
-complexity (eslint), and emitted test-file count. These do not depend on runtime behaviour, HTTP status-code
-conventions, or per-project test harnesses.
-
-**Result.** The effect of disciplined specification is consistent across all three vendors. Moving from naive
-prompting to a disciplined condition (control or treatment), on every vendor:
-
-| Vendor | Layer violations (naive to disciplined) | Duplication % (naive to disciplined) | Cyclomatic mean (naive to disciplined) | Test files (naive to disciplined) |
+| Vendor | Layer violations, naive median (runs) | Disciplined (expert and GS) | Duplication %, naive mean to disciplined means | Test files, naive mean to disciplined means |
 |---|---|---|---|---|
-| GPT | 18.8 to 0 | 5.2 to 0.8 to 1.6 | 2.4 to 1.5 | 1.4 to 7 to 11 |
-| Gemini | 35.4 to 0 | 17.1 to 2.6 to 6.3 | 4.3 to 2.0 | 4.2 to 11 to 12 |
-| Claude | 33.0 to 0 | 7.9 to 0.4 to 1.0 | 2.4 to 1.5 | 1.0 to 9 to 13 |
+| GPT | 30 (0, 0, 30, 32, 32) | 0 in all 10 runs | 5.2 to 1.6 and 0.8 | 1.4 to 11.4 and 6.8 |
+| Gemini | 35 (34, 35, 35, 35, 38) | 0 in all 10 runs | 17.1 to 2.6 and 6.3 | 4.2 to 11.8 and 11.0 |
+| Claude | 33 (31, 33, 33, 33, 35) | 0 in all 10 runs | 7.9 to 1.0 and 0.4 | 1.0 to 9.0 and 12.8 |
 
-Architectural layer-boundary violations are eliminated (18 to 35 per project reduced to zero) on all three
-vendors; duplication falls roughly two to four fold; cyclomatic complexity falls; and the emitted test count
-rises several fold. The structural effect of the discipline is therefore **cross-vendor and not a single-model
-artifact**, which is the external-validity claim the competitive set demands.
+Layer violations are absent in all 30 disciplined runs, duplication falls roughly two to four fold and test files multiply. The expert and GS conditions are saturated against each other and on some cells the expert prompt is better (Gemini duplication 2.6% against 6.3%). The separation is therefore **naive-to-disciplined** and not GS-over-expert, consistent with Section VI.B. **Limits.** Five runs per cell where the protocol targeted twelve to fifteen; one benchmark; vendor and harness are confounded; the GS condition supplied the cascade as prompting and did not run an enforced verification loop. Runtime metrics (coverage, mutation score, a strict behavioural oracle) produced no comparable numbers: the oracle measured REST-convention conformance (0 of 13 on functional apps) and coverage was dominated by each project's test-infrastructure failures. Those sub-metrics are withdrawn and not reported. Obtaining comparable runtime metrics needs a controlled substrate (a locked scaffold and a convention-tolerant oracle), which is the next experiment.
 
-**Honest scope.** The separation is between **naive prompting and disciplined specification**. The expert
-control (C2) and the GS treatment (C3) are largely **saturated** on this mid-complexity benchmark, both near
-zero on layer violations and low on duplication and complexity, so AX2 does not establish that GS improves on
-a strong expert prompt on these structural metrics. This is consistent with the saturation observed in the AX
-replication (Section VI). Runtime-quality metrics (mutation score, branch coverage) and behavioural
-conformance did **not** yield numbers comparable across the 45 heterogeneous implementations: a strict
-behavioural oracle measures REST-convention conformance rather than functional correctness (all three vendors'
-backends are functional but adopt different status-code and null conventions), and coverage is confounded by
-each project's own test infrastructure. Obtaining comparable runtime-quality and lifecycle metrics requires
-controlling the substrate, a fixed scaffold in which only the implementation varies plus a convention-tolerant
-behavioural oracle, which we name as the next experiment.
+### I. Capacity ladder on a non-memorized benchmark, CR (tier B)
 
-**Threats.** One benchmark, a single shared agent harness (so the comparison is cross-vendor within one
-harness rather than cross-harness), and n = 5 per cell. As with the twin studies, each conceded limit is
-reported beside its result.
+**Question.** Does the structural benefit depend on model capacity, on a benchmark the models cannot have memorized? **Design.** An invented domain, "Pastura" (a rangeland grazing-rotation API with temporal business rules, no public implementation), a ladder from a small local model (qwen2.5-coder 7B) through a mid model to three frontier models, naive and GS conditions, k = 3 per cell, medians reported. The design and prediction were committed on 17 September 2026 (commit `c4c855e`) before any CR run.
+
+**TABLE IV. GS benefit (naive minus GS for lower-better metrics) by rung.**
+
+| Metric | Weak (7B) | Mid | Frontier (GPT, Gemini, Claude) |
+|---|---|---|---|
+| Duplication, percentage points | +14.5 | 0 | -1.2, -3.5, 0 |
+| Mean cyclomatic complexity | +0.63 | +0.15 | +0.15, +0.07, +0.16 |
+| Behavioural oracle (of 6) | both arms fail | -1 | -1, -1, 0 |
+| Layer violations | 0 | 0 | 0, 0, 0 |
+
+The pre-registered gradient held for duplication and complexity and for no other metric: layer violations never fired on this benchmark (unlike Conduit), the oracle gave no weak-rung signal because neither arm's apps served, GS scored equal to or below naive at every hosted rung, and test files moved against the prediction. **Limits.** k = 3; the GS arm at the weak rung was highly dispersed (one 32-file app, one 5-file app, one empty project); one benchmark; one weak model (a 32B rung was dropped for lack of VRAM); and the contamination canary that the design calls for has no results file in the repository, so non-memorization rests on the invented domain and unpublished specification and not on a measured recall.
+
+**Reading the three capacity studies together.** TX (one system), CR (a non-memorized benchmark, structure only) and AX2 (cross-vendor, saturated between expert and GS) are consistent with a structural benefit that is capacity-relative and recedes as models strengthen. Each has the limits above and none is a powered estimate.

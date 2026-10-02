@@ -1,6 +1,6 @@
-# AX Replication Protocol (Option B) — multi-run for inferential statistics
+# [Supplement S1] AX Replication Protocol (Option B) — multi-run for inferential statistics
 
-> The k-replication design for §V-VI: five independent generations per condition so the study reports distributions, effect sizes, and significance tests rather than point estimates. This file is the pre-registered design and analysis plan; it was committed before the replication runs and the runs were executed with the harness in `experiments/ax/runner/`.
+> The k-replication design for §V-VI: five independent generations per condition so the study reports distributions, effect sizes, and significance tests rather than point estimates. This file is the analysis plan for the replication. Its first commit (2026-09-17) is later than the first commit of the data (2026-09-14), so it cannot be shown to precede the runs; the plan specified k = 10 (minimum 5) and the executed study used k = 5. Mutation score and coverage, listed below as metrics of record, were not obtained for the replication.
 
 ## Why
 The single-run design gives observed deltas but no sampling distribution → no honest inferential test. Replicating each condition k times (varying only the session, i.e. model nondeterminism) yields a distribution per condition per metric → real effect sizes + significance, and directly answers the "single run" reviewer reflex.
@@ -39,7 +39,7 @@ The single-run design gives observed deltas but no sampling distribution → no 
 The generation and measurement harness lives in `experiments/ax/runner/` (`generate.cjs`, `materialize.cjs`, `measure.cjs`, `audit.cjs`, `aggregate.cjs`, `stats.py`) with the pinned tool versions in `package.json`. The k=5 study across the three pre-registered conditions was executed with it (per-condition, per-replication session IDs, token/cost, objective metrics, and two blind-audit passes are in the committed `results.csv`, `results.json`, and `stats.json`). The replication package ships this runner so every reported cell is traceable to a runnable script and a logged session; the raw generation outputs and the benchmark spec are committed alongside. Environment: Docker, Claude CLI, Node present per the package manifest.
 
 ## Execution (JC's infra — turnkey checklist)
-- [ ] **Reconstruct the AX runner first** (it is absent — see above). Then confirm end-to-end on one condition (smoke test).
+- [x] The AX runner exists in `experiments/ax/runner/` and the k=5 data are in `results.csv` (this checklist is historical; the runs are done).
 - [ ] Run k replications × 3 conditions via `experiments/runner/` (log every session ID + flags).
 - [ ] Run the automated metric collection + Stryker + jest-coverage + static checks per output.
 - [ ] Run the blind audit per output (fresh sessions).
