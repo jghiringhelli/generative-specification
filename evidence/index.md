@@ -70,6 +70,6 @@ The pre-run evidence (scores, evaluation transcripts, session logs) is in `exper
 
 Commit timestamps are signed by GitHub.
 
-## The formulas
+## Models and equations
 
-The formulas have their own section, with the status each has earned: [Formulas](/formulas/).
+The models and equations have their own section, with the status each has earned: [Models and equations](/formulas/).

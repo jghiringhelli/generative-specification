@@ -8,7 +8,7 @@ description: "Who writes Generative Specification, how it is licensed and cited,
 
 # About
 
-Generative Specification is an open method for working with AI coding assistants, developed by J.C. Ghiringhelli. This site is its open home: the lessons, the formulas, the papers and the evidence.
+Generative Specification is an open method for working with AI coding assistants, developed by J.C. Ghiringhelli. This site is its open home: the lessons, the models and equations, the papers and the evidence.
 
 ## Licence and citation
 
