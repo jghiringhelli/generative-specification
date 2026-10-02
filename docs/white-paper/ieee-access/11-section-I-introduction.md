@@ -17,7 +17,7 @@ This paper makes four contributions:
 - **C1. The stateless-reader paradigm and derivability as a binding constraint** — a precise account of why AI-assisted code degrades (drift as inference by a context-less reader) and of derivability as the obligation that removes it.
 - **C2. The seven specification properties** — a named, teachable, and measurable instrument (Self-describing, Bounded, Verifiable, Defended, Auditable, Composable, Executable) that operationalizes derivability, with two properties (Self-describing, Bounded) carrying disproportionate weight by activating the model's relevant prior knowledge.
 - **C3. The bridge and its read-asymmetry, and the sentinel** — the mechanism that explains *why* externalizing intent works (routing the hard half through the model's strong shore), and the sentinel navigational tree that bounds session context against degradation.
-- **C4. A pre-registered, blind-audited, objective-metric evaluation** — a controlled multi-agent study comparing unstructured use, expert prompting, and GS on rubric-independent metrics (mutation score, executed coverage, static analysis), with a replication package.
+- **C4. A replicated, objectively measured comparison with its null reported** — a study comparing unstructured use, expert prompting, and GS at five generations per condition on static and emission metrics, with a seven-property audit as a secondary instrument and a replication package. It finds a complete separation from unstructured use and a tie with a strong expert prompt on single-shot median quality, and states what that tie does not test.
 
 The empirical study answers four research questions:
 
@@ -28,4 +28,4 @@ The empirical study answers four research questions:
 
 A shorter, non-empirical preprint of the conceptual framework is available [Ghiringhelli, 2026, Zenodo 10.5281/zenodo.21726017]; this paper is a distinct, empirically-grounded contribution.
 
-The remainder of the paper is organized as follows. Section II positions GS against spec-driven development, the structural disciplines, and the LLM code-generation literature; Section III formalizes the stateless-reader constraint; Section IV presents the discipline and its seven properties; Sections V and VI give the pre-registered study design and results; Section VII discusses threats to validity; and Sections VIII and IX give implications for practice and conclusions.
+The remainder of the paper is organized as follows. Section II positions GS against spec-driven development, the structural disciplines, and the LLM code-generation literature; Section III formalizes the stateless-reader constraint; Section IV presents the discipline and its seven properties; Sections V and VI give the study design and results; Section VII discusses threats to validity; and Sections VIII and IX give implications for practice and conclusions.
