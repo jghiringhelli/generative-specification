@@ -53,3 +53,42 @@ Limit of this review: all three critics are the same vendor family (the only CLI
 | Enforcement-only (generic gate recovers the gap?) | SDX-2 (BACKLOG) |
 | Overhead as a pre-registered way to lose (cost per hidden-correct change) | SDX-1 secondary with a decision-table row |
 | Spec-change propagation share | SDX-1 secondary (propagation probes) |
+
+---
+
+# Section 2. Review round 2 (2026-10-02): the expert-minus-GS revision
+
+Reviewed artifact: SDX-1 revision 2 (first draft, with arm A5), `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-1-ARMS.md`, SDX-0, and the protocol.
+
+Method and limit. No non-Claude CLI is installed on this machine (`codex` and `gemini` not found; the only other local models are small Ollama models, qwen2.5-coder 7b, llama3.1 8b, hermes3 8b, llama3.2 3b, judged too weak to count as a critic of a statistical design and not used). Therefore two fresh stateless `claude -p` runs (model opus, no tools, no conversation history) received only the files, with the brief "find ways this design favors GS by construction or handicaps expert-minus-GS", one emphasizing arm fairness and construct validity, one statistics, decision-table logic and procedure. Raw, unedited: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\SDX-review-raw\critic-r2-fairness.md` and `...\critic-r2-stats-procedure.md`. **Vendor diversity is still owed**: a different-vendor critic must re-read the revised design before freezing, and a different-vendor judge is needed for the manipulation check. Both critics are the generator's vendor and say so.
+
+## Findings and dispositions
+
+| # | Finding (critic) | Disposition |
+|---|---|---|
+| R2-1 | Validity rules route thesis-unfavourable outcomes to INVALID-DESIGN: A5 emergence trigger, A4 circumvention trigger (both critics) | ACCEPTED. Emergence becomes decision row (vi-b), circumvention row (xi); both keep the intention-to-treat verdict and change the wording ("enforced" withdrawn) |
+| R2-2 | Amnesia control A4x is the hypothesis itself (code may carry the state), build may break, threshold sits at the bottom of the predicted range (both) | ACCEPTED. Validity gate is now A0S (state restated in text, effect known by construction); A4x is exploratory, forked from A4, verified to build |
+| R2-3 | M2 strength check included the hidden-oracle rate, tuning A5 against H2 and filtering row (i) (both) | ACCEPTED. M2 uses expert review and targeted metrics only; the oracle never triggers a revision |
+| R2-4 | BETTER rule needs p >= delta, so power at the SESOI is about 50%; no class for "positive but below SESOI", which would be mislabelled EQUIVALENT (both) | ACCEPTED. Classes POSITIVE-RELEVANT, POSITIVE-SMALL, POSITIVE-SIZE-UNRESOLVED added; power stated for "direction established"; modal outcome of H1 pre-stated as small or unresolved; JC to decide whether that is worth the price |
+| R2-5 | D = SD minus SI rewards arms that do badly on SI; use E1-SD with E1-SI covariate (both) | ACCEPTED with a caveat: primary is E1-SD adjusted for E1-SI by ANCOVA; D exploratory; the post-treatment nature of the covariate is declared |
+| R2-6 | SD/SI tag confounded with position (SD only in changes 6 to 9); final-state scoring hides transitions; free passes (both) | ACCEPTED. Change 10 (late SI feature) added, introduction-index covariate, per-change snapshots, conditional scoring with an unconditional sensitivity |
+| R2-7 | Ceiling rule invalidated a large positive result (A4 high) (critic 1); missing floor checks (critic 2) | ACCEPTED. Ceiling applies to the weaker comparator; floor checks added |
+| R2-8 | Decision-point channel differs by arm in headless mode; retry trigger and commit policy could depend on arm; ledger authorship (both) | ACCEPTED. Scripted reply appended unconditionally; arm-neutral retry rule; neutral harness commits; the agent, not the harness, writes the substrate |
+| R2-9 | Probe design: balance within the SD subset, value checks, pair scoring, SD probes chosen by someone who knows what A4 records (both) | ACCEPTED. Mechanical SD enumeration frozen before the substrate is designed; pair scoring; value and membership checks |
+| R2-10 | The A4 builder knows the change texts (teaching to the test); firewall only for A5 (critic 2) | ACCEPTED. A4's initial substrate built blind to the change texts and hashed; symmetric firewall for all arms |
+| R2-11 | A5 is "an expert forbidden to document"; add an unconstrained expert (critic 1) | ACCEPTED. A6 added (Full scope), authored first; A5 is A6 minus the forbidden instructions; H1 public wording fixed |
+| R2-12 | Harness persistence: auto-memory, resume, auto-loaded CLAUDE.md (critic 2) | ACCEPTED. Fresh config per session, unique path per chain, planted-memory check V13, detector counts agent-created CLAUDE.md |
+| R2-13 | Guard-f audit only for unfavourable rows (critic 2) | ACCEPTED. Validity audit mandatory for every verdict row |
+| R2-14 | n from k=3 SDs is unreliable; A/A false alarm and point-rule; unspecified bootstrap, permutation, alpha of H3, "strata none" (both) | ACCEPTED. Pooled upper-limit SD, one blinded re-estimation, interval-based noise trigger with limit stated, methods and seeds specified |
+| R2-15 | Authoring-vendor and authoring-tool asymmetry; author skill confounds H3 and H4 (both) | ACCEPTED as disclosure and human reading of A4's prose; the skill confound is DECLARED as a threat, not resolved |
+| R2-16 | Stale text and ordering in SDX-0, V6 vs the ceiling rule (both) | ACCEPTED, fixed |
+| R2-17 | E1-SI is a cleaner readout for H2 than E1-ALL (critic 2) | ACCEPTED. H2 on E1-SI; E1-ALL beside it |
+| R2-18 | SESOI for E1 is thinly justified (critic 1) | DEFERRED to the SDX-0 freeze with written justification (stated as open item 5) |
+| R2-19 | Promote dose-response to a primary hypothesis (critic 2) | REJECTED for the primary family: it adds a third test and multiplicity at n of 20, and its power is unknown. Kept as a labelled exploratory analysis |
+| R2-20 | Focus SD probes on information provably absent from code (critic 2) | ACCEPTED as a registered secondary split (propagation vs decision probes), not as a replacement of the main SD set, because the propagation probes are the core of the supersession claim |
+| R2-21 | Make the 24-change horizon the primary design because 2 to 3 kLOC excludes the regime that matters (critic 1) | REJECTED for SDX-1, DECLARED: cost roughly doubles before the instrument is validated; the regime is listed in 10a and the longer horizon is registered as the SDX-2 contingency |
+| R2-22 | Replace A4x with perfect-history H+ and degraded H- (critic 1) | H+ ACCEPTED (it is A0S); H- REJECTED as extra complexity with no decision that depends on it |
+| R2-23 | Remove "JC's expectation" from the decision table (guard i) | ACCEPTED |
+| R2-24 | A/A control is weak; fold into A0S (critic 2) | REJECTED: a false-positive and noise estimate on the arm at the center of both co-primaries is what guard (a) asks; kept at n=10 |
+
+Not found by either critic: a defect in the five-element list itself. That does not show the list is right; it shows the critics were not asked to attack it as a list. Attack on the list (is each element separable, is anything missing) is part of the different-vendor critic's brief.
