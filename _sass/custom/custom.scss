@@ -1,0 +1,135 @@
+// Sala de Control for genspec.dev: typography, restrained accent, readable long form.
+// Tokens (see _sass/color_schemes/sala-de-control.scss).
+$sc-ground: #080b11;
+$sc-panel: #0f1520;
+$sc-panel2: #141d2b;
+$sc-ink: #d9e4f5;
+$sc-ink-bright: #eef3fb;
+$sc-muted: #9db0c9; // lifted from #728299 so it holds 4.5:1 on panel2
+$sc-amber: #ffb020;
+$sc-cyan: #4bc4ff;
+$sc-green: #3ad39a;
+$sc-red: #ff5468;
+$sc-line: #25303f;
+
+$sc-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", roboto, "Helvetica Neue", arial, sans-serif;
+$sc-cond: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
+$sc-mono: "IBM Plex Mono", "SFMono-Regular", menlo, consolas, monospace;
+
+html { color-scheme: dark; }
+body { font-family: $sc-sans; background: $sc-ground; color: $sc-ink; }
+::selection { background: $sc-amber; color: $sc-ground; }
+
+// Long-form reading
+.main-content { line-height: 1.7; font-size: 1.0625rem; }
+.main-content p, .main-content li { color: $sc-ink; }
+.main-content strong { color: $sc-ink-bright; font-weight: 600; }
+
+h1, h2, h3, h4, h5, h6, .site-title { font-family: $sc-cond; color: $sc-ink-bright; letter-spacing: 0.005em; }
+h1, h2 { font-weight: 600; }
+h2 { padding-bottom: 0.25rem; border-bottom: 1px solid $sc-line; }
+h4 { font-family: $sc-mono; font-weight: 500; color: $sc-muted; letter-spacing: 0.06em; }
+h5, h6 { color: $sc-muted; }
+
+// Links: amber, underlined so they are not identified by color alone
+a { color: $sc-amber; }
+.main-content a:not(.btn) {
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 176, 32, 0.45);
+  text-underline-offset: 0.18em;
+  background-image: none;
+}
+.main-content a:not(.btn):hover { text-decoration-color: $sc-amber; color: #ffc65c; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid $sc-amber; outline-offset: 2px; }
+a.anchor-heading svg { fill: $sc-muted; }
+
+// Header and sidebar
+.side-bar, .site-header { background-color: $sc-panel; border-color: $sc-line; }
+@media (min-width: 50rem) {
+  .side-bar { border-right: 1px solid $sc-line; }
+}
+.site-header { border-bottom: 1px solid $sc-line; }
+.site-title { color: $sc-ink-bright; font-weight: 600; }
+.site-title:hover { color: $sc-amber; background-image: none; }
+.nav-list .nav-list-item .nav-list-link { font-family: $sc-sans; color: $sc-muted; }
+.nav-list .nav-list-item .nav-list-link:hover { color: $sc-ink-bright; background-image: none; }
+.nav-list .nav-list-item .nav-list-link.active { color: $sc-amber; font-weight: 600; }
+.nav-list .nav-list-item .nav-list-expander svg { color: $sc-muted; fill: $sc-muted; }
+.nav-list .nav-list-item.active > .nav-list-link { color: $sc-amber; }
+.nav-list .nav-list-item .nav-list-link:hover,
+.nav-list .nav-list-item .nav-list-expander:hover { background: $sc-panel2; }
+.aux-nav .aux-nav-list-item a { color: $sc-muted; }
+.aux-nav .aux-nav-list-item a:hover { color: $sc-amber; }
+.breadcrumb-nav-list-item a { color: $sc-muted; }
+.breadcrumb-nav-list-item:not(:last-child)::after { color: $sc-muted; }
+.mobile-menu-button, .site-button { color: $sc-amber; }
+.site-button .icon { fill: $sc-amber; }
+
+// Search
+.search-input { background: $sc-panel2; color: $sc-ink-bright; border-color: $sc-line; font-family: $sc-sans; }
+.search-input::placeholder { color: $sc-muted; opacity: 1; }
+.search-icon { color: $sc-muted; }
+.search-results { background: $sc-panel2; border: 1px solid $sc-line; }
+.search-result { border-color: $sc-line; }
+.search-result:hover, .search-result.active, .search-result-doc:hover { background: $sc-panel; }
+.search-result-title, .search-result-doc-title { color: $sc-ink-bright; }
+.search-result-previews, .search-result-preview, .search-result-rel-url { color: $sc-muted; }
+.search-result-highlight { background: transparent; color: $sc-amber; font-weight: 600; }
+.search-no-result { color: $sc-muted; }
+
+// Code
+code, kbd, samp, pre, .highlight, .highlighter-rouge { font-family: $sc-mono; }
+code { background: $sc-panel2; color: $sc-ink-bright; border: 1px solid $sc-line; border-radius: 3px; padding: 0.1em 0.35em; font-size: 0.875em; }
+pre, div.highlighter-rouge, figure.highlight { background: $sc-panel; border: 1px solid $sc-line; border-radius: 4px; box-shadow: none; }
+pre code, .highlight code { background: transparent; border: 0; padding: 0; color: $sc-ink; font-size: 0.875rem; line-height: 1.6; }
+.highlight .lineno { color: $sc-muted; }
+// Rouge: ink base; cyan/green only for structure, so amber stays the single accent
+.highlight .c, .highlight .cm, .highlight .c1, .highlight .cs, .highlight .cp, .highlight .ch { color: #8a9cb5; font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt, .highlight .kc { color: $sc-cyan; }
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .se, .highlight .sh, .highlight .sx, .highlight .sr, .highlight .ss { color: $sc-green; }
+.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh, .highlight .mo, .highlight .il { color: #ffc65c; }
+.highlight .nf, .highlight .nb, .highlight .nc, .highlight .nn, .highlight .nd, .highlight .ne, .highlight .nt { color: #8fd4ff; }
+.highlight .na, .highlight .nv, .highlight .vi, .highlight .vg, .highlight .vc { color: #cfdcf0; }
+.highlight .o, .highlight .p, .highlight .ow { color: $sc-ink; }
+.highlight .err, .highlight .gd { color: #ff8a99; background: transparent; }
+.highlight .gi { color: $sc-green; }
+.highlight .gh, .highlight .gu { color: $sc-ink-bright; font-weight: 600; }
+
+// Tables
+.main-content table { background: $sc-panel; border: 1px solid $sc-line; border-radius: 4px; box-shadow: none; }
+.main-content th { background: $sc-panel2; color: $sc-ink-bright; font-family: $sc-cond; font-weight: 600; border-bottom: 1px solid #33425a; }
+.main-content td, .main-content th { border-bottom: 1px solid $sc-line; border-left: 0; }
+.main-content tbody tr:last-child td { border-bottom: 0; }
+.main-content td { color: $sc-ink; }
+.table-wrapper { box-shadow: none; }
+
+// Blockquote
+blockquote { margin: 1.25rem 0; padding: 0.5rem 1rem; background: $sc-panel; border-left: 3px solid $sc-amber; color: $sc-ink; }
+blockquote p:last-child { margin-bottom: 0; }
+
+hr { background: $sc-line; border: 0; height: 1px; }
+
+// Buttons: primary is solid amber with ground-colored text; secondary is a panel with amber text
+.btn { font-family: $sc-cond; font-weight: 600; letter-spacing: 0.02em; background-color: $sc-panel2; color: $sc-amber; border: 1px solid #33425a; box-shadow: none; text-decoration: none; }
+.btn:hover { background-color: #1a2638; color: #ffc65c; border-color: $sc-amber; }
+.btn-primary { background-color: $sc-amber; color: $sc-ground; border-color: $sc-amber; }
+.btn-primary:hover { background-color: #ffc65c; color: $sc-ground; border-color: #ffc65c; }
+
+// Labels
+.label, .label-blue { background: $sc-panel2; color: $sc-cyan; border: 1px solid $sc-line; }
+.label-green { color: $sc-green; }
+.label-red { color: #ff8a99; }
+.label-yellow { color: $sc-amber; }
+.label-purple { color: $sc-ink; }
+
+// Back to top and footer
+.back-to-top { color: $sc-muted; text-decoration: none; }
+.back-to-top:hover { color: $sc-amber; }
+.site-footer { color: $sc-muted; border-top: 1px solid $sc-line; }
+.site-footer a, .site-footer .text-small a { color: $sc-amber; text-decoration: underline; text-underline-offset: 0.18em; }
+
+// Faint control-room grid on the header strip only
+.site-header { background-image: linear-gradient(rgba(75, 196, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(75, 196, 255, 0.05) 1px, transparent 1px); background-size: 24px 24px; }
+
+// The site title must fit the fixed-height header on one line (the theme sets its size with !important)
+.site-title { font-size: 1.0625rem !important; line-height: 1.2; font-weight: 600 !important; }

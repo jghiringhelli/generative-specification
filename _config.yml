@@ -6,7 +6,7 @@ url: https://genspec.dev
 
 search_enabled: true
 heading_anchors: true
-color_scheme: light
+color_scheme: sala-de-control
 
 aux_links:
   "White Paper (Zenodo)": "https://doi.org/10.5281/zenodo.21726017"

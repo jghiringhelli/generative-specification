@@ -1,0 +1,23 @@
+// "Sala de Control" color scheme for genspec.dev.
+// Tokens from the course identity (pragmaworks-marketing, decision 0021):
+//   ground #080b11, panel #0f1520, panel2 #141d2b, ink #d9e4f5, muted #728299,
+//   faint #37455c (decorative only, never text), amber #ffb020 (the single accent),
+//   cyan #4bc4ff, green #3ad39a, red #ff5468 (restrained, status/syntax only).
+// Text on dark surfaces uses ink, or a lifted muted (#9db0c9) where 4.5:1 is needed.
+
+$color-scheme: dark;
+
+$body-background-color: #080b11;
+$body-heading-color: #eef3fb;
+$body-text-color: #d9e4f5;
+$link-color: #ffb020;
+$nav-child-link-color: #a9bad2;
+$sidebar-color: #0f1520;
+$base-button-color: #141d2b;
+$btn-primary-color: #ffb020;
+$code-background-color: #0f1520;
+$feedback-color: #141d2b;
+$table-background-color: #0f1520;
+$search-background-color: #141d2b;
+$search-result-preview-color: #9db0c9;
+$border-color: #25303f;
