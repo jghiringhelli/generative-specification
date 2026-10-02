@@ -1,4 +1,4 @@
-# Start Here ΓÇö Apply Generative Specification to Your Project
+# Start Here — Apply Generative Specification to Your Project
 
 This is the practical entry point. You can get a working GS setup on your own project in under an hour. No tools required beyond what you already use.
 
@@ -6,23 +6,23 @@ This is the practical entry point. You can get a working GS setup on your own pr
 
 ## What You Are Setting Up
 
-A **generative specification** is an artifact set that is self-contained enough that a stateless reader ΓÇö a model with no prior context ΓÇö can derive correct, coherent implementation from it alone. It has seven properties: Self-describing, Bounded, Verifiable, Defended, Auditable, Composable, Executable.
+A **generative specification** is an artifact set that is self-contained enough that a stateless reader — a model with no prior context — can derive correct, coherent implementation from it alone. It has seven properties: Self-describing, Bounded, Verifiable, Defended, Auditable, Composable, Executable.
 
 You will produce:
-1. A **GS document** ΓÇö the single source of truth for what your project is and how it must be built
-2. An **architectural constitution** (`CLAUDE.md` or equivalent) ΓÇö the operative grammar an AI reads before every session
-3. A **quality gate set** ΓÇö the automated constraints that make incorrect output architecturally unreachable
+1. A **GS document** — the single source of truth for what your project is and how it must be built
+2. An **architectural constitution** (`CLAUDE.md` or equivalent) — the operative grammar an AI reads before every session
+3. A **quality gate set** — the automated constraints that make incorrect output architecturally unreachable
 
 ---
 
-## Option A ΓÇö New Project (Greenfield)
+## Option A — New Project (Greenfield)
 
 ### Step 1: Write the GS document
 
 Create `docs/spec.md`. Fill in these sections:
 
 ```markdown
-# [Project Name] ΓÇö Generative Specification
+# [Project Name] — Generative Specification
 
 ## Domain
 [One paragraph: what this system does, for whom, and why it exists.
@@ -32,7 +32,7 @@ to CSV for import into QuickBooks" is.]
 
 ## Functional Scope
 [What is in scope for this specification. Use numbered requirements.
-Each requirement must be verifiable ΓÇö if you can't write a test for it,
+Each requirement must be verifiable — if you can't write a test for it,
 rewrite the requirement until you can.]
 
 ### Out of Scope
@@ -41,7 +41,7 @@ with its own judgment. Name them so the gap is deliberate, not accidental.]
 
 ## Architecture
 [The architectural decisions already made. Layer structure, technology
-choices, patterns mandated. Not "we might use PostgreSQL" ΓÇö "PostgreSQL
+choices, patterns mandated. Not "we might use PostgreSQL" — "PostgreSQL
 is the persistence layer. No other database is permitted."]
 
 ## Quality Gates
@@ -56,10 +56,10 @@ observable behaviors. Not "the UI should look good."]
 
 ### Step 2: Derive the architectural constitution
 
-From the GS document, write `CLAUDE.md` ΓÇö the instruction file every AI session reads first. Template:
+From the GS document, write `CLAUDE.md` — the instruction file every AI session reads first. Template:
 
 ```markdown
-# [Project Name] ΓÇö Architectural Constitution
+# [Project Name] — Architectural Constitution
 
 ## What This Project Is
 [Two sentences from the GS document Domain section.]
@@ -92,15 +92,15 @@ repeat them.]
 
 Copy the relevant gates from this repository's [`quality-gates/gates/`](quality-gates/gates/) into your project's `.forgecraft/gates/` directory, or reference them in your CI pipeline. Start with:
 
-- [`conventional-commits.yaml`](quality-gates/gates/conventional-commits.yaml) ΓÇö enforces commit discipline
-- [`adr-files-emitted.yaml`](quality-gates/gates/adr-files-emitted.yaml) ΓÇö ensures decisions are documented
-- [`jest-no-failed-tests.yaml`](quality-gates/gates/jest-no-failed-tests.yaml) ΓÇö if you use Jest
+- [`conventional-commits.yaml`](quality-gates/gates/conventional-commits.yaml) — enforces commit discipline
+- [`adr-files-emitted.yaml`](quality-gates/gates/adr-files-emitted.yaml) — ensures decisions are documented
+- [`jest-no-failed-tests.yaml`](quality-gates/gates/jest-no-failed-tests.yaml) — if you use Jest
 
 Then add the technology-specific gates for your stack.
 
 ---
 
-## Option B ΓÇö Existing Project (Brownfield)
+## Option B — Existing Project (Brownfield)
 
 The GS methodology works backwards from what exists. The goal is to surface and externalize the implicit decisions that are currently only in someone's head.
 
@@ -116,7 +116,7 @@ Read the entire codebase. Produce a list of:
 3. Every forbidden pattern (things that don't exist in the codebase that
    would break it if introduced).
 4. Every external dependency and what it is responsible for.
-5. Any patterns that appear in some files but not others ΓÇö inconsistencies
+5. Any patterns that appear in some files but not others — inconsistencies
    that suggest an undocumented decision was never fully applied.
 
 Do not suggest improvements. Document what is actually here.
@@ -124,13 +124,13 @@ Do not suggest improvements. Document what is actually here.
 
 ### Step 2: Write the constitution from the archaeology
 
-Take the session output and write the `CLAUDE.md`. Every item from the archaeology pass becomes an explicit rule. The architectural constitution is not aspirational ΓÇö it describes the system as it is, so every future session starts from a correct model of what exists.
+Take the session output and write the `CLAUDE.md`. Every item from the archaeology pass becomes an explicit rule. The architectural constitution is not aspirational — it describes the system as it is, so every future session starts from a correct model of what exists.
 
 ### Step 3: Audit against the seven properties
 
 Score your current GS document against the rubric:
 
-| Property | Question | Score (0ΓÇô2) |
+| Property | Question | Score (0–2) |
 |---|---|---|
 | **Self-describing** | Does the spec contain its own domain context, fully, without external references? | |
 | **Bounded** | Is the scope explicit? Is out-of-scope named? | |
@@ -146,13 +146,13 @@ Any property scoring 0 is a gap. Gaps concentrate correction iterations. Fix the
 
 ## Verifying Your Setup Works
 
-Run one session with only your GS document and architectural constitution in context ΓÇö no other files, no prior conversation. Ask the model to:
+Run one session with only your GS document and architectural constitution in context — no other files, no prior conversation. Ask the model to:
 
 1. Describe the system's architecture in its own words
 2. Implement one small, bounded feature
 3. Name the test it would write to verify the feature
 
-If the description is accurate, the implementation follows your layer rules, and the test is meaningful ΓÇö your GS setup is working. If any of these fail, the gap is in the specification, not the model.
+If the description is accurate, the implementation follows your layer rules, and the test is meaningful — your GS setup is working. If any of these fail, the gap is in the specification, not the model.
 
 ---
 
@@ -176,9 +176,9 @@ The GS document is the reproducible artifact. ForgeCraft produced it but is not 
 
 ## Questions
 
-Open an issue or start a discussion in this repository. The methodology is under active development ΓÇö every gap found is a quality gate waiting to be written.
+Open an issue or start a discussion in this repository. The methodology is under active development — every gap found is a quality gate waiting to be written.
 
-ΓåÆ [Contribute a quality gate](quality-gates/CONTRIBUTING.md)  
-ΓåÆ [White paper](docs/white-paper/GenerativeSpecification_WhitePaper.md)  
-ΓåÆ [Compendium (full canonical source)](docs/white-paper/GenerativeSpecification_Compendium.md)  
-ΓåÆ [Practitioner Protocol](docs/white-paper/GenerativeSpecification_PractitionerProtocol.md)
+→ [Contribute a quality gate](quality-gates/CONTRIBUTING.md)  
+→ [White paper](docs/white-paper/GenerativeSpecification_WhitePaper.md)  
+→ [Compendium (full canonical source)](docs/white-paper/GenerativeSpecification_Compendium.md)  
+→ [Practitioner Protocol](docs/white-paper/GenerativeSpecification_PractitionerProtocol.md)
