@@ -134,6 +134,9 @@ What each piece does and does not prove (verified from primary documentation, 20
 
 Practical rule: every experiment gets the git tag. Every experiment whose result may leave this repository (paper, site, offer) additionally gets an OSF registration or a Zenodo deposit before data. Flagship experiments are also considered for a Registered Report. Never describe a design as "pre-registered" in any public document unless tag and external timestamp both exist and predate data; otherwise use "author-attested", "pre-specified in intent", or "design written before runs, not frozen".
 
+### Correction note (2026-10-02, assistant)
+The Zenodo row above says files change after publication only through a new version. Zenodo help (help.zenodo.org, "create new upload") says the depositor can still add, remove or modify files within 45 days of publishing, and metadata at any time; new versions have their own version DOI. For timestamp purposes treat a published record as final and never use the 45-day window. OSF is stricter: submitted registrations and their files cannot be edited. See `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\PREREG-HOWTO.md`.
+
 ## 5. Amendments and refinement
 
 - Before any outcome data: the registration may be amended; each amendment is a new tagged version `prereg/<ID>-v<N+1>` with a changelog entry (what, why). Old versions stay.
