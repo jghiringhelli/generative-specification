@@ -31,7 +31,9 @@ Outcome of a closed experiment (exactly one, assigned by the pre-registered deci
 | `INCONCLUSIVE` | Data neither support nor exclude the effect (interval spans both the SESOI and zero) | none |
 | `INVALID-DESIGN` | The experiment could not have answered the question (floor/ceiling, construct mismatch, oracle fault, leaked treatment, harness failure, contaminated benchmark) | Evidence of the specific validity defect |
 
-Evidence tiers for how other documents may use an entry: **A** registered externally before data, all deviations logged, independent judge; **B** registered in-repo before data (git tag, pushed, plus external timestamp); **C** designed and run without registration, honestly labelled author-attested; **D** demonstration or observation, no inferential claim. Past experiments are back-filled into these tiers in the LOGBOOK; a tier can never be raised after the fact.
+Experiments that test no hypothesis (feasibility demonstrations, field observations, calibration runs) are logged with outcome `DEMONSTRATION`. They carry no verdict and may only be cited as demonstrations.
+
+Evidence tiers for how other documents may use an entry: **A** registered at an external registry or deposit before data, deviations log kept, independent judge, controls passed; **B** registered in-repo before data (annotated tag pushed; no external timestamp); **C** design text committed before the data in repository history, or written without registration; commit dates are author-controlled, so this is author-attested; **D** demonstration or observation, no inferential claim. Past experiments are back-filled into these tiers in the LOGBOOK; a tier can never be raised after the fact. Only tier A or B may be called "pre-registered" in a public document.
 
 ## 2. The cycle
 
@@ -52,7 +54,7 @@ Before designing runs, answer in writing (Ralph and Tempero 2018 is the source f
 3. Could a trivial or degenerate output get a good score? Could a good output get a bad one (oracle strictness, convention mismatch)?
 4. Is the benchmark in training data (guard c)? Is there a way to check?
 5. Who or what scores, and does it share vendor, model, prompt authorship, or incentive with the generator (guard d)?
-6. For human subjects: does the intervention given to participants equal the thing the hypothesis is about? Is the thing being tested the method, or the tooling and onboarding around it? (The most expensive error in this program's history was a design that tested the wrong thing; see the private note in soma `docs\experiments\lessons-from-past-designs.md`.)
+6. For human subjects: does the intervention given to participants equal the thing the hypothesis is about? Is the thing being tested the method, or the tooling and onboarding around it?
 
 ### Stage 3. Design review (adversarial, stateless)
 
