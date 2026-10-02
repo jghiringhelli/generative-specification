@@ -133,3 +133,89 @@ hr { background: $sc-line; border: 0; height: 1px; }
 
 // The site title must fit the fixed-height header on one line (the theme sets its size with !important)
 .site-title { font-size: 1.0625rem !important; line-height: 1.2; font-weight: 600 !important; }
+
+// ---------------------------------------------------------------------------
+// Landing page: hero, path cards, "ways in" row, course slot.
+// Contrast (WCAG AA): ink #d9e4f5 / bright #eef3fb on panel #0f1520 and ground #080b11
+// are above 12:1; muted #9db0c9 on panel #0f1520 is above 7:1; cyan #4bc4ff on
+// ground is above 10:1; amber #ffb020 on ground is above 10:1; primary button text
+// (ground #080b11 on amber) is above 10:1.
+// ---------------------------------------------------------------------------
+.eyebrow, .main-content .eyebrow {
+  display: inline-block;
+  margin: 0 0 0.75rem;
+  font-family: $sc-mono;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $sc-cyan;
+}
+
+.hero {
+  margin: 0 0 2rem;
+  padding: 2rem 1.25rem 1.5rem;
+  background: $sc-panel;
+  border: 1px solid $sc-line;
+  border-top: 3px solid $sc-amber;
+  border-radius: 4px;
+  background-image: linear-gradient(rgba(75, 196, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(75, 196, 255, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+@media (min-width: 50rem) { .hero { padding: 2.75rem 2.25rem 2.25rem; } }
+.hero-title, .main-content .hero-title {
+  margin: 0 0 1rem;
+  font-family: $sc-cond;
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  color: $sc-ink-bright;
+}
+@media (min-width: 50rem) { .hero-title { font-size: 2.35rem; } }
+.main-content .hero-lead, .hero-lead { margin: 0 0 1.5rem; font-size: 1.0625rem; line-height: 1.65; color: $sc-ink; max-width: 40rem; }
+.hero-actions { margin: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.hero-actions .btn { margin: 0; padding: 0.7rem 1.1rem; font-size: 1rem; min-height: 2.75rem; }
+
+.path-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0 2rem; }
+@media (min-width: 50rem) { .path-grid { grid-template-columns: repeat(3, 1fr); } }
+.path-card {
+  display: flex; flex-direction: column;
+  padding: 1.1rem 1.1rem 0.9rem;
+  background: $sc-panel;
+  border: 1px solid $sc-line;
+  border-radius: 4px;
+}
+.path-card:hover, .path-card:focus-within { border-color: $sc-amber; }
+.path-title, .main-content .path-title { margin: 0 0 0.5rem; padding: 0; font-family: $sc-cond; font-size: 1.2rem; color: $sc-ink-bright; }
+.path-card p { margin: 0 0 0.75rem; font-size: 0.95rem; line-height: 1.55; color: $sc-ink; }
+.path-card .path-links { margin: auto 0 0; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.95rem; }
+.path-card .path-links a { font-weight: 600; }
+
+.ways { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin: 0.75rem 0 2rem; }
+@media (min-width: 50rem) { .ways { grid-template-columns: repeat(3, 1fr); } }
+.main-content a.way, a.way {
+  display: block; padding: 0.8rem 1rem;
+  background: $sc-panel2; border: 1px solid $sc-line; border-radius: 4px;
+  text-decoration: none; background-image: none;
+}
+.main-content a.way:hover { border-color: $sc-amber; text-decoration: none; }
+.way-name { display: block; font-family: $sc-cond; font-weight: 600; font-size: 1.05rem; color: $sc-amber; }
+.way-text { display: block; margin-top: 0.15rem; font-size: 0.9rem; color: $sc-muted; }
+
+.pill {
+  display: inline-block; padding: 0.1rem 0.55rem;
+  font-family: $sc-mono; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: $sc-amber; border: 1px solid $sc-amber; border-radius: 999px;
+}
+.pill-live { color: $sc-green; border-color: $sc-green; }
+
+.course-slot {
+  margin: 0 0 2rem; padding: 1.1rem 1.25rem;
+  background: $sc-panel; border: 1px dashed #33425a; border-left: 3px solid $sc-amber; border-radius: 4px;
+}
+.course-slot-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.4rem; }
+.course-slot .eyebrow { margin: 0; }
+.course-slot-title { margin: 0 0 0.4rem; font-family: $sc-cond; font-weight: 600; font-size: 1.15rem; color: $sc-ink-bright; }
+.course-slot-text { margin: 0 0 0.9rem; font-size: 0.95rem; color: $sc-ink; }
+.course-slot-actions { margin: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.course-slot-actions .btn { margin: 0; }

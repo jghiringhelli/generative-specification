@@ -2,7 +2,7 @@
 layout: default
 title: Lifecycle and debt
 parent: The Method
-nav_order: 9
+nav_order: 8
 permalink: /method/lifecycle/
 description: "Six working definitions: no new debt per change, criteria coverage, what the method covers across the software lifecycle, the triage of a failure, what 'governed as of' means for a score, and how to measure spec completeness, with what is not yet covered stated plainly."
 ---

@@ -2,7 +2,7 @@
 layout: default
 title: Coherence between spec and code
 parent: The Method
-nav_order: 10
+nav_order: 9
 permalink: /method/coherence/
 description: "Five checks that detect when a specification and the code stopped saying the same thing: identifiers in both directions, the lock (tags in code, hashes in a file), a co-change gate, an inverse inventory and an intent diff. A design verified on one sample project."
 ---
