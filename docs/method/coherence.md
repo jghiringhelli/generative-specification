@@ -9,7 +9,7 @@ description: "Five checks that detect when a specification and the code stopped 
 
 # Coherence between spec and code
 
-> **Status: design.** The five checks below were implemented as deterministic scripts, with no model, in one sample project, and verified on 35 crafted scenarios and on the recorded states of that project. That shows they detect what they are defined to detect. It does not show that they reduce defects: no effect was measured. The definitions are in the Compendium, Section 8.20.
+> **Status: design.** The five checks below were implemented as deterministic scripts, with no model, in one sample project, and verified on 35 crafted scenarios (the assertions of one self-test script in that project, which grew from 22 to 35 when the lock scenarios were added) and on the recorded states of that project. That shows they detect what they are defined to detect. It does not show that they reduce defects: no effect was measured. The definitions are in the Compendium, Section 8.20.
 
 ## The problem
 
