@@ -52,7 +52,7 @@
 
 [23] C. E. Jimenez, J. Yang, A. Wettig, S. Yao, K. Pei, O. Press, and K. Narasimhan, "SWE-bench: Can language models resolve real-world GitHub issues?," in *Proc. ICLR*, 2024; arXiv:2310.06770.
 
-[24] J. Yang, C. E. Jimenez, A. Wettig, K. Lieret, S. Yao, K. Narasimhan, and O. Press, "SWE-agent: Agent-computer interfaces enable automated software engineering," arXiv:2405.15793, 2024.
+[24] J. Yang, C. E. Jimenez, A. Wettig, K. Lieret, S. Yao, K. Narasimhan, and O. Press, "SWE-agent: Agent-computer interfaces enable automated software engineering," in *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 37, 2024; arXiv:2405.15793.
 
 [25] G. Orlanski et al., "SlopCodeBench: Benchmarking how coding agents degrade over long-horizon iterative tasks," arXiv:2603.24755, Mar. 2026 (rev. May 2026).
 
@@ -122,4 +122,6 @@
 
 [55] R. Just et al., "Are mutants a valid substitute for real faults in software testing?," in *Proc. 22nd ACM SIGSOFT Int. Symp. Found. Softw. Eng. (FSE)*, 2014, pp. 654-665, doi: 10.1145/2635868.2635929.
 
-> The Holm-Bonferroni correction is applied in the analysis; its original reference (S. Holm, 1979) could not be confirmed and is listed in `REFERENCES-TODO.md`.
+[56] S. Holm, "A simple sequentially rejective multiple test procedure," *Scand. J. Statist.*, vol. 6, no. 2, pp. 65-70, 1979.
+
+> [56] is numbered last only because it was added after the rest; renumber by first citation at template assembly. Verified 2026-10-01/02 (see `references-verification-log.md`, entry holm1979).

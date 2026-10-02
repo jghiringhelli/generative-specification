@@ -8,7 +8,7 @@
 |---|---|---|
 | Abstract, index terms, contributions | Drafted | Abstract 233 words, leads with a number; every figure checked against `stats.json`, `static_ax2.json`, CR results. Index terms are unverified against the IEEE Thesaurus. |
 | I Introduction | Drafted | Terms defined in the paper; four contributions; four RQs. |
-| II Related work | Drafted | Eight lineages; 55 verified references in `04-references.md`; unverified items in `REFERENCES-TODO.md`. |
+| II Related work | Drafted | Eight lineages; 56 verified references in `04-references.md`; unverified items in `REFERENCES-TODO.md`. |
 | III, IV (with the seven properties, grading, coherence design) | Drafted compact | Detail moved to `supplement/`. |
 | V Study design | Drafted | States design, registration status, collected versus planned metrics, and the limited meaning of "blind". |
 | VI Results | Drafted | AX k = 5, post-hoc series, KX, TX/SX, AX2, CR. |
@@ -22,7 +22,7 @@
 - [x] ORCID: 0009-0004-6092-5387.
 - [ ] IEEE two-column template (LaTeX preferred), source plus PDF, at most 20 pages (estimate 12 to 14; verify after assembly).
 - [ ] Abstract 150 to 250 words, one paragraph (233 now).
-- [ ] Index terms from the IEEE Thesaurus (verify each term).
+- [ ] Index terms: IEEE Access requires 3 to 10 keywords and its guidelines do not mention the Thesaurus; check each term against the IEEE Thesaurus if you want controlled terms (PDF was not downloadable here).
 - [x] AI-disclosure line drafted (in `12-...`, Acknowledgement).
 - [ ] CrossCheck: similarity check against the Zenodo v4.0 preprint (DOI 10.5281/zenodo.21726017); cite it as the preprint.
 - [ ] Replication package with its own DOI (Zenodo). Fix `supplement/S1`, which still says the AX runner is absent. Include the pre-registration evidence if JC can produce it (see C.1).

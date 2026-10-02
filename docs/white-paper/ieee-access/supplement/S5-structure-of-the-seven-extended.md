@@ -27,7 +27,7 @@ declares wrong.
 
 Building software has always required two translations, and separating them explains both where
 Generative Specification is strong and why a human remains in the loop. The two translations are
-crossings between three levels of the sign relation in Morris's sense [Morris, 1938]: **pragmatics**
+crossings between three levels of the sign relation in Morris's sense [18]: **pragmatics**
 (a situated intention, what a stakeholder actually means in context), **semantics** (a precise,
 context-independent specification), and **syntax** (executable form in a particular language). The two
 bridges are the two adjacent crossings, and naming them by *what they cross between* rather than by a

@@ -36,7 +36,7 @@ Replicated metrics: layer-boundary violations (a count of `prisma.*` calls in ro
 
 ### F. Analysis
 
-Per metric and condition we report median and quartiles (medians of the lower and upper halves). Pairwise comparisons use the exact two-sided Mann-Whitney U test [51] with Cliff's delta [52] and Holm correction within each metric's three comparisons. At five against five the smallest exact p is about 0.008, so a delta of 1.0 means no overlap in five draws and not a tightly estimated magnitude. Auditor agreement is a quadratic-weighted kappa [53] over 105 property-level pairs, read with the conventional bands [54]. Single deep runs are labelled and never merged into the distributional claims.
+Per metric and condition we report median and quartiles (medians of the lower and upper halves). Pairwise comparisons use the exact two-sided Mann-Whitney U test [51] with Cliff's delta [52] and Holm correction [56] within each metric's three comparisons. At five against five the smallest exact p is about 0.008, so a delta of 1.0 means no overlap in five draws and not a tightly estimated magnitude. Auditor agreement is a quadratic-weighted kappa [53] over 105 property-level pairs, read with the conventional bands [54]. Single deep runs are labelled and never merged into the distributional claims.
 
 ### G. Replication package
 

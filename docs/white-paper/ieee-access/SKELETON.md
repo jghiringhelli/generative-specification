@@ -19,7 +19,7 @@
 |---|---|---|
 | Abstract (233 words), index terms, contributions | `01-abstract-and-contributions.md` | Drafted v0.3; numbers checked against stats.json |
 | I Introduction (contributions, RQs, terms) | `11-section-I-introduction.md` | Drafted v0.3 |
-| II Related work (eight lineages, 55 verified references) | `03-related-work.md`, `04-references.md` | Drafted v0.2; renumber by first citation at assembly |
+| II Related work (eight lineages, 56 verified references) | `03-related-work.md`, `04-references.md` | Drafted v0.2; renumber by first citation at assembly |
 | III Problem formalization | `08-section-III-problem.md` | Compact v0.3; extended text in `supplement/S3` |
 | IV The discipline (seven properties, grouping, grading, loop, coherence design) | `09-section-IV-discipline.md` | Compact v0.3; extended in `supplement/S4`, `supplement/S5` |
 | V Study design | `05-section-V-study-design.md` | v0.3 |
