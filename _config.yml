@@ -83,7 +83,7 @@ defaults:
   - scope: { path: "docs/white-paper/EXPERIMENT-PUBLISHING-PLAYBOOK.md" }
     values: { title: "Replicate an experiment", parent: "Evidence and papers", nav_order: 11 }
   - scope: { path: "docs/discipline-revival-model.md" }
-    values: { title: "The revival model (working document)", parent: "Formulas", nav_order: 5 }
+    values: { title: "The revival model (working document)", parent: "Models and equations", nav_order: 5 }
   - scope: { path: "docs/gate-template.md" }
     values: { title: "Portable gate template", parent: "The Method", nav_order: 5 }
   - scope: { path: "docs/repository-discipline.md" }
