@@ -103,7 +103,7 @@ Writing a complete spec before any code feels slow. In practice, a 1–2 hour sp
 - Produces the test assertions before the code (TDD at the spec level)
 - Creates the evaluation rubric that tells you when you're done
 
-The AX experiment quantified this: spec completeness is the primary predictor of output quality. Expert prompt engineering without a spec scores 40–60% below a complete GS document.
+The AX experiment separated a structured specification from unstructured use on structure and completeness (layer violations, files emitted). A strong expert prompt that restated the same obligations tied it on median quality in a single shot, so the claim is naive-to-disciplined, not GS over expert prompting.
 
 ---
 

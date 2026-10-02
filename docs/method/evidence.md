@@ -27,11 +27,11 @@ Eight conditions on Conduit, one model (claude-sonnet-4-5). The unstructured bas
 
 **Bound.** One benchmark, one model, one author's specifications. Three conditions were pre-registered; the other five were designed after seeing the earlier ones, so the path from 3 to 14 out of 14 is iterated optimization on one benchmark, not independent confirmation. It shows that each gap was diagnosable and closable.
 
-## 2. Against an expert prompt, the difference is reliability, not the median (AX, k=5)
+## 2. Against an expert prompt, there is a tie on the median (AX, k=5)
 
-The expert-prompt control and the GS treatment saturated to comparable median audit scores. That is a null on the median and it stays in the record. What differed was variance: the control's architecture outcomes ranged widely (2 of 5 runs breached the layer boundary) while the treatment's did not (0 of 5). In the first prospective pass the difference was one point (10/14 against 9/14), all of it on the Composable property, and on Executable the control did better.
+The expert-prompt control and the GS treatment saturated to comparable median audit scores (10 against 11). That is a null on the median and it stays in the record: the separation in AX is naive to disciplined, not GS over an expert prompt. The control breached the layer boundary in 2 of 5 runs and the treatment in 0 of 5; with five runs that difference is not statistically supported (Holm p = 0.89), so it is an observation consistent with a reliability effect, not a demonstrated one. Whether the persisted substrate buys durability over many increments is a separate hypothesis (H-S, tier D, not run). In the first prospective pass the difference was one point (10/14 against 9/14), all of it on the Composable property, and on Executable the control did better.
 
-**Bound.** Same as above, plus an unresolved confound: the expert prompt is arguably a light version of the method. Two blind AI auditors agreed at quadratic-weighted kappa 0.62; no human inter-rater check was run.
+**Bound.** Same as above, plus an unresolved confound: the expert prompt is arguably a light version of the method, GS content delivered without the persistent substrate. Two blind AI auditors agreed at quadratic-weighted kappa 0.62; no human inter-rater check was run.
 
 ## 3. The structural effect appears across vendors (AX2)
 
