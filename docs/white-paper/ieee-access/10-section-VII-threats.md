@@ -46,16 +46,17 @@ executed coverage arises because the model wrote schema definitions in unannotat
 prose blocks that were never emitted to files. This is a genuine emit-discipline
 failure and not a measurement artifact or a runner bug, but it must be reported as
 such so that it is not read either as a defect of the harness or as cherry-picking;
-the scoring rule (materialisation scored as emitted) is pre-registered so the
-decision cannot be made after seeing the outcome. Third, proponent bias: the study
+the scoring rule (materialisation scored as emitted) was written into the analysis plan,
+but the plan's timing cannot be independently verified (V.B). Third, proponent bias: the study
 is authored by the proponents of the method, which could bias condition
 construction, prompt effort, or interpretation, most acutely in favour of the
 treatment over the deliberately strong expert-prompting control. The mitigations
 are a fixed model and configuration (claude-sonnet-4-5, identical tool config,
 identical Docker and PostgreSQL infrastructure, with only the specification context
-varied); pre-registration of the rubric, conditions, and point predictions in
-version control before any run, with the two post-hoc conditions labelled and
-reported separately and never merged into the pre-registered comparison; the
+varied); registration of the rubric, conditions, and point predictions in
+version control before the original runs (author-attested; the commits are not in the public
+repository history), with the post-hoc conditions labelled and
+reported separately and never merged into the base comparison; the
 k-replication protocol (Protocol B, §V and the replication appendix) that repeats
 each condition to quantify nondeterminism as within-condition variance; and a
 context-free blind auditor with no knowledge of the experiment, the method, or the
@@ -96,10 +97,8 @@ generation run per condition there is no sampling distribution, so no inferentia
 test can honestly be applied, and reporting p-values on one observation per cell
 would fabricate the very rigor the paper argues for. The basis for confidence in
 the single-run design is therefore limited to the reproducibility and objectivity
-of the metrics together with the size and direction of the effects (for example 41
-strict type errors reduced to 0, executed coverage moving from 0% to a materialised
-suite, and a mutation score rising from 58.6% toward the level the documentation
-had only claimed), corroborated by the blind audit. A second threat is multiple
+of the metrics together with the size and direction of the effects, and the
+single-run results are reported as examples, not rates. A second threat is multiple
 comparisons: several metrics are compared across three conditions, which inflates
 the family-wise error rate if each contrast is read independently. The mitigation
 is the k-replication protocol (Protocol B), which yields a distribution per
@@ -112,8 +111,7 @@ p-values with confidence intervals at alpha = 0.05, following the analysis patte
 of accepted work in this space [14], [15]. Two further commitments protect the
 conclusions regardless of design: effects are reported as large only where they are
 also reproducible, and null results are reported in the same voice as positive ones
-(for example the tie with the expert-prompting control on lint problems, 40 versus
-40, and the orthogonality of the CVE count to the specification context), so that
+(for example the tie with the expert-prompting control on median audit score, files and layer violations, and the absence of a significant difference between conditions on the CVE count), so that
 the study neither overclaims where a strong prompt already suffices nor conceals the
 axes on which the method does not separate.
 
