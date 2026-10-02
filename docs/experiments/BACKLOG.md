@@ -14,7 +14,7 @@
 ### B0. Adopt the protocol (1 day, no model spend)
 Create the OSF account and project, decide the tag convention (`prereg/<ID>-v<N>`), add a script that verifies registered hashes before each run batch. Decide whether any flagship gets a Registered Report (stage-1 review at an MSR or ESEM registered-reports track; dates not verified here). Licenses: nothing yet; it makes every later result usable.
 
-### B1. SDX-0, the harness pilot (about $90 to $260 model spend plus 60 to 90 agent-assisted hours of preparation, 1 to 2 weeks calendar)
+### B1. SDX-0, the harness pilot (about $130 to $400 model spend after revision 2: 24 chains, adds the expert-minus-GS arm A5, A6 and A0S plus 60 to 90 agent-assisted hours of preparation, 1 to 2 weeks calendar)
 File: `...\prereg\SDX-0.md`. Why first: it builds and validates the harness every later item reuses (Pastura scaffold lock, oracle with reference implementation, stubs and mutants, positive and negative controls, cost and variance). It also tells us whether the benchmark is at ceiling for the expert arm, which would make SDX-1 invalid before spending on it. Licenses: no research claim; it licenses freezing SDX-1 (or redesigning it).
 
 ### B2. Ordering note: B3 runs before B4
@@ -25,7 +25,8 @@ Reasoning: the single-shot comparison (B3) costs a fraction of SDX-1 and settles
 - Redesign points against the known defects: primary metrics are not targeted by the treatment (hidden-oracle behaviour, hidden-suite kill rate; layer violations reported as targeted only); an expert-prompt author external to the project; judged items scored by a different-vendor judge with arm labels removed, two vendors, kappa, human spot-check; positive control (a degraded arm) and A/A control; n from the pilot SD (k=5 is not enough for the corrected p-value to reach 0.05 with several comparisons).
 - Licenses: either "GS content beats an expert prompt on an untargeted metric", "they are equivalent within SESOI", or "the instrument cannot tell". Any of the three replaces the current saturation story.
 
-### B4. SDX-1 (see `...\prereg\SDX-1.md`; about $400 to $1,200, about 3 weeks including preparation already done in B1)
+### B4. SDX-1 (see `...\prereg\SDX-1.md` and `...\prereg\SDX-1-ARMS.md`; Core about $440 to $1,320, Full about $825 to $2,475, about 3 weeks including preparation already done in B1)
+Revision 2 (2026-10-02): the lead contrast is the substrate (A4) against an expert prompt that contains none of the five listed load-bearing GS elements (A5, authored by an external practitioner), plus A5 against naive. Earlier contrasts (A4 vs a GS-content prompt, A4 vs a flat file) stay as secondary contrasts in the Full scope. Licenses (if valid): one of the pre-registered decision rows (SDX-1 section 10), including the row where the value of the substrate on this evidence is governance only. Blocked on: the external practitioner and independent reviewer (JC names them), a different-vendor judge, budget, and SDX-0.
 Licenses (if valid): whether persistent structured enforced state beats an expert prompt and the same content in one file on state-dependent facts, one vendor, one invented 9-change project. This is the experiment that decides whether the substrate claim (as opposed to the content claim) survives.
 
 ### B5. CR rerun at power (about $300 to $800; needs a machine with enough VRAM for the weak rungs)
@@ -38,6 +39,7 @@ Larger codebase (hundreds of files), twins matched on behaviour with seeded defe
 Run after B1 harness exists. Fixed difficulty tiers and a model ladder, per-cell numeric predictions and falsifiers. Better hypothesis than "N-version revives": the exposure statement itself, a per-cell prediction of defect exposure from model tier and difficulty, tested out of sample. Licenses: a calibrated claim about when cheap rigor pays, or evidence that the model does not predict. NX stays classified as a floor result until the grid supersedes it.
 
 ### B8. SDX-2: replication and extensions (about $700 to $2,000)
+Added by revision 2: a per-element ablation of L1 to L5 (the bundle gap in SDX-1 cannot say which element acts; run only if SDX-1 shows a gap) and a frontier-model cell for A5 vs A4 (the gap is predicted to shrink with capability).
 Second vendor as a replication (not pooled), enforcement-only arm (expert prompt plus a generic must-pass hook; does the gate explain the effect?), frontier tier (does the effect recede with capability?), same-vendor handoff fork, a longer horizon if SDX-1 hit a ceiling. Depends on B4 outcome.
 
 ### B9. Independent rerun of the primary contrast (calendar-bound: weeks)
@@ -75,6 +77,9 @@ Licenses: the human-validation claim reviewers asked for, scoped to the studied 
 | TX, SX, CX | Small scale, author-built twin, vacuous tasks | B6 |
 | NX | Floor; post-hoc problem | B7 |
 | MX | Ceiling on a memorized task | folded into B8 (frontier and tier cells) or a harder-task rerun |
+
+## Added 2026-10-02: the replacement hypothesis if SDX-1 returns row (iii)
+If an expert prompt without the load-bearing elements ties the substrate (SDX-1 section 10, row iii), the replacement hypothesis is that the substrate pays in governance and continuity outcomes (audit reconstruction, ratification, regeneration), not in correctness. That is SDX-3 (B10), to be designed and registered before any such claim is made; the validity audit and the intuition-falsifiability check (guard f) come first.
 
 ## Hypotheses that may be better replaced (proposals, not decisions)
 

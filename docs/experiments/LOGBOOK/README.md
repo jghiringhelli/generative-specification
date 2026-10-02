@@ -7,6 +7,8 @@ The one place where the detail of every experiment lives: hypothesis, design, wh
 - Next experiments, in dependency order: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\BACKLOG.md`
 - Registrable designs: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\`
 
+Standing fact (JC, 2026-10-02): there are no earlier preregistration records. Every experiment from SDX-0 onward is preregistered under the protocol (tag, then external record), and the backfilled entries below stay at the tiers they earned. Registration mechanics: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\PREREG-HOWTO.md`.
+
 Rules: entries are appended, never rewritten; corrections are dated notes; every outcome uses the same template and the same tone. "We ran the wrong experiment" (`INVALID-DESIGN`) is a valid result. Backfilled entries (everything dated before 2026-10-02) were written from repository files on 2026-10-02 and say so. In them "registered" means what history shows, which is author-attested because commit dates are author-controlled; none has an external timestamp.
 
 Outcome labels: SUPPORTED, REFUTED, NULL, INCONCLUSIVE, INVALID-DESIGN, DEMONSTRATION (no hypothesis test). Tiers: A registered externally before data; B in-repo tag pushed before data; C design text before data in history or no registration (author-attested); D demonstration or observation.
@@ -31,8 +33,8 @@ Outcome labels: SUPPORTED, REFUTED, NULL, INCONCLUSIVE, INVALID-DESIGN, DEMONSTR
 | ALX | Compiler derived from a formal specification (other repository) | Backfilled from ledger only; primary record unchecked | unknown | DEMONSTRATION. Tier D | [ALX](ALX.md) |
 | MX | Model tiering vs all-strong vs all-mid | CLOSED, backfilled | none found | Quality: INVALID-DESIGN (ceiling); tiering: INCONCLUSIVE. Tier C/D | [MX](MX.md) |
 | RND-1 | Which GS arm suppresses pressure failure modes | CLOSED, backfilled | none found | Prescriptive spec: SUPPORTED (near-definitional); bounded context: INVALID-DESIGN (ceiling); test-faking: NULL by floor. Tier C/D | [RND-1](RND-1.md) |
-| SDX-0 | Harness-validity pilot for SDX-1 | DESIGN-REVIEWED, draft, not frozen | none yet | none | [SDX-0](SDX-0.md) |
-| SDX-1 | Does persistent structured enforced state matter once the project lives (A4 vs A1, A4 vs A3) | DESIGN-REVIEWED, draft, not frozen | none yet | none | [SDX-1](SDX-1.md) |
+| SDX-0 | Harness-validity pilot for SDX-1 (rev 2: adds the expert-minus-GS arm, a state-in-text positive control and validity checks V10 to V13) | DESIGN-REVIEWED, draft rev 2, not frozen | none yet | none | [SDX-0](SDX-0.md) |
+| SDX-1 | Does a persistent structured enforced substrate (A4) add over an expert prompt with none of the load-bearing GS elements (A5), and is A5 different from naive (rev 2; earlier contrasts A4 vs A1, A4 vs A3 kept as secondary) | DESIGN-REVIEWED, draft rev 2, not frozen | none yet | none | [SDX-1](SDX-1.md) |
 
 ## Reading the index honestly
 

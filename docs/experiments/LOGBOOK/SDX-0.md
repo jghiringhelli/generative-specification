@@ -25,3 +25,8 @@ Three stateless critics reviewed the parent design; findings and dispositions ar
 
 ## 12. Refinement
 SDX-1 is the main experiment this pilot unblocks.
+
+## Revision log (appended, never rewritten)
+
+### 2026-10-02, revision 2
+Added arms A5 (expert-minus-GS), A5b (A/A, replaces A1b), A0S (state restated in text; the positive control, replacing A4x as the validity gate), A6 (expert, unconstrained); A4x dropped from the pilot; 24 chains at k=3. Pass criteria now V1 to V13: V9 is A0S minus A0 on E1-SD, V10 leak check M1, V11 strength check M2 (targeted metrics only, never the hidden-oracle rate), V12 emergent-substrate detector (a high A5 emergence rate is information, not a failure), V13 harness persistence (planted memory, planted CLAUDE.md, resume token, unique paths). V6 aligned with 100 minus delta and no longer caps the strongest arm. Cost estimate $130 to $400, cap $400. A5 and A6 are never authored by anyone from the GS work; without the external author the pilot runs without them and cannot clear SDX-1 for freezing.
