@@ -1,38 +1,125 @@
-# References (verified) — draft v0.1
+# References (verified) — v0.2
 
-> Compiled and web-verified Aug 2026. DOIs confirmed against ACM DL / IEEE-Crossref / arXiv.
-> Flags at the bottom. Numbering is the working scheme used by `03-related-work.md`.
+> Every entry below was confirmed on 2026-10-01 against Crossref, arXiv, publisher or proceedings pages, or the project's own page (see `references-verification-log.md` for the confirming source of each). Entries that could not be confirmed are NOT here; they are in `REFERENCES-TODO.md`. Numbering is by category for drafting; renumber by order of first citation at assembly. Where an author list could not be confirmed in full, the entry uses "et al.".
 
-[1] E. W. Dijkstra, "Letters to the editor: Go to statement considered harmful," *Communications of the ACM*, vol. 11, no. 3, pp. 147–148, Mar. 1968, doi: 10.1145/362929.362947.
+## Foundations: disciplines, specification, architecture
 
-[2] R. C. Martin, *Clean Architecture: A Craftsman's Guide to Software Structure and Design*. Boston, MA, USA: Prentice Hall, 2017.
+[1] E. W. Dijkstra, "Go to statement considered harmful," *Commun. ACM*, vol. 11, no. 3, pp. 147-148, Mar. 1968, doi: 10.1145/362929.362947.
 
-[3] R. C. Martin, *Clean Code: A Handbook of Agile Software Craftsmanship*. Upper Saddle River, NJ, USA: Prentice Hall, 2008.
+[2] C. A. R. Hoare, "An axiomatic basis for computer programming," *Commun. ACM*, vol. 12, no. 10, pp. 576-580, Oct. 1969, doi: 10.1145/363235.363259.
 
-[4] R. C. Martin, *Agile Software Development: Principles, Patterns, and Practices*. Upper Saddle River, NJ, USA: Prentice Hall, 2003.
+[3] D. L. Parnas, "On the criteria to be used in decomposing systems into modules," *Commun. ACM*, vol. 15, no. 12, pp. 1053-1058, Dec. 1972, doi: 10.1145/361598.361623.
 
-[5] K. Beck, *Test-Driven Development: By Example*. Boston, MA, USA: Addison-Wesley, 2003.
+[4] D. L. Parnas and P. C. Clements, "A rational design process: How and why to fake it," *IEEE Trans. Softw. Eng.*, vol. SE-12, no. 2, pp. 251-257, Feb. 1986, doi: 10.1109/TSE.1986.6312940.
 
-[6] E. Evans, *Domain-Driven Design: Tackling Complexity in the Heart of Software*. Boston, MA, USA: Addison-Wesley, 2003.
+[5] B. Meyer, "Applying 'design by contract'," *Computer*, vol. 25, no. 10, pp. 40-51, Oct. 1992, doi: 10.1109/2.161279.
 
-[7] C. A. R. Hoare, "An axiomatic basis for computer programming," *Communications of the ACM*, vol. 12, no. 10, pp. 576–580, Oct. 1969, doi: 10.1145/363235.363259.
+[6] F. P. Brooks, "No silver bullet: Essence and accidents of software engineering," *Computer*, vol. 20, no. 4, pp. 10-19, Apr. 1987, doi: 10.1109/MC.1987.1663532.
 
-[8] B. Meyer, "Applying 'design by contract'," *Computer*, vol. 25, no. 10, pp. 40–51, Oct. 1992, doi: 10.1109/2.161279.
+[7] M. Jackson, *Problem Frames: Analyzing and Structuring Software Development Problems*. Boston, MA, USA: Addison-Wesley, 2001.
 
-[9] GitHub, "Spec Kit: Toolkit to help you get started with Spec-Driven Development," GitHub repository, 2024–2025. [Online]. Available: https://github.com/github/spec-kit (accessed Aug. 25, 2026).
+[8] D. E. Perry and A. L. Wolf, "Foundations for the study of software architecture," *ACM SIGSOFT Softw. Eng. Notes*, vol. 17, no. 4, pp. 40-52, Oct. 1992, doi: 10.1145/141874.141884.
 
-[10] "Spec-driven development with AI: Get started with a new open source toolkit," *The GitHub Blog*, Sep. 2025. [Online]. Available: https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/ (accessed Aug. 25, 2026).
+[9] L. de Silva and D. Balasubramaniam, "Controlling software architecture erosion: A survey," *J. Syst. Softw.*, vol. 85, no. 1, pp. 132-151, Jan. 2012, doi: 10.1016/j.jss.2011.07.036.
 
-[11] J. Jiang, F. Wang, J. Shen, S. Kim, and S. Kim, "A survey on large language models for code generation," *ACM Transactions on Software Engineering and Methodology*, 2025, doi: 10.1145/3747588.
+[10] M. M. Lehman, "Programs, life cycles, and laws of software evolution," *Proc. IEEE*, vol. 68, no. 9, pp. 1060-1076, Sep. 1980, doi: 10.1109/PROC.1980.11805.
 
-[12] X. Hou et al., "Large language models for software engineering: A systematic literature review," *ACM Transactions on Software Engineering and Methodology*, vol. 33, no. 8, art. 220, Dec. 2024, doi: 10.1145/3695988.
+[11] O. C. Z. Gotel and A. C. W. Finkelstein, "An analysis of the requirements traceability problem," in *Proc. IEEE Int. Conf. Requirements Eng. (ICRE)*, 1994, pp. 94-101, doi: 10.1109/ICRE.1994.292398.
 
-[13] P. Sahoo, A. K. Singh, S. Saha, V. Jain, S. Mondal, and A. Chadha, "A systematic survey of prompt engineering in large language models: Techniques and applications," arXiv:2402.07927, 2024.
+[12] M. Nygard, "Documenting architecture decisions," Cognitect Blog, Nov. 15, 2011. [Online]. Available: https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
 
----
+[13] R. C. Martin, *Clean Architecture: A Craftsman's Guide to Software Structure and Design*. Pearson, 2017.
 
-## Flags to resolve before final submission
-- **[4] SOLID:** no single peer-reviewed source exists; the acronym is community-coined over Martin's principles. The 2000 originating article survives only via the Wayback Machine. Citing the book [4] is the clean choice.
-- **[9]/[10] Spec Kit:** a software artifact, no DOI. Confirm the blog byline on the post before final use; if unconfirmable, cite under "The GitHub Blog" (as done here).
-- **[13] Sahoo et al.:** arXiv preprint, **not confirmed peer-reviewed**. If the paper needs strictly peer-reviewed sources, lean on [11] and [12] and either drop [13] or keep the explicit "arXiv" designation. A strictly peer-reviewed prompt-engineering-*for-code* survey was not found.
-- Optional companion available if needed: B. Meyer, *Object-Oriented Software Construction*, 2nd ed. Prentice Hall, 1997 (ISBN 978-0-13-629155-8).
+[14] R. C. Martin, *Clean Code: A Handbook of Agile Software Craftsmanship*. Upper Saddle River, NJ, USA: Prentice Hall, 2008.
+
+[15] R. C. Martin, *Agile Software Development, Principles, Patterns, and Practices*. Upper Saddle River, NJ, USA: Prentice Hall, 2003.
+
+[16] K. Beck, *Test-Driven Development: By Example*. Boston, MA, USA: Addison-Wesley, 2003.
+
+[17] E. Evans, *Domain-Driven Design: Tackling Complexity in the Heart of Software*. Boston, MA, USA: Addison-Wesley, 2003.
+
+[18] C. W. Morris, *Foundations of the Theory of Signs*. Chicago, IL, USA: Univ. of Chicago Press, 1938.
+
+[19] J. D. Bransford and M. K. Johnson, "Contextual prerequisites for understanding: Some investigations of comprehension and recall," *J. Verbal Learn. Verbal Behav.*, vol. 11, no. 6, pp. 717-726, Dec. 1972, doi: 10.1016/S0022-5371(72)80006-9.
+
+[20] C. S. Gordon, "The linguistics of programming," in *Proc. 2024 ACM SIGPLAN Int. Symp. New Ideas, New Paradigms, and Reflections on Programming and Software (Onward! 2024)*, 2024, pp. 162-182, doi: 10.1145/3689492.3689806.
+
+## LLM code generation, agents and their evaluation
+
+[21] M. Chen et al., "Evaluating large language models trained on code," arXiv:2107.03374, Jul. 2021.
+
+[22] J. Liu, C. S. Xia, Y. Wang, and L. Zhang, "Is your code generated by ChatGPT really correct? Rigorous evaluation of large language models for code generation," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2023; arXiv:2305.01210.
+
+[23] C. E. Jimenez, J. Yang, A. Wettig, S. Yao, K. Pei, O. Press, and K. Narasimhan, "SWE-bench: Can language models resolve real-world GitHub issues?," in *Proc. ICLR*, 2024; arXiv:2310.06770.
+
+[24] J. Yang, C. E. Jimenez, A. Wettig, K. Lieret, S. Yao, K. Narasimhan, and O. Press, "SWE-agent: Agent-computer interfaces enable automated software engineering," arXiv:2405.15793, 2024.
+
+[25] G. Orlanski et al., "SlopCodeBench: Benchmarking how coding agents degrade over long-horizon iterative tasks," arXiv:2603.24755, Mar. 2026 (rev. May 2026).
+
+[26] T. B. Brown et al., "Language models are few-shot learners," in *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 33, 2020, pp. 1877-1901; arXiv:2005.14165.
+
+[27] J. Wei et al., "Chain-of-thought prompting elicits reasoning in large language models," in *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 35, 2022, pp. 24824-24837; arXiv:2201.11903.
+
+[28] P. Lewis et al., "Retrieval-augmented generation for knowledge-intensive NLP tasks," in *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 33, 2020, pp. 9459-9474; arXiv:2005.11401.
+
+[29] N. F. Liu, K. Lin, J. Hewitt, A. Paranjape, M. Bevilacqua, F. Petroni, and P. Liang, "Lost in the middle: How language models use long contexts," *Trans. Assoc. Comput. Linguistics*, vol. 12, pp. 157-173, 2024, doi: 10.1162/tacl_a_00638.
+
+[30] H. Pearce, B. Ahmad, B. Tan, B. Dolan-Gavitt, and R. Karri, "Asleep at the keyboard? Assessing the security of GitHub Copilot's code contributions," in *Proc. IEEE Symp. Security and Privacy (SP)*, 2022, doi: 10.1109/SP46214.2022.9833571.
+
+[31] Y. Liu, R. Widyasari, Y. Zhao, I. C. Irsan, J. Chen, and D. Lo, "Debt behind the AI boom: A large-scale empirical study of AI-generated code in the wild," arXiv:2603.28592, Mar. 2026.
+
+[32] C. Sun, Y. Sheng, O. Padon, and C. Barrett, "Clover: Closed-loop verifiable code generation," in *AI Verification (SAIV 2024)*, Springer LNCS, 2024, pp. 134-155, doi: 10.1007/978-3-031-65112-0_7.
+
+## Context engineering, agent context files, harnesses and spec-driven development
+
+[33] L. Mei et al., "A survey of context engineering for large language models," arXiv:2507.13334, Jul. 2025.
+
+[34] Anthropic, "Effective context engineering for AI agents," Anthropic Engineering Blog, Sep. 29, 2025. [Online]. Available: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+
+[35] B. Böckeler, "Harness engineering for coding agent users," martinfowler.com, Apr. 2, 2026. [Online]. Available: https://martinfowler.com/articles/harness-engineering.html
+
+[36] W. Chatlatanagulchai et al., "Agent READMEs: An empirical study of context files for agentic coding," arXiv:2511.12884, Nov. 2025.
+
+[37] T. Gloaguen, N. Mündler, M. N. Müller, V. Raychev, and M. Vechev, "Evaluating AGENTS.md: Are repository-level context files helpful for coding agents?," arXiv:2602.11988, Feb. 2026.
+
+[38] M. Galster, S. Mohsenimofidi, J. L. Lulla, M. A. Abubakar, C. Treude, and S. Baltes, "Harness engineering for agentic AI coding tools: An exploratory study," arXiv:2602.14690, Feb. 2026.
+
+[39] S. Panda, "Citation discipline in spec-driven development: A cross-model empirical study of output determinism and automated hallucination detection in LLM-generated code" (traceSDD), arXiv:2606.30689, Jun. 2026.
+
+[40] D. B. Piskala, "Spec-driven development: From code to contract in the age of AI coding assistants," arXiv:2602.00180, Jan. 2026.
+
+[41] N. Swaminathan and D. Singh, "Introducing Kiro," Kiro Blog, Jul. 14, 2025. [Online]. Available: https://kiro.dev/blog/introducing-kiro/
+
+[42] D. Delimarsky, "Spec-driven development with AI: Get started with a new open source toolkit," The GitHub Blog, Sep. 2, 2025. [Online]. Available: https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/
+
+[43] D. Yarmoluk and D. McCreary, "Benchmarking knowledge retrieval architectures: RAG, GraphRAG, and compact knowledge graphs," ckg-benchmark, v0.6.2, 2026. [Online]. Available: https://github.com/Yarmoluk/ckg-benchmark (title and version as reported at check date; see TODO)
+
+## Benchmark contamination
+
+[44] I. Magar and R. Schwartz, "Data contamination: From memorization to exploitation," in *Proc. 60th Annu. Meeting Assoc. Comput. Linguistics (Short Papers)*, 2022, pp. 157-165.
+
+[45] Y. Dong, X. Jiang, H. Liu, Z. Jin, B. Gu, M. Yang, and G. Li, "Generalization or memorization: Data contamination and trustworthy evaluation for large language models," in *Findings of ACL 2024*, pp. 12039-12050; arXiv:2402.15938.
+
+[46] RealWorld, "The mother of all demo apps," GitHub repository realworld-apps/realworld. [Online]. Available: https://github.com/realworld-apps/realworld
+
+## Empirical method and statistics
+
+[47] C. Wohlin, P. Runeson, M. Höst, M. C. Ohlsson, B. Regnell, and A. Wesslén, *Experimentation in Software Engineering*. Berlin, Germany: Springer, 2012, doi: 10.1007/978-3-642-29044-2.
+
+[48] B. A. Kitchenham et al., "Preliminary guidelines for empirical research in software engineering," *IEEE Trans. Softw. Eng.*, vol. 28, no. 8, pp. 721-734, Aug. 2002, doi: 10.1109/TSE.2002.1027796.
+
+[49] S. Baltes et al., "Guidelines for empirical studies in software engineering involving large language models," arXiv:2508.15503, 2025. [Online]. Available: https://llm-guidelines.org
+
+[50] M. Rizqullah and E. Albassam, "Model-agnostic empirical evaluation of test-driven prompt engineering on improving accuracy and efficiency in large language models Python code generation," *IEEE Access*, vol. 14, pp. 22801-22821, 2026, doi: 10.1109/ACCESS.2026.3662817.
+
+[51] H. B. Mann and D. R. Whitney, "On a test of whether one of two random variables is stochastically larger than the other," *Ann. Math. Statist.*, vol. 18, no. 1, pp. 50-60, Mar. 1947, doi: 10.1214/aoms/1177730491.
+
+[52] N. Cliff, "Dominance statistics: Ordinal analyses to answer ordinal questions," *Psychol. Bull.*, vol. 114, no. 3, pp. 494-509, Nov. 1993, doi: 10.1037/0033-2909.114.3.494.
+
+[53] J. Cohen, "Weighted kappa: Nominal scale agreement provision for scaled disagreement or partial credit," *Psychol. Bull.*, vol. 70, no. 4, pp. 213-220, 1968, doi: 10.1037/h0026256.
+
+[54] J. R. Landis and G. G. Koch, "The measurement of observer agreement for categorical data," *Biometrics*, vol. 33, no. 1, pp. 159-174, Mar. 1977, doi: 10.2307/2529310.
+
+[55] R. Just et al., "Are mutants a valid substitute for real faults in software testing?," in *Proc. 22nd ACM SIGSOFT Int. Symp. Found. Softw. Eng. (FSE)*, 2014, pp. 654-665, doi: 10.1145/2635868.2635929.
+
+> The Holm-Bonferroni correction is applied in the analysis; its original reference (S. Holm, 1979) could not be confirmed and is listed in `REFERENCES-TODO.md`.

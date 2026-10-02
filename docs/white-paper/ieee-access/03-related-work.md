@@ -1,71 +1,43 @@
-# §II — Related Work (draft v0.1)
+# §II — Related Work (draft v0.2)
 
-> Positioning strategy: IEEE Access gates on **distinctness + soundness, not novelty**. So this
-> section CREDITS each lineage explicitly, then names the specific unoccupied slot GS fills
-> (derivability by a stateless reader as a binding constraint). Never says prior work was wrong,
-> only that it answered a different question. Placed early (readers need the map).
-> Citations [1]-[13] resolve against `04-references.md` (verified Aug 2026).
+> Positioning: IEEE Access gates on distinctness and soundness, not novelty. This section credits each lineage and names what GS adds and what it does not. Citations [n] resolve against `04-references.md` (all verified 2026-10-01); renumber by first citation at assembly. Plain academic register, no em-dashes.
 
-## II. Background and Related Work
+## II. BACKGROUND AND RELATED WORK
 
-Generative Specification stands on four established lines of work. We state what each contributes
-and where it stops, so the discipline's distinct contribution is visible against them rather than
-asserted.
+Generative Specification (GS) draws on eight bodies of work. For each we state what it contributes and where it stops, so that the distinct part of the proposal is visible and the borrowed part is credited.
 
-### A. Paradigms as removals of freedom
+### A. Disciplines as removals of freedom, and the structural disciplines
 
-Structured programming, object orientation, and functional programming each advanced by removing a
-freedom: unrestricted jumps, unrestricted access to internal data, and unrestricted reassignment,
-respectively [1], [2]. Each removal bought order by
-constraining what a program could express. We adopt this lens directly. Generative Specification is
-defined by a further removal, the freedom to leave intention implicit, and inherits the same logic:
-the constraint is what buys the guarantee. Where the prior paradigms constrained the *structure* of
-a program, Generative Specification constrains the *completeness of its stated intent* for the
-benefit of a reader that carries no prior context.
+Structured programming removed unrestricted jumps [1], and later disciplines removed unrestricted access to internal data and unrestricted reassignment; we use R. C. Martin's account of this pattern [13]. The structural disciplines that GS forces are older still: SOLID, clean code, test-driven development and domain-driven design [14]-[17], information hiding [3], and the documentation of decisions [12]. GS invents none of them. Its claim is a change of beneficiary: they were built for a human next reader, and GS asks whether a reader that has no memory and cannot ask can derive correct output from their products. We use the word discipline in Martin's sense only and make no claim about paradigms in Kuhn's sense.
 
-### B. Semantic-tier design disciplines
+### B. Specification theory, contracts and traceability
 
-The SOLID principles, test-driven development, domain-driven design, and clean-code practice
-[3], [4], [5], [6] raise the maintainability of code by making structure and intent legible
-to a human who returns to it later. Generative Specification does not replace these. It re-purposes
-them. In our framing they are carriers of intention across the second bridge, from human language
-toward code, and their new function is to instruct a stateless generator which region of its
-capability to apply, in addition to helping a later human reader. The distinction is the beneficiary
-and the mechanism: these disciplines were designed for human maintainability, and we show they
-double as activation instructions for an AI executor.
+Hoare's axiomatic basis [2], Parnas's module specifications [3], [4], Meyer's design by contract [5] and Jackson's problem frames [7] established that behavior can be specified at a boundary and that a specification must close the space the implementation would otherwise fill. Requirements traceability [11] studies how intent stays linked to artifacts. Brooks's distinction between essential and accidental difficulty [6] frames why specification, not typing, is the hard part. GS inherits all of this and adds one condition: the reader is stateless. The nearest relatives of the lock and the co-change gate (Section IV) are traceability and consistency checking, which have a long literature of which we cite only the foundation [11]; we make no claim that the mechanisms are new, and they are presented as a design with no measured effect.
 
-### C. Formal methods and specification-driven development
+### C. Architectural erosion and software evolution
 
-Hoare logic, type theory, and design by contract [7], [8] establish that
-behavior can be specified and checked rather than assumed. Specification-driven development applies
-the sequence directly: specify first, then implement [9], [10]. Generative
-Specification is a member of this family and says so plainly. What distinguishes it is not the idea
-of specifying before coding but a change in the **executor**. When the agent that derives the code
-is an AI that already carries the formal tradition in its training, the specification no longer has
-to teach or to prove. It has to *close the space* the generator would otherwise fill by guessing,
-and it becomes the source from which code and tests are derived and re-derived rather than a
-document written once and left behind. The binding constraint we identify, derivability by a
-stateless reader, is what turns specification-driven development from a recommended sequence into an
-enforceable one.
+Perry and Wolf named architectural drift and erosion [8], Lehman's laws state that complexity grows unless work is done to reduce it [10], and de Silva and Balasubramaniam survey erosion control [9]. GS applies this vocabulary to a new mechanism of erosion: a reader that completes every gap at generation speed from its prior. Recent empirical work measures that erosion in agent output directly. SlopCodeBench [25] has agents extend their own earlier solutions over many checkpoints and reports that no agent solves any problem end to end, that structural erosion and verbosity rise in most trajectories, and that quality guidance reduces them by up to a third without removing them. Large-scale studies of AI-generated code in the wild report accumulating quality and security issues [30], [31]. These works measure the problem. None tests a persistent specification substrate as the remedy, and SlopCodeBench is not evidence for GS.
 
-### D. LLM code generation and prompt engineering
+### D. Spec-driven development: tools, practice and research
 
-A large and fast-moving literature studies how to elicit better code from large language models,
-largely through prompt design and in-context examples [11], [12], [13]. Our
-contribution is orthogonal and complementary. Generative Specification is a discipline over the
-*specification and its verification*, not a catalogue of prompt tactics. Its claim is that most of
-the capability practitioners try to coax out with prompt tricks is already latent, and that a
-bounded, self-describing, verifiable specification activates it more reliably than clever phrasing,
-while a harness confirms the result against a running system rather than trusting the model's
-fluency.
+Kiro and GitHub Spec Kit structure agent work as requirements, design and tasks documents [41], [42], and Piskala describes tiers of specification rigor for AI coding assistants [40]. The closest empirical competitor is traceSDD [39], a spec-driven framework that requires a per-line requirement citation in generated code and is evaluated across models against Spec Kit and OpenSpec. These supply a place and a workflow for specifications and, in traceSDD's case, a checkable citation discipline. GS is distinct in making derivability by a stateless reader the organizing criterion for what a specification must contain, in adding a graded instrument for whether it does, and in measuring a structured specification against both no structure and an expert prompt. GS is not distinct in the idea that specifications should come first, which predates AI by decades, and we do not claim it outperforms these tools: none of them is a comparator in our study.
 
-### E. The unoccupied slot
+### E. Agent context files, context engineering and harnesses
 
-Across these lines, no prior work treats *derivability by a reader carrying no accumulated context*
-as the binding design constraint. Structured disciplines assume a human reader who can ask a
-colleague. Specification-driven development assumes a human implementer. The LLM-generation
-literature optimizes the prompt rather than the specification. Generative Specification occupies
-that slot: it makes the specification complete enough that a stateless reader, human or AI, can
-derive the system without guessing, and it is evaluated on whether that derivation holds up under
-adversarial audit. This is a distinct question, and the remainder of the paper defines the discipline
-and tests it.
+Practitioners now carry intent in instruction files read at session start. Chatlatanagulchai et al. study thousands of such files across repositories [36]; Galster et al. study the configuration mechanisms agentic coding tools expose [38]; Gloaguen et al. evaluate whether repository-level context files help coding agents and report no general gain in task success and more than 20% higher inference cost [37]. Context engineering is surveyed in [33] and described for practitioners in [34]. Böckeler divides an agent's harness into guides (feedforward) and sensors (feedback), each computational or inferential [35]. GS's sentinel, specifications and instruction files are guides in that sense, and its gates and tests are sensors; we adopt her terms and do not claim the verify half of GS is distinct from harness engineering. What GS adds is a criterion for the content of the guides and a measurement of the result. Two of our findings bear directly on [37]: a strong expert prompt ties the full cascade on single-shot quality, and the cascade costs more per generation, which is consistent in direction with their cost finding. Whether a persistent, enforced substrate pays over a long horizon, which is the only place it could be expected to, is untested here (Section VIII.B).
+
+### F. Code-generation evaluation, prompting and retrieval
+
+HumanEval [21], EvalPlus [22], SWE-bench [23] and SWE-agent [24] establish that models and agents can resolve real tasks and how to measure it. Few-shot and chain-of-thought prompting [26], [27] improve output by shaping the input, and retrieval-augmented generation [28] grounds it in retrieved text; long contexts are used unevenly [29]. Closed-loop verification with specifications has been explored for code generation [32]. GS is orthogonal to executor capability. Where retrieval-augmented generation infers retrieval structure, GS authors it, and the KX study replicates the method of a compact-knowledge-graph benchmark [43] on a software harness. We treat prompt techniques as compensations for constraints not yet written down and, because an effective prompt contains specification content, we do not claim a specification makes prompting unnecessary.
+
+### G. Benchmark contamination
+
+Contamination and memorization threaten any benchmark that appears in public training data [44], [45]. The RealWorld "Conduit" application used in most of our experiments exists in many public implementations [46], so memorization cannot be ruled out for those results. We address it only partly, with a study on an invented domain with no public implementation (Section VI), and we carry the threat explicitly (Section VII).
+
+### H. Empirical method for studies with LLMs
+
+We follow the threat categories of Wohlin et al. [47], the reporting guidance of Kitchenham et al. [48] and the guidelines for empirical studies involving LLMs [49]. Statistical practice follows accepted work in this venue and area [50]: exact Mann-Whitney tests [51] with Cliff's delta [52], quadratic-weighted kappa [53] interpreted with the conventional bands [54], and mutation testing as a fault-detection construct whose validity is itself studied [55].
+
+### I. The distinct part, and what is not claimed
+
+Across these bodies of work, the stateless reader as a design constraint on the specification, a seven-property instrument for whether a specification meets it, and a measured comparison against both unstructured use and an expert prompt are, to our knowledge, not combined elsewhere. We do not claim new properties, new mechanisms for any single one of them, superiority over spec-driven tools, or that the specification substrate beats a prompt that carries the same content. The measured result is narrower than the framing: authored structure of either kind beats unstructured use on structural metrics, across vendors, and the expert prompt ties GS on single-shot quality.
