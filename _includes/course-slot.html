@@ -1,0 +1,19 @@
+{%- comment -%}
+  Course placeholder strip. Reads _data/course_short.yml. Shows "Soon" until a playlist
+  URL is set there; nothing is linked or embedded while the fields are empty.
+{%- endcomment -%}
+{%- assign c = site.data.course_short -%}
+<div class="course-slot" role="region" aria-label="The free course">
+  <div class="course-slot-head">
+    <span class="eyebrow">The free course</span>
+    {% if c.playlist_en != "" or c.playlist_es != "" %}<span class="pill pill-live">Published</span>{% else %}<span class="pill">Soon</span>{% endif %}
+  </div>
+  <p class="course-slot-title">Generative Specification in {{ c.duration_en }}: thirteen short lessons, English and Spanish.</p>
+  <p class="course-slot-text">One idea per lesson, from a spacecraft that failed because nobody verified a contract to the first hour on your own project.
+  {% if c.playlist_en == "" and c.playlist_es == "" %}The videos are finished but not yet published. The lesson list is final, and no video is linked until it is live. Meanwhile, the same ideas are written up: start with <a href="{{ '/START-HERE.html' | relative_url }}">your first hour</a>.{% endif %}</p>
+  <p class="course-slot-actions">
+    {% if c.playlist_en != "" %}<a class="btn btn-primary" href="{{ c.playlist_en }}">Watch the playlist (English)</a>{% endif %}
+    {% if c.playlist_es != "" %}<a class="btn btn-primary" href="{{ c.playlist_es }}">Ver la lista (castellano)</a>{% endif %}
+    <a class="btn" href="{{ '/method/course/' | relative_url }}">See the 13 lessons</a>
+  </p>
+</div>

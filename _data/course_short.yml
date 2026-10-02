@@ -1,0 +1,33 @@
+# The short free course: a playlist of thirteen lessons, in English and Spanish.
+#
+# STATUS: the videos are finished but NOT yet uploaded. Every URL below is empty on
+# purpose, so the site shows "Soon" and links nothing. Nothing here is invented.
+#
+# TO ACTIVATE (after the videos are public on YouTube):
+#   1. Paste the playlist URLs into playlist_en and playlist_es.
+#   2. Paste each lesson's video URL into youtube_en / youtube_es (optional: with only
+#      the playlist set, the page links the playlist and the per-lesson cells stay "Soon").
+#   3. Commit and push. The home page strip, the course page banner, the status table
+#      and every "Watch" cell switch from "Soon" to live links by themselves.
+# Only use URLs of videos that are public. Wording source: pragmaworks-marketing
+# media/curso-gs-corto/INDEX-corto.md and COURSE-PAGE-CORTO-DRAFT.md.
+
+playlist_en: ""
+playlist_es: ""
+duration_en: "about 26 minutes"
+duration_es: "about 27 minutes"
+
+lessons:
+  - { n: 1,  title_en: "Before We Start",                         title_es: "Antes de empezar",                    covers: "What you'll get, and what this course is not",                                         youtube_en: "", youtube_es: "" }
+  - { n: 2,  title_en: "The Contract Nobody Verified",            title_es: "El contrato que nadie verificó",      covers: "The Mars Climate Orbiter: a written contract nobody verified end to end",              youtube_en: "", youtube_es: "" }
+  - { n: 3,  title_en: "The Reader With No Memory",               title_es: "El lector sin memoria",               covers: "Whoever arrives new has no context; reading too much costs money too",                 youtube_en: "", youtube_es: "" }
+  - { n: 4,  title_en: "Flip the Order",                          title_es: "Dar vuelta el orden",                 covers: "Write the what first, let the machine derive the code",                                youtube_en: "", youtube_es: "" }
+  - { n: 5,  title_en: "What You Gain and What We've Tested",     title_es: "Qué ganas y qué probamos",            covers: "A place to correct what the AI assumes, and one experiment with its limits",           youtube_en: "", youtube_es: "" }
+  - { n: 6,  title_en: "Sensor, Gate and Hook",                   title_es: "Sensor, gate y hook",                 covers: "Three words to talk about verification",                                               youtube_en: "", youtube_es: "" }
+  - { n: 7,  title_en: "Who Says Yes or No: The Oracle",          title_es: "Quién dice sí o no: el oráculo",      covers: "A tool outside the model says yes or no, and a person ratified the criterion",         youtube_en: "", youtube_es: "" }
+  - { n: 8,  title_en: "The Seven Properties",                    title_es: "Las siete propiedades",               covers: "Seven questions any reader can answer with evidence",                                  youtube_en: "", youtube_es: "" }
+  - { n: 9,  title_en: "The Letters",                             title_es: "Las letras",                          covers: "A letter per property, a task list, no overall grade, a snapshot with a date",         youtube_en: "", youtube_es: "" }
+  - { n: 10, title_en: "The Ratchet",                             title_es: "El trinquete",                        covers: "Every error leaves something permanent; every way around a gate is saved for good",    youtube_en: "", youtube_es: "" }
+  - { n: 11, title_en: "The Sentinel",                            title_es: "El centinela",                        covers: "A small map that tells the assistant what to load on each turn",                       youtube_en: "", youtube_es: "" }
+  - { n: 12, title_en: "Start Today",                             title_es: "Empieza hoy",                         covers: "Five steps for your first hour on your own project",                                   youtube_en: "", youtube_es: "" }
+  - { n: 13, title_en: "What To Do Now",                          title_es: "Qué hacer ahora",                     covers: "Run the free audit on your repository, and what the full program adds",                youtube_en: "", youtube_es: "" }
