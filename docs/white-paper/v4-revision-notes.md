@@ -61,8 +61,7 @@ are his; the rest is taken from an industry converging toward ~GS. Make this exp
   that **fully satisfies the seven-property rubric gets very close**, precisely because it's *Auditable* and
   has the *document cascade*. Fix: the spec is unrecoverable from a **non-GS** codebase; a fully GS-compliant
   one is *near-reconstructable* — and that's a **feature**, not a contradiction. Reword §4.2.
-- [ ] **"A correct spec makes prompt engineering unnecessary"** — keep it. Polemic but true (it abstracts the
-  prompting into the instructions/spec). **This is the kind of line that viralizes the paper.** Sharpen, don't hedge.
+- [x] **"A correct spec makes prompt engineering unnecessary"** — SUPERSEDED 2026-10-02. Withdrawn: it was not supported. Replaced everywhere by the narrower hypothesis (tier D, untested): a complete specification and substrate can simplify prompting to pure behavioral intent, with the structure living in the substrate rather than repeated in each prompt. Tested by H-S (white paper 5.4), not by the single-shot expert-prompt tie.
 - [ ] **Explain what Loom is** — one short, punchy sentence + a URL. (The formal-tier language; ALX = a
   compiler derived from its own spec.) A concrete hook that grabs attention.
 
