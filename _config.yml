@@ -19,7 +19,7 @@ aux_links_new_tab: true
 back_to_top: true
 back_to_top_text: "Back to top"
 
-footer_content: "&copy; 2026 J.C. Ghiringhelli. Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. Citation: <a href=\"https://doi.org/10.5281/zenodo.21726017\">Zenodo (archived preprint)</a>"
+footer_content: "&copy; 2026 J.C. Ghiringhelli. Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. <a href=\"/research/\">For researchers</a> &middot; Citation: <a href=\"https://doi.org/10.5281/zenodo.21726017\">Zenodo (archived preprint)</a>"
 
 plugins:
   - jekyll-remote-theme

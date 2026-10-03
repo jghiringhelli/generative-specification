@@ -9,7 +9,7 @@ description: "The papers, the experiments and the raw evidence behind Generative
 
 # Evidence and papers
 
-The academic side of the method: the papers, the experiments and the evidence behind the claims. It is here for readers who want to check the work. If you want to learn the method, start with [Learn](/learn/).
+The academic side of the method: the papers, the experiments and the evidence behind the claims. It is here for readers who want to check the work. If you want to learn the method, start with [Learn](/learn/). A one-page summary of the question, the claims, their status and how to check them is on [For researchers](/research/).
 
 **Read the bounds as part of the findings.** Every experiment is proponent-authored, small, and mostly run on one benchmark. That is a limitation, and the reason each one is published as an artifact you can re-run. The [evidence page](/method/evidence/) states each finding with its bound.
 
