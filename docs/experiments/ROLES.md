@@ -10,6 +10,8 @@ Runbooks and briefs that implement this file (all in `C:\workspace\PragmaWorks\g
 
 Contents: English (sections 1 to 6), then Spanish (secciones 1 a 6).
 
+Role (e), the independent replicator, was added on 2026-10-02 as section 5b (after the freeze, outside the pre-freeze sequence): `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\REPLICATOR-BRIEF.md`.
+
 ---
 
 # ENGLISH
@@ -171,6 +173,34 @@ Different vendor from generator and author; fresh session per item and run; cali
 
 ### How the result enters the logbook
 Judge vendor and exact model ids in the Roles record; agreement and calibration in the M1 result; all disagreements and their resolution in the package.
+
+## 5b. ROLE (e): the independent replicator (after the freeze; added 2026-10-02)
+
+Roles (a) to (d) act before or during the original run. Role (e) acts after the freeze and is not part of the pre-freeze sequence of section 6. Full terms, recruiting text and candidate profile: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\REPLICATOR-BRIEF.md` (Spanish: `REPLICATOR-BRIEF.es.md`).
+
+### Purpose
+Remove the last bias no earlier role can remove: that the original team ran the experiment. A person or group with no stake reruns a frozen experiment from the published package and reports what they find, including a null or a contradiction.
+
+### Who may fill it, and why
+An independent person or group meeting the independence rules of REPLICATOR-BRIEF section 7 (no commercial tie to GS or PragmaWorks, no close relationship to JC in the last 3 years, funding disclosed, prior exposure to GS declared). They must not be JC, an agent supplied by the original team, the practitioner (a), a critic (b), the reviewer (c) or a judge (d) of the same experiment. Why: a replicator who helped design or judge the experiment replicates their own judgments. Two kinds: type M (model-only, own accounts and tools; direct or conceptual variant) and type H (human participants, own institution).
+
+### Exact tasks
+Declare conflicts and funding; verify the frozen package hashes; build and validate the harness (SDX-0 checks); run the generation phase and archive it; register their own analysis plan before any score is produced; score and analyse as frozen; deliver raw data in the fixed schema, a deviations log and a report.
+
+### What they must NOT see
+Any outcome of the original (pilot or main) and any advocacy material (white paper, compendium, courses, site) until their own plan is timestamped and their generation is archived; they do not modify any arm artifact, change text, oracle or scaffold. Technical questions only, through one logged channel.
+
+### Deliverable and format
+Report, raw data (`sessions`, `snapshots`, `probes`, `events`, `environment` tables), deviations log, signed COI form, own registered analysis plan, archive SHA-256.
+
+### Time estimate
+Type M: 40 to 80 person hours, 4 to 8 weeks; the SDX-1 primary contrast about 960 sessions, about $385 to $1,150 (estimate). Type H: 3 to 6 months and funding.
+
+### How independence is ensured
+COI declaration before receiving the package; the replicator holds keys, logs and archives; plan registered before scoring; the original team does not take part in runs or analysis and cannot edit, delay or veto the report; no authorship condition.
+
+### How the result enters the logbook
+As a separate independent entry with its own id (`<original id>-R<n>`), its own registration and tier, side by side with the original and not pooled unless a pooling rule was registered in advance; the original entry gets a dated note. A contradicting result is handled by REPLICATOR-BRIEF section 14.
 
 ## 6. The sequence, the stop rule and the logbook format
 
@@ -352,6 +382,34 @@ Distinto proveedor que el generador y que el autor; sesión nueva por ítem y po
 
 ### Cómo entra en el cuaderno
 Proveedor del juez e ids exactos de modelo en el registro de roles; acuerdo y calibración en el resultado de M1; todos los desacuerdos y su resolución en el paquete.
+
+## 5b. ROL (e): el replicador independiente (después del congelamiento; agregado el 2026-10-02)
+
+Los roles (a) a (d) actúan antes o durante la corrida original. El rol (e) actúa después del congelamiento y no forma parte de la secuencia previa de la sección 6. Términos completos, texto de reclutamiento y perfil de candidatos: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\REPLICATOR-BRIEF.es.md` (inglés: `REPLICATOR-BRIEF.md`).
+
+### Para qué sirve
+Sacar el último sesgo que ningún rol anterior puede sacar: que el experimento lo corrió el equipo original. Una persona o un grupo sin interés repite un experimento congelado a partir del paquete publicado e informa lo que encuentre, incluso un resultado nulo o una contradicción.
+
+### Quién puede cubrirlo, y por qué
+Una persona o un grupo independiente que cumpla las reglas de independencia de REPLICATOR-BRIEF sección 7 (sin vínculo comercial con GS ni con PragmaWorks, sin relación estrecha con JC en los últimos 3 años, financiamiento declarado, exposición previa a GS declarada). No pueden ser JC, un agente suministrado por el equipo original, el practicante (a), un crítico (b), el revisor (c) ni un juez (d) del mismo experimento. Por qué: un replicador que ayudó a diseñar o a juzgar el experimento replica sus propios juicios. Dos tipos: tipo M (solo con modelos, cuentas y herramientas propias; variante directa o conceptual) y tipo H (participantes humanos, institución propia).
+
+### Tareas exactas
+Declarar conflictos y financiamiento; verificar los hashes del paquete congelado; construir y validar el arnés (controles de SDX-0); ejecutar la fase de generación y archivarla; registrar su propio plan de análisis antes de producir cualquier puntuación; puntuar y analizar como está congelado; entregar datos crudos con el esquema fijo, una bitácora de desviaciones y un informe.
+
+### Qué NO debe ver
+Ningún resultado del original (piloto o principal) ni material de promoción (libro blanco, compendio, cursos, sitio) hasta que su propio plan tenga sello de tiempo y su generación esté archivada; no modifica ningún artefacto de brazo, texto de cambio, oráculo ni andamio. Solo preguntas técnicas, por un único canal registrado.
+
+### Entregable y formato
+Informe, datos crudos (tablas `sessions`, `snapshots`, `probes`, `events`, `environment`), bitácora de desviaciones, formulario de conflicto de interés firmado, su plan de análisis registrado, SHA-256 del archivo.
+
+### Tiempo estimado
+Tipo M: 40 a 80 horas-persona, de 4 a 8 semanas; el contraste primario de SDX-1, unas 960 sesiones, unos USD 385 a 1.150 (estimación). Tipo H: de 3 a 6 meses y financiamiento.
+
+### Cómo se asegura la independencia
+Declaración de conflicto de interés antes de recibir el paquete; el replicador guarda claves, registros y archivos; plan registrado antes de puntuar; el equipo original no participa en ejecuciones ni análisis y no puede editar, demorar ni vetar el informe; sin condición de autoría.
+
+### Cómo entra en el cuaderno
+Como entrada separada e independiente con su propio id (`<id original>-R<n>`), su propio registro y nivel, lado a lado con el original y sin combinar salvo que se haya registrado de antemano una regla de combinación; la entrada original recibe una nota fechada. Un resultado contradictorio se trata según REPLICATOR-BRIEF sección 14.
 
 ## 6. La secuencia, la regla de corte y el formato del cuaderno
 

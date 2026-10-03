@@ -79,3 +79,22 @@ For a flagship you can submit the stage-1 design to a Registered Reports track (
 ## 7. What to record after registering (the logbook line)
 
 `SDX-1 v1: tag prereg/SDX-1-v1; commit <hash>; OSF <DOI/URL>; Zenodo <version DOI> (concept <DOI>); registered <date>; archive SHA-256 <hex>; manifest <path>; scope <Core|Full>; practitioner <name or role>; reviewer <name or role>; judge vendor <name or "owed">; first main-run session <date, must be later>.`
+
+## 8. Independent replicators (role e; added 2026-10-02, DRAFT)
+
+After a registration is frozen, an independent replicator may rerun it from the package. Role definition: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\ROLES.md` section 5b. Terms, recruiting text, candidate profile, deliverables, credit and contradiction handling: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\REPLICATOR-BRIEF.md` (Spanish: `REPLICATOR-BRIEF.es.md`).
+
+What this changes in the registration mechanics:
+1. **The package must be replicable**: build it with `build-frozen-package.js`, include the oracle and runner, the arm artifacts with hashes, the data schema, the deviations-log template and the pre-stated ranges. State the license of the package in the README of the archive. A replication runbook is owed after SDX-0 produces a working harness.
+2. **Generation and scoring are separable** in the harness (a replicator timestamps their own analysis plan between them). Build that separation into the SDX-0 harness.
+3. **The replicator registers separately**: their analysis plan on OSF or equivalent, referencing our tag and archive SHA-256. Their record, not ours, sets their tier.
+4. **Logbook**: after a replication, add a dated note to the original entry and a new entry `<id>-R<n>`; log it with the line format of section 7 plus `replicator <name or group>; variant <direct|conceptual>; COI form <path>; plan registered <date>; first scoring <date, must be later>`.
+5. **Recruiting can start before the freeze; delivery cannot.** Recruit as soon as the first model-only registration (SDX-1, or SDX-5 Part A if it freezes first) has a freeze date.
+
+## 9. Registering the follow-on experiments SDX-3 to SDX-7 (DRAFT)
+
+Proposals and order: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\BACKLOG.md`, section "Added 2026-10-02, second pass"; hypotheses: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\HYPOTHESES-2026-10-02.md`. Practical rules:
+1. One registration per experiment, each with its own tag `prereg/<ID>-v<N>`, OSF record and Zenodo mirror; none of them is part of the SDX-1 package, because adding arms or readouts to SDX-1 is a structural change (critic counter resets).
+2. If SDX-3, SDX-5 or SDX-6 intends to reuse SDX-1 chains (archived snapshots and transcripts), register its analysis plan before SDX-1 is unblinded; after that it is tier C.
+3. The data-capture requirement for SDX-1 (per-session tool-use and token breakdown, snapshots archived) is the one thing to settle before the SDX-1 freeze.
+4. SDX-5 Part A and the SDX-4 pilot can be frozen and run before SDX-1 data exist (they depend on SDX-0, not on SDX-1).

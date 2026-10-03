@@ -6,6 +6,8 @@ The one place where the detail of every experiment lives: hypothesis, design, wh
 - New entry: copy `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\LOGBOOK\ENTRY-TEMPLATE.md`
 - Next experiments, in dependency order: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\BACKLOG.md`
 - Registrable designs: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\prereg\`
+- Hypotheses behind the second-pass experiments (SDX-3 to SDX-7, proposals): `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\HYPOTHESES-2026-10-02.md`
+- Independent replications enter as separate entries `<id>-R<n>`, with their own registration and tier; terms: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\REPLICATOR-BRIEF.md`
 
 Standing fact (JC, 2026-10-02): there are no earlier preregistration records. Every experiment from SDX-0 onward is preregistered under the protocol (tag, then external record), and the backfilled entries below stay at the tiers they earned. Registration mechanics: `C:\workspace\PragmaWorks\gs\generative-specification\docs\experiments\PREREG-HOWTO.md`.
 
