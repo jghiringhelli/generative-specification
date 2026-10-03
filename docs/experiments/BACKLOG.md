@@ -37,12 +37,14 @@ Open design items this sequence creates (for the next SDX-1 and SDX-1-ARMS revis
 Redesign of the existing capacity-relative study: k of at least 5, a second invented domain, the registered trend test actually run, the canary result logged, a behaviour-first oracle (convention-tolerant) so the weak rung's apps are scored, layer metric replaced by untargeted metrics. Proposal for a better hypothesis than the monotone law: ablate the specification cascade components (sentinel, acceptance criteria, ADRs, hooks) per capability tier, so the result says which component acts at which capacity. Licenses: the capacity-relative claim, or its narrower form. Depends on B1 (harness).
 
 ### B6. Twin studies at scale (TX, SX, CX family) (about $300 to $1,000)
+Update 2026-10-02 (second pass, DRAFT): the scale-threshold idea is now SDX-4 (H-CONTEXT), run on the Pastura fixture with a frozen ballast corpus instead of author-built twins; see "Added 2026-10-02, second pass" below. B6 stays as the twin-based variant if JC prefers it.
 Larger codebase (hundreds of files), twins matched on behaviour with seeded defects present in both, hidden oracle, a modification dependent variable, a sentinel arm, k at least 5. Proposal for a better hypothesis than "structure lowers reading cost": a scale threshold: state or structure effects bind only once the repository exceeds what a fresh session reads; manipulate repository size or read budget directly and look for the crossing point. Licenses: where, if anywhere, structure alone pays. The TX null stays in force until then.
 
 ### B7. Revival grid (registered design in `C:\workspace\PragmaWorks\gs\generative-specification\experiments\revival\PREREGISTRATION.md`) (about $200 to $600, local models)
 Run after B1 harness exists. Fixed difficulty tiers and a model ladder, per-cell numeric predictions and falsifiers. Better hypothesis than "N-version revives": the exposure statement itself, a per-cell prediction of defect exposure from model tier and difficulty, tested out of sample. Licenses: a calibrated claim about when cheap rigor pays, or evidence that the model does not predict. NX stays classified as a floor result until the grid supersedes it.
 
 ### B8. SDX-2: replication and extensions (about $700 to $2,000)
+Update 2026-10-02 (second pass, DRAFT): SDX-2 keeps this meaning (ablation, second vendor, frontier cell, enforcement-only arm). It also carries the frontier cell that every hypothesis in `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\HYPOTHESES-2026-10-02.md` needs for its sufficiency ratio, and the component arms A4-L1, A4-L23, A4-open (below).
 Added by revision 2: a per-element ablation of L1 to L5 (the bundle gap in SDX-1 cannot say which element acts; run only if SDX-1 shows a gap) and a frontier-model cell for A5 vs A4 (the gap is predicted to shrink with capability).
 Second vendor as a replication (not pooled), enforcement-only arm (expert prompt plus a generic must-pass hook; does the gate explain the effect?), frontier tier (does the effect recede with capability?), same-vendor handoff fork, a longer horizon if SDX-1 hit a ceiling. Depends on B4 outcome.
 
@@ -50,12 +52,14 @@ Second vendor as a replication (not pooled), enforcement-only arm (expert prompt
 A disinterested party reruns the SDX-1 primary contrast from the published package without author help. Cheaper and stronger than an extra internal vendor. Licenses: moves tier from author-run to independently replicated. Schedule when B4 is frozen.
 
 ### B10. SDX-3: governance and audit (about $300 to $800)
+Update 2026-10-02 (second pass, DRAFT): SDX-3 is H-GOV. New cheap comparator arm A7 (commits as ledger) and an optional rotating-actor arm; cost revised to about $500 to $1,800. See below.
 Reconstruction of decisions and injected-defect detection by stateless fixed-vendor judges, with A3 as the comparator (both arms can record rationale), defects defined against the shared base spec and change list, deterministic sensors reported separately. Licenses: the audit claim that currently has design but no clean test.
 
 ### B11. Judge validity check (about $20 to $60, 2 days)
 Measure self-preference and run-to-run noise of the audit rubric across judge vendors on a fixed set of already generated repositories, with a human-scored subset. Why: AX-K5 showed audit disagreement of up to 6 points between two runs of the same prompt. Licenses: whether any audit-based number can be used at all and with what interval. Cheap enough to precede B3.
 
 ### B12. Human-rater study (about $6,000 to $10,000, 6 to 8 weeks; needs institutional review if run through a university)
+Update 2026-10-02 (second pass, DRAFT): split into SDX-6 (prompt-author version of H-FLOOR, cheaper) and SDX-7 (live human study for H-LEARN and the interactive H-FLOOR). The $6,000 to $10,000 here is the floor for a 12 to 16 person pilot; an adequately powered equivalence study is estimated higher (below).
 Cannot be automated and cannot be outsourced to the author's orbit. Proposal: a design principle list rather than a design.
 
 Principles (public-safe):
@@ -95,6 +99,86 @@ If an expert prompt without the load-bearing elements ties the substrate (SDX-1 
 | N-version revives on weak models | Exposure floor; post-hoc selection | Out-of-sample exposure prediction (B7) |
 | Rubric validated by three repositories | n=3, circular | Judge validity and hidden-outcome correlation: does the rubric score predict a hidden behavioural or maintenance outcome across many repositories? (new, follows B11) |
 | "Governed" as maturity level L4 | Never measured as a predictor | Does a level predict regression flips or audit detection across projects (observational, after SDX-3) |
+
+## Added 2026-10-02, second pass: JC's four sharpened questions (DRAFT, nothing frozen, nothing run)
+
+Source and formal statements: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\HYPOTHESES-2026-10-02.md`. In short: H-CONTEXT (the map), H-PHASE (executed verification in the open), H-FLOOR (spread between practitioners), H-GOV (stateless audit and reconstruction), H-LEARN (experience instead of training). Independent replicators for the frozen ones: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\REPLICATOR-BRIEF.md`. Cost figures are estimates, same convention as above (model spend plus agent-assisted preparation; preparation is usually the larger cost; human figures assume paid participants at about $75 per hour and are the least certain).
+
+### Hypothesis to experiment map
+
+| Hypothesis | Test mode | Experiment id | Relation to existing items | Folded into SDX-1? |
+|---|---|---|---|---|
+| H-CONTEXT | Models | **SDX-4** (new; absorbs B6) | B6 twin studies at scale | Only a data-capture requirement: tokens by tool-result category, turns and files read, per session. Descriptive secondary, no verdict (size is confounded with change index) |
+| H-PHASE | Models (humans optional as reviewers) | **SDX-5** (new): Part A layer study, Part B agent-in-loop, Part C natural escapes | none | No. SDX-1's oracle is itself an executed check on every arm, so SDX-1 cannot test it. Part C reads SDX-0 and SDX-1 final repositories (archive them) |
+| H-FLOOR | Humans as prompt authors, models run; model-persona pilot is a proxy only | **SDX-6** (new): P0 model-persona pilot, then the human prompt-author study | part of B12 | No (needs people). SDX-1's A5b replicate chains give the within-text noise for its ICC check |
+| H-GOV | Models (humans optional as blind raters) | **SDX-3** (existing id, B10) | B10, B11 first | Partly: A5, A3 and A4 final repositories from SDX-1 are reused as audit subjects if archived |
+| H-LEARN | Humans only | **SDX-7** (new) | B12 | No |
+| Sufficiency ratio and frontier cell (all five) | Models | SDX-2 (existing, B8) | B8 | No |
+
+Cheap folds: nothing is folded into SDX-1 as an arm or readout (any addition is structural and resets the critic counter, `ROLES.md` section 6). What is cheap and recommended is that SDX-1's harness archive every per-change working-tree snapshot and every session transcript with its tool-use and token breakdown (a few GB, no extra model spend). That lets SDX-3 (audit subjects), SDX-4 (descriptive size trend), SDX-5 Part C and SDX-6 (noise estimate) reuse chains. Tier caveat: an outcome registered after SDX-1 outcome data are unblinded is tier C, not B; register the SDX-3, SDX-5 and SDX-6 analysis plans before SDX-1 is unblinded if reuse is intended.
+
+### Items
+
+#### B13. SDX-5, H-PHASE: executed verification in the open (Part A about $250 to $600 and 40 to 70 agent-assisted hours, 1 to 2 weeks; Part B about $700 to $2,000, about 3 weeks; Part C about $50 to $150 after SDX-1) DRAFT
+- Part A: the reference implementation of Pastura (it exists for the SDX-0 oracle validation, V2) plus a registered set of injected defects: about 8 real-world-behaviour classes from an external taxonomy times 5, two control classes (planted logic and type errors; spec-level misunderstanding), and 20 clean items, about 80 items. Layers D1 static, D2a own tests, D2b independent unit suite, D3 test-environment integration, D4 model review (two vendors, two runs), D4+ effort-matched agentic review that may not execute, D5 open-field execution.
+- Part B: arms A5, A5-open (A5 plus an instruction to run the real process on a real data file and restart it before finishing), A4, A4-open (A4 with an execute-in-the-open step as an enforced gate); sealed open-field probe suite (restart persistence, migration of a data file written by the previous change, concurrency, season and daylight-saving boundaries, volume). n = 20 chains per arm plus controls (A0, A5b), about 120 chains.
+- New arms and probes beyond SDX-1: A5-open, A4-open, an L6 tag (execute-in-the-open gate) for follow-on experiments only, the defect taxonomy and instances, the sealed open-field probe suite, the layer harness.
+- Shares: Pastura, scaffold, base oracle, A0, A5, A5b, A4.
+- Licenses: whether the open field adds unique catches over review and test-environment checks, per unit cost; or that it does not. Depends on SDX-0 (harness, oracle V2) and B11. Does not depend on SDX-1 results, so Part A can run in parallel with the SDX-1 critic phase.
+
+#### B14. SDX-4, H-CONTEXT: the map at scale (about $600 to $1,800, 2 to 3 weeks; ballast construction 50 to 80 agent-assisted hours) DRAFT
+- Size manipulation S (about 3 kLOC), M (about 15), L (about 60) by a frozen ballast corpus; arms A0, A5, A3-scaled (flat file that grows with the project), A4-L1 (sentinel only), A4 full, plus a mechanical-oracle map (ceiling), a stale-map arm (negative control) and an A/A. Tasks T1 cross-cutting, T2 localized, T3 state-dependent, plus needle questions. n = 12 sessions per cell to start (re-planned from SDX-0 variance). Single-change sessions, plus a short 3-change drift mini-chain at L.
+- Primary: total tokens per accepted change including map upkeep, and fresh-probe pass rate; arm by size interaction. Targeted (no verdict): search and read tokens, files, turns.
+- New arms and probes: A3-scaled, A4-L1, mechanical-oracle map, stale map, ballast corpus, needle set, transcript extractor (also the SDX-1 data-capture requirement).
+- Shares: Pastura and its oracle; A0, A5, A3, A4.
+- Licenses: where, if anywhere, a map pays (scale threshold), as cost-only or cost-and-correctness. Depends on SDX-0. Can run before SDX-1 data exist; its A4-L1 arm is the L1 component of the SDX-2 ablation.
+
+#### B15. SDX-6, H-FLOOR: spread between practitioners (P0 pilot about $150 to $400, 1 week; human version about $8,000 to $12,000, 8 to 12 weeks including recruitment, likely ethics review) DRAFT
+- P0: a model-persona prompt ladder (terse novice, mid, expert) to debug the pipeline and the arm-by-stratum analysis; labelled proxy, no verdict on the hypothesis.
+- Human version: about 30 practitioners in three pre-assessed skill strata (about 10 each), each writing change requests and a session-start instruction once (2 to 3 hours, text only). Their texts are replayed under arms N (no substrate), P (placebo substrate) and S (A4) on Pastura, k = 3 chains per text and arm, about 270 chains (about $1,500 to $4,300 model spend) plus practitioner pay (about $6,750).
+- New arms and probes: P (placebo substrate), the skill assessment instrument (experience plus a baseline work sample on a different small project with its own hidden tests), the text-replay harness.
+- Shares: Pastura, oracle, A4, A5b-style replicate chains for the within-text noise.
+- Licenses: whether the substrate narrows practitioner spread and raises the floor, or that practitioners do not matter here (no spread to shrink). Depends on SDX-0 and on a gate: run the human version only if SDX-1 shows H1 positive or SDX-3 or SDX-5 shows a gap.
+
+#### B16. SDX-7, H-LEARN (and the live, interactive H-FLOOR): the human study (about $25,000 to $45,000 adequately powered; 3 to 5 months; ethics review likely) DRAFT
+- Arms U, T, S (optional T0 time-matched generic training, TS), blocked on skill; about 30 per arm under an assumed SD of 15 points and a margin of 10 (TOST), so 90 to 120 participants, a 3 to 4 hour task each, paid; non-author trainer; two blind maintainability raters recruited outside GS's orbit; an intervention-fidelity pilot of 3 to 5 people first. B12's $6,000 to $10,000 buys a 12 to 16 person pilot only.
+- Shares: the Pastura-like task family and hidden oracle; arm S is A4.
+- Licenses: the human-validation claim scoped to the studied population, or that training matters, or that the substrate does not stand in for it. Depends on SDX-6 P0, a registered fixture and a funding decision. Last in line.
+
+#### B10 revised (SDX-3, H-GOV): about $500 to $1,800 DRAFT
+Chains: reuse archived SDX-1 A5, A3 and A4 repositories; new A7 chains (commits as ledger, n = 20, about $110 to $330); optional rotating-actor chains for A5 and A4 (about 40 chains, about $220 to $660); audits: arms times chains times (clean plus injected variants) times two auditor vendors times two runs, about 1,000 to 1,300 audits at $0.5 to $1.5 each. New arms and probes: A7, the fact list and divergence families, two injection scripts, the confabulation control. Depends on B11 (judge validity) and SDX-1 chains. Licenses: whether the audit and reconstruction value belongs to the substrate or to the commit log.
+
+### Shared fixture and arms
+
+One fixture: Pastura, the locked scaffold, the sealed oracle, arms A0, A5, A5b, A0S, A4 and the SDX-1-ARMS manifest (`C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\SDX-1-ARMS.md`) are reused unchanged. Arms and probes to add, none of which touches SDX-1:
+
+| New arm or probe | Used by | Note |
+|---|---|---|
+| A7 commits-as-ledger (harness writes the change text and reply as the commit message) | SDX-3 (also a candidate Full-scope arm of SDX-1 if the critics want it) | cheapest rival to the substrate for audit |
+| A4-L1, A4-L23, A4-open component arms | SDX-2 (ablation), SDX-4, SDX-5 | A4 minus components; makes the prediction matrix of HYPOTHESES section 8 testable |
+| A5-open (expert plus execute-in-the-open instruction) | SDX-5, SDX-2 | the cheap rival for H-PHASE |
+| A3-scaled flat file, stale-map arm, mechanical-oracle map | SDX-4 | negative and positive controls |
+| P placebo substrate | SDX-6, SDX-7 | inert directory of the same size |
+| Open-field probe suite, defect set, layer harness | SDX-5 | sealed |
+| Ballast corpus, needle set, transcript extractor | SDX-4 (extractor also SDX-1 data capture) | the extractor must exist before SDX-1 runs |
+| Skill assessment instrument, text-replay harness | SDX-6, SDX-7 | measured, not self-reported |
+| Divergence families, fact list, injectors, confabulation control | SDX-3 | defined against the base spec and change list |
+
+### Dependency order and recommended sequencing
+
+1. B0 protocol adoption and B1 SDX-0 (harness, oracle with reference implementation, V1 to V13). Everything depends on it. Unchanged.
+2. B11 judge validity (about $20 to $60). Needed before any audit or review number: SDX-3 and the D4 layers of SDX-5.
+3. In parallel with the SDX-1 critic phase and before SDX-1 data: **SDX-5 Part A** (cheap, independent of SDX-1, answers question 2 directly) and an **SDX-4 pilot at sizes S and L only** (checks the positive control: does A0 cost grow with size?). Each is registered and frozen on its own.
+4. B4 SDX-1 (Core or Full). Archive snapshots and transcripts. Decide A7 for Full.
+5. SDX-3 (H-GOV) on archived and new chains; SDX-4 in full; SDX-5 Part B and C. Order among these by what SDX-1 says: under row (iii) (no added state-dependent correctness) SDX-3 and SDX-5 become the main evidence (see "replacement hypothesis" above); under row (i) or (ii), SDX-4 and SDX-5 Part B refine where the value sits.
+6. SDX-2 (ablation, frontier cell, second vendor) when SDX-1 shows a gap; it supplies the sufficiency ratios.
+7. SDX-6 human version, then SDX-7, only if steps 4 to 6 justify human money. Start independent-replicator recruitment (B9, `REPLICATOR-BRIEF.md`) as soon as SDX-1 is frozen, not after its result.
+
+Model-only spend through step 6 is on the order of $2,500 to $8,000 with SDX-1 Full; the human studies add about $33,000 to $57,000. All are guesses until SDX-0 measures cost per chain.
+
+### Overlap risk (HYPOTHESES section 8)
+
+Four positive results for A4 on one set of chains are one bundle measured four ways unless component arms (SDX-2) separate them. Sequencing therefore puts H-PHASE (the most independent hypothesis: verification mode, not persistence) first, and the component ablation before any public count of confirmations.
 
 ## Standing rule for this list
 
