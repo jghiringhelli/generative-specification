@@ -20,7 +20,7 @@ AI coding agents begin each session with no memory of the last, so specification
 
 1. **Framing, not a new criterion.** The stateless reader named as the structural condition of agent-built software, and derivability stated as the obligation it creates. The paper does not claim the criterion is new (literature map: novelty risk HIGH); it claims the naming, and the decomposition that follows.
 2. **An operational decomposition of the substrate** into L1 sentinel, L2 specification ledger, L3 decision record, L4 enforced gates, L5 coherence lock, with an observable test for each (`prereg\SDX-1-ARMS.md` section 1) and a stated evidence status per component.
-3. **Five orthogonal hypotheses** (P1 navigation economy, P2 executed-verification yield, P3 coherence and reconstructability, P4 durability, P5 practitioner variance) plus the methods trunk M, with a component-by-outcome prediction matrix, the double dissociations that would refute the component story, and refutation criteria.
+3. **Six orthogonal hypotheses** (P1 navigation economy, P2 executed-verification yield, P3 coherence and reconstructability, P4 durability, P5 practitioner variance, P6 spec-to-implementation throughput to a verified COMPLETE; P6 added 2026-10-03, see `P6-skeleton.md`) plus the methods trunk M, with a component-by-outcome prediction matrix, the double dissociations that would refute the component story, and refutation criteria.
 4. **An evidence ledger** of every logbook entry with outcome label and tier quoted verbatim, including nulls, invalid designs and demonstrations, and the rule that nothing is cited above its tier.
 5. **A preregistered programme and an update rule**: the protocol (guards a to i, outcome labels, tiers), roles that must be independent, independent-replication terms, and the living-ledger rule (dated changelog; journal version is a snapshot).
 
@@ -35,7 +35,7 @@ Explicit non-contributions (stated in the paper): speed or productivity gains; s
 | 3 | The instrument | seven properties, compact; status: unvalidated; discriminant-validity programme (leaf I-1) | WP 3; IEEE IV.A; ScoringGuide | 1 p |
 | 4 | The substrate L1 to L5 | operational definitions and evidence status each; the bridge, sentinel and phase-collapse as explanations with consequences mapped to trunks | SDX-1-ARMS 1; WP 4.1 | 1.5 p |
 | 5 | Evidence ledger | one row per logbook entry (table 1); AX k=5, AX2 and CR condensed tables as tier C detail (D1 option "ROOT with data") | logbook; IEEE VI | 2.5 p |
-| 6 | Hypotheses and prediction matrix | P1 to P5, M, moderator, instrument; dissociations; refutation criteria; sufficiency ratio (expert prompt rival) | HYPOTHESES; literature map 4.3 | 2 p |
+| 6 | Hypotheses and prediction matrix | P1 to P6, M, moderator, instrument; dissociations; refutation criteria; sufficiency ratio (expert prompt rival) | HYPOTHESES; literature map 4.3 | 2 p |
 | 7 | The programme | protocol, roles, tiers, preregistration mechanics, replicator terms, the tree, update rule | EXPERIMENT-PROTOCOL; ROLES; REPLICATOR-BRIEF | 1 p |
 | 8 | Related work | condensed; 2026 competitors (Gloaguen, Khatri, Lulla, Farrag, RAMP, traceSDD, Canedo, SlopCodeBench) | IEEE II; literature map | 1.5 p |
 | 9 | Threats to validity | below | WP 6; IEEE VII | 1 p |

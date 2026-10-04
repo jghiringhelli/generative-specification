@@ -67,6 +67,8 @@ External motivation (cited as literature, never as GS evidence; verification sta
 
 Orthogonality: P4's primary is the slope; the cost metric of SDX-8 overlaps P1, so P1 is restricted to single-change sessions across size. P3 reuses SDX-1 chains: counted once.
 
+P6 (SDX-9, `P6-skeleton.md`) is declared orthogonal to P4: P4 follows a stream of change requests with an evolving spec and measures erosion over the chain; P6 builds once from a fixed, complete spec in stages and measures cost to a verified COMPLETE and the false-complete and escape rates. They share the fixture and arm manifest, not chains. P4's dissociating components are L4 ratchet and L5 lock; P6's are L2 criteria ledger and L4 gates, with L5 and L3 predicted to do nothing under a fixed spec. A P4 result must never be cited as support for P6 or the reverse.
+
 ## 7. Outcome-conditional claim forms (written before any data)
 
 | SDX-1 decision row (`prereg\SDX-1.md` section 10) | What P4 may say | What P4 must stop saying |

@@ -1,6 +1,6 @@
 # Migration map: where every section goes, what is cut, what is duplicated (2026-10-03)
 
-Status: PROPOSAL. Companion to `C:\workspace\PragmaWorks\gs\gs-paper-tree\docs\white-paper\tree\TREE.md` (node ids R0, P1 to P5, M, I-1, CR2, TRF-1, CEN-0, WS-1, A-1; branches in `BRANCHES.md`). Nothing has been deleted or edited in the existing documents; this file only says what should move.
+Status: PROPOSAL. Companion to `C:\workspace\PragmaWorks\gs\gs-paper-tree\docs\white-paper\tree\TREE.md` (node ids R0, P1 to P6, M, I-1, CR2, TRF-1, CEN-0, WS-1, A-1; branches in `BRANCHES.md`). Nothing has been deleted or edited in the existing documents; this file only says what should move.
 
 Documents mapped (all under `C:\workspace\PragmaWorks\gs\gs-paper-tree\docs\white-paper\` unless stated): `GenerativeSpecification_WhitePaper.md` (v5.0, 9 numbered sections), `GenerativeSpecification_WhitePaper.LONGFORM.md` (adds a lexicon), the `ieee-access\` draft (sections I to IX plus supplements and figures), `GenerativeSpecification_Compendium.md` (the canonical master, 11 sections), `GS_Experiment_Supplement.md`, `GS_Rubric_ScoringGuide.md`, `GenerativeSpecification_FieldGuide.md`, `GenerativeSpecification_PractitionerProtocol.md`, `EXPERIMENT-LEDGER.md`, `THREE-PAPER-ROADMAP.md`, `PAPER-TREE.md`, `THESIS-RECENTER-proposal.md`, `PAPER-DECISIONS.md`.
 
@@ -211,20 +211,26 @@ Facts used: UOC application window about December 2026 to about 31 January 2027,
 
 1. **R0** to IEEE Access: needs only the re-cut, the relabelling, the logbook merge and archive, the copy-edit and the template; no new experiment. Whether Access accepts a framework-and-ledger paper is a reviewer decision; the existing draft's own checklist says rejection is plausible on scope. Mitigation: "ROOT with data".
 2. **M** (short version) to ICSE 2027 NIER, or to IEEE Access as a second paper if bandwidth allows: the case-series core exists in the logbook today. Caveats: the logbook entries were written by the author's assistant on 2026-10-02 and need an independent classification audit; NIER's page limit and the commission's scoring of NIER were not verified.
-3. Nothing else. No trunk P1 to P5 has data; none has a frozen preregistration; I-1, replications, CR2, TRF-1 and the branch papers are all later.
+3. Nothing else. No trunk P1 to P6 has data; none has a frozen preregistration; I-1, replications, CR2, TRF-1 and the branch papers are all later.
 
 ### Cannot be accepted before January 2027
 
-P1 to P5 (no data yet; the first plausible data are SDX-5 Part A and the SDX-4 pilot, about Q1 2027, because SDX-0, the critic rounds and the practitioner artifacts come first), I-1 (needs trunk data), independent replications (start at freeze), TRF-1 results, and the Loom, BIOISO and Chronicle papers (BRANCHES.md section 5).
+P1 to P6 (no data yet; the first plausible data are SDX-5 Part A and the SDX-4 pilot, about Q1 2027, because SDX-0, the critic rounds and the practitioner artifacts come first), I-1 (needs trunk data), independent replications (start at freeze), TRF-1 results, and the Loom, BIOISO and Chronicle papers (BRANCHES.md section 5).
 
 ### Recommended order of submission
 
 1. R0 (the foundation every later node cites; use the Zenodo preprint of the same version for a timestamp the day it is submitted).
 2. M short, in parallel with R0 only if it does not delay R0 (it is the insurance conference item).
 3. Registered-report protocol stages where a protocol exists before data: P4 (the flagship) at the ESEM or MSR track when the SDX-0/SDX-1 pre-freeze sequence is complete; this converts "results gate" into "protocol gate" and gives in-principle acceptance regardless of outcome. ESEM 2027 dates were not found; the 2026 pattern suggests a spring deadline (inference).
-4. P2 (SDX-5 Part A is the cheapest trunk and independent of SDX-1), then P1 (SDX-4), both in 2027.
+4. P2 (SDX-5 Part A is the cheapest trunk and independent of SDX-1), then P1 (SDX-4), both in 2027. P6 (SDX-9, added 2026-10-03) comes after SDX-0 and its criteria-tagged oracle; it is independent of SDX-1 outcomes and of P4, so it can be drafted with SDX-8 in the next design cycle and run in 2027 alongside P1 and P2; it cannot be accepted before the UOC window either. The SDX-8 and SDX-9 drafts are design-only until SDX-0 closes (TREE.md section 11.2).
 5. P4 full results (after SDX-1 and SDX-8), then P3 (needs archived SDX-1 chains and B11), then P5 (human studies, 2028).
 6. M extended (with SDX-0 and B11 results), I-1 (after at least two trunks), CR2.
 7. Branch papers in the order BRANCHES.md section 5 suggests; independent of the GS order, with the dilution guard.
 
 The strategy's own advice stands: submit in parallel so review cycles overlap, and do not let the paper dictate the method or the workshop.
+
+## 10. Added 2026-10-03: what the new trunk and the decisions change in this map
+
+1. **P6 sources.** No existing section of the white paper, the IEEE draft or the Compendium is migrated into P6: its claim has no prior text. Reusable pieces: Compendium section 8.19 definitions (spec completeness, criteria coverage, lifecycle coverage, triage) as the stage vocabulary (wording to be checked); the phase-collapse external-guarantee half (white paper 2.2) as framing; EX (tier D) as the single feasibility row in the ledger. The white paper's compression or speed half of phase collapse remains unclaimed anywhere (HYPOTHESES section 0); P6 tests cost to a verified COMPLETE, not compression.
+2. **Section 1 of this file is now actionable.** JC accepted the ROOT and the orthogonal set on 2026-10-03; the seven over-labelled sentences and the concrete edit for each are written out in `TREE.md` section 11.1. The retirement of the A to D letters (D3) is the only item in that section that changes published text; the Zenodo v4.0 record is never edited, a new version carries the changelog.
+3. **Sequence.** The order in section 9 stands with two additions: SDX-8 and SDX-9 design drafts (no spend) in the next cycle, and the field-study pilot (`FIELD-STUDY-TEAMS.md`) only after the ROOT is submitted and the registration, analyst and agreements exist; it is not on the critical path of any submission before January 2027.
