@@ -1,6 +1,6 @@
 # §VI.G — Twin studies: TX and SX (v0.3, compact; full text in `supplement/S2-twin-studies-full.md`)
 
-### G. Behavior-preserving twin studies (tier B)
+### G. Behavior-preserving twin studies (twin comparisons, exploratory)
 
 **TX (organization).** One representative undisciplined generation of the Conduit backend, a single 489-line route file with direct database access and no interfaces, was frozen as twin M and refactored by an executor into a behavior-preserving disciplined twin D (layered domain, application and infrastructure, repository interfaces, small units). A shared 13-file conformance suite passed identically on both, so they differ only in structure. Three findings, each bounded. (1) At fixed content, layering alone did not lower a stateless reader's cold-read cost: median read breadth was 5 files on D against 4 on M (k = 5), because one concern is spread across several small files. (2) Adding an authored sentinel to each twin drove exploratory search to zero on both; the read economy belongs to the authored map and not to layering. (3) Given a cross-cutting change on a small local model, the undisciplined twin was regenerated truncated (two of eight route handlers kept, still compiling, because untyped code carries no contract to violate) while the disciplined twin's small units regenerated whole and its type contracts turned the same model's error into a compile failure; a capable model showed no difference. One system, one small and one capable model: the mechanism is demonstrated and no effect size is estimated.
 

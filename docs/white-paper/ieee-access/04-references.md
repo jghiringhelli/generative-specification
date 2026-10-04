@@ -124,4 +124,10 @@
 
 [56] S. Holm, "A simple sequentially rejective multiple test procedure," *Scand. J. Statist.*, vol. 6, no. 2, pp. 65-70, 1979.
 
+[57] P. Ralph et al., "Empirical standards for software engineering research," arXiv:2010.03525, 2020; ACM SIGSOFT Empirical Standards, https://acmsigsoft.github.io/EmpiricalStandards/.
+
+[58] C. D. Chambers, "Registered reports: A new publishing initiative at Cortex," *Cortex*, vol. 49, no. 3, pp. 609-610, 2013.
+
+[59] B. A. Nosek, C. R. Ebersole, A. C. DeHaven, and D. T. Mellor, "The preregistration revolution," *Proc. Natl. Acad. Sci. USA*, vol. 115, no. 11, pp. 2600-2606, 2018.
+
 > [56] is numbered last only because it was added after the rest; renumber by first citation at template assembly. Verified 2026-10-01/02 (see `references-verification-log.md`, entry holm1979).

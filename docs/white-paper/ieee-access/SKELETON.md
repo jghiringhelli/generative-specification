@@ -1,7 +1,7 @@
 # IEEE Access Submission — Skeleton & Source Map (refreshed 2026-10-01)
 
 > **Venue:** IEEE Access (JCR/SCIE mega-journal, binary decision, about 4 to 6 weeks, APC about $2,160). It gates on soundness, distinctness and clarity, not novelty ("not necessarily expected to have a high level of novelty, but should be distinct from previous publications and technically sound").
-> **Scope of this paper:** the stateless-reader constraint, the seven properties, and a replicated comparison with its null reported, bounded by a capacity-relative result. It is the base paper of the three-paper roadmap (`../THREE-PAPER-ROADMAP.md`). Governance-as-durable-value, the revival model, the pragmatic-tier placement, the Decagon and any confidential or retired material are out.
+> **Scope of this paper:** the stateless-reader constraint, the seven properties, and an author-run three-condition comparison with its null reported, with an inconclusive capacity-relative comparison. It is the base paper of the three-paper roadmap (`../THREE-PAPER-ROADMAP.md`). Governance-as-durable-value, the revival model, the pragmatic-tier placement, the Decagon and any confidential or retired material are out.
 > **Source of truth for evidence:** `experiments/ax/runner/stats.json`, `experiments/ax2`, `experiments/cr/RESULTS-final.md`, `experiments/kx`, `experiments/sx`, `experiments/ax/bridge`; the Supplement (`../GS_Experiment_Supplement.md`) and the ledger (`../EXPERIMENT-LEDGER.md`) for the original single run. The white paper (`../GenerativeSpecification_WhitePaper.md`) reports the same AX evidence in broader form; this paper is a subset of it.
 
 ## The honesty gate (applies to every section)

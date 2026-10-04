@@ -1,6 +1,6 @@
-# §VI.H-I — Cross-vendor replication (AX2) and capacity ladder (CR) (v0.3)
+# §VI.H-I — Cross-vendor comparison (AX2) and capacity ladder (CR) (v0.3)
 
-### H. Cross-vendor structural replication, AX2 (tier B)
+### H. Cross-vendor structural comparison, AX2 (controlled comparison, exploratory; an internal, conceptual replication of AX's structural contrast)
 
 **Question.** Is the structural separation a single-model artifact? **Design.** 45 Conduit backends: three vendors, three conditions (naive, expert prompt, mature GS), five independent runs each. The model identifiers recorded in the run metadata are `gpt-5.6-sol`, `gemini-3.8-flash` and `claude-opus-4.8`, each run as a fresh sub-agent inside one agent harness (GitHub Copilot CLI), so the comparison is across vendors within one harness. **Metrics.** Only convention-independent static metrics are comparable across heterogeneous projects, so only they are reported: layer-boundary violations, duplication (jscpd), cyclomatic complexity (eslint) and test files.
 
@@ -12,7 +12,7 @@
 
 Layer violations are absent in all 30 disciplined runs, duplication falls roughly two to four fold and test files multiply. The expert and GS conditions are saturated against each other and on some cells the expert prompt is better (Gemini duplication 2.6% against 6.3%). The separation is therefore **naive-to-disciplined** and not GS-over-expert, consistent with Section VI.B. **Limits.** Five runs per cell where the protocol targeted twelve to fifteen; one benchmark; vendor and harness are confounded; the GS condition supplied the cascade as prompting and did not run an enforced verification loop. Runtime metrics (coverage, mutation score, a strict behavioural oracle) produced no comparable numbers: the oracle measured REST-convention conformance (0 of 13 on functional apps) and coverage was dominated by each project's test-infrastructure failures. Those sub-metrics are withdrawn and not reported. Obtaining comparable runtime metrics needs a controlled substrate (a locked scaffold and a convention-tolerant oracle), which is the next experiment.
 
-### I. Capacity ladder on a non-memorized benchmark, CR (tier B)
+### I. Capacity ladder on a non-memorized benchmark, CR (controlled comparison, exploratory)
 
 **Question.** Does the structural benefit depend on model capacity, on a benchmark the models cannot have memorized? **Design.** An invented domain, "Pastura" (a rangeland grazing-rotation API with temporal business rules, no public implementation), a ladder from a small local model (qwen2.5-coder 7B) through a mid model to three frontier models, naive and GS conditions, k = 3 per cell, medians reported. The design and prediction were committed on 17 September 2026 (commit `c4c855e`) before any CR run.
 

@@ -4,6 +4,10 @@
 
 ## V. STUDY DESIGN
 
+### Evidence vocabulary
+
+This paper uses the terms of the ACM SIGSOFT Empirical Standards [57] and of registered-report practice [58], [59], not a letter scale. A study is *confirmatory* only if its hypotheses and analysis plan were fixed before the data and carry a verifiable external timestamp; every study here is *exploratory*, and where a design was committed to the repository before the data we say so without calling it preregistration. Design types are controlled comparison (researcher-assigned conditions, no human participants), quasi-experiment, observational study and demonstration without comparison. A replication repeats a study with new data and is internal when the same team does it, external when another does; none of the results here has been replicated externally. Where a difference is tested we give the test, the corrected p and the effect size, and otherwise write "not distinguishable" or "not tested". The experiment logbook in the repository keeps its own internal registration tiers; this paper does not use them.
+
 ### A. Research questions
 
 RQ1 to RQ4 are stated in Section I. RQ2 is load-bearing: the expert-prompt control separates the value of the artifacts from the value of skilled prompting.
