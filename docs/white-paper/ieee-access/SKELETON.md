@@ -10,7 +10,7 @@
 - The 3/14 to 14/14 trajectory is reported as a diagnostic series from iterated post-hoc runs, never as an effect size. Three of ten registered predictions were confirmed.
 - The expert-prompt tie is reported as a tie with GS without its substrate; the substrate-versus-prompt question is carried as the unrun hypothesis H-S (VIII.B). Nothing claims the advantage.
 - One-run results are examples and not rates. No token-reduction percentage is asserted. KX reports tokens and dollars separately.
-- No SAVED, Decagon, governance-as-durable, pragmatic-tier or confidential material. DX1 and employer figures stay out.
+- No SAVED, Decagon, governance-as-durable, pragmatic-tier or confidential material. Figures from the retired human-subject study and employer figures stay out.
 - Registration language: the original three-condition design is author-attested (the commits are not in the public history); the k = 5 plan is pre-specified in intent only; CR's registration (commit `c4c855e`) is the one that is timestamped in the public history.
 
 ## Section map (current files)
