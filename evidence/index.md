@@ -31,7 +31,7 @@ Companions: [Field guide](/docs/white-paper/GenerativeSpecification_FieldGuide.p
 
 ## The experiments
 
-Every experiment is committed with its pre-registration timestamp and raw evidence, so a reader can verify rather than trust. The [experiment ledger](/docs/white-paper/EXPERIMENT-LEDGER.html) is the index and the [experiments page](/experiments/) lists each one.
+Every experiment is committed with its raw evidence, so a reader can verify rather than trust. None was preregistered with an external timestamp: the papers say, per experiment, what was committed before the data and call every study exploratory. The [experiment ledger](/docs/white-paper/EXPERIMENT-LEDGER.html) is the index and the [experiments page](/experiments/) lists each one.
 
 | Experiment | What it tests | Status |
 |---|---|---|
