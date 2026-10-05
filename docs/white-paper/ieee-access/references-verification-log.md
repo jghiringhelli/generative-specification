@@ -204,3 +204,13 @@ STATUS: UNVERIFIED | key: ieee-thesaurus-terms | The index terms in 01-abstract-
 # Reference-count rule (2026-10-02)
 
 Primary source: https://ieeeaccess.ieee.org/authors/submission-guidelines/ . It sets no maximum number of references. It says all research works should be carefully referenced and every reference checked for accuracy and for retraction. It recommends (does not require) fewer than 20 pages, with prior Editor-in-Chief approval above that, and requires 3 to 10 keywords. Rule used here: no target count; keep every reference cited in the text or supplement; prune only uncited or duplicate entries. Result: 0 pruned. The apparent uncited entries [15], [16] (cited as the range [14]-[17]) and [18] (Morris, cited in Supplement S3 and S5, now as [18] instead of author-year) are all used. No duplicate DOIs or arXiv ids. Final count: 56 (55 + Holm).
+
+# Additions for white paper 5.0 (2026-10-05)
+
+Source for both entries: arXiv API (export.arxiv.org/api/query, id_list), title, authors and abstract read on 2026-10-05.
+
+STATUS: VERIFIED | key: becker2025metr | J. Becker, N. Rush, E. Barnes, and D. Rein, "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity," arXiv:2507.09089 (v2, 2025-07-25). Abstract: RCT, 16 developers, 246 tasks; forecast 24% reduction, post-hoc estimate 20%, measured 19% increase in completion time. | http://arxiv.org/abs/2507.09089v2
+
+STATUS: VERIFIED | key: he2026cursor | H. He, C. Miller, S. Agarwal, C. Kastner, and B. Vasilescu, "Speed at the Cost of Quality: How Cursor AI Increases Short-Term Velocity and Long-Term Complexity in Open-Source Projects," MSR 2026, arXiv:2511.04427 (v3, 2026-01-26). Abstract: transient velocity increase, persistent increase in static analysis warnings and code complexity; panel GMM indicates these are major factors in long-term velocity slowdown. | http://arxiv.org/abs/2511.04427v3
+
+NOT VERIFIED (cited in the Compendium evidence box only; verify before any submission): Chambers (2013), Nosek et al. (2018), Wohlin et al. (2012).
