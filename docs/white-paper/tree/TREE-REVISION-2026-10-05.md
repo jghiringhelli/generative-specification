@@ -1,0 +1,28 @@
+# Tree revision of 2026-10-05: a diff against TREE.md (history is not rewritten)
+
+Status: PROPOSAL for JC. `TREE.md` (2026-10-03) stays as written; this file lists only what changes and why. Nothing is registered, run or submitted. Basis: (a) white paper 5.0 is now a method proposal that carries no results; (b) the experiment portfolio decision of 2026-10-04 (`C:\workspace\PragmaWorks\soma\docs\experiment-portfolio-decision-2026-10-04.md`); (c) the research-resources report of 2026-10-03; (d) the UOC plan and its hygiene rule; (e) JC's criterion: each paper either supports GS or gives value even when its results are negative. Full reasoning and the per-node table: `C:\workspace\PragmaWorks\soma\docs\paper-tree-assessment-2026-10-05.md`.
+
+## Changes (each row: TREE.md location, old, new, reason)
+
+| # | TREE.md location | Old | New | Reason |
+|---|---|---|---|---|
+| 1 | section 2 diagram, section 3 table, card P5 | P5 a trunk with SDX-6 and SDX-7 leaves | P5 DEFERRED: stays in ROOT as a hypothesis row only. SDX-6 (persona pilot) dropped; SDX-7 dropped for now. Spread across developers is observed descriptively inside the sales-evidence track | portfolio: 0.18 inconclusive only at 40 people and $15,300-19,600 of human pay; ethics review (CER) needs enrolment |
+| 2 | P6 card, SDX-9 leaf, P6-skeleton | trunk with SDX-9 | DEFERRED and to be REDESIGNED as a module factory (about 100 small specs) only after P4 reads; SDX-9 dropped as designed. Keep P6-skeleton.md as a design archive. Reframe as an estimation paper (cost to complete and false-complete rate per stage and regime), not a crossover hypothesis test | portfolio: SDX-9 needs 108-140 chains per arm; 0.82 inconclusive at n=20 |
+| 3 | P4 card, SDX-8 leaf | flagship measured as slope over a long chain with crossover | P4 stays flagship but its estimand is narrowed to regression resistance per change: about 100 independent single-change traps against about 25 carried rules, four arms differing only in channel (none, advisory, generic gate, enforced). SDX-8 dropped as designed. No growth-cost crossover and no claim about erosion over time; titles must not say "durability over a chain" | portfolio section 2; honesty about what 100 independent sessions can show |
+| 4 | P4 and P3 leaves | SDX-1 is P4's leaf; SDX-2 ablation is a leaf | SDX-1 replaced by P4 and P3 (Core only if shrunk SDX-0 measures SD <= 10). SDX-2's components become arms of P1 and P4. SDX-3 folds into P3, SDX-4 into P1 (sizes S and L), SDX-5 Part A is P2 (Parts B and C deferred) | portfolio table 1 |
+| 5 | section 4 card R0 and ROOT-skeleton sections 2-4 | ROOT carries the derivability premise, the instrument and the substrate in full | ROOT = evidence ledger + hypothesis matrix + programme + update rule. Definitions of the criterion, the instrument and the substrate are imported by citation from white paper 5.0 (a pinned, deposited version), not restated | white paper 5.0 is now the method specification; two owners drift |
+| 6 | section 3 row TRF-1; FIELD-STUDY-TEAMS.md | prospective field leaf under P4 and P5 | DEFERRED until enrolment and CER validation. Meanwhile a sales-evidence track (frozen definitions, consent clause, descriptive only, never presented as a research result) carries customer data. FIELD-STUDY-TEAMS.md stays as the design note | portfolio section 3; UOC rule that pre-enrolment human data may not count (unconfirmed, ask the CER) |
+| 7 | section 3 row CR2, "Where the moderator goes" | moderator is a registered factor in P1-P4 | In the GO wave every trunk uses one mid-tier model, so no capacity factor is tested; CR2 deferred; ROOT states direction only and no capacity law | portfolio section 3 "cannot claim: frontier results" |
+| 8 | M card | M waits for SDX-0 and B11 to be strong | M goes FIRST. Minimum version needs no new experiment; add one cheap prospective check: a pre-registered blind classification audit by readers of other vendors, with agreement reported (a low agreement is itself a result). SDX-0 and B11 are optional strengtheners | schedule (SANER 2027 RENE, 23 Oct); design brief: `M-DESIGN-BRIEF-2026-10-05.md` |
+| 9 | A-1 leaf | benchmark artifact, low priority | PROMOTED: Pastura fixture + locked scaffold + sealed oracle + harness is a stand-alone artifact/data paper whose value does not depend on any GS result | JC's criterion; every GO trunk reuses it |
+| 10 | section 6, venue facts | MSR RR 2026-11-20 as P4 candidate | MSR RR is a weak scope fit (repository mining) and too early for any protocol that needs shrunk SDX-0 and critic rounds first; candidates: SANER 2027 RR (30 Oct abstract, 6 Nov report), PCI RR (no deadline, unverified), ESEM 2027 (dates unpublished). SANER 2027 RENE added for M | research-resources report 1.1 and 1.3 |
+| 11 | section 9 table, "Old nodes" | no change | no change | nothing in (a)-(e) touches it |
+
+## Unchanged
+
+The one-way link between ROOT and the branches (LOOM, BIOISO, CHRONICLE); the orthogonality ledger for P1-P4; the claim and citation rules (section 8); decisions D1 and D2 as accepted on 2026-10-03.
+
+## Staleness to fix elsewhere (not done here)
+
+- White paper 5.0 section 7 still describes the thirty-change chain with a crossover and the specification-to-complete staged study; both are now deferred or dropped as designed. Edit in the gs-wp5 worktree.
+- White paper 5.0 names eight substrate parts (sentinel, specification, decision records, atomic commits, gates, ratchet, lock, ratification); ROOT and the arms file use L1-L5. A mapping table must exist in one owner file (the arms file) and be cited by both.
