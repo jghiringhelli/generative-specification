@@ -1,17 +1,20 @@
 ---
-title: White paper v5.0 (DRAFT, not published)
+title: White paper v5.0 (proposed, not published)
 published: false
 nav_exclude: true
 search_exclude: true
-description: "Draft of white paper 5.0 for the author's review: the method specification. Not published, not deposited."
+description: "White paper 5.0 (proposed, not yet published): the method specification. Not published, not deposited."
 ---
 
 # Generative Specification: A Discipline of Derivability for the Stateless Reader
 
 **Author:** Juan Carlos Ghiringhelli (PragmaWorks)
-**Version:** 5.0 DRAFT · October 2026 · for the author's review; not published and not deposited
+**Version:** 5.0, proposed, not yet published · October 2026
 
 > **If you build software with AI agents, this paper specifies a method for describing a system precisely enough that the agent can derive it, and for keeping what it derived verifiable, auditable and ratifiable by people.** It states the method, what it is intended to give a developer and what it is intended to give a team, and the instrument that tests whether a project meets it. It is a proposal of work and of method. It reports no experimental result as a finding; the experiments live in the Compendium (the long-form master from which this paper derives), in the experiment logbook and in future papers.
+
+
+**Summary for leaders.** AI assistants write software faster than a team can read it, and they begin every session without memory of why anything was decided. This paper proposes a method, Generative Specification, for keeping intent in files and checks instead of in people and sessions: a specification precise enough for the assistant to build from, decision records, small descriptive commits, checks that run and stop the work when they fail, and a person who ratifies what enters force. A seven-property instrument grades a project, and a project can be reported as "governed as of" a date. What the paper offers: a defined method, a statement of what it is intended to give a developer, a team and an organization, and a way to tell whether a given project meets it. What it does not offer: evidence that it pays. The experiments so far are small, exploratory and run by the author; the advantages are design intentions or hypotheses and each is labelled with how far it has been tested; no figure here is a return on investment. It has costs (upkeep, ratification, extra generation) and is not expected to help short-lived work. The practical advice is at the end (§10): grade one project, add one gate, and keep every defect.
 
 ---
 
@@ -23,7 +26,7 @@ We argue that a central failure mode of AI-assisted software development is **ar
 
 The method rests on three ideas the author offers as his own, and on a substrate that carries them. **The bridge** is proposed as an account of why externalizing intent into structure yields correct derivation, and why the load moves to the model's stronger side. **The sentinel**, a navigational tree of scoped specification files, bounds each session's context so it stays clean enough to derive from. **Phase collapse** is specification, implementation and verification converging into one derivation step once the specification is complete and the executor capable. The **substrate** is the set of files and checks that keep intent outside the model and outside the session: the sentinel, the specification and the cascade of documents derived downward from it, decision records, atomic descriptive commits, gates that execute, the ratchet, the **lock** that ties each derived artifact to the version of the specification it came from, and **ratification** by a person (§3).
 
-Version 5.0 adds to 4.0 what the method has become: the lock and the other coherence checks, ratification, the capacity-relative bound, the specificity dial, a letter-and-level instrument with a "governed as of" definition, and a statement of **what the method is intended to give**, in two parts that share one method. Part A is for the developer: controlled inversion, more routine work made mechanical, a map that keeps sessions bounded, less repeated prompting. Part B is for teams and organizations: auditable decisions and history, reconstruction by actors who have no memory, reports, a quality floor that does not depend on who the practitioner is, continuity when people leave, governance evidence (§4). Each is an **intended effect with its mechanism and a status tag**, and most are design only or hypotheses. Version 4.0 also carried the experimental evidence; 5.0 does not (§7).
+Version 5.0 adds to 4.0 the lock and the other coherence checks, ratification, the capacity-relative bound, the specificity dial, a letter-and-level instrument with a "governed as of" definition, and a statement of **what the method is intended to give**, in three layers that share one method: the developer (Part A), the team (Part B) and the organization (Part C, not a separate method but what emerges when every project carries the substrate) (§4). Each is an **intended effect with its mechanism and a status tag**, and most are design only or hypotheses. Version 4.0 also carried the experimental evidence; 5.0 does not (§7).
 
 ### 1.1 What is ours and what is the field's
 
@@ -52,7 +55,7 @@ An AI assistant now produces an equivalent interface in one session: it compiles
 
 Three studies bear on what is lost when assistants meet real software, and they are cited as motivation, not as tests of GS. In a randomized trial with 16 experienced open-source developers on 246 tasks in mature repositories they knew well, Becker et al. (2025) found that allowing early-2025 AI tools increased completion time by 19%, although the developers had forecast a 24% reduction and afterwards estimated a 20% one; the authors list as plausible contributors low reliability of generations, the size and complexity of the repositories, and the assistant's ignorance of implicit repository context. In a difference-in-differences study of open-source projects adopting Cursor, He et al. (2026) found a large but transient rise in velocity and a persistent rise in static-analysis warnings and code complexity, which their panel estimates indicate are major drivers of the later slowdown (the authors caution that this debt does not by itself fully explain the fade). In SlopCodeBench (Orlanski et al., 2026) agents extend their own earlier solutions: no agent solved any problem end to end, structural erosion rose in 77% of trajectories, and a prompt asking for cleaner code improved the starting point without stopping degradation across iterations. A fourth study is a caution that bears directly on the sentinel: repository-level context files did not generally improve task success and raised inference cost by more than 20% (Gloaguen et al., 2026).
 
-We read these as suggesting three kinds of loss: review and rework that grow with the volume of generated change, complexity that accumulates and slows later work, and degradation across long chains of change that advice does not arrest. GS is aimed at the second and third, and at context that was never written down. It is not aimed at everything: it cannot supply tacit knowledge nobody wrote, it does not address novelty and abandonment of tools, and it adds steps around each change, so its own overhead is a cost to measure and not assume away (§4.3, §6).
+We read these as suggesting three kinds of loss: review and rework that grow with the volume of generated change, complexity that accumulates and slows later work, and degradation across long chains of change that advice does not arrest. GS is aimed at the second and third, and at context that was never written down. It is not aimed at everything: it cannot supply tacit knowledge nobody wrote, it does not address novelty and abandonment of tools, and it adds steps around each change, so its own overhead is a cost to measure and not assume away (§4.4, §6).
 
 ---
 
@@ -139,13 +142,13 @@ For an existing codebase the order is the same; "no new debt per change" admits 
 
 ## 4. What it gives
 
-The two parts share one method. Part A is what the substrate is intended to give the person working in it; Part B what it is intended to give the people and organizations around that person. Each item states the intended effect, the mechanism and the status (§1.2); where evidence points against, it is stated beside the claim. Pointers to the experiments are to the Compendium, where each is written up with its design.
+The three parts share one method. Part A is what the substrate is intended to give the person working in it; Part B what it is intended to give the team; Part C what appears at the level of the organization. Each item states the intended effect, the mechanism and the status (§1.2); where evidence points against, it is stated beside the claim. Pointers to the experiments are to the Compendium, where each is written up with its design.
 
 ### 4.1 Part A. For the developer
 
 **A1. Controlled inversion.** *Intended effect:* the human states intent and ratifies, the assistant derives, and the checks verify; the developer's effort moves from writing and reading code to specifying correctly and judging evidence. It is *controlled* because gates and ratification bound it, so more latitude for the assistant does not mean less assurance. *Mechanism:* the specification as source, phase collapse, the cycle (§3.6) and the dial. *Status:* demonstrated once in a worked example, no comparison (one specification-to-deployment chain, Compendium §7.8.D, and one regeneration from a committed specification passing the 104 tests of its own suite, §7.8.G; these show it can be done, not that it lowers effort). That inversion lowers effort or improves outcomes is a hypothesis; test designed (a staged specification-to-complete study).
 
-**A2. More routine tasks become mechanical.** *Intended effect:* the work a developer does by hand around a change (keeping documents consistent with code, finding what a rule change made stale, writing the commit message and record, re-running checks, carrying each fixed defect forward as a test) is performed by the substrate and the assistant. *Mechanism:* derived documents, the lock, conventional commits, the ratchet, the coherence checks. *Status:* demonstrated once in a worked example for the checks (§3.5); labor saved is not measured. Against it, the substrate adds work (§4.3) and context files cost inference (§2).
+**A2. More routine tasks become mechanical.** *Intended effect:* the work a developer does by hand around a change (keeping documents consistent with code, finding what a rule change made stale, writing the commit message and record, re-running checks, carrying each fixed defect forward as a test) is performed by the substrate and the assistant. *Mechanism:* derived documents, the lock, conventional commits, the ratchet, the coherence checks. *Status:* demonstrated once in a worked example for the checks (§3.5); labor saved is not measured. Against it, the substrate adds work (§4.4) and context files cost inference (§2).
 
 **A3. A map that keeps sessions bounded.** *Intended effect:* a session loads the slice it needs, spends fewer tokens locating things and stays inside a context that still derives reliably. *Mechanism:* the sentinel and a bounded tool surface; the read-asymmetry. *Status:* exploratory measure. In KX (Compendium §7.8.E: one model, one Conduit backend, 45 structural queries, a fresh session each) answering through a routed authored map used about three times fewer tokens than unstructured code search and 1.3 times fewer than loading all documents; accuracy is not claimed, because the answer key came from the structure under test. In SX (§7.8.K, n = 2, one frontier model) localization cost was lower with the map. Bounding: TX (§7.8.J) found that layering at fixed content did not make a cold reader cheaper, and SX that a twin with its duplication removed was cheaper to change. That the benefit grows as a repository outgrows a session is a hypothesis; test designed. The map is to be small, routed and not a restated overview, given the cost finding of §2.
 
@@ -155,7 +158,7 @@ The two parts share one method. Part A is what the substrate is intended to give
 
 **A6. What working in the method is like.** *Observation by the author, not evidence.* The author reports that a session begins from a map instead of a re-explanation, that a corrected mistake stays corrected because the correction is on record, and that the work shifts toward deciding what is true and checking that it holds. He reports that absolute token spend rose, and the cost objection recurred in a workshop for eight practitioners (one cohort, no control; Compendium §7.8.A). These are accounts of one practitioner and one cohort, offered to motivate §7 and not as support for any claim above.
 
-### 4.2 Part B. For teams and organizations
+### 4.2 Part B. For teams
 
 **B1. Auditable decisions and history.** *Intended effect:* what was decided, why, what was ruled out and what changed are on the record in files, not in people. *Mechanism:* ADRs and EDRs, atomic descriptive commits, the append-only ratification record, one source for the cascade. *Status:* design only for effect. The artifacts are in use in the author's projects and a public reference project; no third party has tested whether they carry the reasons.
 
@@ -169,13 +172,27 @@ The two parts share one method. Part A is what the substrate is intended to give
 
 **B6. Governance evidence.** *Intended effect:* the artifacts a change-management or audit control asks for (request, decision, gate result, history) are those the method already produces, so a governance claim can rest on a dated snapshot with its evidence and not on an assertion. *Mechanism:* change governance by construction (the specification update as the request, the record as the change record, the gate as the approval check, the history as the trail) and the governed-as-of snapshot (§5.3). *Status:* design only. Whether an auditor or regime accepts these artifacts is untested and varies; the method does not certify compliance with any standard.
 
-### 4.3 What it costs, and where it is expected to pay
+### 4.3 Part C. For the organization: what emerges when every project is governed
+
+Part C is not a separate method. It is the aggregate that appears when each project carries the substrate. The spine is the same at every scale: cheap, enforced checks that stop the line, repeated at the layers of code (a gate on every commit), team (ratification and decision records), project (a governed-as-of snapshot), portfolio (the snapshots side by side) and organization (what was decided, by whom, and what survives a departure). The idea is Toyota's *jidoka*: a loom that stops itself when a thread breaks, generalized by the Andon cord to a line any worker may halt. GS does not claim to have invented it; the proposal is that the same mechanism can be repeated at each layer, with the machine building and a person judging. *Status: design only; that the spine generalizes across layers is a hypothesis.*
+
+**C1. The maturity ladder as the path.** *Intended effect:* an organization can say, for a given date, where each project stands against the seven properties, and the ladder from L1 to L5 gives each project a next step instead of a verdict. *Mechanism:* the snapshot of §5.3 (level, grade per property, commit, specification version, date), read as a row in a portfolio table, with the number of commits since the snapshot. *Status:* design only. No gate yet produces the snapshot line, and the instrument has not been validated (§5.4).
+
+**C2. Reports that fall out of the substrate.** *Intended effect:* questions a leader cannot answer today without interviews become queries over files: which projects are governed and as of when; where the drift is (stale artifacts, orphan tests, criteria without a passing check, gate failures per change); what was decided, by whom and why; what survives when people leave. *Mechanism:* the decision records, the append-only ratification record, the lock and the coverage counts of §3.5 and §5.3, aggregated across repositories. *Status:* design only for the aggregate; the single-project counts were produced on small sample projects. These reports are only as honest as the snapshots behind them, which age and can be taken against a thin specification.
+
+**C3. Andon as the team operating layer.** *Intended effect:* a team process in which gates halt the line, changes are atomic and described, decisions are recorded, and a named person ratifies what enters force; the machine builds and the human judges. *Mechanism:* the substrate of §3.3 organized as practices with roles and cadence. *Status:* **proposed**. The principles exist (the specification is the source of truth; a failing check stops the line; every escaped defect becomes a permanent check; irreversible actions need a human signature). The roles, cadence and ceremonies that would make it a process a team can follow are not defined, and whether a team other than the author's can run it is open; no team has tried it. *Hypothesis, test designed in part (a prospective adoption by other developers).*
+
+**C4. A record of cost and outcome.** *Intended effect:* each feature carries a short ledger entry linking what it cost (generation, upkeep, review) to what happened after it shipped (usage, an agreed indicator, an experiment), each entry stating how it was measured. A decision that can be traced can be tied to an outcome. *Mechanism:* the decision records and criteria identifiers as the keys; the ledger as one more append-only file. *Status:* **proposed**, design only; nothing is built, and the paper offers no figures.
+
+**What Part C does not claim.** No return on investment, no estimate of savings, no guarantee of quality or compliance, and no claim that governed projects add up to a governed organization: they add up to a table, and the table is only as good as its rows. A portfolio view also invites gaming, since a grade becomes a target; the instrument names that as the failure it exists to catch (a grade raised by the letter of a check without the property behind it), and nothing here prevents it. Whether leaders, teams or auditors find the reports useful is untested.
+
+### 4.4 What it costs, and where it is expected to pay
 
 The advantages above are not net of these costs. The substrate has to be built and kept true: specification upkeep, ratifications (cosmetic ones included), tagging derived artifacts, gate waits and failed-gate loops, and agent output for records. The cascade cost more per generation than a bare prompt: in AX it cost about 2.9 times the unstructured run and 1.4 times an expert prompt, with no return on the measured single-shot metrics. Ratifying a text is not understanding the code, and if the substrate lets a reviewer read less code, ratification may become less informative. Early in a project the substrate may be slower than an expert prompt; where it pays, if it does, is a crossover hypothesis stated in advance in the logbook designs, not an assumption. The team-level process (roles, cadence, ceremonies) is not yet defined, and whether a team other than the author's can run the method and obtain the intended effects is open.
 
 *The author's expectation, a hypothesis:* the method is worth its cost for long-lived, multi-contributor or audit-sensitive work, and not for short-horizon work, spikes and prototypes, where an expert prompt is expected to tie. Indicators the substrate itself produces (criteria coverage, stale artifacts, orphan tests, gate failures per change, review minutes per change) can show whether it is working on a given project; none is validated as a predictor.
 
-### 4.4 The advantages at a glance
+### 4.5 The advantages at a glance
 
 | # | Intended effect | Status |
 |---|---|---|
@@ -191,6 +208,10 @@ The advantages above are not net of these costs. The substrate has to be built a
 | B4 | Floor independent of practitioner; team need not learn it | Hypotheses, test designed |
 | B5 | Continuity when people leave | Design only; hypothesis |
 | B6 | Governance evidence | Design only |
+| C1 | Maturity ladder as the path; portfolio view | Design only |
+| C2 | Portfolio reports from the substrate | Design only |
+| C3 | Andon as the team operating layer | Proposed; hypothesis, test designed in part |
+| C4 | Record of cost and outcome | Proposed; design only |
 
 ---
 
@@ -214,7 +235,7 @@ Each property's lowest grade is its named failure. Five are **audit-facing**, ch
 
 ### 5.2 Letters and levels
 
-Each property is graded with a **letter from A to F**, like a school report card, with the evidence it rests on (file and line) and one step that would raise it. **A** is the top band, 90 to 100 on a per-property 0-to-100 scale whose procedure this paper does not define: the property is enforced, with no silent way around the check, and tied to the running system. **F** is the named failure. *The intermediate letters are not defined in this paper.* A grade is admissible only when the assessor can name the evidence and the anchor it is closest to. **Executable** is graded only when a formal behavioral contract exists to run, otherwise N/A (whether an N/A property can be governed is not defined here). **Defended** has a human ceiling: whether adversarial challenge was anticipated needs human review, so an automated grade is provisional.
+Each property is graded with a **letter from A to F**, like a school report card, with the evidence it rests on (file and line) and one step that would raise it. **A** is the top band, 90 to 100 on a per-property 0-to-100 scale whose procedure this paper does not define: the property is enforced, with no silent way around the check, and tied to the running system. **F** is the named failure. **Proposed anchors for B to E, not yet calibrated against real projects**, given in words and not as numeric cutoffs: **B**, enforced over most of the surface, with a known way around the check or no run against the live system; **C**, present and looked at but advisory, so a failing check does not stop the change; **D**, partial, present in some units or artifacts and absent in others, with no check; **E**, stated once as intent and not applied. A numeric display (1 to 10, half points at most) would carry the same information. A grade is admissible only when the assessor can name the evidence and the anchor it is closest to. **Executable** is graded only when a formal behavioral contract exists to run, otherwise N/A (whether an N/A property can be governed is not defined here). **Defended** has a human ceiling: whether adversarial challenge was anticipated needs human review, so an automated grade is provisional.
 
 Levels **L1 to L5** apply per property, and a headline overall maturity level is reported beside the letters (how property levels combine into it is not defined here). **L4** is *enforced and bound*: enforced with no silent skip path and tied to reality; it is the level of letter A. **L5** is a *trend*, not a state: L4 sustained across at least three dated snapshots (a provisional convention), where a score may legitimately drop when the specification raises the bar, so snapshots are compared at the same specification version or the change is annotated. L1 is ad hoc; L2 and L3 are not defined here beyond L3 being the floor in the definition below.
 
@@ -257,7 +278,7 @@ The advantages of §4 and the instrument of §5 are tested, if at all, in separa
 - **Coherence and reconstructability (B2, B3, B5).** With identifiers, the lock and the co-change gate, do memoryless auditors detect injected divergence and reconstruct history better than a decision log with ordinary history?
 - **Practitioner variance and learning (B4).** Holding the AI constant, does the substrate narrow the spread between practitioners, and does using it replace training? A prospective adoption by other developers is the external test the author's results cannot supply.
 - **Specification-to-complete (A1).** Given a fixed reviewed specification, how fast and at what cost does an assistant reach a verified complete implementation in stages, with setup and upkeep counted and escapes after completion measured?
-- **Instrument validity (§5).** Does each property predict its own outcome and not the others, on projects the method never guided? **The capacity moderator** is a factor inside the above, not a separate study.
+- **Instrument validity (§5), and the organization layer (Part C).** Does each property predict its own outcome and not the others, on projects the method never guided? **The capacity moderator** is a factor inside the above, not a separate study.
 
 Pointers: Compendium (§4.5.1, §4.6, §7.8, §8.19 to §8.20); the experiment logbook and protocol (`docs/experiments/`); the paper tree (`docs/white-paper/tree/`).
 
@@ -267,15 +288,15 @@ Pointers: Compendium (§4.5.1, §4.6, §7.8, §8.19 to §8.20); the experiment l
 
 GS sits in a lineage of work on specifying software and instructing models. Each neighbor supplies part of the picture; GS names the obligation they leave less explicit, that a stateless reader must be able to *derive* correct output from the artifacts alone, and proposes a graded instrument for it whose validity is untested.
 
-**Specification theory and structural disciplines.** Hoare (1969), Parnas (1972), Meyer (1992), Jackson (2001) and Brooks (1987) established the axiomatic, information-hiding, contractual, problem-frame and essential-versus-accidental views of specification. Clean code, SOLID, test-driven development and domain-driven design (Martin, 2008, 2017; Beck, 2003; Evans, 2003) are the disciplines of §3.1; decision records come from Nygard (2011). Each specifies for a human who can still ask, remember and infer. Perry and Wolf (1992), Lehman (1980) and de Silva and Balasubramaniam (2012) name and survey architectural erosion; GS applies the vocabulary to a reader that completes every gap at generation speed.
+**Specification theory and structural disciplines.** Hoare (1969), Parnas (1972), Meyer (1992), Jackson (2001) and Brooks (1987) established the axiomatic, information-hiding, contractual, problem-frame and essential-versus-accidental views of specification. Clean code, SOLID, test-driven development and domain-driven design (Martin, 2008, 2017; Beck, 2003; Evans, 2003) are the disciplines of §3.1; decision records come from Nygard (2011). Each specifies for a human who can still ask, remember and infer. Perry and Wolf (1992), Lehman (1980) and de Silva and Balasubramaniam (2012) name and survey architectural erosion.
 
 **Spec-driven development.** Kiro (Swaminathan & Singh, 2025) and Spec Kit (Delimarsky, 2025) scaffold a requirements, design and tasks workflow; Piskala (2026) describes tiers of specification rigor; traceSDD (Panda, 2026) requires a per-line requirement citation in generated code. Each makes part of the obligation explicit; GS supplies a criterion for what the specification must contain and an instrument for whether it does. No claim is made that GS outperforms any of them.
 
 **Agent context files and harnesses.** Chatlatanagulchai et al. (2025) study context files across repositories, Galster et al. (2026) the configuration mechanisms of agentic tools, Gloaguen et al. (2026) whether context files help (no general gain, higher cost). Context engineering is surveyed by Mei et al. (2025) and Anthropic (2025). Böckeler (2026) divides a harness into guides and sensors; the verify half of GS is not distinct from harness engineering.
 
-**Code generation, measured degradation and loss of gains.** HumanEval (Chen et al., 2021), EvalPlus (Liu et al., 2023), SWE-bench (Jimenez et al., 2024) and SWE-agent (Yang et al., 2024) establish that agents resolve real tasks. Becker et al. (2025), He et al. (2026) and SlopCodeBench (Orlanski et al., 2026), summarized in §2, bear on how gains erode; they do not test GS. Large-scale studies report accumulating quality and security issues in AI-generated code (Pearce et al., 2022; Liu et al., 2026). Thirolf (2025) identifies the same implicit-context failure through traceability gaps; a bachelor's thesis, cited as independent problem identification, not validation.
+**Code generation, measured degradation and loss of gains.** HumanEval (Chen et al., 2021), EvalPlus (Liu et al., 2023), SWE-bench (Jimenez et al., 2024) and SWE-agent (Yang et al., 2024) establish that agents resolve real tasks. Becker et al. (2025), He et al. (2026) and SlopCodeBench (Orlanski et al., 2026), summarized in §2, bear on how gains erode; they do not test GS. Thirolf (2025) identifies the same implicit-context failure through traceability gaps; a bachelor's thesis, cited as independent problem identification, not validation.
 
-**Prompting, retrieval, long context, contamination.** Few-shot and chain-of-thought prompting (Brown et al., 2020; Wei et al., 2022) shape the transient input; GS treats much of it as specification content delivered through a transient channel. Retrieval-augmented generation (Lewis et al., 2020) retrieves at query time; GS authors the structure instead of inferring it. Long contexts are used unevenly (Liu et al., 2024). Yarmoluk and McCreary (2026) benchmark the compact knowledge graph that the reading side generalizes. Memorization threatens any benchmark in public training data (Magar & Schwartz, 2022; Dong et al., 2024), and reward hacking in test-graded settings is catalogued by ImpossibleBench (Zhong et al., 2025), EvilGenie (Gabor et al., 2025) and the Reward Hacking Benchmark (Thaman, 2026).
+**Prompting, retrieval, long context, contamination.** Few-shot and chain-of-thought prompting (Brown et al., 2020; Wei et al., 2022) shape the transient input; GS treats much of it as specification content delivered through a transient channel. Retrieval-augmented generation (Lewis et al., 2020) retrieves at query time; GS authors the structure instead of inferring it. Yarmoluk and McCreary (2026) benchmark the compact knowledge graph that the reading side generalizes. Memorization threatens any benchmark in public training data (Magar & Schwartz, 2022; Dong et al., 2024), and reward hacking in test-graded settings is catalogued by ImpossibleBench (Zhong et al., 2025), EvilGenie (Gabor et al., 2025) and the Reward Hacking Benchmark (Thaman, 2026).
 
 **The through-line.** Most neighbors leave derivability as an assumption: prompt engineering patches it per session, retrieval infers it at query time, specification theory trusts a human reader to close gaps, evaluation measures the executor, and spec-driven tools supply a workflow. What GS adds is the criterion, the substrate that keeps it true across sessions, and the instrument. It does not add a new property of software, and it does not show an advantage over a prompt that carries the same content.
 
@@ -287,13 +308,26 @@ Version 4.0 (Zenodo preprint, 31 July 2026) was a method paper that also carried
 
 **Kept.** The thesis; the discipline of removal and the structural disciplines as raw material; the three contributions and the honest map of what is the field's; the bridge, its asymmetry and the read-asymmetry; the sentinel and its link to context degradation; phase collapse; cost inversion; the ratchet and the specification query; the contract-form cascade; the seven properties with their failure modes.
 
-**Added.** The stateless writer; a motivation section citing verified studies; the substrate as a defined whole (ADR and EDR, atomic descriptive commits, guides and sensors, the debt ratchet); the lock, companion coherence checks and ratification; the cycle with triage; a minimal start; the capacity-relative bound; the specificity dial; Part A and Part B of what the method gives, with mechanisms and status tags; the instrument with letters, levels and "governed as of"; a statement of what is not claimed; a research programme.
+**Added.** A summary for leaders; Part C (the organization layer) and a closing "Where to start"; proposed anchors for letters B to E; the stateless writer; a motivation section citing verified studies; the substrate as a defined whole (ADR and EDR, atomic descriptive commits, guides and sensors, the debt ratchet); the lock, companion coherence checks and ratification; the cycle with triage; a minimal start; the capacity-relative bound; the specificity dial; Part A and Part B of what the method gives, with mechanisms and status tags; the instrument with letters, levels and "governed as of"; a statement of what is not claimed; a research programme.
 
 **Changed.** The 0-to-14 score is retired from the paper's definitions. The abstract carries no experimental figures. The statement that a complete specification makes prompt engineering unnecessary is withdrawn and replaced by a narrower hypothesis (A4). The practitioner corollaries ("what it means") attached to each experiment in 4.0 are not carried over, and the observational field evidence survives only as one labelled observation (A6).
 
 **Moved out.** The experiments and their tables, the production projects, the threats to validity, the expert-prompt analysis and the H-S design are in the Compendium (§7.8 and its additions), the logbook and the papers that will report them. The lexicon of coined terms is replaced by definitions in the text. Section 4 cites a few figures only as pointers to where a status was established.
 
 **Why.** The experimental claims of 4.0 were over-labelled relative to their designs. Moving them out lets each result be stated once, with its design, where it can be checked.
+
+---
+
+## 10. Where to start
+
+The path is deliberately small and does not require adopting everything.
+
+1. **Look at one project against the seven properties.** Pick a project that matters, grade each property with the evidence behind it (the file and line) and one step that would raise it. Treat the grades as a map, not a score to defend.
+2. **Add the sentinel and one blocking gate.** A small root file with the five categories, one specification slice with identified criteria, and one check that already exists in your toolchain, made to stop the change when it fails.
+3. **Ratchet.** Each defect that escapes becomes a test, a rule or a record before it is closed. Add the lock and the coherence checks only after this has become routine.
+4. **For a leader:** ask for a governed-as-of snapshot of one project, with its evidence, before asking for a portfolio.
+
+Applied work and services live at pragmaworks.dev.
 
 ---
 
@@ -324,8 +358,6 @@ Every entry was confirmed against a primary or indexing source (log: `docs/white
 - Lehman, M. M. (1980). Programs, life cycles, and laws of software evolution. *Proc. IEEE*, 68(9), 1060-1076.
 - Lewis, P., et al. (2020). Retrieval-augmented generation for knowledge-intensive NLP tasks. *NeurIPS* 33, 9459-9474.
 - Liu, J., et al. (2023). Is your code generated by ChatGPT really correct? *NeurIPS 2023*. arXiv:2305.01210.
-- Liu, N. F., et al. (2024). Lost in the middle: How language models use long contexts. *TACL*, 12, 157-173.
-- Liu, Y., et al. (2026). Debt behind the AI boom: A large-scale empirical study of AI-generated code in the wild. arXiv:2603.28592.
 - Magar, I., & Schwartz, R. (2022). Data contamination: From memorization to exploitation. *ACL 2022 (Short Papers)*, 157-165.
 - Martin, R. C. (2008). *Clean Code.* Prentice Hall. Martin, R. C. (2017). *Clean Architecture.* Pearson.
 - Mei, L., et al. (2025). A survey of context engineering for large language models. arXiv:2507.13334.
@@ -336,7 +368,6 @@ Every entry was confirmed against a primary or indexing source (log: `docs/white
 - Orlanski, G., et al. (2026). SlopCodeBench: Benchmarking how coding agents degrade over long-horizon iterative tasks. arXiv:2603.24755 (rev. May 2026).
 - Panda, S. (2026). Citation discipline in spec-driven development (traceSDD). arXiv:2606.30689.
 - Parnas, D. L. (1972). On the criteria to be used in decomposing systems into modules. *CACM*, 15(12), 1053-1058.
-- Pearce, H., et al. (2022). Asleep at the keyboard? Assessing the security of GitHub Copilot's code contributions. *IEEE S&P*. https://doi.org/10.1109/SP46214.2022.9833571
 - Perry, D. E., & Wolf, A. L. (1992). Foundations for the study of software architecture. *ACM SIGSOFT SEN*, 17(4), 40-52.
 - Piskala, D. B. (2026). Spec-driven development: From code to contract in the age of AI coding assistants. arXiv:2602.00180.
 - Ralph, P., et al. (2020). Empirical standards for software engineering research. arXiv:2010.03525.
