@@ -23,7 +23,7 @@ Find your situation, then read the pages in the order listed.
 | **Deciding what to enforce first** | [Quality gates, by property](/method/gates/#the-gates-by-property) · [The gate library](/quality-gates/) · [Portable gate template](/docs/gate-template.html) |
 | **Seeing the AI repeat a mistake** | [Refine the spec, triage first](/practice/refinement/) · [The ratchet](/method/gates/#the-ratchet) |
 | **Working in a specific domain** | [Domain guides](/domains/): fintech, machine learning, games, creative work, command-line tools |
-| **Skeptical, and want evidence** | [The evidence](/method/evidence/) · [Experiments](/experiments/) · [Models and equations](/formulas/) and the status each has earned |
+| **Skeptical, and want evidence** | [The evidence](/method/evidence/) · [Experiments](/experiments/) · [Models and equations](/models/) and the status each has earned |
 | **A researcher** | [The paper tree](/docs/white-paper/PAPER-TREE.html) · [Compendium](/docs/white-paper/GenerativeSpecification_Compendium.html) · [Replicate an experiment](/docs/white-paper/EXPERIMENT-PUBLISHING-PLAYBOOK.html) |
 | **Wanting to contribute** | [The gate library](/quality-gates/) · [How to contribute a gate](/quality-gates/CONTRIBUTING.html) |
 

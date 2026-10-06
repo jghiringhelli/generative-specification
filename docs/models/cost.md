@@ -3,7 +3,9 @@ layout: default
 title: Cost per correct output
 parent: Models and equations
 nav_order: 4
-permalink: /formulas/cost/
+permalink: /models/cost/
+redirect_from:
+  - /formulas/cost/
 description: "Tokens spent divided by outputs that pass verification and are accepted. A metric, not a law, and the right denominator for the token-cost objection."
 ---
 

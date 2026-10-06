@@ -3,7 +3,7 @@ layout: default
 title: Models and equations
 nav_order: 8
 has_children: true
-permalink: /formulas/
+permalink: /models/
 description: "The four models and equations of Generative Specification, each stated with the status it has earned: a mental model, a model under test, a prediction, or a metric. None is a law."
 ---
 
@@ -13,10 +13,10 @@ These are mental models and metrics, not results. Four short equations carry mos
 
 | Equation | Reads as | Status |
 |---|---|---|
-| [I ∝ (1 − S) / S](/formulas/completeness/) | Expected correction cycles I grow as the specification S (completeness, not specificity) leaves more of what must be true unstated | A **mental model**, not tested: direction only, no constant, no proof |
-| [w = λ · κ](/formulas/weight/) | The expected cost a project carries from a failure family: exposure λ times cost κ | A **model** with provisional parameters; its pre-registered test has been designed and not run |
-| [benefit = Σ coverage · λ · κ](/formulas/benefit/) | A practice pays off only where it both catches the failure and the failure occurs, in cost units | A **proposed model**: one exploratory illustration (NX); the pre-registered test has not been run |
-| [cost per correct output](/formulas/cost/) | Tokens spent divided by outputs that pass verification and are accepted | A **metric**, not a law; evidence so far is exploratory |
+| [I ∝ (1 − S) / S](/models/completeness/) | Expected correction cycles I grow as the specification S (completeness, not specificity) leaves more of what must be true unstated | A **mental model**, not tested: direction only, no constant, no proof |
+| [w = λ · κ](/models/weight/) | The expected cost a project carries from a failure family: exposure λ times cost κ | A **model** with provisional parameters; its pre-registered test has been designed and not run |
+| [benefit = Σ coverage · λ · κ](/models/benefit/) | A practice pays off only where it both catches the failure and the failure occurs, in cost units | A **proposed model**: one exploratory illustration (NX); the pre-registered test has not been run |
+| [cost per correct output](/models/cost/) | Tokens spent divided by outputs that pass verification and are accepted | A **metric**, not a law; evidence so far is exploratory |
 
 ## How to read them
 

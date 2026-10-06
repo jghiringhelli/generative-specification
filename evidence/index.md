@@ -72,4 +72,4 @@ Commit timestamps are signed by GitHub.
 
 ## Models and equations
 
-The models and equations have their own section, with the status each has earned: [Models and equations](/formulas/).
+The models and equations have their own section, with the status each has earned: [Models and equations](/models/).

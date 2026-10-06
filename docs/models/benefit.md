@@ -3,7 +3,9 @@ layout: default
 title: "benefit = Σ coverage · λ · κ"
 parent: Models and equations
 nav_order: 3
-permalink: /formulas/benefit/
+permalink: /models/benefit/
+redirect_from:
+  - /formulas/benefit/
 description: "A practice pays off only where it both catches the failure (coverage) and the failure occurs (exposure). Exposure is necessary, not sufficient. A proposed model with one exploratory illustration."
 ---
 
@@ -32,7 +34,7 @@ The pre-registered revival grid predicts, per practice, where the benefit should
 ## Where to read more
 
 - [The revival model (working document)](/docs/discipline-revival-model.html)
-- [w = λ · κ](/formulas/weight/): the weight of a failure family.
+- [w = λ · κ](/models/weight/): the weight of a failure family.
 - This equation is not in the Compendium, which treats the revival model in prose (section 4.6).
 - [The evidence](/method/evidence/) and the [experiment ledger](/docs/white-paper/EXPERIMENT-LEDGER.html).
 - The [pre-registered design](https://github.com/jghiringhelli/generative-specification/blob/main/experiments/revival/PREREGISTRATION.md).

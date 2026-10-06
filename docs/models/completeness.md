@@ -3,8 +3,9 @@ layout: default
 title: "I ∝ (1 − S) / S"
 parent: Models and equations
 nav_order: 1
-permalink: /formulas/completeness/
+permalink: /models/completeness/
 redirect_from:
+  - /formulas/completeness/
   - /formulas/specificity/
 description: "Expected correction cycles grow as the specification leaves more of what must be true unstated. S is completeness, not specificity. A mental model: direction only, no constant, no proof, no test."
 ---

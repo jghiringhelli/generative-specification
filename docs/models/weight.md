@@ -3,7 +3,9 @@ layout: default
 title: "w = λ · κ"
 parent: Models and equations
 nav_order: 2
-permalink: /formulas/weight/
+permalink: /models/weight/
+redirect_from:
+  - /formulas/weight/
 description: "The expected cost a project carries from a failure family is its exposure times its cost. The weight in the revival model: a model with provisional parameters, whose pre-registered test has not been run."
 ---
 
@@ -28,5 +30,5 @@ It ranks failure families by what they are worth to a project, so that you spend
 ## Where to read more
 
 - [The revival model (working document)](/docs/discipline-revival-model.html)
-- [Benefit = coverage · λ](/formulas/benefit/): the next step of the same model.
+- [Benefit = coverage · λ](/models/benefit/): the next step of the same model.
 - The Compendium mentions the revival model in prose (section 4.6) but does not contain this equation.

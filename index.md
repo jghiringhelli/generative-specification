@@ -33,7 +33,7 @@ permalink: /
   <div class="path-card">
     <h3 class="path-title">I want to see the evidence</h3>
     <p>Experiments, papers and equations, each with its status and its bound. The studies are small and written by the method's author, so they are published to be re-run.</p>
-    <p class="path-links"><a href="{{ '/evidence/' | relative_url }}">Evidence and papers</a><a href="{{ '/formulas/' | relative_url }}">Models and equations</a><a href="{{ '/method/evidence/' | relative_url }}">Findings and bounds</a></p>
+    <p class="path-links"><a href="{{ '/evidence/' | relative_url }}">Evidence and papers</a><a href="{{ '/models/' | relative_url }}">Models and equations</a><a href="{{ '/method/evidence/' | relative_url }}">Findings and bounds</a></p>
   </div>
 </div>
 
@@ -61,7 +61,7 @@ permalink: /
 |---|---|
 | [The method](/method/) | The rubric, spec completeness, quality gates, the gate library, the working principles |
 | [Practice](/practice/) | Paste-and-run guides: new project, existing project, join a codebase, migrate a stack |
-| [Models and equations](/formulas/) | Four short models and equations, each with the status it has earned |
+| [Models and equations](/models/) | Four short models and equations, each with the status it has earned |
 | [Recipes](/docs/recipes/) | Step-by-step workflows for common project scenarios |
 | [Domain guides](/domains/) | Fintech, machine learning, games, creative work, command-line tools |
 | [Evidence and papers](/evidence/) | The papers, the experiments, the raw evidence. For readers who want to check the work |
