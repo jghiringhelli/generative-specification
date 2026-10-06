@@ -57,7 +57,8 @@ function e01(ctx) {
   for (const rel of s.files) {
     for (const { ref, soft } of refsIn(read(path.join(ctx.root, rel)), ctx.cfg)) {
       const hit = resolveRef(ctx.root, rel, ref);
-      if (hit) resolved.push(hit); else if (!soft) dangling.push(ref);
+      // (dev loop, defect C6) a path the repository itself git-ignores (data files, build output) is created at run time: naming it is not a dangling route
+      if (hit) resolved.push(hit); else if (!soft && git(ctx.root, ['check-ignore', '-q', ref]).code !== 0) dangling.push(ref);
     }
   }
   const uniq = a => [...new Set(a)];
@@ -76,6 +77,7 @@ function e01(ctx) {
 }
 
 // ---------- E02 spec with requirement ids and criterion ids ----------
+const CRIT_SHAPE = /-\d+\.\d+$/;
 function parseSpecDefs(ctx) {
   const f = discover(ctx); const defs = []; const cfg = ctx.cfg;
   for (const file of f.specFiles) {
@@ -90,11 +92,12 @@ function parseSpecDefs(ctx) {
       if (h || b) {
         push(h ? h[1].length : 7, h ? h[2] : b[1]);
         const id = h ? leadingId(h[2], cfg.idToken) : null;
-        if (id) defs.push({ id, file, line: i + 1, kind: stack.slice(0, -1).some(s => rx(cfg.criteriaHeading).test(s.title)) ? 'criterion' : 'requirement', text: h[2] });
+        if (id) defs.push({ id, file, line: i + 1, kind: (stack.slice(0, -1).some(s => rx(cfg.criteriaHeading).test(s.title)) || CRIT_SHAPE.test(id)) ? 'criterion' : 'requirement', text: h[2], heading: true });
         return;
       }
       const id = leadingId(line, cfg.idToken); if (!id) return;
-      const inCrit = stack.some(s => rx(cfg.criteriaHeading).test(s.title));
+      // (dev loop 2026-10-06, defect C2) a dotted numeric id (F-001.2) is a criterion wherever it sits: the formulas do not ask for a criteria heading
+      const inCrit = stack.some(s => rx(cfg.criteriaHeading).test(s.title)) || CRIT_SHAPE.test(id);
       const body = line.replace(/^\s*(?:[-*+]|\d+[.)])?\s*(?:\[[ xX~]\]\s*)?\|?\s*(?:\*\*|__|`)*/, '').replace(id, '');
       let extra = ''; for (let j = i + 1; j < lines.length && /^[ \t]+\S/.test(lines[j]) && !leadingId(lines[j], cfg.idToken); j++) extra += ' ' + lines[j].trim();
       defs.push({ id, file, line: i + 1, kind: inCrit ? 'criterion' : 'requirement', text: (body + extra).trim() });
@@ -108,8 +111,17 @@ function e02(ctx) {
   if (!f.specFiles.length) return res('E02', name, 'ABSENT', ['no spec file (docs/spec/SPEC.md or files under docs/spec, docs/specs, docs/features)']);
   const defs = parseSpecDefs(ctx);
   const reqs = defs.filter(d => d.kind === 'requirement'), crit = defs.filter(d => d.kind === 'criterion');
+  // (dev loop 2026-10-06, defect C2) The root file (SPEC.md) lists the features, so an id its listing repeats from a feature file is not a duplicate; two
+  // feature files, or one file defining an id twice, are. A list or table line that restates a requirement id is not a definition (only a heading is).
+  const isRoot = file => /^docs\/spec\/spec\.md$|^docs\/spec\.md$|^spec\.md$/i.test(file);
   const seen = new Map(); const dups = [];
-  for (const d of defs) { if (seen.has(d.id)) dups.push(d.id); else seen.set(d.id, d); }
+  for (const d of defs) {
+    if (!seen.has(d.id)) { seen.set(d.id, d); continue; }
+    const first = seen.get(d.id);
+    if (d.kind === 'requirement' && (isRoot(d.file) || isRoot(first.file)) && d.file !== first.file) continue;
+    if (d.kind === 'requirement' && !d.heading && !first.heading) continue;
+    dups.push(d.id);
+  }
   const words = t => t.split(/\s+/).filter(w => /[A-Za-zÀ-ɏ]{2,}/.test(w)).length;
   const thin = crit.filter(c => words(c.text) < cfg.minCriterionWords).map(c => c.id);
   const reasons = [];
@@ -171,6 +183,12 @@ function reachableDocs(ctx, depth = 2) {
   }
   return seen;
 }
+const NO_DATA = /no (stored |persistent |persisted )?data\b|stores? no data|nothing is stored|sin datos (almacenados|persistentes)|no se (almacenan|guardan|persisten) datos|no hay datos almacenados/i;
+function declaresNoData(ctx, reach) {
+  const f = discover(ctx);
+  const files = [...new Set([...(f.sentinel ? [f.sentinel] : []), ...[...reach].filter(r => /(^|\/)(architecture|arquitectura)[^/]*\.md$/i.test(r))])];
+  return files.some(p => NO_DATA.test(tryRead(path.join(ctx.root, p)) || ''));
+}
 function e04(ctx) {
   const f = discover(ctx); const cfg = ctx.cfg; const name = 'derived cascade (architecture, data model, conventions) routed from the sentinel';
   const mdAll = f.tracked.filter(p => /\.md$/i.test(p));
@@ -190,6 +208,7 @@ function e04(ctx) {
       found[kind] = { file: routed, derivedFromSpec: derived };
       if (!derived) reasons.push(`${kind}: ${routed} neither cites the spec path nor any spec id`);
     } else if (cands.length) { existsNotRouted[kind] = cands[0]; reasons.push(`${kind}: ${cands[0]} exists but the sentinel does not route to it`); }
+    else if (kind === 'dataModel' && declaresNoData(ctx, reach)) found[kind] = { file: null, declared: 'no stored data', derivedFromSpec: true }; // (dev loop, defect C5) the formulas allow "no stored data" in architecture.md instead of a data-model document
     else reasons.push(`${kind}: no (further) document`);
   }
   if (!any) return res('E04', name, 'ABSENT', reasons, { found });
@@ -201,7 +220,7 @@ function e04(ctx) {
 // ---------- shared dynamic setup (probe clone) ----------
 function detectStack(root) {
   if (exists(path.join(root, 'package.json'))) return 'node';
-  if (['pyproject.toml', 'requirements.txt', 'setup.py', 'pytest.ini', 'setup.cfg'].some(x => exists(path.join(root, x)))) return 'python';
+  if (['pyproject.toml', 'requirements.txt', 'requirements-dev.txt', 'setup.py', 'pytest.ini', 'setup.cfg'].some(x => exists(path.join(root, x)))) return 'python';
   if (exists(path.join(root, 'go.mod'))) return 'go';
   return 'unknown';
 }
@@ -209,7 +228,7 @@ function installCommands(ctx, sbx) {
   const readme = ctx.shared.readme;
   const fromReadme = readme ? readme.commands.filter(c => c.kind === 'install').map(c => c.pre + c.cmd) : [];
   const stack = detectStack(sbx.root);
-  const dflt = stack === 'node' ? ['npm install --no-audit --no-fund'] : stack === 'python' ? [exists(path.join(sbx.root, 'requirements.txt')) ? 'python -m pip install -q -r requirements.txt' : 'python -m pip install -q -e .'] : [];
+  const dflt = stack === 'node' ? ['npm install --no-audit --no-fund'] : stack === 'python' ? [exists(path.join(sbx.root, 'requirements.txt')) ? 'python -m pip install -q -r requirements.txt' : exists(path.join(sbx.root, 'requirements-dev.txt')) ? 'python -m pip install -q -r requirements-dev.txt' : 'python -m pip install -q -e .'] : [];
   return { fromReadme, dflt, stack };
 }
 function testCommand(ctx, sbx) {
@@ -425,10 +444,74 @@ function citedByATest(text, id) {
   for (let i = 0; i < lines.length; i++) if (isDef(lines[i])) for (let j = Math.max(0, i - 2); j <= Math.min(lines.length - 1, i + 2); j++) if (idRe.test(lines[j])) return true;
   return false;
 }
+// (dev loop 2026-10-06, defect C3) The substrate checklist defines item 8 as a COMMAND that prints exactly one line "criteria coverage: N/M"
+// (M = criterion ids defined, N = ids cited by at least one test, a test citing an unknown id makes it fail). The command is the one in the
+// sentinel's gate table (a table with at least 4 columns, row named coverage). The per-criterion mapping mode below stays as the alternative.
+function coverageCommand(ctx) {
+  const s = sentinelText(ctx); if (!s) return null;
+  for (const line of s.text.split('\n')) {
+    if (!/^\s*\|/.test(line)) continue;
+    const cells = line.split('|').slice(1, -1).map(c => c.trim());
+    if (cells.length >= 4 && /coverage|cobertura/i.test(cells[0]) && !/^(gate|topic)$/i.test(cells[0])) {
+      const cmd = cells[1].replace(/^`+|`+$/g, '').trim();
+      if (cmd && !/^command$/i.test(cmd) && !/^[-: ]+$/.test(cmd)) return cmd;
+    }
+  }
+  return null;
+}
+// A criterion id as a test may cite it: comment, test name or python function name. Separators are interchangeable and optional between the letter and the digits.
+const citeRe = id => { const parts = id.split(/[-.]/); return new RegExp('(^|[^A-Za-z0-9])' + parts[0] + '[-_.]?' + parts.slice(1).join('[-_.]') + '(?![A-Za-z0-9])', 'i'); };
+const bareLines = out => out.trim().split('\n').filter(l => l.trim() && !/^>\s/.test(l)); // npm prints "> pkg@1 script" banner lines: they are not the command's output
+function e08Command(ctx, crit) {
+  const cmd = coverageCommand(ctx); if (!cmd) return { tried: false };
+  const P = prepareProbe(ctx); if (P.undeterminable || !P.ok) return { tried: false };
+  const sbx = P.sbx; sbx.reset();
+  const parse = out => { const l = bareLines(out); const m = l.length === 1 ? l[0].trim().match(/^criteria coverage: (\d+)\/(\d+)$/) : null; return m ? { n: +m[1], m: +m[2] } : null; };
+  const r = sbx.run(cmd, ctx.cfg.timeouts.gateMs);
+  const base = parse(r.out);
+  const ids = [...new Set(crit.map(c => c.id))];
+  const testFilesAll = trackedFiles(sbx.root).filter(p => isTestPath(ctx.cfg, p) && /\.(js|mjs|cjs|ts|py)$/.test(p));
+  const testText = testFilesAll.map(p => tryRead(path.join(sbx.root, p)) || '').join('\n');
+  const citedIds = ids.filter(id => citeRe(id).test(testText));
+  const reasons = [];
+  if (r.code !== 0) reasons.push(`the coverage command exits ${r.code} on the clean head: ${cmd}`);
+  if (!base) reasons.push('the coverage command does not print exactly one line "criteria coverage: N/M"');
+  else {
+    // M must be the number of criterion ids defined; N cannot exceed the ids that tests cite (a command may legitimately skip fixture folders, so it may be lower)
+    if (base.m !== ids.length) reasons.push(`it prints M=${base.m} but ${ids.length} criterion ids are defined`);
+    if (base.n > citedIds.length) reasons.push(`it prints N=${base.n} but tests cite only ${citedIds.length} of the ids`);
+  }
+  // behavioural probes next to the project's own tests (the folder the command scans): an orphan id must fail it; citing a not-yet-cited id must raise N by one
+  const nCited = p => { const t = tryRead(path.join(sbx.root, p)) || ''; return ids.filter(id => t.includes(id)).length; };
+  const exTest = [...testFilesAll].sort((a, b) => nCited(b) - nCited(a))[0];
+  const tdir = exTest ? path.dirname(exTest) : 'tests';
+  const py = P.stack === 'python';
+  const plant = (fname, id) => py ? { path: `${tdir}/test_fx1_${fname}.py`, write: `# ${id}\ndef test_fx1_${fname}():\n    assert True\n` } : { path: `${tdir}/fx1_${fname}.test.js`, write: `// ${id}\nrequire("node:test")("${id} ${fname}", () => {});\n` };
+  sbx.reset(); sbx.apply([plant('orphan', 'F-999.9')]);
+  const o = sbx.run(cmd, ctx.cfg.timeouts.gateMs); sbx.reset();
+  if (o.code === 0) reasons.push('a test citing an id the spec does not define (orphan) does not make the coverage command fail');
+  let raised = null;
+  const uncited = ids.find(id => !citeRe(id).test(testText));
+  if (base && uncited) {
+    sbx.apply([plant('cover', uncited)]);
+    const c = sbx.run(cmd, ctx.cfg.timeouts.gateMs); sbx.reset();
+    const after = parse(c.out); raised = !!(after && after.n === base.n + 1);
+    if (!raised) reasons.push(`a test citing ${uncited} does not raise N by one (${base.n} -> ${after ? after.n : 'no output'})`);
+  }
+  return { tried: true, cmd, ok: reasons.length === 0, reasons, printed: base ? `criteria coverage: ${base.n}/${base.m}` : null, recomputed: `${citedIds.length}/${ids.length}`, orphanFailed: o.code !== 0, raisedByCitation: raised };
+}
 function e08(ctx) {
-  const name = 'criteria coverage: every criterion id has a coverage entry'; const cfg = ctx.cfg; const f = discover(ctx);
+  const name = 'criteria coverage: a command reports N/M (or every criterion id has a coverage entry)'; const cfg = ctx.cfg; const f = discover(ctx);
   const crit = ctx.shared.criteria || [];
   if (!crit.length) return res('E08', name, 'ABSENT', ['no criterion ids to cover (E02)'], {}, { depends_on: 'E02' });
+  const cm = e08Command(ctx, crit);
+  if (cm.tried && cm.ok) return res('E08', name, 'PASS', [], { command: cm.cmd, printed: cm.printed }, { mode: 'command', printed: cm.printed, recomputed: cm.recomputed, orphan_fails: cm.orphanFailed });
+  const legacy = e08Mapping(ctx, name, crit, f, cfg);
+  if (legacy.status === 'PASS') return legacy;
+  if (cm.tried) return res('E08', name, 'PARTIAL', cm.reasons, { command: cm.cmd }, { mode: 'command', printed: cm.printed, recomputed: cm.recomputed, orphan_fails: cm.orphanFailed });
+  return legacy;
+}
+function e08Mapping(ctx, name, crit, f, cfg) {
   const covFiles = f.tracked.filter(p => cfg.coverageFileCandidates.includes(p) || (/^docs\//.test(p) && /coverage|cobertura/i.test(path.basename(p)) && /\.(md|json)$/i.test(p)));
   const mapFiles = [...new Set([...covFiles, ...f.specFiles])];
   const pathTok = /(?:^|[\s`("'|])((?:[\w.-]+\/)*[\w.-]+\.[A-Za-z0-9]{1,5})(?=$|[\s`)"'|,;:#])/g;
@@ -537,7 +620,7 @@ function e11(ctx) {
 // Install-like: dependency installs, hook installers and project setup scripts (all of which a reader runs before the tests).
 const KIND = [
   ['install', /^(?:.*install[-_]?hooks.*|.*pre-commit install.*|git config core\.hooksPath.*|.*\b(?:setup|bootstrap)\b.*|npx (?:husky|simple-git-hooks).*|make (?:hooks|setup).*)$|^(npm (i|install|ci)\b|yarn( install)?$|pnpm (i|install)\b|pip3? install|python3? -m pip install|poetry install|uv sync|go mod download|bundle install|cargo fetch)/],
-  ['test', /(npm (run )?test\b|npm t\b|node --run test|pytest|go test|cargo test|node --test|vitest|jest|make test|yarn test|pnpm test)/],
+  ['test', /(npm (run )?test\b|npm t\b|node --run test|pytest|go test|cargo test|node --test|vitest|jest|make test|yarn test|pnpm test|npm run (check|verify|validate|ci|all)\b|make (check|verify|ci|all)\b|python3? \S*(check|verify|validate)\S*\.py)/], // (dev loop, defect C4) the "one command that runs every check" counts as the test command
   ['build', /^(npm run build|make( build)?$|go build|cargo build|tsc\b)/]
 ];
 function parseReadme(ctx) {
@@ -569,7 +652,7 @@ function parseReadme(ctx) {
         pre.push(cmd); continue;
       }
       const prefix = pre.length ? pre.join(' && ') + ' && ' : '';
-      if (/<[^>]+>|YOUR_|your-|\[[A-Za-z ]+\]$/.test(cmd)) { cmds.push({ cmd, kind: 'skipped', why: 'placeholder', pre: prefix }); continue; }
+      if (/<[^>]+>|YOUR_|your-|\[[^\]]*\]$/.test(cmd)) { cmds.push({ cmd, kind: 'skipped', why: 'placeholder', pre: prefix }); continue; }
       if (/^git clone\b/.test(cmd)) { cmds.push({ cmd, kind: 'skipped', why: 'clone', pre: prefix }); continue; }
       if (/(exit(s|ed)?( with)?( code)?\s*[1-9]|\bfails?\b|\berror\b|non-zero)/i.test(comment)) { cmds.push({ cmd, kind: 'skipped', why: 'documented failure', pre: prefix }); continue; }
       const kind = (KIND.find(([, re]) => re.test(cmd)) || ['run'])[0];
@@ -596,7 +679,7 @@ function e12(ctx) {
   const results = []; const reasons = [];
   for (const k of runnable) {
     const isRun = k.kind === 'run';
-    const r = sbx.run(k.pre + k.cmd, isRun ? cfg.timeouts.serveSmokeMs : (k.kind === 'test' ? cfg.timeouts.testMs : cfg.timeouts.installMs));
+    const r = isRun ? sbx.runSmoke(k.pre + k.cmd, cfg.timeouts.serveSmokeMs) : sbx.run(k.pre + k.cmd, k.kind === 'test' ? cfg.timeouts.testMs : cfg.timeouts.installMs);
     const ok = r.code === 0 || (isRun && r.timedOut);
     results.push({ cmd: k.cmd, kind: k.kind, ok, code: r.code, timedOut: r.timedOut, tail: r.out.slice(-300) });
     if (!ok) {

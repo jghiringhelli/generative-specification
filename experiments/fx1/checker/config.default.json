@@ -1,6 +1,6 @@
 {
   "_comment": "FX-1 conformance checker parameters. Frozen with the registration (its SHA-256 goes in every report). A change after freeze is a new checker version, never an edit.",
-  "version": "0.2.0-prototype",
+  "version": "0.2.1-devloop",
   "timeouts": {
     "installMs": 240000,
     "testMs": 240000,
@@ -176,7 +176,7 @@
     "hashLength": 16
   },
   "readme": {
-    "headingHint": "(clean clone|getting started|quick ?start|install|build|setup|run|usage|test|testing|tests|development|ejecuci|instal|uso|prueba|desarrollo)",
+    "headingHint": "(fresh clone|clean clone|getting started|quick ?start|install|build|setup|run|usage|test|testing|tests|development|ejecuci|instal|uso|prueba|desarrollo)",
     "mustContain": [
       "install",
       "test"
