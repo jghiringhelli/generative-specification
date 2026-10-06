@@ -96,6 +96,9 @@ function parseSpecDefs(ctx) {
         return;
       }
       const id = leadingId(line, cfg.idToken); if (!id) return;
+      // (dev loop, defect C12) a plain paragraph that merely starts with an id ("F-001.8 to F-001.17 were ratified ...", run b4-A-lamp-en) defines nothing:
+      // a definition is a list item, a table row, a bold label or a line that says how it is verified (or any line under a criteria heading)
+      if (!/^\s*(?:[-*+]|\d+[.)]|\||\*\*|__)/.test(line) && !/verified by:/i.test(line) && !stack.some(s => rx(cfg.criteriaHeading).test(s.title))) return;
       // (dev loop 2026-10-06, defect C2) a dotted numeric id (F-001.2) is a criterion wherever it sits: the formulas do not ask for a criteria heading
       const inCrit = stack.some(s => rx(cfg.criteriaHeading).test(s.title)) || CRIT_SHAPE.test(id);
       const body = line.replace(/^\s*(?:[-*+]|\d+[.)])?\s*(?:\[[ xX~]\]\s*)?\|?\s*(?:\*\*|__|`)*/, '').replace(id, '');
@@ -278,14 +281,24 @@ function prepareProbe(ctx) {
     const id = ((ctx.shared.criteria || [])[0] || (ctx.shared.requirements || [])[0] || {}).id;
     if (id) { const c1 = sbx.attemptCommit([{ path: readme, append: '\n<!-- fx1 clean probe -->\n' }], `docs: fx1 clean probe change (${id})`, { raw: true }); if (!c1.blocked) { P.c0 = c1; P.c0.retriedWithId = true; sbx.msgSuffix = ` (${id})`; } }
   }
+  // (dev loop 2026-10-06, defect C11) Paired control for the PUSH stage: a clean docs-only change pushed with --no-verify on the commit must be accepted by the
+  // push hooks. A pre-push gate that is red at baseline (it runs the one command, which is broken) blocks every push, so every push-stage probe would
+  // "block" for a reason that is not the violation (seen on a mutant of run b3-A-tally-en: a no-op ratchet script made the one command fail, and E06 still passed).
+  if (!P.c0.blocked) {
+    P.cPush = sbx.attemptPush([{ path: readme, append: '\n<!-- fx1 clean push probe -->\n' }], 'docs: fx1 clean push probe' + sbx.msgSuffix);
+  }
   sbx.reset();
   return P;
 }
-function confounded(P, id, name) {
+function confounded(P, id, name, { commitOnly = false } = {}) {
   if (P.undeterminable) return res(id, name, 'UNDETERMINABLE', [P.undeterminable]);
   if (P.c0 && P.c0.blocked) {
     if (P.c0.network) return res(id, name, 'UNDETERMINABLE', ['a network failure blocked the baseline commit (a hook fetched something)']);
     return res(id, name, 'PARTIAL', ['a clean docs-only commit is blocked, so the probe is not informative (confounded by the baseline block)'], { c0: P.c0.out }, { confounded_by: 'baseline-commit-blocked' });
+  }
+  if (!commitOnly && P.cPush && P.cPush.blocked === true) {
+    if (P.cPush.network) return res(id, name, 'UNDETERMINABLE', ['a network failure blocked the baseline push (a hook fetched something)']);
+    return res(id, name, 'PARTIAL', ['a clean docs-only push is blocked (a pre-push gate is red at baseline), so a push-stage block does not show a gate for the violation (confounded by the baseline push block)'], { cPush: P.cPush.out }, { confounded_by: 'baseline-push-blocked' });
   }
   return null;
 }
@@ -294,7 +307,7 @@ const isTestPath = (cfg, p) => new RegExp(cfg.testFilePattern).test(p) || cfg.te
 function srcFile(ctx, sbx) {
   const cfg = ctx.cfg; const exts = cfg.sourceExtensions; const tracked = trackedFiles(sbx.root);
   const excl = new RegExp(cfg.sourceExcludePattern);
-  const code = tracked.filter(p => exts.includes(p.split('.').pop()) && !isTestPath(cfg, p) && !excl.test(p) && !p.startsWith('scripts/') && !p.startsWith('.') && !p.startsWith('docs/'));
+  const code = tracked.filter(p => exts.includes(p.split('.').pop()) && !isTestPath(cfg, p) && !excl.test(p) && !/^(scripts|tools|bin|build|ci)\//.test(p) && !p.startsWith('.') && !p.startsWith('docs/'));
   const testText = tracked.filter(p => isTestPath(cfg, p)).map(p => tryRead(path.join(sbx.root, p)) || '').join('\n');
   const imported = code.filter(p => { const stem = path.basename(p).replace(/\.[^.]+$/, ''); return stem && new RegExp(`(require|import|from)[^\\n]*\\b${stem.replace(/[-.]/g, '[-_.]')}\\b`).test(testText); });
   const inSrc = code.filter(p => cfg.sourceDirs.some(d => p.startsWith(d + '/')));
@@ -467,7 +480,9 @@ function e08Command(ctx, crit) {
   const P = prepareProbe(ctx); if (P.undeterminable || !P.ok) return { tried: false };
   const sbx = P.sbx; sbx.reset();
   const parse = out => { const l = bareLines(out); const m = l.length === 1 ? l[0].trim().match(/^criteria coverage: (\d+)\/(\d+)$/) : null; return m ? { n: +m[1], m: +m[2] } : null; };
-  const r = sbx.run(cmd, ctx.cfg.timeouts.gateMs);
+  // make echoes its recipe lines and npm prints a banner: tool noise, not the command's output
+  const quiet = c => c.replace(/^make\b(?!\s+-s)/, 'make -s').replace(/^(npm run \S+)(?!.*--silent)/, '$1 --silent');
+  const r = sbx.run(quiet(cmd), ctx.cfg.timeouts.gateMs);
   const base = parse(r.out);
   const ids = [...new Set(crit.map(c => c.id))];
   const testFilesAll = trackedFiles(sbx.root).filter(p => isTestPath(ctx.cfg, p) && /\.(js|mjs|cjs|ts|py)$/.test(p));
@@ -488,13 +503,13 @@ function e08Command(ctx, crit) {
   const py = P.stack === 'python';
   const plant = (fname, id) => py ? { path: `${tdir}/test_fx1_${fname}.py`, write: `# ${id}\ndef test_fx1_${fname}():\n    assert True\n` } : { path: `${tdir}/fx1_${fname}.test.js`, write: `// ${id}\nrequire("node:test")("${id} ${fname}", () => {});\n` };
   sbx.reset(); sbx.apply([plant('orphan', 'F-999.9')]);
-  const o = sbx.run(cmd, ctx.cfg.timeouts.gateMs); sbx.reset();
+  const o = sbx.run(quiet(cmd), ctx.cfg.timeouts.gateMs); sbx.reset();
   if (o.code === 0) reasons.push('a test citing an id the spec does not define (orphan) does not make the coverage command fail');
   let raised = null;
   const uncited = ids.find(id => !citeRe(id).test(testText));
   if (base && uncited) {
     sbx.apply([plant('cover', uncited)]);
-    const c = sbx.run(cmd, ctx.cfg.timeouts.gateMs); sbx.reset();
+    const c = sbx.run(quiet(cmd), ctx.cfg.timeouts.gateMs); sbx.reset();
     const after = parse(c.out); raised = !!(after && after.n === base.n + 1);
     if (!raised) reasons.push(`a test citing ${uncited} does not raise N by one (${base.n} -> ${after ? after.n : 'no output'})`);
   }
@@ -564,7 +579,7 @@ function e09(ctx) {
 // ---------- E10 spec lock ----------
 function e10(ctx) {
   const name = 'spec lock: tags resolve, the lock file matches and a change to a locked section is detected'; const cfg = ctx.cfg; const f = discover(ctx);
-  const tagRe = new RegExp(cfg.lock.tagRegex);
+  const tagRe = new RegExp(cfg.lock.tagRegex, 'u') /* (dev loop, defect C13) unicode: a Spanish anchor such as #f-008-ubicación was cut at the accent */;
   const tags = [];
   for (const p of f.tracked.filter(x => TEXT_EXT.test(x) && x !== cfg.lock.file && !/^docs\/(spec|specs|features|decisions)\//.test(x))) {
     (tryRead(path.join(ctx.root, p)) || '').split('\n').forEach((line, i) => { const m = line.match(tagRe); if (m) tags.push({ file: p, line: i + 1, id: m[1], spec: m[2], section: m[3] }); });
@@ -578,10 +593,10 @@ function e10(ctx) {
   if (hasLock && !formatKnown) reasons.push('the lock file is not in the registered format (S/A lines); hash agreement cannot be checked, only the behaviour');
   if (!tags.length) reasons.push('lock file exists but no @gs tags');
   const cur = target => { const [sp, sec] = target.split('#'); const t = tryRead(path.join(ctx.root, sp)); if (t == null) return { err: `${sp} missing` }; const s = sections(t).find(x => x.slug === sec || ghSlug(x.title) === sec || slug(x.title) === sec); if (!s) return { err: `${sp} has no section ${sec}` }; return { hash: sectionHash(s.text, cfg.lock.hashLength) }; };
-  for (const t of tags) { const c = cur(`${t.spec}#${t.section}`); if (c.err) reasons.push(`tag ${t.file}:${t.line} ${t.id}: ${c.err}`); else if (hasLock && formatKnown) { const a = A.get(`${t.file}|${t.id}`); if (!a) reasons.push(`tag ${t.file}:${t.line} ${t.id} has no lock entry`); else if (a.hash !== c.hash) reasons.push(`stale: ${t.file} ${t.id} derived against ${a.hash}, section is now ${c.hash}`); } }
+  for (const t of tags) { const c = cur(`${t.spec}#${t.section}`); if (c.err) reasons.push(`tag ${t.file}:${t.line} ${t.id}: ${c.err}`); else if (hasLock && formatKnown) { const a = A.get(`${t.file}|${t.id}`); if (!a) reasons.push(`tag ${t.file}:${t.line} ${t.id} has no lock entry`); else if (cfg.lock.verifyHash && a.hash !== c.hash) reasons.push(`stale: ${t.file} ${t.id} derived against ${a.hash}, section is now ${c.hash}`); } }
   if (formatKnown) {
     for (const [k] of A) { if (!tags.some(t => `${t.file}|${t.id}` === k)) reasons.push(`lock entry without a tag: ${k}`); }
-    for (const [target, h] of S) { const c = cur(target); if (c.err) reasons.push(`lock section ${target}: ${c.err}`); else if (c.hash !== h) reasons.push(`lock section ${target} hash ${h} but section hashes to ${c.hash}`); }
+    for (const [target, h] of S) { const c = cur(target); if (c.err) reasons.push(`lock section ${target}: ${c.err}`); else if (cfg.lock.verifyHash && c.hash !== h) reasons.push(`lock section ${target} hash ${h} but section hashes to ${c.hash}`); }
   }
   const hardReasons = reasons.filter(r => !/not in the registered format/.test(r));
   if (hardReasons.length) return res('E10', name, 'PARTIAL', reasons.slice(0, 12), { tags: tags.length, lockSections: S.size, lockArtifacts: A.size });
@@ -599,7 +614,7 @@ function e10(ctx) {
 // ---------- E11 co-change gate (commit stage only, as specified) ----------
 function e11(ctx) {
   const name = 'co-change gate: behaviour change needs a spec citation or doc change'; const f = discover(ctx);
-  const P = prepareProbe(ctx); const cf = confounded(P, 'E11', name); if (cf) return cf;
+  const P = prepareProbe(ctx); const cf = confounded(P, 'E11', name, { commitOnly: true }); if (cf) return cf;
   const sbx = P.sbx; const src = srcFile(ctx, sbx);
   if (!src) return res('E11', name, 'ABSENT', ['no source file to change']);
   const edit = { path: src, append: '\n' + commentFor(src, 'fx1 co-change probe') + '\n' };
@@ -633,10 +648,10 @@ function parseReadme(ctx) {
     if (!hint.test(s.title)) return;
     // a hinted section includes its nested subsections
     let end = s.end; for (let j = idx + 1; j < secs.length && secs[j].level > s.level && s.level < 7; j++) end = secs[j].end;
-    for (const b of fences(lines.slice(s.start, end).join('\n'))) { const key = s.start + ':' + b.start; if (!seenStarts.has(key)) { seenStarts.add(key); blocks.push(b); } }
+    for (const b of fences(lines.slice(s.start, end).join('\n'))) { const key = s.start + ':' + b.start; if (!seenStarts.has(key)) { seenStarts.add(key); b.fresh = /(fresh|clean) clone/i.test(s.title); blocks.push(b); } }
   });
   const use = blocks.length ? blocks : fences(text);
-  const cmds = [];
+  const cmds = []; const cloneDirs = new Set();
   for (const b of use) {
     if (b.lang && !/^(sh|bash|shell|zsh|console)$/i.test(b.lang)) continue; // text, powershell, cmd, output blocks are not run
     const consoleBlock = /^console$/i.test(b.lang || '') || b.lines.some(l => /^\s*\$\s/.test(l));
@@ -647,8 +662,11 @@ function parseReadme(ctx) {
       const l = raw.replace(/^\s*\$\s+/, '').replace(/\s+#.*$/, ''); if (!l.trim() || /^\s*#/.test(raw)) continue;
       if (/\\\s*$/.test(l)) { acc += l.replace(/\\\s*$/, ' '); continue; }
       const cmd = (acc + l).trim(); acc = '';
+      // (dev loop 2026-10-06, defect C9) 'git clone <url> kilnlog' then 'cd kilnlog': that folder is the clone, even when the project has a package folder of the same name
+      const cl = cmd.match(/^git clone\s+(?:-\S+\s+)*(\S+)(?:\s+(\S+))?\s*$/);
+      if (cl) cloneDirs.add((cl[2] || cl[1].replace(/\.git$/, '').split('/').pop()).replace(/\/$/, ''));
       if (/^(export |source |\. |cd )/.test(cmd)) { // state-setting lines carry over to the next commands of the block
-        if (/^cd\s/.test(cmd) && !exists(path.join(root, cmd.replace(/^cd\s+/, '').trim()))) { cmds.push({ cmd, kind: 'skipped', why: 'cd into the clone folder', pre: '' }); continue; }
+        if (/^cd\s/.test(cmd) && (cloneDirs.has(cmd.replace(/^cd\s+/, '').trim().replace(/\/$/, '')) || !exists(path.join(root, cmd.replace(/^cd\s+/, '').trim())))) { cmds.push({ cmd, kind: 'skipped', why: 'cd into the clone folder', pre: '' }); continue; }
         pre.push(cmd); continue;
       }
       const prefix = pre.length ? pre.join(' && ') + ' && ' : '';
@@ -656,9 +674,11 @@ function parseReadme(ctx) {
       if (/^git clone\b/.test(cmd)) { cmds.push({ cmd, kind: 'skipped', why: 'clone', pre: prefix }); continue; }
       if (/(exit(s|ed)?( with)?( code)?\s*[1-9]|\bfails?\b|\berror\b|non-zero)/i.test(comment)) { cmds.push({ cmd, kind: 'skipped', why: 'documented failure', pre: prefix }); continue; }
       const kind = (KIND.find(([, re]) => re.test(cmd)) || ['run'])[0];
-      cmds.push({ cmd, kind, pre: prefix });
+      cmds.push({ cmd, kind, pre: prefix, fresh: !!b.fresh });
     }
   }
+  // (dev loop, defect C10) the formulas end the Fresh clone block with "the one command that runs every check": it is the test command whatever its name
+  if (!cmds.some(c => c.kind === "test")) { const last = [...cmds].reverse().find(c => c.fresh && c.kind === "run"); if (last) last.kind = "test"; }
   return { path: rp, commands: cmds };
 }
 function declaresDependencies(root) {

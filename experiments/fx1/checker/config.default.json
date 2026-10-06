@@ -172,8 +172,10 @@
   ],
   "lock": {
     "file": "docs/spec.lock",
-    "tagRegex": "^[ \\t]*(?:\\/\\/|#|\\*|--|<!--)[ \\t]*@gs[ \\t]+(\\S+)[ \\t]+([^\\s#]+)#([\\w-]+)",
-    "hashLength": 16
+    "tagRegex": "^[ \\t]*(?:\\/\\/|#|\\*|--|<!--)[ \\t]*@gs[ \\t]+(\\S+)[ \\t]+([^\\s#]+)#([\\p{L}\\p{N}_-]+)",
+    "hashLength": 16,
+    "verifyHash": false,
+    "_verifyHash": "dev loop 2026-10-06: the lock formula states the line grammar and the hash length but not the exact normalisation of the section text, so a recomputed hash is not required to agree; the behavioural probes (a locked section edit is rejected, an unlocked edit accepted) and tag resolution decide. Set true only if a formula registers the normalisation."
   },
   "readme": {
     "headingHint": "(fresh clone|clean clone|getting started|quick ?start|install|build|setup|run|usage|test|testing|tests|development|ejecuci|instal|uso|prueba|desarrollo)",

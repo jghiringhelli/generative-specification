@@ -69,3 +69,11 @@ test('countTests-style skipped pattern is excluded from executed cases', () => {
   assert.strictEqual(countTests(d, cfg).cases, 2);
   fs.rmSync(d, { recursive: true, force: true });
 });
+
+// ---- dev loop 2026-10-06 (development, not evidence): regressions for the defects found on model-written projects ----
+test('C1 refsIn: bare paths in a routing-table file cell and in prose count; red-proof commands and inline code with spaces do not', () => {
+  const t = '| topic | file |\n|---|---|\n| modules | docs/architecture.md |\n| hook | .githooks/commit-msg |\n| readme | README.md |\n\nSpec root: docs/spec/SPEC.md is the source.\n\n| gate | command | runs at | red proof |\n|---|---|---|---|\n| ratchet | `node scripts/ratchet.js` | check | `printf x > scripts/planted.test.js && node scripts/ratchet.js` |\n';
+  const refs = u.refsIn(t, cfg).map(x => x.ref).sort();
+  assert.ok(refs.includes('docs/architecture.md') && refs.includes('.githooks/commit-msg') && refs.includes('README.md') && refs.includes('docs/spec/SPEC.md'));
+  assert.ok(!refs.includes('scripts/planted.test.js'));
+});

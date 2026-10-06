@@ -140,7 +140,7 @@ function refsIn(text, cfg) {
   // (dev loop 2026-10-06, defect C1) The routing table the formulas ask for is "topic | file": the file cell holds a bare path, and
   // sentinels also name paths in plain sentences. Bare paths with a directory part (and bare file names in a table cell) count as references.
   for (const line of t.split('\n')) {
-    if (/^\s*\|/.test(line)) for (const cell of line.split('|').map(c => c.trim().replace(/^`|`$/g, ''))) if (/^[\w.][\w./-]*\.[A-Za-z0-9]{1,5}$/.test(cell) || /^[\w.][\w./-]*\/$/.test(cell)) add(cell.replace(/\/$/, ''), false);
+    if (/^\s*\|/.test(line)) for (const cell of line.split('|').map(c => c.trim().replace(/^`|`$/g, ''))) if (/^[\w.][\w./-]*$/.test(cell) && (cell.includes('/') || /\.[A-Za-z0-9]{1,5}$/.test(cell))) add(cell.replace(/\/$/, ''), false);
   }
   // plain sentences only: not table rows (handled above) and not inline code spans (handled by the backtick rule: they may hold commands that create files)
   const prose = t.split('\n').filter(l => !/^\s*\|/.test(l)).join('\n').replace(/`[^`\n]*`/g, ' ');
