@@ -8,6 +8,8 @@ description: "Step-by-step ForgeCraft workflow recipes for common project scenar
 
 # Workflow Recipes
 
+> **Superseded by [Formulas](/formulas/).** These recipes call a retired tool. The [Formulas](/formulas/) are self-contained prompts for any assistant, with a check for each. This page stays at its address for readers who already use the tool.
+
 > **Note.** These recipes use ForgeCraft tool calls. ForgeCraft is deprecated; the [Practice](/practice/) guides are the tool-free versions, written as prompts for any assistant. The recipes stay here for readers who already use the tool.
 
 These recipes are the practitioner interface to GS methodology. Each recipe covers one common scenario from start to working code, with exact ForgeCraft tool calls at each step.

@@ -1,14 +1,16 @@
 ---
 layout: default
 title: Templates
-nav_order: 11
-parent: Practice
+nav_exclude: true
+search_exclude: true
 permalink: /templates/
 redirect_from:
   - /docs/templates/README.html
   - /docs/templates/
 description: "CLAUDE.md three-tier template hierarchy for GS projects"
 ---
+> **Superseded by [Formulas](/formulas/).** The sentinel these templates describe is now written by [1. Greenfield](/formulas/greenfield/) or [2. Adopt after an MVP](/formulas/adopt/) (five parts, with routing and tool sequence), not from a three-tier file set. The numeric limits below (file length, coverage, mutation score) are examples a team declares, not fixed rules. This page stays at its address.
+
 These templates implement the three-tier CLAUDE.md hierarchy described in the Generative Specification methodology.
 
 Each tier has one job. Claude reads them in cascade from the current working directory upward, so all three are active simultaneously during a session.

@@ -9,6 +9,8 @@ description: "Seven steps from an empty folder to a running project under full G
 
 # Start a new project
 
+> **Self-contained version:** [Formulas 1, Greenfield](/formulas/greenfield/) turns a spec you already wrote into the substrate and the first feature in one prompt, with a check for each step. This page is the step-by-step version.
+
 > In the workshop this is called **Greenfield**, and it spans the workshop stages Mold, Temple and Temper.
 
 

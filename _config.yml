@@ -17,6 +17,7 @@ aux_links:
 
 aux_links_new_tab: true
 back_to_top: true
+enable_copy_code_button: true
 back_to_top_text: "Back to top"
 
 footer_content: "&copy; 2026 J.C. Ghiringhelli. Distributed under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>. Citation: <a href=\"https://doi.org/10.5281/zenodo.21726017\">Zenodo (archived preprint)</a>"
@@ -87,4 +88,8 @@ defaults:
   - scope: { path: "docs/gate-template.md" }
     values: { title: "Portable gate template", parent: "The Method", nav_order: 5 }
   - scope: { path: "docs/repository-discipline.md" }
-    values: { title: "Repository discipline", parent: "Practice", nav_order: 10 }
+    values: { title: "Repository discipline", parent: "Practice", nav_order: 10, nav_exclude: true }
+  # Superseded by Formulas (docs/formulas/): these older pages stay at their URLs but
+  # leave the sidebar and the search. Each carries a banner pointing to the Formulas.
+  - scope: { path: "docs/recipes" }
+    values: { nav_exclude: true, search_exclude: true }

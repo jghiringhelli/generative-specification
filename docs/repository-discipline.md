@@ -1,5 +1,7 @@
 # Repository Discipline
 
+> **Superseded by [Formulas](/formulas/) for the setup steps.** This reference predates the current canon: it names a retired scaffolding tool and uses older wording. The [substrate checklist](/formulas/substrate-checklist/) is the current statement of what a repository contains. This page stays at its address.
+
 *The tool-agnostic reference for what a GS-compliant repository contains, how it's touched, and what discipline survives the absence of tooling.*
 
 This document consolidates the repo-mechanical content scattered across the White Paper (§6, artifact grammar), the Practitioner Protocol (§3, §G, §8.4-§8.5), the Bible (§6, §7), and the pure-GS variants of every skill in `pragmaworks/skills/`. It is the single reference for the workshop, for new practitioners, and for the "what do I do without ForgeCraft installed?" question.

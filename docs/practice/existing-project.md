@@ -9,6 +9,8 @@ description: "Eight steps to bring an existing codebase under Generative Specifi
 
 # Introduce GS to an Existing Project
 
+> **Self-contained version:** [Formulas 2, Adopt after an MVP](/formulas/adopt/) adds the substrate without changing behavior, in one prompt with a check for each step. This page is the step-by-step version.
+
 > In the workshop this is called **Brownfield**, and it spans the workshop stages Heating, Mold, Temple, Anneal and Temper.
 
 

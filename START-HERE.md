@@ -6,6 +6,8 @@ nav_order: 1
 description: "A working Generative Specification setup on your own project in under an hour: a spec, a constitution file for the assistant, and quality gates. No tools required."
 ---
 
+> **A newer version of this flow is in [Formulas](/formulas/).** The prompts below predate the current wording (a 0 to 2 self-score, a constitution file, a spec path of `docs/spec.md`). [1. Greenfield](/formulas/greenfield/) and [2. Adopt after an MVP](/formulas/adopt/) are the current, self-contained versions; [9. Audit](/formulas/audit/) replaces the self-score.
+
 # Start Here — Apply Generative Specification to Your Project
 
 This is the practical entry point. You can get a working GS setup on your own project in under an hour. No tools required beyond what you already use.
