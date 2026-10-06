@@ -39,6 +39,14 @@ function sh(cmd, { cwd, timeout = 120000, env = {} } = {}) {
   const out = ((r.stdout || '') + (r.stderr || '')).replace(/\r/g, '');
   return { code: timedOut ? 124 : (r.status === null ? 1 : r.status), out, timedOut, error: r.error && r.error.code !== 'ETIMEDOUT' ? String(r.error.message) : null };
 }
+function smoke(cmd, { cwd, timeout = 8000 } = {}) {
+  const port = String(20000 + Math.floor(Math.random() * 20000)); // a fresh port per smoke start: a server that ignores a leftover process still binds
+  const r = spawnSync('node', [path.join(__dirname, 'smoke.js'), String(timeout), cwd, cmd], { cwd, env: cleanEnv({ PORT: port }), encoding: 'utf8', timeout: timeout + 20000, killSignal: 'SIGKILL', maxBuffer: 32 * 1024 * 1024 });
+  const out = ((r.stdout || '') + (r.stderr || '')).replace(/\r/g, '');
+  // Windows (development only): the process tree of npm.cmd is broken once npm exits, so also kill whatever listens on the smoke port
+  if (process.platform === 'win32') spawnSync('powershell', ['-NoProfile', '-Command', `Get-NetTCPConnection -LocalPort ${port} -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }`], { stdio: 'ignore' });
+  return { code: r.status === null ? 1 : r.status, out, timedOut: r.status === 124, error: null };
+}
 function git(cwd, args, opts = {}) {
   const r = spawnSync('git', ['-c', 'commit.gpgsign=false', '-c', 'core.autocrlf=false', ...args], { cwd, env: cleanEnv(opts.env), encoding: 'utf8', timeout: opts.timeout || 120000, killSignal: 'SIGKILL', maxBuffer: 32 * 1024 * 1024 });
   const out = ((r.stdout || '') + (r.stderr || '')).replace(/\r/g, '');
@@ -129,6 +137,14 @@ function refsIn(text, cfg) {
   };
   for (const m of t.matchAll(/\]\(([^)\s]+)\)/g)) add(m[1], true);
   for (const m of t.matchAll(/`([^`\n]+)`/g)) add(m[1], false);
+  // (dev loop 2026-10-06, defect C1) The routing table the formulas ask for is "topic | file": the file cell holds a bare path, and
+  // sentinels also name paths in plain sentences. Bare paths with a directory part (and bare file names in a table cell) count as references.
+  for (const line of t.split('\n')) {
+    if (/^\s*\|/.test(line)) for (const cell of line.split('|').map(c => c.trim().replace(/^`|`$/g, ''))) if (/^[\w.][\w./-]*\.[A-Za-z0-9]{1,5}$/.test(cell) || /^[\w.][\w./-]*\/$/.test(cell)) add(cell.replace(/\/$/, ''), false);
+  }
+  // plain sentences only: not table rows (handled above) and not inline code spans (handled by the backtick rule: they may hold commands that create files)
+  const prose = t.split('\n').filter(l => !/^\s*\|/.test(l)).join('\n').replace(/`[^`\n]*`/g, ' ');
+  for (const m of prose.matchAll(/(?:^|[\s|(])((?:\.?[\w-]+\/)+[\w.-]*[\w-])\/?(?![\w\[\]<{*])/g)) add(m[1], false);
   return [...refs].map(([ref, soft]) => ({ ref, soft }));
 }
 function resolveRef(root, fromFile, ref) {
@@ -137,4 +153,4 @@ function resolveRef(root, fromFile, ref) {
   return null;
 }
 
-module.exports = { posix, sha256, exists, read, tryRead, cleanEnv, sh, git, walk, relList, trackedFiles, slug, stripFences, fences, sections, normalizeSection, sectionHash, leadingId, refsIn, resolveRef };
+module.exports = { posix, sha256, exists, read, tryRead, cleanEnv, sh, smoke, git, walk, relList, trackedFiles, slug, stripFences, fences, sections, normalizeSection, sectionHash, leadingId, refsIn, resolveRef };

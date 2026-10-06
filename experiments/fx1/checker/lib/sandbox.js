@@ -3,7 +3,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { sh, git, exists, read, tryRead, posix } = require('./util');
+const { sh, smoke, git, exists, read, tryRead, posix } = require('./util');
 
 class Sandbox {
   constructor(repo, cfg, label) {
@@ -23,6 +23,7 @@ class Sandbox {
     this.branch = git(this.root, ['symbolic-ref', '--short', 'HEAD']).stdout.trim() || 'HEAD';
     return { ok: !!this.head };
   }
+  runSmoke(cmd, timeout) { const r = smoke(cmd, { cwd: this.root, timeout }); this.log.push({ step: 'smoke ' + cmd, code: r.code }); return r; }
   run(cmd, timeout) { const r = sh(cmd, { cwd: this.root, timeout }); this.log.push({ step: cmd, code: r.code }); return r; }
   isNetworkFailure(out) { return this.cfg.networkErrorPatterns.some(p => out.includes(p)); }
   hooksState() {
