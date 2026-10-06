@@ -4,12 +4,21 @@
 
 ## Ordering logic
 
+0. **(2026-10-05, JC's new first priority) Establish that the formulas install the substrate before measuring any difference it makes.** FX-1 (below) comes first; SDX-0, SDX-1 and the P1 to P4 family of the 2026-10-04 portfolio decision (registrations not yet written) are downstream of it: the substrate must be installed correctly before any difference is measured. FX-1 is a reliability and estimation study of the formulas (prompt templates), not a comparison of arms.
 1. Fix the instrument before using it: one harness (locked scaffold, convention-tolerant hidden oracle, non-memorized benchmark, stateless judges, controls) is reused by almost everything below.
 2. Run the cheapest experiment that can change a decision first.
 3. A result that would only be believable after an independent party reruns it gets that rerun scheduled, not assumed.
 4. Nothing in this list needs to appear in the paper, the site or the course; each ends as a logbook entry.
 
 ## Items
+
+### B-FX. FX-1, the formulas produce a complete, working substrate (reliability study; FIRST; about $2,100 central, range $900 to $4,100, hard cap $3,500; about 1,040 runs; preparation 60 to 90 agent-assisted hours plus independent persons) DRAFT, 2026-10-05
+Registrable draft: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\FX-1.md`; instrument: `...\docs\experiments\FX-1-CHECKER-SPEC.md` and its prototype `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\experiments\fx1\checker\` (36 control variants, deterministic, no model); fixtures: `...\experiments\fx1\fixtures\` (five invented project types); simulation: `...\experiments\fx1\simulation\`; review: `...\prereg\FX-1-REVIEW.md` (two Claude critics; vendor-diverse review owed, runbook `...\docs\experiments\COPILOT-CRITIC-RUNBOOK-FX1.md`).
+- Estimation targets with pre-stated thresholds: per element and per stream (entry path x language, English and neutral Spanish separate) the 95 percent lower bound of the per-element "present and working" rate at least 0.90 ("high confidence", defined operationally and justified in FX-1 section 2.2); all twelve together at least 0.80; three interval methods (Wilson, cell bootstrap, audit-adjusted); n = 210 runs per stream (5 fixtures x 3 vendors x 14), 840 confirmatory runs plus two small descriptive arms (generic prompt, checklist told exactly) that separate formula failure from model failure from checker failure.
+- Width goal and decisiveness (from simulation): full Wilson width at most 0.10 at a stream rate of 0.90 or more. Probability that an element's interval contains 0.90 (indecisive): 0.01 if its true rate is 0.80 or 0.97, 0.72 at 0.93, 0.95 at 0.90. The study is inconclusive about 0.90 only when a true rate sits near 0.90; one rung down (at least 0.80) it is decisive. The headline "all twelve" is certified with probability 0.87 to 0.99 if every element truly sits at 0.97 and 0.03 to 0.75 at 0.95.
+- Licenses: per-formula, per-language success rates with intervals and named failure modes, in plain words, for the Field Guide and genspec.dev; or the named formula step that fails and must be rewritten (a good outcome); or "the checker was wrong". Does not license any claim that the substrate helps.
+- Blocked on: frozen formulas tag and `SUBSTRATE-CHECKLIST` (branch `formulas-2026-10-05`), independent persons (brief reader, control author, auditor), automated access to three vendors, budget, thresholds, the FX-0 pilot, vendor-diverse critic rounds (FX-1 section 13).
+- FX-0 (pilot, about $50 to $100, 24 runs): checker audit by an independent human on real model output, cost per run, caps; data excluded. FX-1b: linked re-estimation after a formula step is rewritten (only affected streams).
 
 ### B0. Adopt the protocol (1 day, no model spend)
 Create the OSF account and project, decide the tag convention (`prereg/<ID>-v<N>`), add a script that verifies registered hashes before each run batch. Decide whether any flagship gets a Registered Report (stage-1 review at an MSR or ESEM registered-reports track; dates not verified here). Licenses: nothing yet; it makes every later result usable.
@@ -177,6 +186,7 @@ One fixture: Pastura, the locked scaffold, the sealed oracle, arms A0, A5, A5b, 
 
 ### Dependency order and recommended sequencing
 
+0. **FX-0 (checker and harness pilot), then FX-1 (B-FX).** Everything below is downstream of FX-1 (added 2026-10-05): the substrate must be installed correctly before any difference is measured. SDX-0 can be prepared in parallel (harness work is shared in spirit) but SDX-1 and the P1 to P4 family may call their enforced arm "formula-built" only for elements FX-1 certified; otherwise it is declared hand-built.
 1. B0 protocol adoption and B1 SDX-0 (harness, oracle with reference implementation, V1 to V13). Everything depends on it. Unchanged.
 2. B11 judge validity (about $20 to $60). Needed before any audit or review number: SDX-3 and the D4 layers of SDX-5.
 3. In parallel with the SDX-1 critic phase and before SDX-1 data: **SDX-5 Part A** (cheap, independent of SDX-1, answers question 2 directly) and an **SDX-4 pilot at sizes S and L only** (checks the positive control: does A0 cost grow with size?). Each is registered and frozen on its own.

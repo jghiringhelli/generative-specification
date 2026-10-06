@@ -31,6 +31,22 @@ Words used the same way everywhere (operational, so a result cannot be reinterpr
 - **Memoryless actor** = a fresh session with no memory, no earlier chat, no vendor persistence; only the repository carries state (the SDX-1 rule, `SDX-1.md` section 3).
 - **Practitioner** = the person who writes the intent (change requests, session-start instructions) and ratifies. Skill = defined per H-FLOOR below, never self-reported.
 
+## 0a. H-FORM (added 2026-10-05, JC's new first priority): the precondition of all five
+
+JC (2026-10-05, in substance): create projects from scratch, apply the GS formulas to produce complete and correct substrates, and only then test whether the substrates make a difference. The first thing to establish is that the formulas produce, with high confidence, all the elements of the substrate. It goes in the Field Guide and on genspec.dev.
+
+**Claim (an estimation target, not a comparison).** Following the canonical formula (frozen, tagged prompt templates for setting up a new project, adopting GS in an existing one, and adding a feature) yields a repository in which each of the twelve substrate elements is present **and working**, with a per-element probability whose 95 percent lower bound is at least 0.90, and all twelve together with a lower bound of at least 0.80, across five invented project types, three model vendors, two entry paths (greenfield from a brief; brief to MVP to formulas, JC's practice) and two prompt languages (English and neutral Spanish, separate artifacts).
+
+**What is NOT claimed.** That the substrate improves anything (that is H-CONTEXT to H-GOV), that the twelve elements are the right ones, that a present document is a good one, that the result holds for other models, project sizes or interactive use.
+
+**Operational definitions, thresholds, falsifiers, sample size (n = 210 runs per stream from simulation), failure taxonomy (checker fault, infrastructure fault, formula failure, model failure, project-type failure), decision table:** `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\FX-1.md`. Instrument: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\FX-1-CHECKER-SPEC.md`. Experiment id: **FX-1** (pilot FX-0 is the harness-and-checker validity pilot).
+
+**Why it is a precondition.** Each of H-CONTEXT, H-PHASE, H-FLOOR, H-GOV and H-LEARN compares a project with the substrate against one without, and "the substrate" is operationally arm A4, today built by hand by the GS side. The statement "the substrate must be installed correctly before any difference is measured" has a testable form: those experiments may call their enforced arm **formula-built** only for elements that reached the `RELIABLE` rung in FX-1 for the formula that builds them; otherwise they must call it hand-built, and a reader learns that a user following the formula would not obtain what the experiment measured. A formula step that fails is rewritten and re-estimated (FX-1b) before the dependent experiment is frozen.
+
+**Existing evidence.** None at tier A or B. Lab runs of the formulas are single observations on one model (the formulas audit of 2026-10-02: only the course practicals and the published audit prompt were ever executed; the new-project and existing-project prompts have no recorded run). A private day-one census of four author-built projects found no project with all twelve elements on its first day (descriptive, not citable).
+
+**What would refute it.** Any element whose upper 95 percent bound is below 0.90 in a stream (the formula step is named and rewritten), or the all-twelve rate with a lower bound below 0.80 (registered rung `NOT-YET` or `OFTEN`). The experiment is the wrong one if the checker fails its validity conditions (FX-1 section 6).
+
 ## 1. Conventions shared by all five
 
 1. **Classification of contrasts, SESOI, TOST, intervals, permutation tests, Bonferroni**: as in `SDX-1.md` section 2.2 unless a section here overrides it. All SESOI values below are provisional placeholders (`[FROM PILOT]`) chosen so a reader can see the order of magnitude; each must be justified in writing at its own freeze.
