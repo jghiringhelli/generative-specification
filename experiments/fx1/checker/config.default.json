@@ -1,45 +1,200 @@
 {
   "_comment": "FX-1 conformance checker parameters. Frozen with the registration (its SHA-256 goes in every report). A change after freeze is a new checker version, never an edit.",
-  "version": "0.1.0-prototype",
-  "timeouts": { "installMs": 240000, "testMs": 240000, "gateMs": 120000, "commitMs": 120000, "serveSmokeMs": 8000 },
-  "sentinelCandidates": ["CLAUDE.md", "AGENTS.md", "GEMINI.md", ".github/copilot-instructions.md", ".cursor/rules"],
-  "specCandidates": ["docs/spec/SPEC.md", "docs/SPEC.md", "SPEC.md", "docs/spec.md"],
-  "specDirs": ["docs/spec", "docs/specs", "docs/features"],
-  "decisionDirs": ["docs/decisions", "docs/adr", "docs/adrs", "docs/decision-records", "docs/architecture/decisions"],
+  "version": "0.2.0-prototype",
+  "timeouts": {
+    "installMs": 240000,
+    "testMs": 240000,
+    "gateMs": 120000,
+    "commitMs": 120000,
+    "serveSmokeMs": 8000
+  },
+  "sentinelCandidates": [
+    "CLAUDE.md",
+    "AGENTS.md",
+    "GEMINI.md",
+    ".github/copilot-instructions.md",
+    ".cursor/rules"
+  ],
+  "specCandidates": [
+    "docs/spec/SPEC.md",
+    "docs/SPEC.md",
+    "SPEC.md",
+    "docs/spec.md"
+  ],
+  "specDirs": [
+    "docs/spec",
+    "docs/specs",
+    "docs/features",
+    "docs/especificacion",
+    "docs/especificaciones",
+    "docs/requisitos"
+  ],
+  "decisionDirs": [
+    "docs/decisions",
+    "docs/adr",
+    "docs/adrs",
+    "docs/decision-records",
+    "docs/architecture/decisions",
+    "docs/decisiones",
+    "doc/adr",
+    "adr",
+    "decisions"
+  ],
   "minSentinelRoutes": 3,
-  "ignoreRefPatterns": ["^https?:", "^mailto:", "node_modules", "^dist/", "^build/", "^coverage/", "^\\.venv", "^venv/", "__pycache__", "\\.log$", "^\\.git/", "^\\.env"],
-  "refExtensions": ["md", "json", "js", "mjs", "cjs", "ts", "tsx", "py", "yml", "yaml", "sh", "toml", "lock", "txt", "cfg"],
-  "idToken": "\\b[A-Z][A-Z0-9]{0,5}-\\d{1,4}(?:\\.[A-Z]?\\d{1,3})?\\b",
-  "criteriaHeading": "(acceptance|criteri|aceptaci)",
+  "ignoreRefPatterns": [
+    "^https?:",
+    "^mailto:",
+    "node_modules",
+    "^dist/",
+    "^build/",
+    "^coverage/",
+    "^\\.venv",
+    "^venv/",
+    "__pycache__",
+    "\\.log$",
+    "^\\.git/",
+    "^\\.env"
+  ],
+  "refExtensions": [
+    "md",
+    "json",
+    "js",
+    "mjs",
+    "cjs",
+    "ts",
+    "tsx",
+    "py",
+    "yml",
+    "yaml",
+    "sh",
+    "toml",
+    "lock",
+    "txt",
+    "cfg"
+  ],
+  "idToken": "\\b[A-Z][A-Z0-9]{0,5}(?:-[A-Z][A-Z0-9]{0,5})?-\\d{1,4}(?:\\.[A-Z]?\\d{1,3}){0,2}\\b",
+  "criteriaHeading": "(acceptance|criteri|aceptaci|scenario|escenario)",
   "minCriteria": 3,
   "minCriterionWords": 5,
-  "decisionSections": { "context": "(context|contexto)", "decision": "(decision|decisi[oó]n)" },
+  "decisionSections": {
+    "context": "(context|contexto)",
+    "decision": "(decision|decisi[oó]n)"
+  },
   "cascadeKinds": {
-    "architecture": { "name": "(architect|arquitect|layers|capas)", "heading": "(architect|arquitect|layers|capas)" },
-    "dataModel": { "name": "(data[-_ ]?model|modelo[-_ ]?de[-_ ]?datos|schema|esquema|state[-_ ]?model)", "heading": "(data model|modelo de datos|schema|esquema|state model)" },
-    "conventions": { "name": "(convention|convenci|standards|estandar|est[aá]ndar|style|estilo)", "heading": "(convention|convenci|standards|est[aá]ndares|style|estilo)" }
+    "architecture": {
+      "name": "(architect|arquitect|layers|capas)",
+      "heading": "(architect|arquitect|layers|capas)"
+    },
+    "dataModel": {
+      "name": "(data[-_ ]?model|modelo[-_ ]?de[-_ ]?datos|schema|esquema|state[-_ ]?model|domain[-_ ]?model|modelo[-_ ]?de[-_ ]?dominio)",
+      "heading": "(data model|modelo de datos|schema|esquema|state model|domain model|modelo de dominio)"
+    },
+    "conventions": {
+      "name": "(convention|convenci|standards|estandar|est[aá]ndar|style|estilo|guidelines|directrices)",
+      "heading": "(convention|convenci|standards|est[aá]ndares|style|estilo|guidelines|directrices)"
+    }
   },
   "minCascadeDocLines": 8,
-  "coverageFileCandidates": ["docs/coverage.md", "docs/spec/coverage.md", "docs/spec/COVERAGE.md", "docs/criteria-coverage.md", "docs/coverage.json", "coverage-map.json"],
-  "testDirs": ["tests", "test", "__tests__", "spec"],
+  "coverageFileCandidates": [
+    "docs/coverage.md",
+    "docs/spec/coverage.md",
+    "docs/spec/COVERAGE.md",
+    "docs/criteria-coverage.md",
+    "docs/coverage.json",
+    "coverage-map.json",
+    "docs/cobertura.md"
+  ],
+  "testDirs": [
+    "tests",
+    "test",
+    "__tests__",
+    "spec"
+  ],
   "testFilePattern": "(\\.test\\.|\\.spec\\.|(^|/)test_[^/]*\\.py$|_test\\.(py|go)$)",
   "minTests": 5,
   "ratchetFileNames": "(ratchet|baseline|floor)",
   "lowerIsBetterKeys": "(max|ceiling|violation|error|duplicat|complex|size|lines|warn)",
-  "openMarkers": ["OPEN:", "ABIERTA:", "PREGUNTA ABIERTA:"],
-  "skipScripts": ["start", "dev", "serve", "watch", "install", "prepare", "preinstall", "postinstall", "prepublish", "build", "format", "docs"],
+  "openMarkers": [
+    "OPEN:",
+    "ABIERTA:",
+    "PREGUNTA ABIERTA:"
+  ],
+  "skipScripts": [
+    "start",
+    "dev",
+    "serve",
+    "watch",
+    "install",
+    "prepare",
+    "preinstall",
+    "postinstall",
+    "prepublish",
+    "build",
+    "format",
+    "docs"
+  ],
   "conventionalCommit": "^(feat|fix|docs|test|chore|refactor|ci|build|perf|style|revert)(\\([^)]+\\))?!?: \\S.{6,}$",
-  "genericSubjects": ["wip", "update", "updates", "fix", "fixes", "changes", "stuff", "misc", "tmp", "asdf", "commit"],
+  "genericSubjects": [
+    "wip",
+    "update",
+    "updates",
+    "fix",
+    "fixes",
+    "changes",
+    "stuff",
+    "misc",
+    "tmp",
+    "asdf",
+    "commit"
+  ],
   "minCommits": 4,
   "minConventionalShare": 0.95,
   "maxFilesPerCommit": 30,
   "maxAddedLinesPerCommit": 1500,
   "atomicExemptFirstN": 1,
   "atomicIgnoreFiles": "(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml|poetry\\.lock|Cargo\\.lock|go\\.sum|docs/spec\\.lock)$",
-  "requireEnforcementAtCommit": ["E05"],
-  "sourceDirs": ["src", "lib", "app"],
-  "sourceExtensions": ["js", "mjs", "cjs", "ts", "py", "go", "rs"],
-  "lock": { "file": "docs/spec.lock", "tagRegex": "^[ \\t]*(?:\\/\\/|#|\\*|--|<!--)[ \\t]*@gs[ \\t]+(\\S+)[ \\t]+([^\\s#]+)#([\\w-]+)", "hashLength": 16 },
-  "readme": { "headingHint": "(clean clone|getting started|quick ?start|install|build|setup|run|usage|ejecuci|instal|uso)", "mustContain": ["install", "test"] },
-  "networkErrorPatterns": ["ENOTFOUND", "ETIMEDOUT", "EAI_AGAIN", "ECONNRESET", "ECONNREFUSED", "network is unreachable", "Temporary failure in name resolution", "Could not resolve host", "getaddrinfo"]
+  "requireEnforcementAtCommit": [
+    "E05"
+  ],
+  "sourceDirs": [
+    "src",
+    "lib",
+    "app"
+  ],
+  "sourceExtensions": [
+    "js",
+    "mjs",
+    "cjs",
+    "ts",
+    "py",
+    "go",
+    "rs"
+  ],
+  "lock": {
+    "file": "docs/spec.lock",
+    "tagRegex": "^[ \\t]*(?:\\/\\/|#|\\*|--|<!--)[ \\t]*@gs[ \\t]+(\\S+)[ \\t]+([^\\s#]+)#([\\w-]+)",
+    "hashLength": 16
+  },
+  "readme": {
+    "headingHint": "(clean clone|getting started|quick ?start|install|build|setup|run|usage|test|testing|tests|development|ejecuci|instal|uso|prueba|desarrollo)",
+    "mustContain": [
+      "install",
+      "test"
+    ],
+    "installOnlyIfDependencies": true
+  },
+  "networkErrorPatterns": [
+    "ENOTFOUND",
+    "ETIMEDOUT",
+    "EAI_AGAIN",
+    "ECONNRESET",
+    "ECONNREFUSED",
+    "network is unreachable",
+    "Temporary failure in name resolution",
+    "Could not resolve host",
+    "getaddrinfo"
+  ],
+  "gateScriptAllow": "(gate|check|lint|test|verify|lock|open|ratchet|cover|spec|sensor|guard|audit|valid)",
+  "sourceExcludePattern": "(^|/)(.*\\.config\\.[cm]?[jt]s|setup\\.py|conftest\\.py|noxfile\\.py|eslint[^/]*|vitest[^/]*|jest[^/]*|babel[^/]*|webpack[^/]*|rollup[^/]*)$",
+  "conventionalLeniencyOne": true
 }

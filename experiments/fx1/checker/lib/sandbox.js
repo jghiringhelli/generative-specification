@@ -11,6 +11,9 @@ class Sandbox {
     this.dir = fs.mkdtempSync(path.join(os.tmpdir(), `fx1-${label}-`));
     this.root = path.join(this.dir, 'p');
     this.log = [];
+    this.msgSuffix = '';
+    this.pushCount = 0;
+    this.baselineBadScripts = null;
   }
   clone() {
     const r = git(this.dir, ['clone', '--no-hardlinks', '-q', this.repo, this.root]);
@@ -35,7 +38,7 @@ class Sandbox {
   }
   reset() {
     git(this.root, ['reset', '--hard', '-q', this.head]);
-    git(this.root, ['clean', '-fdq', '-e', 'node_modules', '-e', '.venv', '-e', 'package-lock.json']);
+    git(this.root, ['clean', '-fdxq', '-e', 'node_modules', '-e', '.venv', '-e', 'package-lock.json']);
   }
   apply(edits) {
     for (const e of edits) {
@@ -47,46 +50,57 @@ class Sandbox {
     }
   }
   // Try to commit the edits. blocked = exit code nonzero and HEAD unchanged.
-  attemptCommit(edits, message, { noVerify = false } = {}) {
+  attemptCommit(edits, message, { noVerify = false, raw = false } = {}) {
     this.reset(); this.apply(edits);
     const files = edits.map(e => e.path);
     git(this.root, ['add', '--', ...files]);
     const before = git(this.root, ['rev-parse', 'HEAD']).stdout.trim();
-    const args = ['commit', '-q', '-m', message]; if (noVerify) args.push('--no-verify');
+    const msg = (!raw && this.msgSuffix && !message.includes(this.msgSuffix.trim())) ? message + this.msgSuffix : message;
+    const args = ['commit', '-q', '-m', msg]; if (noVerify) args.push('--no-verify');
     const r = git(this.root, args, { timeout: this.cfg.timeouts.commitMs });
     const after = git(this.root, ['rev-parse', 'HEAD']).stdout.trim();
     const committed = after !== before;
-    return { blocked: r.code !== 0 && !committed, committed, code: r.code, out: r.out.slice(-1500) };
+    return { blocked: r.code !== 0 && !committed, committed, code: r.code, out: r.out.slice(-1500), network: this.isNetworkFailure(r.out) };
   }
+  // Push stage: commit without hooks, then push to a fresh branch of a local bare remote (a new name per probe: pushes are never non-fast-forward).
   attemptPush(edits, message) {
     const bare = path.join(this.dir, 'remote.git');
     if (!exists(bare)) { git(this.dir, ['init', '--bare', '-q', bare]); git(this.root, ['remote', 'add', 'fx1origin', bare]); }
     const c = this.attemptCommit(edits, message, { noVerify: true });
     if (!c.committed) return { blocked: null, note: 'could not create the probe commit', out: c.out };
-    const r = git(this.root, ['push', '-q', 'fx1origin', 'HEAD:refs/heads/fx1-probe'], { timeout: this.cfg.timeouts.commitMs });
-    return { blocked: r.code !== 0, code: r.code, out: r.out.slice(-1500) };
+    const name = `fx1-probe-${++this.pushCount}`;
+    const r = git(this.root, ['push', '-q', 'fx1origin', `HEAD:refs/heads/${name}`], { timeout: this.cfg.timeouts.commitMs });
+    return { blocked: r.code !== 0, code: r.code, out: r.out.slice(-1500), network: this.isNetworkFailure(r.out) };
   }
-  // Run discovered gate scripts (package.json scripts and Makefile targets) on the working tree; returns names that fail.
-  scriptFailures(timeoutMs) {
-    const fails = [];
+  // package.json scripts worth running as gates (allow-list), minus the ones that already fail on the clean head.
+  gateScriptNames() {
     const pkg = tryRead(path.join(this.root, 'package.json'));
-    if (pkg) {
-      let scripts = {}; try { scripts = JSON.parse(pkg).scripts || {}; } catch { /* ignore */ }
-      for (const name of Object.keys(scripts)) {
-        if (this.cfg.skipScripts.some(s => name === s || name.startsWith(s + ':'))) continue;
-        const r = sh(`npm run ${name} --silent`, { cwd: this.root, timeout: timeoutMs });
-        if (r.code !== 0 && !r.timedOut) fails.push('npm:' + name);
-      }
-    }
-    return fails;
+    if (!pkg) return [];
+    let scripts = {}; try { scripts = JSON.parse(pkg).scripts || {}; } catch { /* ignore */ }
+    const allow = new RegExp(this.cfg.gateScriptAllow, 'i');
+    return Object.keys(scripts).filter(n => allow.test(n) && !this.cfg.skipScripts.some(s => n === s || n.startsWith(s + ':')));
   }
-  // Full probe: commit attempt; if it was not blocked, also run the scripts on the same mutated tree.
-  probe(edits, message, { scripts = true } = {}) {
+  scriptFailures(timeoutMs) {
+    const names = this.gateScriptNames();
+    if (this.baselineBadScripts === null) { // scripts that fail on the clean head are not evidence of anything
+      this.reset();
+      this.baselineBadScripts = names.filter(n => { const r = sh(`npm run ${n} --silent`, { cwd: this.root, timeout: timeoutMs }); return r.code !== 0; });
+    }
+    return names.filter(n => !this.baselineBadScripts.includes(n));
+  }
+  // Full probe: commit attempt; if not blocked, a push attempt; if not blocked, the gate scripts on the same mutated tree.
+  probe(edits, message, { scripts = true, push = true } = {}) {
     const c = this.attemptCommit(edits, message);
     if (c.blocked) return { blockedAt: 'commit', commit: c, scripts: [] };
+    let pushed = null;
+    if (push) { pushed = this.attemptPush(edits, message); if (pushed.blocked === true) return { blockedAt: 'push', commit: c, push: pushed, scripts: [] }; }
     let fails = [];
-    if (scripts) { this.reset(); this.apply(edits); fails = this.scriptFailures(this.cfg.timeouts.gateMs); }
-    return { blockedAt: fails.length ? 'script' : null, commit: c, scripts: fails };
+    if (scripts) {
+      const cand = this.scriptFailures(this.cfg.timeouts.gateMs); // computes the baseline on a reset tree first
+      this.reset(); this.apply(edits);
+      fails = cand.filter(n => { const r = sh(`npm run ${n} --silent`, { cwd: this.root, timeout: this.cfg.timeouts.gateMs }); return r.code !== 0 && !r.timedOut; });
+    }
+    return { blockedAt: fails.length ? 'script' : null, commit: c, push: pushed, scripts: fails };
   }
   cleanup() { try { fs.rmSync(this.dir, { recursive: true, force: true, maxRetries: 3 }); } catch { /* best effort */ } }
 }

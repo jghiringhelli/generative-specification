@@ -7,21 +7,22 @@
 const fs = require('fs');
 const path = require('path');
 const { sha256, git, sh } = require('./lib/util');
-const { ORDER } = require('./lib/items');
+const { ORDER, prepare } = require('./lib/items');
 
 function parseArgs(argv) {
-  const a = { only: null, keep: false };
+  const a = { only: null, keep: false, since: null };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--repo') a.repo = argv[++i];
     else if (argv[i] === '--config') a.config = argv[++i];
     else if (argv[i] === '--out') a.out = argv[++i];
     else if (argv[i] === '--only') a.only = argv[++i].split(',');
     else if (argv[i] === '--keep') a.keep = true;
+    else if (argv[i] === '--since') a.since = argv[++i];
   }
   return a;
 }
 
-function run(repo, { configPath, only = null, keep = false } = {}) {
+function run(repo, { configPath, only = null, keep = false, since = null } = {}) {
   const cfgFile = configPath || path.join(__dirname, 'config.default.json');
   const cfgText = fs.readFileSync(cfgFile, 'utf8'); const cfg = JSON.parse(cfgText);
   const absRepo = path.resolve(repo);
@@ -40,7 +41,8 @@ function run(repo, { configPath, only = null, keep = false } = {}) {
   const { Sandbox } = require('./lib/sandbox');
   const staticBox = new Sandbox(absRepo, cfg, 'static'); const c = staticBox.clone();
   if (!c.ok) { report.fatal = 'clone failed'; return finish(report); }
-  const ctx = { repo: absRepo, root: staticBox.root, cfg, shared: {}, sandboxes: [staticBox], found: null, probe: null };
+  const ctx = { repo: absRepo, root: staticBox.root, cfg, shared: {}, sandboxes: [staticBox], found: null, probe: null, since };
+  prepare(ctx);
   for (const [id, fn] of ORDER) {
     if (only && !only.includes(id)) continue;
     const t0 = Date.now();
@@ -62,8 +64,8 @@ module.exports = { run };
 
 if (require.main === module) {
   const a = parseArgs(process.argv.slice(2));
-  if (!a.repo) { console.error('usage: node checker.js --repo <path> [--config <file>] [--out <report.json>] [--only E01,E05] [--keep]'); process.exit(2); }
-  const report = run(a.repo, { configPath: a.config, only: a.only, keep: a.keep });
+  if (!a.repo) { console.error('usage: node checker.js --repo <path> [--config <file>] [--out <report.json>] [--only E01,E05] [--since <rev>] [--keep]'); process.exit(2); }
+  const report = run(a.repo, { configPath: a.config, only: a.only, keep: a.keep, since: a.since });
   if (a.out) fs.writeFileSync(a.out, JSON.stringify(report, null, 2));
   for (const i of report.items) console.log(`${i.id} ${i.status.padEnd(14)} ${i.name || ''}${i.reasons && i.reasons.length ? '\n      - ' + i.reasons.slice(0, 3).join('\n      - ') : ''}`);
   console.log(`\nsummary: ${JSON.stringify(report.summary)}`);

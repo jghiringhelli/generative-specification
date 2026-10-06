@@ -110,23 +110,26 @@ function leadingId(line, idTokenSource) {
 }
 
 // Path-like references in prose: markdown links and inline code outside fences.
+// Returns [{ref, soft}]. A "soft" reference (an inline token with a file extension but no directory part, such as pantry.json)
+// is a route if it resolves, but is never reported as dangling: it may name a file the program creates at run time.
 function refsIn(text, cfg) {
-  const t = stripFences(text); const refs = new Set();
+  const t = stripFences(text); const refs = new Map();
   const exts = new Set(cfg.refExtensions);
   const ignore = cfg.ignoreRefPatterns.map(r => new RegExp(r));
-  const add = raw => {
+  const add = (raw, fromLink) => {
     let r = raw.trim().replace(/^\.\//, '').replace(/[#?].*$/, '').replace(/[.,;:)]+$/, '');
     if (!r || ignore.some(re => re.test(r))) return;
-    if (/[\s*<>{}$|\\^~=]/.test(r) || r.startsWith('-') || r.startsWith('@') || r.startsWith('/')) return;
+    if (/[\s*<>{}$|\\^~=:]/.test(r) || r.startsWith('-') || r.startsWith('@') || r.startsWith('/')) return; // ':' also drops resource URIs and route templates
     const ext = (r.match(/\.([A-Za-z0-9]+)$/) || [])[1];
-    const looksPath = r.includes('/') || (ext && exts.has(ext.toLowerCase()));
-    if (!looksPath) return;
-    if (r.includes('/') && !ext && !r.endsWith('/') && /^[a-z0-9_.-]+\/[a-z0-9_.-]+$/i.test(r) && !/^(docs|src|tests?|scripts|lib|app|\.github|\.githooks|\.husky|\.claude|\.cursor)\//i.test(r)) return; // "and/or", "input/output" prose
-    refs.add(r);
+    const knownExt = !!(ext && exts.has(ext.toLowerCase()));
+    const knownDir = /^(docs|doc|src|tests?|scripts|lib|app|adr|decisions|\.github|\.githooks|\.husky|\.claude|\.cursor)(\/|$)/i.test(r);
+    if (!knownExt && !knownDir) return; // prose such as "and/or", unit lists, API paths, runtime data without a known extension
+    const soft = !fromLink && !knownDir && !r.includes('/');
+    if (!refs.has(r) || (refs.get(r) && !soft)) refs.set(r, soft);
   };
-  for (const m of t.matchAll(/\]\(([^)\s]+)\)/g)) add(m[1]);
-  for (const m of t.matchAll(/`([^`\n]+)`/g)) add(m[1]);
-  return [...refs];
+  for (const m of t.matchAll(/\]\(([^)\s]+)\)/g)) add(m[1], true);
+  for (const m of t.matchAll(/`([^`\n]+)`/g)) add(m[1], false);
+  return [...refs].map(([ref, soft]) => ({ ref, soft }));
 }
 function resolveRef(root, fromFile, ref) {
   const cands = [path.join(root, path.dirname(fromFile), ref), path.join(root, ref)];
