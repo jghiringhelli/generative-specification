@@ -2,7 +2,7 @@
 
 We receive tide-gauge readings as messy CSV files from several harbour stations. I want a pipeline that cleans them and produces daily summaries I can query.
 
-**Stack.** Python 3.11, standard library only (SQLite through `sqlite3`; pytest for tests).
+**Stack.** Python 3.11, standard library only (SQLite through `sqlite3`; pytest for tests). Only runtime dependencies are fixed: development tools (test runners, linters, git hooks) are unrestricted.
 
 **Input.** A folder of CSV files with the columns `station`, `timestamp`, `height`, `unit`. Timestamps are ISO 8601, with or without a UTC offset (without means the station's local time, given in a small `stations.csv`: station, utc_offset_hours). Units are `m` or `ft`.
 

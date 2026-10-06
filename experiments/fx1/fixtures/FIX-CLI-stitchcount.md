@@ -2,7 +2,7 @@
 
 I knit from written patterns and keep losing track of how many stitches a row leaves me with. I want a command-line tool that expands a row and counts stitches.
 
-**Stack.** Python 3.11, standard library only (pytest for tests).
+**Stack.** Python 3.11, standard library only (pytest for tests). Only runtime dependencies are fixed: development tools (test runners, linters, git hooks) are unrestricted.
 
 **Row notation.** Tokens separated by commas: `k3` knit three, `p2` purl two, `yo` yarn over, `k2tog` knit two together, `ssk` slip-slip-knit. A group in parentheses followed by `x` and a number repeats: `(k2, p2) x3`. A bare `k` or `p` means one stitch.
 

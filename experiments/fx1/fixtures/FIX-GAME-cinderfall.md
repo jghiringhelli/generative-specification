@@ -2,7 +2,7 @@
 
 A two-player card duel. I want only the rules engine as a library, no screen: the same engine will later sit behind a website and a bot.
 
-**Stack.** Node 24, no runtime packages.
+**Stack.** Node 24, no runtime packages. Only runtime dependencies are fixed: development tools (test runners, linters, git hooks) are unrestricted.
 
 **Rules.**
 

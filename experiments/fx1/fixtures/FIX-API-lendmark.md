@@ -2,7 +2,7 @@
 
 A neighbourhood library lends tools to members. I want a small JSON API over HTTP that runs the lending desk.
 
-**Stack.** Node 24, no web framework. Persistence in memory or with the built-in `node:sqlite`.
+**Stack.** Node 24, no web framework. Persistence in memory or with the built-in `node:sqlite`. Only runtime dependencies are fixed: development tools (test runners, linters, git hooks) are unrestricted.
 
 **What it must do.**
 

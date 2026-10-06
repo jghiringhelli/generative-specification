@@ -2,7 +2,7 @@
 
 I want my assistant to keep track of my pantry. Build an MCP server over stdio that exposes pantry tools and one resource.
 
-**Stack.** Node 24. The official MCP SDK package is the only allowed runtime dependency. The pantry is stored in a JSON file whose path comes from the `PANTRY_FILE` environment variable.
+**Stack.** Node 24. The official MCP SDK package is the only allowed runtime dependency. The pantry is stored in a JSON file whose path comes from the `PANTRY_FILE` environment variable. Only runtime dependencies are fixed: development tools (test runners, linters, git hooks) are unrestricted.
 
 **What it must do.**
 
