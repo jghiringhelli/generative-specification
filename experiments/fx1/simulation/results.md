@@ -14,6 +14,7 @@ Per-element target theta = 0.9; project-level target = 0.8. MEETS = lower 95% Wi
 | 100 | 0.192 | 0.155 | 0.119 | 0.09 | 0.065 |
 | 150 | 0.158 | 0.127 | 0.097 | 0.07 | 0.05 |
 | 200 | 0.137 | 0.11 | 0.084 | 0.062 | 0.042 |
+| 210 | 0.134 | 0.108 | 0.082 | 0.059 | 0.041 |
 | 250 | 0.123 | 0.099 | 0.075 | 0.054 | 0.037 |
 | 300 | 0.112 | 0.09 | 0.068 | 0.05 | 0.034 |
 | 400 | 0.098 | 0.078 | 0.059 | 0.043 | 0.029 |
@@ -240,3 +241,43 @@ Per-element target theta = 0.9; project-level target = 0.8. MEETS = lower 95% Wi
 | optimistic | 0.97 | strong | 16 | 240 | 0.886 | 0 | 0.114 | 0.044 |
 | optimistic | 0.97 | strong | 20 | 300 | 0.915 | 0 | 0.085 | 0.039 |
 | optimistic | 0.97 | strong | 24 | 360 | 0.923 | 0 | 0.077 | 0.035 |
+
+## Joint simulation of the headline claim CONJ (n = 210 per stream; every element at rate p; all twelve intervals >= 0.90 and the all-twelve rate bound >= 0.80)
+
+| correlation model | p | P(all 12 elements MEET) | P(all-12 rate bound >= 0.80) | P(CONJ) |
+|---|---|---|---|---|
+| independent | 0.95 | 0.038 | 0 | 0 |
+| independent | 0.97 | 0.882 | 0 | 0 |
+| independent | 0.98 | 0.997 | 0.003 | 0.003 |
+| independent | 0.99 | 1 | 0.917 | 0.917 |
+| independent | 0.995 | 1 | 1 | 1 |
+| quality | 0.95 | 0.037 | 0 | 0 |
+| quality | 0.97 | 0.84 | 0 | 0 |
+| quality | 0.98 | 0.993 | 0.055 | 0.055 |
+| quality | 0.99 | 1 | 0.98 | 0.98 |
+| quality | 0.995 | 1 | 1 | 1 |
+| allornothing | 0.95 | 0.742 | 1 | 0.742 |
+| allornothing | 0.97 | 0.985 | 1 | 0.985 |
+| allornothing | 0.98 | 1 | 1 | 1 |
+| allornothing | 0.99 | 1 | 1 | 1 |
+| allornothing | 0.995 | 1 | 1 | 1 |
+
+## Probability that one element clears the 0.80 rung (n = 210)
+
+| true p | P(lower bound >= 0.80) |
+|---|---|
+| 0.8 | 0.021 |
+| 0.85 | 0.432 |
+| 0.9 | 0.982 |
+| 0.93 | 1 |
+| 0.95 | 1 |
+| 0.97 | 1 |
+
+## Audit adjustment as a sensitivity analysis: audited PASS judgments, and what the adjustment costs
+
+| audited PASS judgments (zero false-PASS found) | upper limit of the false-PASS rate | PASS count needed out of 210 for an adjusted bound >= 0.90 |
+|---|---|---|
+| 50 | 0.071 | unreachable |
+| 100 | 0.036 | 205 |
+| 150 | 0.024 | 203 |
+| 200 | 0.018 | 202 |

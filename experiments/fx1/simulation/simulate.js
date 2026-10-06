@@ -63,7 +63,7 @@ const quick = process.argv.includes('--quick');
 const out = { generated_by: 'simulate.js', theta: THETA, theta_all: THETA_ALL, z: Z, quick };
 
 // 1. Wilson widths
-const nGrid = [10, 20, 30, 50, 75, 100, 150, 200, 250, 300, 400, 600];
+const nGrid = [10, 20, 30, 50, 75, 100, 150, 200, 210, 250, 300, 400, 600];
 const phats = [0.5, 0.8, 0.9, 0.95, 0.98];
 out.widths = nGrid.map(n => {
   const row = { n };
@@ -85,6 +85,36 @@ function rungs(n, p) {
 }
 out.rungs = []; out.conj = [];
 for (const n of [150, 180, 210, 240, 300]) for (const p of pGrid) { out.rungs.push({ n, p, ...r3(rungs(n, p)) }); const m = rungs(n, p).lb_ge_090; out.conj.push({ n, p, per_element: +m.toFixed(3), all12_independent: +Math.pow(m, 12).toFixed(3), all12_perfectly_correlated: +m.toFixed(3) }); }
+
+// 2c. Joint simulation of the headline claim CONJ-s: twelve elements per run, all twelve intervals >= 0.90 AND the all-twelve rate >= 0.80.
+// Correlation models: independent; "run quality" (each run draws q ~ Beta around p, elements independent given q); all-or-nothing (a run is clean or not).
+function conjSim(n, p, model, reps, rnd) {
+  let ok = 0, allEl = 0, allRate = 0;
+  for (let r = 0; r < reps; r++) {
+    const cnt = new Array(12).fill(0); let full = 0;
+    for (let i = 0; i < n; i++) {
+      let all = true;
+      if (model === 'allornothing') { const clean = rnd() < p; for (let e = 0; e < 12; e++) { if (clean) cnt[e]++; } all = clean; }
+      else {
+        const q = model === 'quality' ? Math.min(0.9999, Math.max(0.5, betaSample(p * 40, (1 - p) * 40, rnd))) : p;
+        for (let e = 0; e < 12; e++) { if (rnd() < q) cnt[e]++; else all = false; }
+      }
+      if (all) full++;
+    }
+    const el = cnt.every(k => wilson(k, n)[0] >= 0.9), al = wilson(full, n)[0] >= 0.8;
+    if (el) allEl++; if (al) allRate++; if (el && al) ok++;
+  }
+  return { p_all12_elements_meet: +(allEl / reps).toFixed(3), p_all12_rate_ge_080: +(allRate / reps).toFixed(3), p_conj: +(ok / reps).toFixed(3) };
+}
+out.conj_joint = [];
+{
+  const rnd = mulberry32(777); const REPS2 = quick ? 150 : 600;
+  for (const model of ['independent', 'quality', 'allornothing']) for (const p of [0.95, 0.97, 0.98, 0.99, 0.995]) out.conj_joint.push({ n: 210, model, p, ...conjSim(210, p, model, REPS2, rnd) });
+}
+out.clear080 = [0.8, 0.85, 0.9, 0.93, 0.95, 0.97].map(p => { let m = 0; for (let k = 0; k <= 210; k++) if (wilson(k, 210)[0] >= 0.8) m += binomPmf(k, 210, p); return { n: 210, p, p_lb_ge_080: +m.toFixed(3) }; });
+// Audit adjustment (a sensitivity analysis, not a conjunct of the rung): conservative bound after subtracting the Clopper-Pearson upper limit of the false-PASS rate.
+function cpUpper(k, n, alpha = 0.05) { let lo = 0, hi = 1; for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; let c = 0; for (let j = 0; j <= k; j++) c += binomPmf(j, n, mid); if (c > alpha / 2) lo = mid; else hi = mid; } return (lo + hi) / 2; }
+out.audit = [50, 100, 150, 200].map(na => ({ audited_pass_judgments: na, false_pass_upper_limit_if_zero_errors: +cpUpper(0, na).toFixed(3), observed_passes_needed_at_n210_for_adjusted_bound_090: (() => { for (let k = 0; k <= 210; k++) { const adj = Math.round(k * (1 - cpUpper(0, na))); if (wilson(adj, 210)[0] >= 0.9) return k; } return null; })() }));
 
 // 3. Project-level all-items rate vs THETA_ALL, exact
 const qGrid = [0.50, 0.65, 0.75, 0.85, 0.90, 0.95];
@@ -139,5 +169,11 @@ md += '\n## Exact classification of the all-items rate (target 0.80; last column
 for (const r of out.exact_all) md += `| ${r.n} | ${r.q} | ${r.vs80.meets} | ${r.vs80.fails} | ${r.vs80.indec} | ${r.vs90.meets} |\n`;
 md += `\n## Heterogeneity across 15 cells (5 fixtures x 3 vendors); decision requires pooled Wilson AND cell-bootstrap lower bounds >= 0.90 (${REPS} reps, ${B} bootstrap draws)\n\n| scenario | mu | heterogeneity | runs/cell | n | P(MEETS both) | P(FAILS) | P(INDECISIVE) | mean Wilson width |\n|---|---|---|---|---|---|---|---|---|\n`;
 for (const r of out.hetero) md += `| ${r.scenario} | ${r.mu} | ${r.heterogeneity} | ${r.runs_per_cell} | ${r.n_pooled} | ${r.p_meets_both} | ${r.p_fails} | ${r.p_indecisive_both} | ${r.mean_wilson_width} |\n`;
+md += '\n## Joint simulation of the headline claim CONJ (n = 210 per stream; every element at rate p; all twelve intervals >= 0.90 and the all-twelve rate bound >= 0.80)\n\n| correlation model | p | P(all 12 elements MEET) | P(all-12 rate bound >= 0.80) | P(CONJ) |\n|---|---|---|---|---|\n';
+for (const r of out.conj_joint) md += `| ${r.model} | ${r.p} | ${r.p_all12_elements_meet} | ${r.p_all12_rate_ge_080} | ${r.p_conj} |\n`;
+md += '\n## Probability that one element clears the 0.80 rung (n = 210)\n\n| true p | P(lower bound >= 0.80) |\n|---|---|\n';
+for (const r of out.clear080) md += `| ${r.p} | ${r.p_lb_ge_080} |\n`;
+md += '\n## Audit adjustment as a sensitivity analysis: audited PASS judgments, and what the adjustment costs\n\n| audited PASS judgments (zero false-PASS found) | upper limit of the false-PASS rate | PASS count needed out of 210 for an adjusted bound >= 0.90 |\n|---|---|---|\n';
+for (const r of out.audit) md += `| ${r.audited_pass_judgments} | ${r.false_pass_upper_limit_if_zero_errors} | ${r.observed_passes_needed_at_n210_for_adjusted_bound_090 === null ? 'unreachable' : r.observed_passes_needed_at_n210_for_adjusted_bound_090} |\n`;
 fs.writeFileSync(path.join(__dirname, 'results.md'), md);
 console.log('written results.json and results.md');
