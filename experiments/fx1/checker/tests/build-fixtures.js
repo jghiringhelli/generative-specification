@@ -61,6 +61,8 @@ function buildVariant(variant) {
   if (variant.mutate) {
     variant.mutate(dir, h);
     git(dir, ['add', '-A']);
+    // (dev loop 2026-10-06) every tracked hook is committed executable, as a Linux author would: the checker now reads the committed mode (defect C8)
+    for (const f of git(dir, ['ls-files', '.githooks']).stdout.split('\n').filter(Boolean)) git(dir, ['update-index', '--chmod=+x', f]);
     const r = git(dir, ['commit', '-q', '-m', `chore: control variant ${variant.id}`]);
     if (r.code !== 0 && !/nothing to commit/.test(r.out)) throw new Error('variant commit failed: ' + r.out);
   }
