@@ -67,7 +67,7 @@ Write the instruction file named above, small enough to read whole (for example 
 PHASE 6 - Gates, measured first.
 Measure what is true today (test count and result, coverage, lint and type errors, anything the stack reports). Write the numbers to docs/baseline.json, shaped {"floors": {name: number}, "ceilings": {name: number}}: floors for what should not fall (tests, coverage), ceilings for error counts. They never get worse. Then, with the standard tools of this stack:
 - One command that runs every check; the README names it.
-- A commit-msg hook that rejects messages that are not Conventional Commits, stored in the repository (for example .githooks/) and installed by a setup step that runs on a fresh clone.
+- A commit-msg hook that rejects messages that are not Conventional Commits, stored in the repository (for example .githooks/), committed as executable (`git update-index --chmod=+x`, since git skips a hook that is not), and installed by a setup step that runs on a fresh clone.
 - A pre-push hook, stored and installed the same way, that runs the one command, so a push with a failing blocking check is refused here and not only in CI. Commits stay free.
 - A CI workflow that runs the same command on every push and pull request, on the repository's real default branch.
 - A check that fails while any "OPEN:" line exists in the spec files that are being implemented.
@@ -131,7 +131,7 @@ Escribe el archivo de instrucciones indicado arriba, lo bastante pequeño para l
 FASE 6 - Gates, primero medir.
 Mide lo que es verdad hoy (cantidad de tests y resultado, cobertura, errores de lint y de tipos, lo que reporte el stack). Escribe los números en docs/baseline.json, con la forma {"floors": {nombre: número}, "ceilings": {nombre: número}}: pisos para lo que no debe bajar (tests, cobertura), techos para los conteos de errores. Nunca empeoran. Luego, con las herramientas estándar de este stack:
 - Un comando que corra todas las verificaciones; el README lo nombra.
-- Un hook commit-msg que rechace los mensajes que no sigan Conventional Commits, guardado en el repositorio (por ejemplo .githooks/) e instalado con un paso de preparación que corra en un clon nuevo.
+- Un hook commit-msg que rechace los mensajes que no sigan Conventional Commits, guardado en el repositorio (por ejemplo .githooks/), commiteado como ejecutable (`git update-index --chmod=+x`, porque git ignora un hook que no lo es), e instalado con un paso de preparación que corra en un clon nuevo.
 - Un hook pre-push, guardado e instalado de la misma manera, que corra el comando único, para que un push con una verificación bloqueante en rojo se rechace aquí y no solo en CI. Los commits quedan libres.
 - Un workflow de CI que corra el mismo comando en cada push y pull request, sobre la rama principal real del repositorio.
 - Una verificación que falle mientras exista alguna línea "OPEN:" en los archivos de spec que se están implementando.
