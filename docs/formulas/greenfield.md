@@ -62,6 +62,7 @@ Write the instruction file named above, small enough to read whole (for example 
 PHASE 4 - Gates. Use the standard tools of this stack.
 - Tests, and one command that runs every check: [name it in the README].
 - A commit-msg hook that rejects messages that are not Conventional Commits. Store it in the repository (for example .githooks/) and install it from a setup step that runs on a fresh clone (for example a prepare script or `make setup`).
+- A pre-push hook, stored and installed the same way, that runs the one command, so a push with a failing check is refused here and not only in CI. Commits stay free, so a red test can be committed first.
 - A CI workflow that runs the same command on every push and pull request, on the repository's real default branch.
 - A check that fails while any "OPEN:" line exists under docs/spec/.
 - docs/baseline.json with measured floors (for example test count, coverage), shaped {"floors": {name: number}, "ceilings": {name: number}}, and a check that fails if a current value is below a floor or above a ceiling. Floors only go up, ceilings only go down.
@@ -122,6 +123,7 @@ Escribe el archivo de instrucciones indicado arriba, lo bastante pequeño para l
 FASE 4 - Gates. Usa las herramientas estándar de este stack.
 - Pruebas, y un solo comando que corra todas las verificaciones: [ponle nombre en el README].
 - Un hook commit-msg que rechace los mensajes que no sigan Conventional Commits. Guárdalo en el repositorio (por ejemplo .githooks/) e instálalo con un paso de preparación que corra en un clon nuevo (por ejemplo un script prepare o `make setup`).
+- Un hook pre-push, guardado e instalado de la misma manera, que corra el comando único, para que un push con una verificación en rojo se rechace aquí y no solo en CI. Los commits quedan libres, así que un test en rojo se puede commitear primero.
 - Un workflow de CI que corra el mismo comando en cada push y pull request, sobre la rama principal real del repositorio.
 - Una verificación que falle mientras exista alguna línea "OPEN:" bajo docs/spec/.
 - docs/baseline.json con pisos medidos (por ejemplo cantidad de tests, cobertura), con la forma {"floors": {nombre: número}, "ceilings": {nombre: número}}, y una verificación que falle si un valor actual queda bajo un piso o sobre un techo. Los pisos solo suben, los techos solo bajan.
