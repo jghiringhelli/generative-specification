@@ -51,7 +51,7 @@ For each criterion on the main paths, write a test that cites its id (name or co
 
 PHASE 4 - Decisions and derived documents.
 - docs/decisions/0001-existing-architecture.md: descriptive with the headings Status, Date, Context, Decision (the architecture as it is), Consequences (what it makes easy and hard). Never prescriptive.
-- docs/architecture.md, docs/data-model.md (skip if nothing is stored), docs/conventions.md, derived from the code. Start each with "Derived from:" and the spec path and ids that exist in the spec. Mark unclear parts OPEN:.
+- docs/architecture.md, docs/data-model.md, docs/conventions.md, derived from the code; docs/fixes.md (an empty numbered list for gaps no criterion covers) and docs/deferred.md. If nothing is stored, skip data-model.md and say "no stored data" in docs/architecture.md. Start each derived document with "Derived from:" and the spec path and ids that exist in the spec. Mark unclear parts OPEN:.
 
 PHASE 5 - Sentinel.
 Write the instruction file named above, small enough to read whole (for example under 150 lines), with five parts: (1) what the system is, and what it must never do; (2) standards that apply today; (3) constraints, each with its reason; (4) tool sequence: a table "gate | command | runs at | red proof", filled in phase 6; (5) routing: a table "topic | file" covering every file from phases 2-4, and the code layout as it is. Name only paths that exist. Finish with this block, unchanged:
@@ -115,7 +115,7 @@ Para cada criterio de los caminos principales, escribe un test que cite su id (e
 
 FASE 4 - Decisiones y documentos derivados.
 - docs/decisions/0001-existing-architecture.md: descriptivo con los encabezados Status, Date, Context, Decision (la arquitectura tal como es), Consequences (lo que facilita y lo que dificulta). Nunca prescriptivo.
-- docs/architecture.md, docs/data-model.md (omítelo si no se guarda nada), docs/conventions.md, derivados del código. Empieza cada uno con "Derived from:" y la ruta y los ids que existan en la spec. Marca OPEN: lo que no esté claro.
+- docs/architecture.md, docs/data-model.md, docs/conventions.md, derivados del código; docs/fixes.md (una lista numerada vacía para huecos que ningún criterio cubre) y docs/deferred.md. Si no se guarda nada, omite data-model.md y escribe "no stored data" en docs/architecture.md. Empieza cada documento derivado con "Derived from:" y la ruta y los ids que existan en la spec. Marca OPEN: lo que no esté claro.
 
 FASE 5 - Centinela.
 Escribe el archivo de instrucciones indicado arriba, lo bastante pequeño para leerse completo (por ejemplo menos de 150 líneas), con cinco partes: (1) qué es el sistema y qué nunca debe hacer; (2) estándares que rigen hoy; (3) restricciones, cada una con su razón; (4) secuencia de herramientas: una tabla "gate | command | runs at | red proof", que llenarás en la fase 6; (5) ruteo: una tabla "topic | file" que cubra todos los archivos de las fases 2-4, y la estructura del código tal como es. Nombra solo rutas que existan. Termina con este bloque, sin cambios:
