@@ -1,0 +1,2 @@
+# Control projects must keep LF line endings on every platform (hooks start with "#!/bin/sh" and break with CRLF).
+* text eol=lf
