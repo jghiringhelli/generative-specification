@@ -35,6 +35,10 @@ class Sandbox {
     const names = files.filter(f => ['pre-commit', 'commit-msg', 'pre-push', 'prepare-commit-msg'].includes(f));
     let execOk = null;
     if (process.platform !== 'win32') execOk = names.every(f => (fs.statSync(path.join(dir, f)).mode & 0o111) !== 0);
+    // (dev loop 2026-10-06, defect C8) A hook committed as 100644 is skipped by git on Linux ("hook was ignored because it's not set as executable") and
+    // every gate behind it is silently inert. On Windows the file mode is not observable, so also judge the committed mode, on every platform.
+    const tracked = names.map(f => ({ f, mode: git(this.root, ['ls-files', '-s', '--', posix(path.join(path.relative(this.root, dir), f))]).stdout.trim().split(/\s+/)[0] })).filter(t => /^\d{6}$/.test(t.mode));
+    if (tracked.length) { const modeOk = tracked.every(t => t.mode === '100755'); execOk = execOk === null ? modeOk : (execOk && modeOk); }
     return { hooksPath: hp || null, dir: posix(path.relative(this.root, dir)), hooks: names, execBitOk: execOk };
   }
   reset() {
