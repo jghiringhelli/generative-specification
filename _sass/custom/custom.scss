@@ -219,3 +219,11 @@ hr { background: $sc-line; border: 0; height: 1px; }
 .course-slot-text { margin: 0 0 0.9rem; font-size: 0.95rem; color: $sc-ink; }
 .course-slot-actions { margin: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .course-slot-actions .btn { margin: 0; }
+
+/* Formulas: English and neutral Spanish prompts side by side, stacked on narrow screens */
+.prompt-pair { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0 1.5rem; }
+@media (min-width: 66rem) { .prompt-pair { grid-template-columns: 1fr 1fr; } }
+.prompt-pair > div { min-width: 0; }
+.prompt-pair > div > p:first-child { margin: 0 0 0.35rem; font-family: $sc-cond; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: $sc-amber; }
+.prompt-pair div.highlighter-rouge, .prompt-pair figure.highlight { margin: 0; }
+.prompt-pair pre, .prompt-pair pre code { white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; }
