@@ -37,9 +37,9 @@ Without the reference tool (an ad hoc lock) E10 falls back to the behavioral dri
 
 ```
 node --test tools/gs-check/test/unit.test.mjs                 # 10 helper tests, seconds
-node --test tools/gs-check/test/controls.test.mjs             # the controls, about 30 minutes
+node --test tools/gs-check/test/controls.test.mjs             # the controls (53 tests): about 20 minutes on Windows, 4 minutes in the Linux container
 FX1_ONLY=G1,GS1 node --test tools/gs-check/test/controls.test.mjs
-node --test tools/gs-check/test/smoke-cli.test.mjs            # the verify formula's command on known-good and broken projects
+node --test tools/gs-check/test/smoke-cli.test.mjs            # the verify formula command on 3 known-good and 8 broken projects (11 tests)
 ```
 
 The controls build a hand-made project from `test/fixtures/` (node `good`, python `good-py`, and `good-gs`, which is `good` wired to the reference lock tool, copied from `tools/gs-lock/` and never stored twice) and variants with one element removed or broken, and compare every item with its declared expectation. A variant with a `strict` key is checked a second time in strict mode. `test/Dockerfile` builds the Linux image used to run them (Node 22, python3 with pytest, git, bash).
