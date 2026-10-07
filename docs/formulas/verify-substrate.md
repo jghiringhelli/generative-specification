@@ -30,11 +30,12 @@ Verify this project's substrate with the checker I give you. The only evidence i
 Checker: [path of gs-check.mjs]
 Project: [absolute path of the project folder]
 Report file (outside the project): [absolute path, for example a temporary folder]
+Extra switch: [--migration if this project was migrated with formula 12 (it has docs/migration/equivalence.json), otherwise nothing]
 
 1. Run, from outside the project folder, exactly this command and paste its full output and its exit code:
-   node [checker] --repo [project] --strict --verbose --out [report file]
+   node [checker] --repo [project] --strict --verbose [extra switch] --out [report file]
    It clones the committed state and does not modify the project. Run it a second time and say whether every item has the same status as the first time. Do not edit the checker, its configuration or the project to change a result. If a command fails to start, paste the error and stop.
-2. Report one block per item, E01 to E12, in order. Each block: the item name; its status exactly as printed (PASS = present and working, PARTIAL = present but not fully working, ABSENT = not present, UNDETERMINABLE = the checker could not decide); and the lines the checker printed for that item, pasted verbatim in a code block. Add nothing to a block.
+2. Report one block per item, E01 to E12, in order, and with --migration also M01 to M09 after them. Each block: the item name; its status exactly as printed (PASS = present and working, PARTIAL = present but not fully working, ABSENT = not present, UNDETERMINABLE = the checker could not decide); and the lines the checker printed for that item, pasted verbatim in a code block. Add nothing to a block.
 3. Then the checker's summary line and the exit code, verbatim, and the sha256 of the report file.
 4. Do not fix anything and do not propose fixes unless I ask. If the exit code is not 0, write "not all PASS", and nothing more.
 5. Finish with a section "Not checked by a program, for a person", with these lines, each marked "not checked": that the sentinel routes a cold session to the right slice; that the spec is right and complete and that a person ratified it; that tests are good tests; that decision records carry the real reason and commits are atomic and say why; that the derived documents are true of the code; that CI ran green on the server, that branch protection and required review exist, and what stops `git commit --no-verify`; who may edit the gate files and the baseline; that a tag in the lock does not lie by omission and that `ratify` was run by a person.
@@ -51,13 +52,14 @@ Verifica el substrato de este proyecto con el verificador que te doy. La única 
 Verificador: [ruta de gs-check.mjs]
 Proyecto: [ruta absoluta de la carpeta del proyecto]
 Archivo de informe (fuera del proyecto): [ruta absoluta, por ejemplo en una carpeta temporal]
+Switch adicional: [--migration si este proyecto se migró con la fórmula 12 (tiene docs/migration/equivalence.json), si no, nada]
 
 Deja en inglés las palabras que imprime el verificador: PASS, PARTIAL, ABSENT, UNDETERMINABLE, not all PASS.
 
 1. Corre, desde fuera de la carpeta del proyecto, exactamente este comando y pega su salida completa y su código de salida:
-   node [verificador] --repo [proyecto] --strict --verbose --out [archivo de informe]
+   node [verificador] --repo [proyecto] --strict --verbose [switch adicional] --out [archivo de informe]
    Clona el estado commiteado y no modifica el proyecto. Córrelo una segunda vez y di si cada ítem tiene el mismo estado que la primera. No edites el verificador, su configuración ni el proyecto para cambiar un resultado. Si un comando no arranca, pega el error y detente.
-2. Informa un bloque por ítem, E01 a E12, en orden. Cada bloque: el nombre del ítem; su estado exactamente como se imprimió (PASS = presente y funcionando, PARTIAL = presente pero no del todo funcional, ABSENT = no presente, UNDETERMINABLE = el verificador no pudo decidir); y las líneas que el verificador imprimió para ese ítem, pegadas tal cual en un bloque de código. No agregues nada a un bloque.
+2. Informa un bloque por ítem, E01 a E12, en orden, y con --migration también M01 a M09 después. Cada bloque: el nombre del ítem; su estado exactamente como se imprimió (PASS = presente y funcionando, PARTIAL = presente pero no del todo funcional, ABSENT = no presente, UNDETERMINABLE = el verificador no pudo decidir); y las líneas que el verificador imprimió para ese ítem, pegadas tal cual en un bloque de código. No agregues nada a un bloque.
 3. Luego la línea de resumen del verificador y el código de salida, tal cual, y el sha256 del archivo de informe.
 4. No arregles nada ni propongas arreglos salvo que yo lo pida. Si el código de salida no es 0, escribe "not all PASS", y nada más.
 5. Termina con una sección "No verificado por un programa, para una persona", con estas líneas, cada una marcada "no verificado": que el centinela lleva a una sesión en frío a la porción correcta; que la spec es correcta y completa y que una persona la ratificó; que los tests son buenos tests; que los registros de decisión llevan la razón real y que los commits son atómicos y dicen por qué; que los documentos derivados son ciertos respecto del código; que el CI corrió en verde en el servidor, que existen protección de rama y revisión obligatoria, y qué detiene `git commit --no-verify`; quién puede editar los archivos de gates y el baseline; que una etiqueta del lock no miente por omisión y que `ratify` lo corrió una persona.
