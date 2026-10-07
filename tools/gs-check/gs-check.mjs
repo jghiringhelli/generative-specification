@@ -28,7 +28,7 @@ function __require(spec) {
 }
 const DEFAULT_CONFIG = {
   "_comment": "FX-1 conformance checker parameters. Frozen with the registration (its SHA-256 goes in every report). A change after freeze is a new checker version, never an edit.",
-  "version": "0.3.0-lock",
+  "version": "0.4.0-migration",
   "timeouts": {
     "installMs": 240000,
     "testMs": 240000,
@@ -226,7 +226,17 @@ const DEFAULT_CONFIG = {
   ],
   "gateScriptAllow": "(gate|check|lint|test|verify|lock|open|ratchet|cover|spec|sensor|guard|audit|valid)",
   "sourceExcludePattern": "(^|/)(.*\\.config\\.[cm]?[jt]s|setup\\.py|conftest\\.py|noxfile\\.py|eslint[^/]*|vitest[^/]*|jest[^/]*|babel[^/]*|webpack[^/]*|rollup[^/]*)$",
-  "conventionalLeniencyOne": true
+  "conventionalLeniencyOne": true,
+  "migration": {
+    "manifest": "docs/migration/equivalence.json",
+    "inventory": "docs/migration/inventory.md",
+    "deferred": "docs/deferred.md",
+    "charPattern": "characteri[sz]ation",
+    "minCharTests": 5,
+    "sourceExt": ["js", "mjs", "cjs", "ts", "py"],
+    "mutation": { "count": 12, "minKill": 0.6, "runMs": 60000 },
+    "surface": { "minShare": 0.9 }
+  }
 };
 
 __defs["./util"] = (module, exports, require) => {
@@ -1308,9 +1318,345 @@ function e12(ctx) {
 // E12 runs last: it smoke-starts long-running commands and must not leave state for the probes.
 const ORDER = [['E01', e01], ['E02', e02], ['E03', e03], ['E04', e04], ['E05', e05], ['E06', e06], ['E07', e07], ['E08', e08], ['E09', e09], ['E10', e10], ['E11', e11], ['E12', e12]];
 function prepare(ctx) { ctx.shared.readme = parseReadme(ctx); }
-module.exports = { ORDER, prepare, discover, parseSpecDefs, countTests, citedByATest };
+module.exports = { ORDER, prepare, discover, parseSpecDefs, countTests, citedByATest, installCommands, detectStack };
 
 };
+
+__defs["./migration"] = (module, exports, require) => {
+'use strict';
+// Migration checks M01 to M09 (run with --migration). A migration is: existing code becomes a recovered spec plus a characterization suite, and the
+// project becomes a greenfield substrate built from that spec, with the observable behavior preserved. Deterministic: no model, no network.
+//   M01 manifest and suite present      M02 suite passes on the ORIGINAL (and refuses an empty system)   M03 suite passes on the current code
+//   M04 the suite is an oracle (mutation probe on both trees)   M05 every characterization test cites a criterion of the recovered spec
+//   M06 every criterion is cited by a characterization test or deferred   M07 inventory decisions are complete and consistent
+//   M08 the original's public surface (extracted by heuristics, independent of the model) is in the inventory   M09 the deferred list exists and explains each drop
+// Convention (stated by the migrate formula): the suite is black-box. It runs the system through GS_SUT_CMD from the directory GS_SUT_ROOT and never
+// imports its source, so the SAME suite can be run against the original (a checkout of BASE) and against the current code.
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { sh, git, exists, read, tryRead, posix, trackedFiles, sha256 } = require('./util');
+const { discover, parseSpecDefs, installCommands } = require('./items');
+
+const res = (id, name, status, reasons = [], evidence = {}, subflags = {}) => ({ id, name, status, reasons, evidence, subflags });
+const NAMES = {
+  M01: 'equivalence manifest, base commit and characterization suite present',
+  M02: 'the suite passes on the ORIGINAL code and refuses an empty system',
+  M03: 'the suite passes on the current (migrated) code',
+  M04: 'the suite is an oracle: planted behavior changes are refused (mutation probe on both trees)',
+  M05: 'every characterization test cites a criterion of the recovered spec',
+  M06: 'every criterion of the recovered spec is cited by a characterization test or deferred',
+  M07: 'inventory: every element has a decision, kept elements map to criteria, nothing UNCLAIMED is kept',
+  M08: 'the public surface found in the original code is in the inventory (heuristic cross-check)',
+  M09: 'deferred list exists and explains every dropped or deferred element'
+};
+const TEST_DECL = /^\s*(?:(?:async\s+)?def\s+test_\w*|(?:test|it)(?:\.\w+)?\s*\(|func\s+Test\w+)/;
+const SKIP_DECL = /^\s*(?:test|it)\.(?:todo|skip)\s*\(|^\s*x(?:it|test)\s*\(|@pytest\.mark\.skip|\.skip\(/;
+const isTestLike = (cfg, p) => new RegExp(cfg.testFilePattern).test(p) || cfg.testDirs.some(d => p === d || p.startsWith(d + '/')) || /(^|\/)(tests?|__tests__|spec|specs)\//.test(p);
+
+function charFiles(ctx) {
+  const re = new RegExp(ctx.cfg.migration.charPattern, 'i');
+  return trackedFiles(ctx.root).filter(p => re.test(p) && /\.(js|mjs|cjs|ts|tsx|py|go|sh)$/.test(p));
+}
+// one segment per declared (non-skipped) test: from its declaration line to the next declaration
+function charTests(ctx, files) {
+  const out = [];
+  for (const f of files) {
+    const lines = (tryRead(path.join(ctx.root, f)) || '').split('\n'); let cur = null;
+    lines.forEach((l, i) => {
+      if (TEST_DECL.test(l)) {
+        if (cur) out.push(cur);
+        const nm = (l.match(/['"`]([^'"`]+)['"`]/) || l.match(/def\s+(test_\w+)/) || [])[1] || l.trim().slice(0, 50);
+        cur = { file: f, line: i + 1, name: nm, skipped: SKIP_DECL.test(l) || (i > 0 && /@pytest\.mark\.skip/.test(lines[i - 1])), text: l };
+      } else if (cur) cur.text += '\n' + l;
+    });
+    if (cur) out.push(cur);
+  }
+  return out.filter(t => !t.skipped);
+}
+const idsIn = (cfg, text) => [...new Set([...text.matchAll(new RegExp(cfg.idToken, 'g'))].map(m => m[0]))];
+
+function loadManifest(ctx) {
+  const p = path.join(ctx.root, ctx.cfg.migration.manifest); const t = tryRead(p);
+  if (t == null) return { missing: true };
+  let m; try { m = JSON.parse(t); } catch (e) { return { err: 'not valid JSON: ' + e.message }; }
+  const errs = [];
+  if (!m || typeof m.base !== 'string' || !m.base) errs.push('"base" (the commit of the original code) is missing');
+  if (!m || typeof m.suite !== 'string' || !m.suite) errs.push('"suite" (the one command that runs the characterization suite) is missing');
+  for (const k of ['original', 'current']) if (!m || !m[k] || typeof m[k].cmd !== 'string' || !m[k].cmd) errs.push(`"${k}.cmd" (how to start or invoke the system) is missing`);
+  return errs.length ? { err: errs.join('; '), m } : { m };
+}
+
+// ---------- the surface of the original code, extracted by heuristics (independent of the model) ----------
+function surfaceTokens(texts) {
+  const T = new Map(); const add = (k, v) => { if (v && v.length > 1 && !/^(--?)?(help|h|v)$/.test(v)) T.set(v, k); };
+  for (const text of texts) {
+    for (const m of text.matchAll(/\b(?:app|router|server|api|route|routes|r)\.(?:get|post|put|patch|delete|all)\s*\(\s*(['"`])(\/[^'"`]*)\1/g)) add('route', m[2]);
+    for (const m of text.matchAll(/@\w+\.(?:route|get|post|put|delete|patch)\(\s*['"]([^'"]+)['"]/g)) add('route', m[1]);
+    for (const m of text.matchAll(/\b(?:url|pathname|path|route|req\.url)\s*(?:===?|\.startsWith\(|\.includes\(|\.match\()\s*\(?\s*['"`](\/[^'"`]*)['"`]/g)) add('route', m[1]);
+    for (const m of text.matchAll(/case\s+['"`](\/[^'"`]*)['"`]\s*:/g)) add('route', m[1]);
+    for (const m of text.matchAll(/add_parser\(\s*['"]([\w-]+)['"]/g)) add('command', m[1]);
+    for (const m of text.matchAll(/\.command\(\s*['"]([\w-]+)/g)) add('command', m[1]);
+    for (const m of text.matchAll(/add_argument\(\s*['"](--?[\w-]+)['"](?:\s*,\s*['"](--?[\w-]+)['"])?/g)) { add('flag', m[1]); add('flag', m[2]); }
+    for (const m of text.matchAll(/\b(?:cmd|command|action|sub|subcmd|subcommand|verb|op|mode)\b\s*(?:===?|!==?)\s*['"]([\w-]+)['"]/g)) add('command', m[1]);
+    for (const m of text.matchAll(/argv\[\d+\]\s*(?:===?|==)\s*['"]([^'"]+)['"]/g)) add('command', m[1]);
+    for (const m of text.matchAll(/case\s+['"]([\w-]+)['"]\s*:/g)) add('command', m[1]);
+    for (const m of text.matchAll(/['"](--[a-z][\w-]*)['"]/g)) add('flag', m[1]);
+    for (const m of text.matchAll(/process\.env\.([A-Z][A-Z0-9_]+)|process\.env\[['"]([A-Z][A-Z0-9_]+)['"]\]|os\.environ(?:\.get)?[\[(]\s*['"]([A-Z][A-Z0-9_]+)['"]|os\.getenv\(\s*['"]([A-Z][A-Z0-9_]+)['"]/g)) add('env', m[1] || m[2] || m[3] || m[4]);
+  }
+  return T;
+}
+
+// ---------- mutation probe ----------
+const OPS = [
+  [/===/g, '!=='], [/!==/g, '==='], [/(?<![=!<>])==(?![=])/g, '!='], [/!=(?![=])/g, '=='],
+  [/<=/g, '<'], [/>=/g, '>'], [/ < /g, ' <= '], [/ > /g, ' >= '],
+  [/&&/g, '||'], [/\|\|/g, '&&'], [/ and /g, ' or '], [/ or /g, ' and '],
+  [/\btrue\b/g, 'false'], [/\bfalse\b/g, 'true'], [/\bTrue\b/g, 'False'], [/\bFalse\b/g, 'True'],
+  [/ \+ /g, ' - '], [/ - /g, ' + '],
+  [/(?<![\w.$"'#-])(\d+)(?![\w.]|\s*[:"'])/g, null] // integer literal: n -> n + 1
+];
+function inString(line, idx) { let q = null; for (let i = 0; i < idx; i++) { const c = line[i]; if (q) { if (c === '\\') i++; else if (c === q) q = null; } else if (c === '"' || c === "'" || c === '`') q = c; } return q !== null; }
+function mutantSites(root, files) {
+  const sites = [];
+  for (const f of files) {
+    const lines = (tryRead(path.join(root, f)) || '').split('\n');
+    lines.forEach((line, i) => {
+      if (/^\s*(\/\/|#|\*|\/\*|"""|''')/.test(line) || /^\s*(import|from|const\s+\{?[\w\s,]+\}?\s*=\s*require|require)\b/.test(line) || /\b(port|PORT|listen|console\.|print\(|logging|version)\b/.test(line)) return;
+      for (const [re, to] of OPS) {
+        re.lastIndex = 0; let m;
+        while ((m = re.exec(line))) {
+          if (m[0].length === 0) { re.lastIndex++; continue; }
+          if (inString(line, m.index)) continue;
+          const rep = to === null ? String(Number(m[1]) + 1) : to;
+          sites.push({ file: f, line: i + 1, col: m.index, from: m[0], to: rep, key: sha256(`${f}:${i}:${m.index}:${m[0]}`).slice(0, 10) });
+        }
+      }
+    });
+  }
+  return sites.sort((a, b) => a.key.localeCompare(b.key));
+}
+function syntaxOk(file, abs) {
+  if (/\.(js|mjs|cjs)$/.test(file)) return sh(`node --check "${abs}"`, { timeout: 20000 }).code === 0;
+  if (/\.py$/.test(file)) { const r = sh(`python3 -c "import ast,sys; ast.parse(open(sys.argv[1]).read())" "${abs}" || python -c "import ast,sys; ast.parse(open(sys.argv[1]).read())" "${abs}"`, { timeout: 20000 }); return r.code === 0; }
+  return true;
+}
+function copyTree(src, dst) {
+  fs.cpSync(src, dst, { recursive: true, filter: p => !/[\\/]\.git$/.test(p) && !/[\\/]node_modules$/.test(p) });
+  const nm = path.join(src, 'node_modules'); if (exists(nm)) { try { fs.symlinkSync(nm, path.join(dst, 'node_modules'), 'junction'); } catch { /* best effort */ } }
+}
+function mutationProbe(ctx, label, srcRoot, files, runSuite, tmp) {
+  const cfgM = ctx.cfg.migration.mutation; const sites = mutantSites(srcRoot, files);
+  const out = { label, sites: sites.length, tried: 0, killed: 0, invalid: 0, survivors: [] };
+  if (!sites.length) return out;
+  const copy = path.join(tmp, 'mut-' + label); copyTree(srcRoot, copy);
+  const perFile = {}; let guard = 0; const cap = new Set(sites.map(x => x.file)).size > 1 ? Math.ceil(cfgM.count / 2) : cfgM.count;
+  for (const s of sites) {
+    if (out.tried >= cfgM.count || guard++ > cfgM.count * 4) break;
+    if ((perFile[s.file] || 0) >= cap) continue;
+    const abs = path.join(copy, s.file); const orig = fs.readFileSync(abs, 'utf8');
+    const lines = orig.split('\n'); const ln = lines[s.line - 1];
+    if (ln.slice(s.col, s.col + s.from.length) !== s.from) continue;
+    lines[s.line - 1] = ln.slice(0, s.col) + s.to + ln.slice(s.col + s.from.length);
+    fs.writeFileSync(abs, lines.join('\n'));
+    if (!syntaxOk(s.file, abs)) { out.invalid++; fs.writeFileSync(abs, orig); continue; }
+    perFile[s.file] = (perFile[s.file] || 0) + 1; out.tried++;
+    const r = runSuite(copy);
+    if (r.code !== 0) out.killed++; else out.survivors.push(`${s.file}:${s.line} ${JSON.stringify(s.from.trim())} to ${JSON.stringify(s.to.trim())}`);
+    fs.writeFileSync(abs, orig);
+  }
+  fs.rmSync(copy, { recursive: true, force: true });
+  return out;
+}
+
+// ---------- inventory ----------
+function parseInventory(text) {
+  const lines = text.split('\n'); let hdr = null; const rows = [];
+  for (const l of lines) {
+    if (!/^\s*\|/.test(l)) { if (hdr && rows.length) break; continue; }
+    const cells = l.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+    if (cells.every(c => /^:?-{2,}:?$/.test(c))) continue;
+    if (!hdr) { const low = cells.map(c => c.toLowerCase()); if (low.some(c => c.startsWith('element')) && low.some(c => c.includes('decision'))) hdr = low; continue; }
+    rows.push(cells);
+  }
+  if (!hdr) return null;
+  const col = pred => hdr.findIndex(pred);
+  return { rows, iEl: col(c => c.startsWith('element')), iCl: col(c => c.includes('claimed')), iDec: col(c => c.includes('decision')), iWhy: col(c => /reason|why|razón/.test(c)) };
+}
+const decisionOf = c => { const w = (c || '').toLowerCase().replace(/[`*_]/g, '').trim(); return /^(keep|kept)\b/.test(w) ? 'keep' : /^(drop|dropped)\b/.test(w) ? 'drop' : /^(defer|deferred)\b/.test(w) ? 'defer' : null; };
+const clean = s => (s || '').replace(/[`*_|]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+
+function run(ctx, { mutants = null } = {}) {
+  const cfg = ctx.cfg; const M = cfg.migration; if (mutants != null) M.mutation.count = mutants;
+  const items = []; const push = r => { items.push(r); return r; };
+  const f = discover(ctx);
+  const defs = parseSpecDefs(ctx); const crit = defs.filter(d => d.kind === 'criterion'); const critIds = new Set(crit.map(c => c.id));
+  const files = charFiles(ctx); const tests = charTests(ctx, files);
+  const mf = loadManifest(ctx);
+  // ---- M01 ----
+  {
+    const r = [];
+    if (mf.missing) push(res('M01', NAMES.M01, 'ABSENT', [`no ${M.manifest}`]));
+    else {
+      if (mf.err) r.push(mf.err);
+      if (mf.m && mf.m.base) {
+        const c = git(ctx.root, ['cat-file', '-e', mf.m.base + '^{commit}']);
+        if (c.code !== 0) r.push(`base ${mf.m.base} is not a commit of this repository`);
+        else {
+          if (git(ctx.root, ['merge-base', '--is-ancestor', mf.m.base, 'HEAD']).code !== 0) r.push('base is not an ancestor of HEAD');
+          if (git(ctx.root, ['rev-parse', mf.m.base + '^{commit}']).stdout.trim() === git(ctx.root, ['rev-parse', 'HEAD']).stdout.trim()) r.push('base equals HEAD: nothing was migrated');
+        }
+      }
+      if (!files.length) r.push('no characterization test files (a tracked source or test file with "characterization" in its path)');
+      else if (tests.length < M.minCharTests) r.push(`${tests.length} characterization tests (need ${M.minCharTests})`);
+      // black-box: the suite must not import the system's source
+      const trk = trackedFiles(ctx.root);
+      const topMods = new Set(trackedFiles(ctx.root).filter(p => /\.py$/.test(p) && !isTestLike(cfg, p)).map(p => p.split('/')[0].replace(/\.py$/, '')));
+      const imports = [];
+      for (const fl of files) {
+        const lines = (tryRead(path.join(ctx.root, fl)) || '').split('\n');
+        lines.forEach(l => {
+          const rel = (l.match(/(?:require\(|from\s+|import\s+(?:[\w*{}\s,]+\s+from\s+)?)['"](\.{1,2}\/[^'"]+)['"]/) || [])[1];
+          if (rel) { const base = posix(path.normalize(path.join(path.dirname(fl), rel))); const hit = [base, base + '.js', base + '.mjs', base + '.ts', base + '/index.js'].find(x => trk.includes(x)); if (hit && !isTestLike(cfg, hit)) imports.push(`${fl} imports ${hit}`); }
+          const py = (l.match(/^\s*(?:from|import)\s+([A-Za-z_]\w*)/) || [])[1]; if (py && topMods.has(py) && !/^(tests?|conftest)$/.test(py)) imports.push(`${fl} imports ${py}`);
+        });
+      }
+      if (imports.length) r.push(`the suite is not black-box (it imports the system's source): ${[...new Set(imports)].slice(0, 3).join('; ')}`);
+      push(res('M01', NAMES.M01, r.length ? 'PARTIAL' : 'PASS', r, { base: mf.m && mf.m.base, charFiles: files, charTests: tests.length }, {}));
+    }
+  }
+  const usable = !mf.missing && !mf.err && items[0].status !== 'ABSENT';
+  // ---- dynamic part: M02 M03 M04 ----
+  const dyn = {};
+  if (!usable || (items[0].status !== 'PASS' && !files.length)) {
+    for (const id of ['M02', 'M03', 'M04']) push(res(id, NAMES[id], 'ABSENT', ['not run: no usable manifest or no characterization suite']));
+  } else {
+    const { Sandbox } = require('./sandbox'); const sbx = new Sandbox(ctx.repo, cfg, 'mig'); ctx.sandboxes.push(sbx);
+    const c = sbx.clone();
+    if (!c.ok) for (const id of ['M02', 'M03', 'M04']) push(res(id, NAMES[id], 'UNDETERMINABLE', ['clone failed']));
+    else {
+      const m = mf.m; const tmp = sbx.dir;
+      const ic = installCommands(ctx, sbx); const cmds = ic.fromReadme.length ? ic.fromReadme : ic.dflt;
+      for (const cmd of cmds) { const r0 = sbx.run(cmd, cfg.timeouts.installMs); if (r0.code !== 0) break; }
+      if (m.current && m.current.setup) sbx.run(m.current.setup, cfg.timeouts.installMs);
+      const orig = path.join(tmp, 'orig'); const wt = git(sbx.root, ['worktree', 'add', '--detach', '-q', orig, m.base]);
+      if (wt.code !== 0) for (const id of ['M02', 'M03', 'M04']) push(res(id, NAMES[id], 'UNDETERMINABLE', ['cannot check out the base commit: ' + wt.out.slice(0, 200)]));
+      else {
+        if (m.original && m.original.setup) sbx.run(`cd "${orig}" && ${m.original.setup}`, cfg.timeouts.installMs);
+        const suite = (root, cmd, ms) => sh(m.suite, { cwd: sbx.root, timeout: ms || cfg.timeouts.testMs, env: { GS_SUT_ROOT: root, GS_SUT_CMD: cmd } });
+        const tail = o => o.trim().split('\n').slice(-4).join(' | ').slice(0, 300);
+        // M02
+        const r2 = [], s2 = suite(orig, m.original.cmd);
+        if (s2.timedOut) r2.push('the suite timed out on the original'); else if (s2.code !== 0) r2.push(`the suite FAILS on the original code (exit ${s2.code}): ${tail(s2.out)}`);
+        const empty = path.join(tmp, 'empty'); fs.mkdirSync(empty, { recursive: true });
+        const se = suite(empty, m.original.cmd, 120000);
+        if (se.code === 0) r2.push('the suite passes against an EMPTY system: it does not run the system under test through GS_SUT_ROOT and GS_SUT_CMD, or asserts nothing');
+        dyn.origPass = s2.code === 0; dyn.empty = se.code;
+        push(res('M02', NAMES.M02, r2.length ? 'PARTIAL' : 'PASS', r2, { exit_original: s2.code, exit_empty: se.code }, {}));
+        // M03
+        const s3 = suite(sbx.root, m.current.cmd);
+        dyn.curPass = s3.code === 0;
+        push(res('M03', NAMES.M03, s3.timedOut ? 'UNDETERMINABLE' : s3.code === 0 ? 'PASS' : 'PARTIAL', s3.code === 0 ? [] : [`the suite FAILS on the migrated code (exit ${s3.code}): ${tail(s3.out)}`], { exit_current: s3.code }, {}));
+        // M04
+        const srcOf = (root, list) => list.filter(p => M.sourceExt.includes(p.split('.').pop()) && !isTestLike(cfg, p) && !/(^|\/)(node_modules|scripts|tools|docs|bin\/hooks|\.githooks|\.github|build|dist)\//.test(p) && !new RegExp(cfg.sourceExcludePattern).test(p) && !/characteri[sz]ation/i.test(p));
+        const origFiles = srcOf(orig, git(sbx.root, ['ls-tree', '-r', '--name-only', m.base]).stdout.split('\n').filter(Boolean));
+        const curFiles = srcOf(sbx.root, trackedFiles(sbx.root));
+        const r4 = []; const ev = {};
+        const probe = (label, root, list, cmd, pass) => {
+          if (!pass) { r4.push(`${label}: not run, the suite is red on this tree`); return; }
+          const o = mutationProbe(ctx, label, root, list, copy => suite(copy, cmd, M.mutation.runMs), tmp); ev[label] = { sites: o.sites, tried: o.tried, killed: o.killed, invalid: o.invalid, survivors: o.survivors.slice(0, 8) };
+          if (!o.tried) r4.push(`${label}: no mutable site found in ${list.length} source files, so the suite's sensitivity could not be judged`);
+          else if (o.killed / o.tried < M.mutation.minKill) r4.push(`${label}: the suite refused ${o.killed} of ${o.tried} planted behavior changes (need ${Math.round(M.mutation.minKill * 100)}%); not refused: ${o.survivors.slice(0, 4).join('; ')}`);
+        };
+        probe('original', orig, origFiles, m.original.cmd, dyn.origPass);
+        probe('current', sbx.root, curFiles, m.current.cmd, dyn.curPass);
+        dyn.mutation = ev;
+        push(res('M04', NAMES.M04, r4.length ? 'PARTIAL' : 'PASS', r4, ev, {}));
+        // surface of the original, for M08
+        dyn.surface = surfaceTokens(origFiles.map(p => tryRead(path.join(orig, p)) || ''));
+        git(sbx.root, ['worktree', 'remove', '--force', orig]);
+      }
+    }
+  }
+  // ---- static: M05 M06 ----
+  const touched = new Set();
+  {
+    const r = []; const unknown = new Set();
+    for (const t of tests) {
+      const ids = idsIn(cfg, t.text); const hit = ids.filter(i => critIds.has(i));
+      ids.filter(i => /-\d+\.\d+$/.test(i) && !critIds.has(i)).forEach(i => unknown.add(i));
+      if (!hit.length) r.push(`${t.file}:${t.line} "${t.name.slice(0, 50)}" cites no criterion of the spec`); else hit.forEach(i => touched.add(i));
+    }
+    if (unknown.size) r.push(`tests cite ids the spec does not define: ${[...unknown].slice(0, 6).join(', ')}`);
+    push(res('M05', NAMES.M05, !tests.length ? 'ABSENT' : r.length ? 'PARTIAL' : 'PASS', !tests.length ? ['no characterization tests'] : r.slice(0, 8), { tests: tests.length, citedCriteria: touched.size }, {}));
+  }
+  // inventory and deferred (shared by M06 to M09)
+  const invText = tryRead(path.join(ctx.root, M.inventory)); const inv = invText ? parseInventory(invText) : null;
+  const defText = tryRead(path.join(ctx.root, M.deferred));
+  const rows = inv ? inv.rows.map(c => ({ el: c[inv.iEl] || '', claimed: inv.iCl >= 0 ? c[inv.iCl] || '' : '', dec: decisionOf(inv.iDec >= 0 ? c[inv.iDec] : ''), rawDec: inv.iDec >= 0 ? c[inv.iDec] || '' : '', why: inv.iWhy >= 0 ? c[inv.iWhy] || '' : '' })).filter(r => r.el.trim()) : [];
+  const droppedClaims = new Set(); rows.filter(r => r.dec === 'drop' || r.dec === 'defer').forEach(r => idsIn(cfg, r.claimed).forEach(i => droppedClaims.add(i)));
+  {
+    const r = [];
+    for (const c of crit) {
+      if (/^N-/.test(c.id)) continue;
+      if (touched.has(c.id) || droppedClaims.has(c.id) || (defText && defText.includes(c.id))) continue;
+      r.push(c.id);
+    }
+    push(res('M06', NAMES.M06, !crit.length ? 'ABSENT' : r.length ? 'PARTIAL' : 'PASS', !crit.length ? ['no criteria in the spec'] : r.length ? [`criteria no characterization test cites (and not deferred): ${r.slice(0, 10).join(', ')}`] : [], { criteria: crit.length }, {}));
+  }
+  {
+    const r = [];
+    if (!invText) push(res('M07', NAMES.M07, 'ABSENT', [`no ${M.inventory}`]));
+    else if (!inv || !rows.length) push(res('M07', NAMES.M07, 'ABSENT', ['no inventory table with columns element and decision']));
+    else {
+      for (const w of rows) {
+        const label = clean(w.el).slice(0, 40);
+        if (!w.dec) { r.push(`"${label}": decision "${w.rawDec.slice(0, 20)}" is none of keep, drop, defer`); continue; }
+        const ids = idsIn(cfg, w.claimed); const unclaimed = /unclaimed/i.test(w.claimed) || !ids.length;
+        if (w.dec === 'keep') {
+          if (unclaimed) r.push(`"${label}" is kept but UNCLAIMED (no criterion)`);
+          else for (const i of ids) { if (!critIds.has(i)) r.push(`"${label}" claims ${i}, which the spec does not define`); else if (!touched.has(i)) r.push(`"${label}" is kept but no characterization test cites ${i}`); }
+        } else {
+          const why = w.why.trim() || w.rawDec.replace(/^\W*(drop(ped)?|defer(red)?)\W*/i, '').trim();
+          if (why.split(/\s+/).filter(Boolean).length < 2) r.push(`"${label}" is ${w.dec === 'drop' ? 'dropped' : 'deferred'} without a reason`);
+        }
+      }
+      push(res('M07', NAMES.M07, r.length ? 'PARTIAL' : 'PASS', r.slice(0, 10), { rows: rows.length, keep: rows.filter(x => x.dec === 'keep').length, drop: rows.filter(x => x.dec === 'drop').length, defer: rows.filter(x => x.dec === 'defer').length }, {}));
+    }
+  }
+  // ---- M08 ----
+  {
+    if (!dyn.surface) push(res('M08', NAMES.M08, usable ? 'UNDETERMINABLE' : 'ABSENT', [usable ? 'the original code could not be examined' : 'not run: no usable manifest, so the original code is unknown']));
+    else if (!dyn.surface.size) push(res('M08', NAMES.M08, 'UNDETERMINABLE', ['no routes, commands, flags or environment variables were recognised in the original code: this cross-check cannot judge']));
+    else if (!invText) push(res('M08', NAMES.M08, 'ABSENT', [`no ${M.inventory}`]));
+    else {
+      const low = invText.toLowerCase(); const miss = [...dyn.surface].filter(([t]) => !low.includes(t.toLowerCase()));
+      const share = 1 - miss.length / dyn.surface.size;
+      push(res('M08', NAMES.M08, share >= M.surface.minShare ? 'PASS' : 'PARTIAL', share >= M.surface.minShare ? [] : [`${miss.length} of ${dyn.surface.size} public elements found in the original are not in the inventory: ${miss.slice(0, 8).map(([t, k]) => `${t} (${k})`).join(', ')}`], { found: dyn.surface.size, missing: miss.length }, {}));
+    }
+  }
+  // ---- M09 ----
+  {
+    if (defText == null) push(res('M09', NAMES.M09, 'ABSENT', [`no ${M.deferred} (it is required even when nothing is dropped: it then says so)`]));
+    else {
+      const r = []; const dtLines = defText.split('\n'); const low = clean(defText);
+      for (const w of rows.filter(x => x.dec === 'drop' || x.dec === 'defer')) {
+        const key = clean(w.el).slice(0, 40); if (!key) continue;
+        const line = dtLines.find(l => clean(l).includes(key));
+        if (!line) r.push(`"${key}" is ${w.dec} in the inventory but absent from the deferred list`);
+        else if (clean(line).replace(key, '').split(' ').filter(x => /\w{2,}/.test(x)).length < 3) r.push(`"${key}" is in the deferred list without a reason`);
+      }
+      void low;
+      push(res('M09', NAMES.M09, r.length ? 'PARTIAL' : 'PASS', r.slice(0, 8), { listed: rows.filter(x => x.dec === 'drop' || x.dec === 'defer').length }, {}));
+    }
+  }
+  items.sort((a, b) => a.id.localeCompare(b.id));
+  return { items, summary: { pass: items.filter(i => i.status === 'PASS').length, total: items.length, all_pass: items.length === 9 && items.every(i => i.status === 'PASS') } };
+}
+module.exports = { run };
+
+};
+
 
 __defs["./checker"] = (module, exports, require) => {
 'use strict';
@@ -1322,7 +1668,7 @@ const { sha256, git, sh } = require('./lib/util');
 const { ORDER, prepare } = require('./lib/items');
 
 function parseArgs(argv) {
-  const a = { only: null, keep: false, since: null, strict: false, both: false, verbose: false };
+  const a = { only: null, keep: false, since: null, strict: false, both: false, verbose: false, migration: false, mutants: null };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--repo') a.repo = argv[++i];
     else if (argv[i] === '--config') a.config = argv[++i];
@@ -1333,11 +1679,13 @@ function parseArgs(argv) {
     else if (argv[i] === '--strict') a.strict = true;
     else if (argv[i] === '--both') a.both = true;
     else if (argv[i] === '--verbose') a.verbose = true;
+    else if (argv[i] === '--migration') a.migration = true;
+    else if (argv[i] === '--mutants') a.mutants = +argv[++i];
   }
   return a;
 }
 
-function run(repo, { configPath, only = null, keep = false, since = null, strict = false } = {}) {
+function run(repo, { configPath, only = null, keep = false, since = null, strict = false, migration = false, mutants = null } = {}) {
   const cfgText = configPath ? fs.readFileSync(configPath, 'utf8') : JSON.stringify(DEFAULT_CONFIG, null, 2); const cfg = JSON.parse(cfgText);
   cfg.strictEnforcement = !!strict; // the mode, reported separately from the config hash
   const absRepo = path.resolve(repo);
@@ -1369,6 +1717,7 @@ function run(repo, { configPath, only = null, keep = false, since = null, strict
     r.ms = Date.now() - t0; report.items.push(r);
   }
   report.items.sort((a, b) => a.id.localeCompare(b.id));
+  if (migration) { try { report.migration = require('./migration').run(ctx, { mutants }); } catch (e) { report.migration = { items: [{ id: 'M00', status: 'UNDETERMINABLE', reasons: ['checker exception: ' + (e && e.stack ? e.stack.split(String.fromCharCode(10)).slice(0, 3).join(' | ') : String(e))] }], summary: { all_pass: false } }; } }
   if (!keep) ctx.sandboxes.forEach(s => s.cleanup()); else report.kept = ctx.sandboxes.map(s => s.dir);
   return finish(report);
 }
@@ -1378,7 +1727,7 @@ function finish(report) {
   report.finished = new Date().toISOString();
   return report;
 }
-const USAGE = 'usage: node gs-check.mjs --repo <path> [--strict] [--both] [--verbose] [--only E01,E05] [--since <rev>] [--config <file>] [--out <report.json>] [--keep] | --print-config';
+const USAGE = 'usage: node gs-check.mjs --repo <path> [--strict] [--both] [--verbose] [--migration] [--mutants N] [--only E01,E05] [--since <rev>] [--config <file>] [--out <report.json>] [--keep] | --print-config';
 function printReport(report, verbose) {
   console.log(`# gs-check ${report.checker_version} mode=${report.mode} repo=${report.repo} head=${report.head} node=${report.env.node} ${report.env.platform}`);
   for (const i of report.items) {
@@ -1387,6 +1736,10 @@ function printReport(report, verbose) {
     if (verbose && i.subflags && Object.keys(i.subflags).length) console.log('      subflags: ' + JSON.stringify(i.subflags));
   }
   console.log(`summary (${report.mode}): ${JSON.stringify(report.summary)}`);
+  if (report.migration) {
+    for (const i of report.migration.items) { console.log(`${i.id} ${i.status.padEnd(14)} ${i.name || ''}`); for (const r of ((i.reasons || []).slice(0, verbose ? 99 : 3))) console.log('      - ' + r); if (verbose && i.evidence && Object.keys(i.evidence).length) console.log('      evidence: ' + JSON.stringify(i.evidence).slice(0, 600)); }
+    console.log(`migration summary: ${JSON.stringify(report.migration.summary)}`);
+  }
 }
 function smokeChild(ms, cwd, cmd) { // the README "run" commands (servers) are started for a few seconds, then the whole process tree is killed
   const { spawn, spawnSync } = require('child_process'); const win = process.platform === 'win32';
@@ -1404,13 +1757,14 @@ module.exports.cli = function cli(argv) {
   if (argv.includes('--print-config')) { const text = JSON.stringify(DEFAULT_CONFIG, null, 2); console.log(text); console.error('config_sha256 ' + sha256(text)); return process.exit(0); }
   const a = parseArgs(argv);
   if (!a.repo) { console.error(USAGE); process.exit(2); }
-  const opts = { configPath: a.config, only: a.only, keep: a.keep, since: a.since };
+  const opts = { configPath: a.config, only: a.only, keep: a.keep, since: a.since, mutants: a.mutants };
   const modes = a.both ? [false, true] : [a.strict];
-  const reports = modes.map(strict => run(a.repo, { ...opts, strict }));
+  const reports = modes.map((strict, k) => run(a.repo, { ...opts, strict, migration: a.migration && k === modes.length - 1 }));
   for (const r of reports) printReport(r, a.verbose);
   if (a.out) fs.writeFileSync(a.out, JSON.stringify(a.both ? { default: reports[0], strict: reports[1] } : reports[0], null, 2));
   if (a.both) { console.log('\nitem  default         strict'); for (const i of reports[0].items) console.log(`${i.id}   ${i.status.padEnd(14)}  ${(reports[1].items.find(x => x.id === i.id) || {}).status}`); }
-  process.exit(reports[reports.length - 1].summary.all_pass ? 0 : 1);
+  const lastR = reports[reports.length - 1];
+  process.exit(lastR.summary.all_pass && (!lastR.migration || lastR.migration.summary.all_pass) ? 0 : 1);
 };
 
 };
