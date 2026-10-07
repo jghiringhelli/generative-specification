@@ -13,7 +13,7 @@ import variants from './migration-variants.mjs';
 const only = process.env.FX1_ONLY ? process.env.FX1_ONLY.split(',') : null;
 const outDir = process.env.FX1_REPORT_DIR || null;
 const E = Array.from({ length: 12 }, (_, i) => 'E' + String(i + 1).padStart(2, '0'));
-const M = Array.from({ length: 9 }, (_, i) => 'M' + String(i + 1).padStart(2, '0'));
+const M = Array.from({ length: 10 }, (_, i) => 'M' + String(i + 1).padStart(2, '0'));
 
 for (const v of variants) {
   if (only && !only.includes(v.id)) continue;

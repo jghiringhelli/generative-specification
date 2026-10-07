@@ -32,7 +32,7 @@ export default [
     mutate: (d, h) => h.replace(d, 'docs/migration/inventory.md', '| defer | prints a version nobody reads; no known consumer, decide later |', '| keep | |') },
   { id: 'MG10', kind: 'removed', desc: 'no equivalence manifest', expect: { M01: A, M02: A, M03: A, M04: A, M08: A }, expectE: { E01: P },
     mutate(d, h) { h.rm(d, 'docs/migration/equivalence.json'); } },
-  { id: 'MG11', kind: 'broken', desc: 'the suite pins too little: only balance is characterized, largest-debit and the usage line are free to change', expect: { M01: P, M04: P, M06: P, M07: P }, expectE: { E08: P },
+  { id: 'MG11', kind: 'broken', desc: 'the suite pins too little: only balance is characterized, largest-debit and the usage line are free to change', expect: { M01: P, M04: P, M06: P, M07: P, M10: P }, expectE: { E08: P },
     mutate(d, h) {
       h.edit(d, CHAR, t => t.split('\n').filter(l => !/^test\('AC-00[4567]/.test(l)).join('\n'));
       h.edit(d, CHAR, t => t.replace(/(AC-00[1-3][^\n]*\n)/, '$1'));
@@ -41,5 +41,18 @@ export default [
   { id: 'MG12', kind: 'broken', desc: 'a deferred element has no reason in the inventory or in the deferred list', expect: { M07: P, M09: P }, expectE: {},
     mutate(d, h) { h.replace(d, 'docs/migration/inventory.md', '| defer | prints a version nobody reads; no known consumer, decide later |', '| defer | |'); h.replace(d, 'docs/deferred.md', '| flag --version | prints a version number nobody reads, no known consumer of it; not carried to the new code, to be decided with the owner |', '| flag --version | later |'); } },
   { id: 'MG13', kind: 'broken', desc: 'no inventory', expect: { M07: A, M08: A }, expectE: {},
-    mutate(d, h) { h.rm(d, 'docs/migration/inventory.md'); stripLines(h, d, 'CLAUDE.md', 'docs/migration/inventory.md'); } }
+    mutate(d, h) { h.rm(d, 'docs/migration/inventory.md'); stripLines(h, d, 'CLAUDE.md', 'docs/migration/inventory.md'); } },
+  { id: 'MG14', kind: 'good', desc: 'a re-platform with an intended change: a new feature (count) is a [new] criterion with an ordinary test, outside the characterization suite', expect: {}, expectE: {}, mutate: (d, h) => newFeature(d, h, { test: true, tag: true }) },
+  { id: 'MG15', kind: 'broken', desc: 'a new feature is added with no [new] tag and no ordinary test', expect: { M06: P, M10: P }, expectE: { E08: P }, mutate: (d, h) => newFeature(d, h, { test: false, tag: false }) },
+  { id: 'MG16', kind: 'broken', desc: 'a [new] criterion is cited by the characterization suite, which must pass on the original', expect: { M10: P, M02: P, M04: P }, expectE: {},
+    mutate(d, h) { newFeature(d, h, { test: true, tag: true }); h.edit(d, CHAR, t => t + "test('AC-008 count prints the number of entries', () => { const r = run('count', 1, 2, 3); assert.strictEqual(r.stdout.trim(), '3'); });\n"); } }
 ];
+function newFeature(d, h, { test, tag }) {
+  h.replace(d, 'src/cli.js', "} else {\n  console.error('usage", "} else if (cmd === 'count') {\n  console.log(rest.length);\n} else {\n  console.error('usage");
+  h.edit(d, 'docs/spec/SPEC.md', t => t.replace('\n## Open questions', '- [ ] AC-008 ' + (tag ? '[new] ' : '') + 'The count command prints how many entries it was given (REQ-004).\n\n## Open questions'));
+  h.relock(d);
+  if (test) {
+    h.write(d, 'tests/count.test.js', "const test = require('node:test');\nconst assert = require('node:assert');\nconst { spawnSync } = require('node:child_process');\ntest('AC-008 count prints 3 for three entries', () => { const r = spawnSync('node src/cli.js count 1 2 3', { shell: true, encoding: 'utf8' }); assert.strictEqual(r.stdout.trim(), '3'); });\n");
+    h.edit(d, 'docs/coverage.md', t => t + '| AC-008 | tests/count.test.js |\n');
+  }
+}
