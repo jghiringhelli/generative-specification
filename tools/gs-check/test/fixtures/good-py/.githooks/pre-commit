@@ -1,0 +1,2 @@
+#!/bin/sh
+python scripts/gate.py pre-commit || exit 1
