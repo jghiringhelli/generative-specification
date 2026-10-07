@@ -46,7 +46,7 @@ STOP: end your reply here and do not start the next phase until I answer. Show m
 PHASE 2 - Decisions and derived documents.
 - docs/decisions/0001-[slug].md: the stack and architecture and why as ## headings Status, Date, Context, Decision, Consequences (Status is Proposed until I ratify it). One more record per other non-obvious choice.
 - docs/architecture.md (modules, responsibilities, dependency direction), docs/data-model.md (skip if nothing is stored), docs/conventions.md (naming, where each kind of file goes, commit format), docs/fixes.md (an empty numbered list for gaps no criterion covers), docs/deferred.md. If nothing is stored, say "no stored data" in docs/architecture.md.
-- Start each with "Derived from:" and the spec path and ids that exist in the spec.
+- Start each with "Derived from:" and the spec path and ids that exist in the spec, and give each enough substance to orient a cold reader (at least 10 non-blank lines).
 
 PHASE 3 - Sentinel.
 Write the instruction file named above, small enough to read whole (for example under 150 lines), with five parts: (1) what the system is, and what it must never do; (2) standards; (3) constraints, each with its reason; (4) tool sequence: a table "gate | command | runs at | red proof", filled in phase 4; (5) routing: a table "topic | file" covering every file from phases 1-2. Name only paths that exist. Finish with this block, unchanged:
@@ -107,7 +107,7 @@ STOP: termina tu respuesta aquí y no empieces la fase siguiente hasta que yo re
 FASE 2 - Decisiones y documentos derivados.
 - docs/decisions/0001-[slug].md: el stack y la arquitectura elegidos y por qué como encabezados ## Status, Date, Context, Decision, Consequences (Status es Proposed hasta que yo lo ratifique). Un registro más por cada otra decisión no obvia.
 - docs/architecture.md (módulos, responsabilidades, dirección de las dependencias), docs/data-model.md (omítelo si no se guarda nada), docs/conventions.md (nombres, dónde va cada tipo de archivo, formato de commits), docs/fixes.md (una lista numerada vacía para huecos que ningún criterio cubre), docs/deferred.md. Si no se guarda nada, escribe "no stored data" en docs/architecture.md.
-- Empieza cada uno con "Derived from:" y la ruta y los ids de la spec.
+- Empieza cada uno con "Derived from:" y la ruta y los ids de la spec, y dale a cada uno la sustancia suficiente para orientar a un lector en frío (al menos 10 líneas no vacías).
 
 FASE 3 - Centinela.
 Escribe el archivo de instrucciones indicado arriba, lo bastante pequeño para leerse completo (por ejemplo menos de 150 líneas), con cinco partes: (1) qué es el sistema y qué nunca debe hacer; (2) estándares; (3) restricciones, cada una con su razón; (4) secuencia de herramientas: una tabla "gate | command | runs at | red proof", que llenarás en la fase 4; (5) ruteo: una tabla "topic | file" que cubra todos los archivos de las fases 1-2. Nombra solo rutas que existan. Termina con este bloque, sin cambios:
