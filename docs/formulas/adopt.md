@@ -164,6 +164,7 @@ Imprime una tabla, una fila por ítem, PRESENT, PARTIAL o MISSING, con el comand
 3. **Routes and ids resolve; gates fail when they should; a clean clone works.** Run the same five checks as in [1. Greenfield](/formulas/greenfield/#check-that-it-worked), or the machine-readable version in the [substrate checklist](/formulas/substrate-checklist/). For commits, check only `BASE..HEAD`: the old history will not conform.
 4. **The baseline is true.** Re-run the commands that produced its numbers: they match.
 5. **You, not the assistant, ratified.** Every criterion you did not ratify still carries `[observed]`.
+6. **A program checks the twelve items, not the assistant.** `node gs-check.mjs --repo . --strict --since [BASE]` (the checker in `tools/gs-check/`, run as in [13. Verify the substrate](/formulas/verify-substrate/)) prints a status and the raw probe lines for each item; `--since` limits the commit check to `BASE..HEAD`. Items 10 and 11 are expected to read ABSENT until [8](/formulas/lock/).
 
 ## Known limits
 

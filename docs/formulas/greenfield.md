@@ -162,6 +162,7 @@ Do not take the assistant's table as proof. Run the checks yourself, ideally in 
 3. **The gates fail when they should.** In a throwaway clone: add a line `OPEN: test` to a spec file and run the one command, it must fail; delete one test and run it, the ratchet check must fail because the test count fell below its floor (the floors were raised at the end of phase 5); run `git commit --allow-empty -m "fixed stuff"`, the hook must reject it.
 4. **A clean clone works.** `git clone . "$(mktemp -d)/check"` and `cd` into it (only committed work is cloned, so commit first), run the README's commands, expect exit 0, then repeat step 3's commit test there (this proves the hook installed itself).
 5. **A person ratified.** The criteria you read at the STOP are the ones in the file, and none you did not ratify carries a ratified mark.
+6. **A program checks the twelve items, not the assistant.** `node gs-check.mjs --repo . --strict` (the checker in `tools/gs-check/`, run as in [13. Verify the substrate](/formulas/verify-substrate/)) prints a status and the raw probe lines for each item. Items 10 and 11 (lock, co-change) are expected to read ABSENT until [8](/formulas/lock/).
 
 ## Known limits
 
