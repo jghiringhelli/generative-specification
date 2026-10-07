@@ -4,18 +4,18 @@ title: "8. Lock and co-change gate"
 parent: Formulas
 nav_order: 8
 permalink: /formulas/lock/
-description: "Day 7 to 30, once there is code with ids: tag each derived artifact with the spec section it came from, keep the hashes in one lock file, and add a co-change gate. A design built once on one sample project."
+description: "Day 7 to 30, once there is code with ids: install the reference lock tool, tag the derived artifacts with the spec section they came from, write the first lock, wire the co-change gate and prove each one red then green. A deterministic tool with its own tests; the prompt only installs and wires it."
 ---
 
 # 8. Add the lock and the co-change gate (day 7 to 30)
 
-**Status: written to the canon, not yet tested in a registered run.** The mechanism itself is **design status**: its five checks were implemented once, as deterministic scripts with no model, in one sample project, and verified on 35 crafted scenarios. That shows they detect what they are defined to detect; no effect on defects was measured. Definitions: [coherence between spec and code](/method/coherence/).
+**Status: written to the canon, not yet tested in a registered run.** The mechanism is now a reference implementation: `gs-lock.mjs`, `gs-cochange.mjs` and `gs-redproof.mjs` in `tools/gs-lock/` of this repository (Node, no dependencies, no model, MIT), with 75 tests of its own, the 35 scenarios of the lab self-test among them. That shows it detects what it is defined to detect. It has **not** been run on a model-written project in a registered run, and no effect on defects was measured. In the development loop of 2026-10-06 the earlier wording (the assistant writes the scripts) reached a complete working lock in 1 of 3 side-probe runs (development, not evidence), which is why this version installs a tool instead of asking for one. Definitions: [coherence between spec and code](/method/coherence/).
 
 ## When to use
 
 A week or more in, when the project has **code with ids**: criteria in `docs/spec/`, tests and sources that derive from them, and the one command and CI already working ([1](/formulas/greenfield/) or [2](/formulas/adopt/), and one gate proven with [7](/formulas/gate/)). The lock answers "from which version of the intent did this artifact come?"; the co-change gate answers "did this commit say why it changed behavior?". **Not for:** day one. Without ids and a working gate there is nothing to lock.
 
-Open a **fresh session** in the project folder.
+Open a **fresh session** in the project folder. Fill the `[brackets]`: the tool files are the ones in `tools/gs-lock/` of this repository (give the path of your copy, or the URL). The assistant copies them; it does not write them.
 
 ## The prompt
 
@@ -25,21 +25,31 @@ Open a **fresh session** in the project folder.
 **English**
 
 ```text
-Add the spec lock and the co-change gate to this project.
+Add the spec lock and the co-change gate to this project with the reference tool I give you. Work on a branch named gs-lock-[YYYY-MM-DD]. Follow the steps in order.
 
-Precondition: criteria with ids exist under docs/spec/, at least one test or source file derives from them, and the project's one command already runs. If not, stop and tell me to come back when they do.
+Reference tool, three files you copy and never edit: [path or URL of gs-lock.mjs, gs-cochange.mjs and gs-redproof.mjs]
+Default branch of this repository: [main | master | other]
 
-Write deterministic scripts, with no model and no network, in this project's stack, under scripts/coherence/. Do not change what the code does.
+Rules for the whole session
+- Never run `ratify`, and never write a line in docs/ratifications.md. A person ratifies a spec change that is meant; I do it.
+- Do not write or edit the tool files or docs/spec.lock by hand. If the tool cannot do what is needed, stop and tell me.
+- Do not change what the code does. Paste the real output and exit code of every command; never describe an output you did not see.
+- One change per commit, Conventional Commit subject, and cite the id it serves where there is one.
 
-1. Tags. Each living derived artifact (a test, or a source file that implements a rule) carries a comment: @gs [criterion-id] [spec-path]#[section], where [section] is the GitHub-style anchor of the heading that holds the criterion (lowercase, spaces to hyphens, punctuation removed; for example docs/spec/F-001-x.md#f-001-register-a-hive). A tag has no hash, so a spec change never forces a code edit. Add tags to the existing tests and to the sources that implement a criterion. Show that the tests and the type check give the same results before and after tagging.
-2. Lock. docs/spec.lock has one line per spec section, "S [spec-path]#[section] [hash]", and one line per tagged artifact, "A [file] [criterion-id] [spec-path]#[section] [hash]" (the hash of the section it was derived against); a hash is the first 16 hex characters of the SHA-256 of the section text after removing markup, list markers, tick state and whitespace. An init command writes the first lock from the current spec and tags (you run it once and show me the file); from then on only ratify moves a hash. The check recomputes the section hashes and fails on four states: an artifact older than its section (stale), a lock behind the spec, a tag the lock does not know, a lock entry whose tag disappeared. Decision records are append-only and are not locked.
-3. Ratify command. The only way to move an artifact's hash, and it requires a reason argument. It appends "date | who | id | reason" to docs/spec/ratifications.md. A person runs it, never you.
-4. Orphan check. Every id cited in a tag or a test exists in the spec.
-5. Co-change gate (commit-msg hook and CI). A commit that changes source must cite a criterion id in its message, or stage a spec change, or be typed refactor. A refactor must pass the parent commit's tests, unchanged, against the new source.
+Precondition: criteria with ids exist under docs/spec/, at least one test or source file derives from them, the project's one command runs green, and Node 18 or later is installed. If not, stop and tell me what is missing.
 
-Wire 2, 4 and 5 into the project's one command, the hook and CI. Add each to the sentinel's tool sequence table (gate | command | runs at | red proof); a red proof is one shell command that plants a violation in a throwaway copy and runs the gate, and exits non-zero.
-Prove each one red once, on a scratch branch: edit a criterion after its artifact was tagged; cite an id that does not exist; change source with no citation; commit a "refactor" that changes a behavior a test pins. Show each fail, undo it, then show everything green in a fresh clone.
-Never mark anything as ratified on my behalf. List what these checks cannot see.
+1. Install. Copy the three files unchanged to tools/gs-lock/. Run `node tools/gs-lock/gs-lock.mjs check` and show it say NOLOCK: the tool runs here.
+2. Tag. Give each living derived artifact (a test, or a source file that implements a criterion) one comment line: @gs [criterion-id] [spec-path]#[section], where [section] is the GitHub-style anchor of the heading that holds the criterion (lowercase, spaces to hyphens, punctuation removed; for example docs/spec/F-001-x.md#f-001-register-a-hive). The tag has no hash, so a spec change never forces a code edit. Add tags to the existing tests and to the sources that implement a criterion. Show that the tests and the type check give the same results before and after tagging.
+3. Init. Run `node tools/gs-lock/gs-lock.mjs init` once and show docs/spec.lock; then `check` must exit 0. Commit the lock and the .gitattributes the tool wrote. From now on only a person's `ratify` moves an artifact hash.
+4. Wire, with the project's own hook mechanism (hooks stored in the repository, committed as executable, installed by the setup step that already exists):
+   - pre-commit: `node tools/gs-lock/gs-lock.mjs check` and then `node tools/gs-lock/gs-lock.mjs commit-check`
+   - commit-msg: `node tools/gs-lock/gs-cochange.mjs --msg-file "$1"`
+   - pre-push: `node tools/gs-lock/gs-cochange.mjs --pre-push`
+   - the one command and CI: `node tools/gs-lock/gs-lock.mjs check`, and in CI also `node tools/gs-lock/gs-cochange.mjs --range origin/[default branch]..HEAD` with the full history fetched.
+   If the project's tests do not run with `npm test` or pytest, put the command in .gs.json as {"testCmd": "..."}.
+5. Sentinel. Add three rows to the tool-sequence table (gate | command | runs at | red proof): spec-lock | `node tools/gs-lock/gs-lock.mjs check` | pre-commit, CI | `node tools/gs-lock/gs-redproof.mjs stale`; co-change | `node tools/gs-lock/gs-cochange.mjs --msg-file` | commit-msg, pre-push, CI | `node tools/gs-lock/gs-redproof.mjs uncited`; refactor-proof | `node tools/gs-lock/gs-cochange.mjs --msg-file` | commit-msg, CI | `node tools/gs-lock/gs-redproof.mjs breaking-refactor`.
+6. Prove each one red, then green. Run each red proof and show that it exits non-zero and names the violation. Then, on a scratch branch with the hooks installed, do each for real and show it refused: write a sentence inside a tagged section of the spec and commit; change a source file and commit as `feat: tweak`; commit a change typed `refactor:` whose source breaks a test, with a test edited in the same commit. Undo each. Finally clone the repository to a temporary folder, run the setup step and the one command, show exit code 0, and repeat one refusal there.
+7. Report in a table what each check catches, and list what these checks cannot see.
 ```
 
 </div>
@@ -48,21 +58,32 @@ Never mark anything as ratified on my behalf. List what these checks cannot see.
 **Español (neutro)**
 
 ```text
-Agrega el lock de la spec y el gate de co-cambio a este proyecto.
+Agrega el lock de la spec y el gate de co-cambio a este proyecto con la herramienta de referencia que te doy. Trabaja en una rama llamada gs-lock-[AAAA-MM-DD]. Sigue los pasos en orden.
 
-Precondición: existen criterios con ids bajo docs/spec/, al menos un test o archivo fuente deriva de ellos y el comando único del proyecto ya corre. Si no, detente y dime que vuelva cuando existan.
+Herramienta de referencia, tres archivos que copias y nunca editas: [ruta o URL de gs-lock.mjs, gs-cochange.mjs y gs-redproof.mjs]
+Rama principal de este repositorio: [main | master | otra]
 
-Escribe scripts deterministas, sin modelo y sin red, en el stack de este proyecto, bajo scripts/coherence/. No cambies lo que hace el código.
+Reglas para toda la sesión
+- Nunca corras `ratify` ni escribas una línea en docs/ratifications.md. Una persona ratifica un cambio de la spec que sea intencional; lo hago yo.
+- No escribas ni edites a mano los archivos de la herramienta ni docs/spec.lock. Si la herramienta no puede hacer lo que hace falta, detente y dímelo.
+- No cambies lo que hace el código. Pega la salida real y el código de salida de cada comando; nunca describas una salida que no viste.
+- Un cambio por commit, asunto Conventional Commit, y cita el id al que sirve cuando exista.
+- Deja en inglés las palabras que lee una verificación automática: ratify, @gs, STALE, UNLOCKED, los nombres de comandos y los nombres de columna de las tablas.
 
-1. Etiquetas. Cada artefacto derivado vivo (un test, o un archivo fuente que implementa una regla) lleva un comentario: @gs [id-del-criterio] [ruta-de-la-spec]#[sección], donde [sección] es el ancla estilo GitHub del encabezado que contiene el criterio (minúsculas, espacios a guiones, sin signos de puntuación; por ejemplo docs/spec/F-001-x.md#f-001-registrar-una-colmena). Una etiqueta no lleva hash, así un cambio en la spec nunca obliga a editar código. Agrega etiquetas a los tests existentes y a las fuentes que implementan un criterio. Muestra que los tests y la verificación de tipos dan los mismos resultados antes y después de etiquetar.
-2. Lock. docs/spec.lock tiene una línea por sección de la spec, "S [ruta-de-la-spec]#[sección] [hash]", y una línea por artefacto etiquetado, "A [archivo] [id-del-criterio] [ruta-de-la-spec]#[sección] [hash]" (el hash de la sección contra la que se derivó); un hash son los primeros 16 caracteres hexadecimales del SHA-256 del texto de la sección tras quitar el formato, los marcadores de lista, el estado de los checks y los espacios. Un comando init escribe el primer lock a partir de la spec y las etiquetas actuales (lo corres una vez y me muestras el archivo); desde entonces solo ratify mueve un hash. La verificación recalcula los hashes de las secciones y falla en cuatro estados: un artefacto más viejo que su sección (obsoleto), un lock atrasado respecto a la spec, una etiqueta que el lock no conoce, una entrada del lock cuya etiqueta desapareció. Los registros de decisiones son de solo agregar y no se bloquean.
-3. Comando de ratificación. Es la única forma de mover el hash de un artefacto y exige un argumento con la razón. Agrega "fecha | quién | id | razón" a docs/spec/ratifications.md. Lo corre una persona, nunca tú.
-4. Verificación de huérfanos. Todo id citado en una etiqueta o en un test existe en la spec.
-5. Gate de co-cambio (hook commit-msg y CI). Un commit que cambia código fuente debe citar un id de criterio en su mensaje, o incluir un cambio de la spec, o tener tipo refactor. Un refactor debe pasar los tests del commit padre, sin modificar, contra el código nuevo.
+Precondición: existen criterios con ids bajo docs/spec/, al menos un test o archivo fuente deriva de ellos, el comando único del proyecto corre en verde y Node 18 o posterior está instalado. Si no, detente y dime qué falta.
 
-Conecta 2, 4 y 5 al comando único del proyecto, al hook y al CI. Agrega cada uno a la tabla de secuencia de herramientas del centinela (gate | command | runs at | red proof; deja en inglés los nombres de columna); una prueba en rojo es un comando de shell que planta una violación en una copia desechable, corre el gate y termina con código distinto de cero.
-Demuestra cada uno en rojo una vez, en una rama de pruebas: edita un criterio después de que su artefacto fue etiquetado; cita un id que no existe; cambia código fuente sin cita; haz commit de un "refactor" que cambia un comportamiento que un test fija. Muestra cada fallo, deshazlo y luego muestra todo en verde en un clon nuevo.
-Nunca marques nada como ratificado en mi nombre. Lista lo que estas verificaciones no pueden ver.
+1. Instalar. Copia los tres archivos sin cambios a tools/gs-lock/. Corre `node tools/gs-lock/gs-lock.mjs check` y muestra que dice NOLOCK: la herramienta corre aquí.
+2. Etiquetar. Da a cada artefacto derivado vivo (un test, o un archivo fuente que implementa un criterio) una línea de comentario: @gs [id-del-criterio] [ruta-de-la-spec]#[sección], donde [sección] es el ancla estilo GitHub del encabezado que contiene el criterio (minúsculas, espacios a guiones, sin signos de puntuación; por ejemplo docs/spec/F-001-x.md#f-001-registrar-una-colmena). La etiqueta no lleva hash, así un cambio en la spec nunca obliga a editar código. Agrega etiquetas a los tests existentes y a las fuentes que implementan un criterio. Muestra que los tests y la verificación de tipos dan los mismos resultados antes y después de etiquetar.
+3. Init. Corre `node tools/gs-lock/gs-lock.mjs init` una sola vez y muestra docs/spec.lock; luego `check` debe terminar con código 0. Haz commit del lock y del .gitattributes que escribió la herramienta. Desde ahora solo el `ratify` de una persona mueve el hash de un artefacto.
+4. Conectar, con el mecanismo de hooks del propio proyecto (hooks guardados en el repositorio, commiteados como ejecutables, instalados por el paso de preparación que ya existe):
+   - pre-commit: `node tools/gs-lock/gs-lock.mjs check` y luego `node tools/gs-lock/gs-lock.mjs commit-check`
+   - commit-msg: `node tools/gs-lock/gs-cochange.mjs --msg-file "$1"`
+   - pre-push: `node tools/gs-lock/gs-cochange.mjs --pre-push`
+   - el comando único y el CI: `node tools/gs-lock/gs-lock.mjs check`, y en el CI además `node tools/gs-lock/gs-cochange.mjs --range origin/[rama principal]..HEAD` con el historial completo descargado.
+   Si los tests del proyecto no corren con `npm test` ni con pytest, pon el comando en .gs.json como {"testCmd": "..."}.
+5. Centinela. Agrega tres filas a la tabla de secuencia de herramientas (gate | command | runs at | red proof): spec-lock | `node tools/gs-lock/gs-lock.mjs check` | pre-commit, CI | `node tools/gs-lock/gs-redproof.mjs stale`; co-change | `node tools/gs-lock/gs-cochange.mjs --msg-file` | commit-msg, pre-push, CI | `node tools/gs-lock/gs-redproof.mjs uncited`; refactor-proof | `node tools/gs-lock/gs-cochange.mjs --msg-file` | commit-msg, CI | `node tools/gs-lock/gs-redproof.mjs breaking-refactor`.
+6. Demuestra cada uno en rojo y luego en verde. Corre cada prueba en rojo y muestra que termina con código distinto de cero y nombra la violación. Luego, en una rama de pruebas con los hooks instalados, haz cada una de verdad y muestra que se rechaza: escribe una frase dentro de una sección etiquetada de la spec y haz commit; cambia un archivo fuente y haz commit como `feat: tweak`; haz commit de un cambio de tipo `refactor:` cuya fuente rompe un test, con un test editado en el mismo commit. Deshaz cada una. Por último clona el repositorio en una carpeta temporal, corre el paso de preparación y el comando único, muestra el código de salida 0 y repite allí un rechazo.
+7. Informa en una tabla qué detecta cada verificación y lista lo que estas verificaciones no pueden ver.
 ```
 
 </div>
@@ -70,29 +91,33 @@ Nunca marques nada como ratificado en mi nombre. Lista lo que estas verificacion
 
 ## What good output looks like
 
-- `scripts/coherence/` with a handful of small scripts, `docs/spec.lock`, tags in the comments of tests and sources, and `docs/spec/ratifications.md`.
-- Four red demonstrations (stale, orphan, uncited change, behavior-changing "refactor") and a green fresh clone.
+- `tools/gs-lock/` with the three files, byte for byte as given; `docs/spec.lock`, `.gitattributes` and tags in the comments of tests and sources.
+- Three sentinel rows whose red proofs are one command each (`gs-redproof.mjs stale`, `uncited`, `breaking-refactor`), hooks stored as executable, and a CI step.
+- Three refusals pasted from a real commit attempt and a green fresh clone.
 - A before/after comparison of test and type-check results showing the tags changed nothing.
-- A closing list of what the checks cannot see.
+- No `docs/ratifications.md` yet, unless you ran `ratify` yourself.
 
 ## Check that it worked
 
-1. **Stale is caught.** Edit a sentence in one criterion (a scratch branch): the check fails naming the artifacts derived from that section. Revert: green.
-2. **Orphans are caught.** Cite `F-999.1` in a test: the orphan check fails.
-3. **Uncited change is caught.** Edit a source file and commit with the message `fix: tweak` (no id, no spec change): the hook rejects it. With `refactor: tweak` and a change that breaks a test the parent had: rejected.
-4. **Tags are inert.** Run the project's tests and type check on the commit before tagging and after: identical results.
-5. **Only a ratification moves a hash.** Run the ratify command without a reason: refused. With one: a new line in `docs/spec/ratifications.md` and the artifact is current again.
-6. **Fresh clone.** Repeat steps 1 and 3 in a clean clone.
+Run these yourself, ideally in a clean clone; the assistant's table is a claim.
+
+1. **The tool is the reference.** `git diff --no-index [your copy]/gs-lock.mjs tools/gs-lock/gs-lock.mjs` prints nothing (same for the other two files).
+2. **The lock is current.** `node tools/gs-lock/gs-lock.mjs check` exits 0 and prints `all current`. If it prints `UNCOVERED` lines, those are spec ids no artifact carries a tag for: reported, not failing (`--require-coverage` makes them fail).
+3. **Stale is caught.** `node tools/gs-lock/gs-redproof.mjs stale` exits non-zero and prints `STALE`. Edit a sentence in a tagged criterion yourself: `check` fails naming the artifacts derived from it; revert: green.
+4. **Uncited and behavior-changing changes are caught.** `node tools/gs-lock/gs-redproof.mjs uncited` and `... breaking-refactor` exit non-zero; `git commit -m "fix: tweak"` over a source change is rejected by the hook.
+5. **Only a ratification moves a hash.** `node tools/gs-lock/gs-lock.mjs ratify --all` without `--reason` is refused; with a reason, `docs/ratifications.md` gains a line and `check` passes. (Run it only for a spec change you meant; the record is append only.)
+6. **Machine check.** `node gs-check.mjs --repo . --strict --only E10,E11` ([formula 13](/formulas/verify-substrate/)) drifts a sentence inside a locked section, ratifies it, plants a behavior-changing refactor and reports for itself.
 
 ## Known limits
 
-- Design status; built once on a Node and TypeScript sample project. Other stacks need their own test runner and source reader. The scripts of that project are in the course sensors kit, not in this repository.
-- A typo fix in a criterion is a change and needs a ratification: the tool cannot tell a typo from a change of intent. That is the price. Use explicit, stable ids (the prompt does) so inserting a criterion does not shift the others.
-- The tag carries no hash, so it can lie by omission: a file tagged with a rule it never implements stays current. The lock says which version the file was derived against, not that it satisfies it. That is the work of the tests.
-- The refactor proof is only as strong as the tests: an edge no test pins passes as a refactor.
-- The lock merges worse than a dependency lockfile: two branches editing different sections still conflict in it.
-- An assistant could run the ratify command. The real enforcement is a person's review on a protected shared branch; a clone cannot show you whether that is set.
+- Design status for the effect, implementation status for the tool. It detects that a spec and an artifact **diverged**; it does **not** detect that the spec is **wrong** (that is the [triage](/practice/refinement/), cases b and c).
+- The tag carries no hash, so it can lie by omission: a file tagged with a rule it never implements stays current. The lock says which version it was derived against, not that it satisfies it. That is the work of the tests.
+- A typo fix in a criterion is a change and needs a ratification: the tool cannot tell a typo from a change of intent. Use explicit, stable ids (the prompt does) so inserting a criterion does not shift the others.
+- The refactor proof is only as strong as the tests: an edge no test pins passes as a refactor, and a refactor that moves a file the tests import fails it. A project without a test command gets an error, not a pass.
+- `ratify` is a command an assistant could run. The record keeps who, when and why; the enforcement is a person's review of `docs/ratifications.md` and the lock on a protected shared branch, and CI on the server. A clone cannot show you those settings, and `git commit --no-verify` skips every local hook.
+- The lock merges worse than a dependency lockfile: two branches editing neighbouring sections conflict in it; `resolve` keeps both sides. The record merges without conflict (`merge=union`, written by `init`).
+- Tested on Windows and in a Linux container with Node 22; not on macOS. The tool needs `git` on the path.
 
 ## Next
 
-[9. Audit](/formulas/audit/) to see where the substrate is thin; [10. Self-experiment](/formulas/experiment/) to see what it did on your own project.
+[9. Audit](/formulas/audit/) to see where the substrate is thin; [13. Verify the substrate](/formulas/verify-substrate/) to check all twelve items with a program; [10. Self-experiment](/formulas/experiment/) to see what it did on your own project.
