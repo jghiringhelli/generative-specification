@@ -225,7 +225,7 @@ const DEFAULT_CONFIG = {
     "getaddrinfo"
   ],
   "gateScriptAllow": "(gate|check|lint|test|verify|lock|open|ratchet|cover|spec|sensor|guard|audit|valid)",
-  "sourceExcludePattern": "(^|/)(.*\\.config\\.[cm]?[jt]s|setup\\.py|conftest\\.py|noxfile\\.py|eslint[^/]*|vitest[^/]*|jest[^/]*|babel[^/]*|webpack[^/]*|rollup[^/]*)$",
+  "sourceExcludePattern": "(^|/)(.*\\.config\\.[cm]?[jt]s|setup\\.py|conftest\\.py|noxfile\\.py|eslint[^/]*|vitest[^/]*|jest[^/]*|babel[^/]*|webpack[^/]*|rollup\\.config[^/]*)$",
   "conventionalLeniencyOne": true,
   "migration": {
     "manifest": "docs/migration/equivalence.json",
@@ -1720,7 +1720,8 @@ function runSync(ctx, { base }) {
     push(res('Y04', NY.Y04, !allIds.size ? 'ABSENT' : o.length ? 'PARTIAL' : 'PASS', !allIds.size ? ['no ids in the spec'] : o.length ? ['ids cited in documents but defined nowhere in the spec: ' + o.slice(0, 8).map(([id, p]) => id + ' (' + p + ')').join(', ')] : [], {}, {})); }
   // Y05
   if (noBase) push(res('Y05', NY.Y05, 'UNDETERMINABLE', ['no --base commit']));
-  else { const changed = git(ctx.root, ['diff', '--numstat', base + '..HEAD']).stdout.split('\n').filter(Boolean).map(l => l.split('\t')).filter(a => a.length === 3 && (a[0] !== '0' || a[1] !== '0') && srcAtBase.includes(a[2])).map(a => a[2]);
+  else { const tagRe = new RegExp(cfg.lock.tagRegex, 'u'); const changed = git(ctx.root, ['diff', '--numstat', base + '..HEAD']).stdout.split('\n').filter(Boolean).map(l => l.split('\t')).filter(a => a.length === 3 && (a[0] !== '0' || a[1] !== '0') && srcAtBase.includes(a[2])).map(a => a[2])
+      .filter(p => git(ctx.root, ['diff', '-U0', base + '..HEAD', '--', p]).stdout.split('\n').filter(l => /^[+-]/.test(l) && !/^(\+\+\+|---)/.test(l)).some(l => l.slice(1).trim() && !tagRe.test(l.slice(1))));
     push(res('Y05', NY.Y05, changed.length ? 'PARTIAL' : 'PASS', changed.length ? ['production files changed since the boundary: ' + changed.slice(0, 6).join(', ')] : [], { sourceFiles: srcAtBase.length }, {})); }
   items.sort((a, b) => a.id.localeCompare(b.id));
   return { items, summary: { pass: items.filter(i => i.status === 'PASS').length, total: items.length, all_pass: items.length === 5 && items.every(i => i.status === 'PASS') } };
