@@ -33,7 +33,7 @@ export default [
     mutate(d, h) { h.rm(d, 'docs/decisions'); stripLines(h, d, 'CLAUDE.md', 'docs/decisions/'); } },
   { id: 'R04', kind: 'removed', target: 'E04', desc: 'no cascade documents', expect: { E04: A },
     mutate(d, h) { for (const f of ['architecture', 'data-model', 'conventions']) { h.rm(d, `docs/${f}.md`); stripLines(h, d, 'CLAUDE.md', `docs/${f}.md`); } } },
-  { id: 'R05', kind: 'removed', target: 'E05', desc: 'no tests', expect: { E05: A, E08: P },
+  { id: 'R05', kind: 'removed', target: 'E05', desc: 'no tests (collateral: with no tests a refactor cannot be proven, so E11 is PARTIAL)', expect: { E05: A, E08: P, E11: P },
     mutate(d, h) { h.rm(d, 'tests'); h.write(d, 'docs/ratchet.json', '{\n  "tests_min": 0\n}\n'); h.relock(d); } },
   { id: 'R06', kind: 'removed', target: 'E05', strict: { E05: P, E06: P, E07: P, E10: P, E11: P }, desc: 'no hooks installed or versioned (scripts remain)', expect: { E05: P, E11: P },
     mutate(d, h) { h.rm(d, '.githooks'); h.replace(d, 'package.json', '    "prepare": "node scripts/install-hooks.js",\n', ''); } },
