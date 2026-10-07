@@ -4,7 +4,7 @@ Registration draft: `docs/experiments/prereg/FX-1.md`. Checker specification: `d
 
 | Folder | What | How to run |
 |---|---|---|
-| `checker/` | the deterministic conformance checker (Node, no dependencies), its configuration, hand-built control projects and their tests | `cd checker && npm test` (about 8 minutes; needs Node 24, git, bash, and for the python control python 3.11 with pytest). One repository: `node checker.js --repo <path> --out report.json` |
+| `checker/` | **a pointer only** (`checker/README.md`). The checker is one file, `tools/gs-check/gs-check.mjs` in the formulas repository, which is the canonical copy, with its configuration embedded, its controls and its tests beside it | in the formulas repository: `node tools/gs-check/gs-check.mjs --repo <path> --strict --out report.json`; tests in `tools/gs-check/README.md` |
 | `fixtures/` | five invented product briefs (web API, command-line tool, data pipeline, game rules engine, MCP tool server) | read; an independent reader must approve or rewrite them before freeze |
 | `simulation/` | sample-size and decisiveness simulation (`simulate.js`, `results.md`, `results.json`) | `node simulate.js` (about 2 s; `--quick` for a coarse run) |
 

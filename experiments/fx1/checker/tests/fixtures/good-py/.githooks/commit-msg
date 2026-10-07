@@ -1,2 +1,0 @@
-#!/bin/sh
-python scripts/gate.py commit-msg "$1" || exit 1

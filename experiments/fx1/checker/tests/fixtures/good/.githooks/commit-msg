@@ -1,2 +1,0 @@
-#!/bin/sh
-node scripts/gate.js commit-msg "$1" || exit 1

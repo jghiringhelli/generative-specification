@@ -1,2 +1,0 @@
-#!/bin/sh
-node scripts/gate.js pre-commit || exit 1

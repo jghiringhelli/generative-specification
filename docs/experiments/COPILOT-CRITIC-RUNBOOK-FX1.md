@@ -17,7 +17,7 @@ This runbook follows the pattern of `docs/experiments/COPILOT-CRITIC-RUNBOOK.md`
 ## 0. Resolve paths first (why they are repo-root-relative)
 JC's usual rule is absolute paths always. You are on a different PC, so the absolute location of the repository is unknown to whoever wrote this runbook. Resolve it yourself and pin it, then treat every path below as relative to it.
 
-1. Find the repository root: the folder that contains `docs/experiments/prereg/FX-1.md` and `experiments/fx1/checker/checker.js`.
+1. Find the repository root: the folder that contains `docs/experiments/prereg/FX-1.md` and `tools/gs-check/gs-check.mjs`.
 2. Set and **print** it: `REPO=<the absolute path on THIS PC>`.
 3. Run `git rev-parse HEAD` and `git branch --show-current` and print both. The branch must be `experiment-protocol-2026-10-02`; if not, stop and tell JC.
 4. Print the absolute path of each allowed file (section 2) and its SHA-256. Do not continue until all exist and print.
@@ -32,7 +32,7 @@ Then derive `VENDOR` (one lowercase word: `openai`, `google`, `anthropic`, `xai`
 1. `docs/experiments/prereg/FX-1.md` (the draft registration under review)
 2. `docs/experiments/FX-1-CHECKER-SPEC.md` (the checker specification; part of the same registration)
 3. `docs/experiments/EXPERIMENT-PROTOCOL.md` (the protocol the registration must obey)
-4. `experiments/fx1/checker/config.default.json` (the frozen parameters of the checker)
+4. `tools/gs-check/gs-check.mjs --print-config` (the frozen parameters of the checker are its embedded default configuration)
 5. `experiments/fx1/fixtures/README.md` and the five briefs `experiments/fx1/fixtures/FIX-API-lendmark.md`, `FIX-CLI-stitchcount.md`, `FIX-PIPE-tidewatch.md`, `FIX-GAME-cinderfall.md`, `FIX-MCP-shelfwise.md`
 6. `experiments/fx1/simulation/results.md` (the sample-size simulation output)
 
@@ -147,4 +147,4 @@ If `git push` is rejected, run `git pull --rebase` once more and push again; nev
 - Leakage scan on each critique (`docs/experiments/ROLES.md` section 3): it must not echo wording or ids from the Claude critics' review record; if it does, exclude and rerun that model.
 - Check each critique's file hashes against `Get-FileHash` on the commit named in `REPO_HEAD`.
 - Count findings by severity with a script; adjudicate per `ROLES.md` section 3 (ACCEPTED, ACCEPTED-AS-DECLARED-LIMIT, REJECTED with written refutation, DEFERRED) into `docs/experiments/prereg/FX-1-REVIEW.md`. A round needs at least 3 vendors, at least 2 not Anthropic. The stop rule is the one of `ROLES.md` section 6, with its own counter for FX-1.
-- A different-vendor judge is also needed later for the secondary judgments of FX-1 section 7, and a different-vendor reading of the checker's controls (`experiments/fx1/checker/tests/variants.js`) is a good use of a second round, because this round does not give the critics the checker's source.
+- A different-vendor judge is also needed later for the secondary judgments of FX-1 section 7, and a different-vendor reading of the checker's controls (`tools/gs-check/test/variants.mjs`) is a good use of a second round, because this round does not give the critics the checker's source.
