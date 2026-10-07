@@ -755,6 +755,9 @@ function detectStack(root) {
   if (exists(path.join(root, 'package.json'))) return 'node';
   if (['pyproject.toml', 'requirements.txt', 'requirements-dev.txt', 'setup.py', 'pytest.ini', 'setup.cfg'].some(x => exists(path.join(root, x)))) return 'python';
   if (exists(path.join(root, 'go.mod'))) return 'go';
+  // (dev loop 2, defect C19) a python project with no requirements file (standard library only, unittest): run b2 n2-C-shortly-en
+  const hasPy = d => { try { return fs.readdirSync(path.join(root, d)).some(f => /\.py$/.test(f)); } catch { return false; } };
+  if (hasPy('.') || hasPy('tests') || hasPy('test')) return 'python';
   return 'unknown';
 }
 function installCommands(ctx, sbx) {
@@ -882,9 +885,9 @@ function e05(ctx) {
   // paired clean control: the safe doc edit alone (with the same message style) must be accepted, otherwise the block below could be caused by it
   const pair = safe.docEdit ? sbx.attemptCommit([safe.docEdit], 'docs: fx1 safe edit control' + safe.idSuffix) : P.c0;
   sub.safe_edit_alone_accepted = !pair.blocked;
-  const plantNew = py ? { path: 'tests/test_fx1_planted.py', write: 'def test_fx1_planted():\n    assert False, "fx1 planted failure"\n' } : { path: 'tests/fx1_planted.test.js', write: "throw new Error('fx1 planted failure');\n" };
+  const plantNew = py ? { path: 'tests/test_fx1_planted.py', write: 'import unittest\n\n\nclass Fx1Planted(unittest.TestCase):\n    def test_fx1_planted(self):\n        self.fail("fx1 planted failure")\n' } : { path: 'tests/fx1_planted.test.js', write: "throw new Error('fx1 planted failure');\n" };
   const existing = trackedFiles(sbx.root).find(p => isTestPath(ctx.cfg, p) && /\.(js|mjs|cjs|ts|py)$/.test(p));
-  const plantAppend = existing ? { path: existing, append: py ? '\n\ndef test_fx1_planted_append():\n    assert False, "fx1 planted failure"\n' : "\nthrow new Error('fx1 planted failure');\n" } : null;
+  const plantAppend = existing ? { path: existing, append: py ? '\n\nimport unittest as _fx1_unittest\n\n\nclass Fx1PlantedAppend(_fx1_unittest.TestCase):\n    def test_fx1_planted_append(self):\n        self.fail("fx1 planted failure")\n' : "\nthrow new Error('fx1 planted failure');\n" } : null;
   const msgT = 'test: fx1 planted failing test' + safe.idSuffix;
   let pT = sbx.probe(withSafe(plantNew), msgT, { scripts: true });
   if (!BLOCKED(pT) && plantAppend) pT = sbx.probe(withSafe(plantAppend), msgT, { scripts: true });
@@ -1031,19 +1034,21 @@ function e08Command(ctx, crit) {
   const exTest = [...testFilesAll].sort((a, b) => nCited(b) - nCited(a))[0];
   const tdir = exTest ? path.dirname(exTest) : 'tests';
   const py = P.stack === 'python';
-  const plant = (fname, id) => py ? { path: `${tdir}/test_fx1_${fname}.py`, write: `# ${id}\ndef test_fx1_${fname}():\n    assert True\n` } : { path: `${tdir}/fx1_${fname}.test.js`, write: `// ${id}\nrequire("node:test")("${id} ${fname}", () => {});\n` };
-  sbx.reset(); sbx.apply([plant('orphan', 'F-999.9')]);
-  const o = sbx.run(quiet(cmd), ctx.cfg.timeouts.gateMs); sbx.reset();
-  if (o.code === 0) reasons.push('a test citing an id the spec does not define (orphan) does not make the coverage command fail');
-  let raised = null;
+  // (dev loop 2, defect C17) The command may scan only some test folders or only one file extension (tests/unit, *.test.mjs): the probe tries every test folder, with the extension the folder's own tests use.
+  const locs = []; for (const p of [...testFilesAll].sort((x, y) => nCited(y) - nCited(x))) { const dir = path.dirname(p); const ext = py ? '.py' : (p.match(/\.(test|spec)\.(m?js|cjs|tsx?)$/) || [])[0] || '.test.js'; if (!locs.some(l => l.dir === dir && l.ext === ext)) locs.push({ dir, ext }); }
+  if (!locs.length) locs.push({ dir: tdir, ext: py ? '.py' : '.test.js' });
+  const plant = (fname, id, loc) => py ? { path: `${loc.dir}/test_fx1_${fname}.py`, write: `# ${id}\ndef test_fx1_${fname}():\n    assert True\n` } : { path: `${loc.dir}/fx1_${fname}${loc.ext}`, write: /\.mjs$/.test(loc.ext) || /\.tsx?$/.test(loc.ext) ? `// ${id}\nimport test from 'node:test';\ntest('${id} ${fname}', () => {});\n` : `// ${id}\nrequire("node:test")("${id} ${fname}", () => {});\n` };
+  let orphanFailed = false;
+  for (const loc of locs) { sbx.reset(); sbx.apply([plant('orphan', 'F-999.9', loc)]); const o = sbx.run(quiet(cmd), ctx.cfg.timeouts.gateMs); sbx.reset(); if (o.code !== 0) { orphanFailed = true; break; } }
+  if (!orphanFailed) reasons.push('a test citing an id the spec does not define (orphan) does not make the coverage command fail' + (locs.length > 1 ? ` (tried ${locs.length} test folders)` : ''));
+  let raised = null; let lastAfter = null;
   const uncited = ids.find(id => !citeRe(id).test(testText));
   if (base && uncited) {
-    sbx.apply([plant('cover', uncited)]);
-    const c = sbx.run(quiet(cmd), ctx.cfg.timeouts.gateMs); sbx.reset();
-    const after = parse(c.out); raised = !!(after && after.n === base.n + 1);
-    if (!raised) reasons.push(`a test citing ${uncited} does not raise N by one (${base.n} -> ${after ? after.n : 'no output'})`);
+    raised = false;
+    for (const loc of locs) { sbx.reset(); sbx.apply([plant('cover', uncited, loc)]); const c = sbx.run(quiet(cmd), ctx.cfg.timeouts.gateMs); sbx.reset(); lastAfter = parse(c.out); if (lastAfter && lastAfter.n === base.n + 1) { raised = true; break; } }
+    if (!raised) reasons.push(`a test citing ${uncited} does not raise N by one (${base.n} -> ${lastAfter ? lastAfter.n : 'no output'})`);
   }
-  return { tried: true, cmd, ok: reasons.length === 0, reasons, printed: base ? `criteria coverage: ${base.n}/${base.m}` : null, recomputed: `${citedIds.length}/${ids.length}`, orphanFailed: o.code !== 0, raisedByCitation: raised };
+  return { tried: true, cmd, ok: reasons.length === 0, reasons, printed: base ? `criteria coverage: ${base.n}/${base.m}` : null, recomputed: `${citedIds.length}/${ids.length}`, orphanFailed, raisedByCitation: raised };
 }
 function e08(ctx) {
   const name = 'criteria coverage: a command reports N/M (or every criterion id has a coverage entry)'; const cfg = ctx.cfg; const f = discover(ctx);
@@ -1323,7 +1328,7 @@ function e12(ctx) {
 // E12 runs last: it smoke-starts long-running commands and must not leave state for the probes.
 const ORDER = [['E01', e01], ['E02', e02], ['E03', e03], ['E04', e04], ['E05', e05], ['E06', e06], ['E07', e07], ['E08', e08], ['E09', e09], ['E10', e10], ['E11', e11], ['E12', e12]];
 function prepare(ctx) { ctx.shared.readme = parseReadme(ctx); }
-module.exports = { ORDER, prepare, discover, parseSpecDefs, countTests, citedByATest, installCommands, detectStack };
+module.exports = { ORDER, prepare, discover, parseSpecDefs, countTests, citedByATest, installCommands, detectStack, testCommand };
 
 };
 
@@ -1341,7 +1346,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { sh, git, exists, read, tryRead, posix, trackedFiles, sha256 } = require('./util');
-const { discover, parseSpecDefs, installCommands } = require('./items');
+const { discover, parseSpecDefs, installCommands, testCommand } = require('./items');
 
 const res = (id, name, status, reasons = [], evidence = {}, subflags = {}) => ({ id, name, status, reasons, evidence, subflags });
 const NAMES = {
@@ -1412,6 +1417,8 @@ function surfaceTokens(texts) {
     for (const m of text.matchAll(/case\s+['"]([\w-]+)['"]\s*:/g)) add('command', m[1]);
     for (const m of text.matchAll(/['"](--[a-z][\w-]*)['"]/g)) add('flag', m[1]);
     for (const m of text.matchAll(/process\.env\.([A-Z][A-Z0-9_]+)|process\.env\[['"]([A-Z][A-Z0-9_]+)['"]\]|os\.environ(?:\.get)?[\[(]\s*['"]([A-Z][A-Z0-9_]+)['"]|os\.getenv\(\s*['"]([A-Z][A-Z0-9_]+)['"]/g)) add('env', m[1] || m[2] || m[3] || m[4]);
+    // (dev loop 2, defect C18) batch tools with positional arguments have no routes or flags: the files they write are their surface
+    for (const m of text.matchAll(/(?:writeFileSync|writeFile|appendFileSync|createWriteStream|open|join|resolve)\s*\([^)\n]*['"`]([\w.-]+\.(?:csv|tsv|json|ndjson|txt|log|xml|html|md))['"`]/g)) if (!/^package(-lock)?\.json$/.test(m[1])) add('file', m[1]);
   }
   return T;
 }
@@ -1456,7 +1463,7 @@ function copyTree(src, dst) {
 }
 function mutationProbe(ctx, label, srcRoot, files, runSuite, tmp) {
   const cfgM = ctx.cfg.migration.mutation; const sites = mutantSites(srcRoot, files);
-  const out = { label, sites: sites.length, tried: 0, killed: 0, invalid: 0, survivors: [] };
+  const out = { label, sites: sites.length, tried: 0, killed: 0, killedByChar: 0, invalid: 0, survivors: [] };
   if (!sites.length) return out;
   const copy = path.join(tmp, 'mut-' + label); copyTree(srcRoot, copy);
   const perFile = {}; let guard = 0; const cap = new Set(sites.map(x => x.file)).size > 1 ? Math.ceil(cfgM.count / 2) : cfgM.count;
@@ -1471,7 +1478,7 @@ function mutationProbe(ctx, label, srcRoot, files, runSuite, tmp) {
     if (!syntaxOk(s.file, abs)) { out.invalid++; fs.writeFileSync(abs, orig); continue; }
     perFile[s.file] = (perFile[s.file] || 0) + 1; out.tried++;
     const r = runSuite(copy);
-    if (r.code !== 0) out.killed++; else out.survivors.push(`${s.file}:${s.line} ${JSON.stringify(s.from.trim())} to ${JSON.stringify(s.to.trim())}`);
+    if (r.code !== 0) { out.killed++; if (r.byChar !== false) out.killedByChar++; } else out.survivors.push(`${s.file}:${s.line} ${JSON.stringify(s.from.trim())} to ${JSON.stringify(s.to.trim())}`);
     fs.writeFileSync(abs, orig);
   }
   fs.rmSync(copy, { recursive: true, force: true });
@@ -1573,9 +1580,10 @@ function run(ctx, { mutants = null } = {}) {
         const r4 = []; const ev = {};
         const probe = (label, root, list, cmd, pass) => {
           if (!pass) { r4.push(`${label}: not run, the suite is red on this tree`); return; }
-          const o = mutationProbe(ctx, label, root, list, copy => suite(copy, cmd, M.mutation.runMs), tmp); ev[label] = { sites: o.sites, tried: o.tried, killed: o.killed, invalid: o.invalid, survivors: o.survivors.slice(0, 8) };
+          const ordinary = label === 'current' ? testCommand(ctx, sbx) : null;
+          const o = mutationProbe(ctx, label, root, list, copy => { const r = suite(copy, cmd, M.mutation.runMs); if (r.code !== 0 || !ordinary) return { code: r.code, byChar: true }; const r2 = sh(ordinary, { cwd: copy, timeout: M.mutation.runMs }); return { code: r2.code, byChar: false }; }, tmp); ev[label] = { sites: o.sites, tried: o.tried, killed: o.killed, killedByCharacterizationSuite: o.killedByChar, invalid: o.invalid, survivors: o.survivors.slice(0, 8) };
           if (!o.tried) r4.push(`${label}: no mutable site found in ${list.length} source files, so the suite's sensitivity could not be judged`);
-          else if (o.killed / o.tried < M.mutation.minKill) r4.push(`${label}: the suite refused ${o.killed} of ${o.tried} planted behavior changes (need ${Math.round(M.mutation.minKill * 100)}%); not refused: ${o.survivors.slice(0, 4).join('; ')}`);
+          else if (o.killed / o.tried < M.mutation.minKill) r4.push(`${label}: ${label === 'current' ? 'the suite and the project tests together' : 'the suite'} refused ${o.killed} of ${o.tried} planted behavior changes (need ${Math.round(M.mutation.minKill * 100)}%); not refused: ${o.survivors.slice(0, 4).join('; ')}`);
         };
         probe('original', orig, origFiles, m.original.cmd, dyn.origPass);
         probe('current', sbx.root, curFiles, m.current.cmd, dyn.curPass);
