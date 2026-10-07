@@ -4,33 +4,37 @@ title: "12. Migrate"
 parent: Formulas
 nav_order: 12
 permalink: /formulas/migrate/
-description: "Two precise cases. A: move a legacy system to a new stack or architecture in a separate codebase, pinning its behavior first, recovering its spec with an inverse inventory, and proving parity on the target. B: move a project from an older Generative Specification layout to the current canon, in place, losing nothing. Prompts in English and neutral Spanish."
+description: "Two precise cases. A: existing code with no Generative Specification becomes a recovered spec plus a characterization suite, and the project then becomes a greenfield substrate built from that spec, with the observable behavior proved equal on the original and on the new code. B: move a project from an older Generative Specification layout to the current canon, in place, losing nothing. Prompts in English and neutral Spanish."
 ---
 
 # 12. Migrate
 
-**Status: written to the canon, not yet tested in a registered run.** Case A is the [migrate to a new stack practice page](/practice/migrate-stack/) rewritten to the canon (ids, characterization contracts, an inverse inventory, a parity table); that page's durations were never measured and this wording has no recorded run. Case B has no lab relative at all.
+**Status: written to the canon; case A rewritten on 2026-10-07 and exercised only in development runs (not evidence), case B not run.** Case A is "code becomes spec, then the project becomes a greenfield": three stages, each a fresh session, and a deterministic equivalence check at the end ([formula 13](/formulas/verify-substrate/) with `--migration`). Case B has no lab relative at all and is the least tested text in this section.
 
 ## What "migrate" means here
 
-"Migrate" is overloaded; this page fixes it to two cases that differ in **where the result lives** and **what is preserved**. Everything else has another formula.
+"Migrate" is overloaded; this page fixes it to two cases that differ in **what you start from** and **what must survive**. Everything else has another formula.
 
 | Your situation | Use | The result lives | What must survive |
 |---|---|---|---|
-| The code exists, no substrate, you keep it where it is | [2. Adopt after an MVP](/formulas/adopt/) | the same repository | the code, untouched |
-| **A.** A legacy system, to a **new stack or architecture** | **this page, case A** | a **separate target codebase**; the source stays as it is, on a branch with the pinning artifacts | its **observable behavior** (the contracts), not its code |
+| The code exists, you keep it exactly as it is and want the substrate around it | [2. Adopt after an MVP](/formulas/adopt/) | the same repository, code untouched | the code |
+| **A.** Existing code, **no Generative Specification**: you want the project to become a greenfield one (a spec that came from the code, a substrate built from that spec, code regenerated from it or carried) | **this page, case A** | the same repository, on a migration branch; the original stays at a base commit | its **observable behavior** (the characterization suite), not its code |
 | **B.** A project that already has an **older GS layout** (a manifest, `docs/adrs/active`, use cases `UC-NNN`, `STATUS.md`, a sentinel with another name) | **this page, case B** | the same repository, files moved | every document, every id and the commit history; behavior untouched |
 | An in-place dependency or framework upgrade | [Existing project](/practice/existing-project/) audit and remediation | the same repository | n/a |
 
-**What both cases add to the other formulas.** In A, the *characterization contracts* (the behavior is pinned **before** anything is read as intent, so "parity" has an oracle that is not the new code) and the *inverse inventory* (every element of the system's public surface is listed and either claimed by an id or kept visible as `UNCLAIMED`, so a feature cannot be lost by never having been written down). In B, the *crosswalk* (every old artifact and every old id is mapped, nothing disappears without a row that says why).
+**What case A adds to the other formulas.** The behavior is pinned **before** it is read as intent, by a *characterization suite* that is black-box (it runs the system from outside and never imports its code), so the very same suite can be run against the original and against the new code: "parity" has an oracle that is not the new code. Every test of the suite cites a criterion id of the recovered spec, and every criterion is cited by a test. Every element of the public surface is listed in an *inventory* and either carried (`keep`) or visibly set aside (`drop`, `defer`) with a reason in the deferred list, so a behavior cannot be lost by never having been written down. In B, the *crosswalk* (every old artifact and every old id is mapped, nothing disappears without a row that says why).
 
 ---
 
-## Case A. A legacy system to a new stack
+## Case A. Existing code becomes a spec, and the project becomes a greenfield
 
-Three steps, three prompts, **each self-contained**: A1 prepares the source (a branch of the source repository), A2 is [formula 1](/formulas/greenfield/) run in the **empty target folder**, A3 compares the two. Stop and read between them; they take sessions, not minutes (the durations on the older page were never measured).
+```
+legacy code --A1--> recovered spec + characterization suite + inventory  --A2--> greenfield substrate built from the spec --A3--> equivalence checked by a program
+```
 
-### A1. Pin and recover (in the source)
+Three stages, **each in a fresh session** and each self-contained; stop and read between them. They take sessions, not minutes (no duration was measured).
+
+### A1. Recover the spec and pin the behavior (in the repository)
 
 <div class="prompt-pair" markdown="1">
 <div markdown="1">
@@ -38,21 +42,24 @@ Three steps, three prompts, **each self-contained**: A1 prepares the source (a b
 **English**
 
 ```text
-Prepare this system for a migration to a new stack. The source is this folder. Work on a branch named gs-migrate-[YYYY-MM-DD], never on the main branch, and do not change production source code in this session: you may add documents, tests and scripts. First run git rev-parse HEAD and keep it as BASE; print it in the report. Follow the phases in order and stop where it says STOP.
+Recover the specification of this existing system from its code and pin its behavior, so that the project can then be rebuilt as a greenfield project under Generative Specification with the same observable behavior. Work on a branch named gs-migrate-[YYYY-MM-DD], never on the main branch, and do not change production source code in this session: you may add documents, tests and scripts. First run git rev-parse HEAD and keep it as BASE; print it in the report. Follow the phases in order and stop where it says STOP.
 
-Target stack, if I already chose: [language, framework, test tool, database | "none yet"]
 My original spec, if any: [path, or "none"]
+Target stack, only if it is not the same as today: [language, framework, test tool, database | "same as today"]
 
 Rules for the whole session
 - Never mark anything as ratified on my behalf. I ratify and I decide.
-- Do not invent. Where intent is not visible in the code or my spec, write a line that starts with "OPEN:" and ask me.
-- Describe what exists, not an ideal. "Done" needs evidence: the command you ran and its output; paste real outputs and exit codes, never describe one you did not see.
+- Do not invent. Where intent is not visible in the code or my spec, write a line that starts with "OPEN:" and ask me. Describe what the code does, mistakes included; the tag [observed] says so.
+- "Done" needs evidence: the command you ran and its output; paste real outputs and exit codes, never describe one you did not see.
 - One change per commit, with a Conventional Commit subject.
 
-PHASE 1 - Read and pin. Find how to install, run and test the source, run its tests now and report the real result (do not fix anything that fails). For every behavior the system offers to the outside (each route, command, scheduled job, message handled, and each function that another system calls), write a characterization contract in docs/migration/contracts/: a small script or test named C-NNN-[slug] that runs the real thing with fixed input and checks the observable output (or records it in a file next to it). Each contract must pass on the source as it is. If a behavior cannot be pinned without changing production code, write an OPEN: line saying why.
-PHASE 2 - Recover the spec and take the inverse inventory. Write docs/migration/spec/SPEC.md and one docs/migration/spec/F-NNN-[slug].md per feature, independent of the stack: behavior, entities and relationships, integrations, non-functional needs. A requirement is a heading that starts with its id (### F-001: Name; N-001 for non-functional), in its feature file only; SPEC.md lists the features in a table (id, name, file) without id headings. Criteria are one list line each, starting with its id (F-001.1, never renumbered, never reused), with MUST, SHOULD or MAY, ending with "verified by:" and the tag [observed] until I ratify. Framework-specific notes go in docs/migration/impl-notes.md, not in the spec. Then write docs/migration/inventory.md: one row for every element of the public surface you can find in the code (routes, commands, exported functions used from outside, stored tables and columns, scheduled jobs, configuration keys, message types, files read or written) with the columns element | where in the code | claimed by | contract | decision. "claimed by" is a criterion id; an element that no criterion claims stays in the table marked UNCLAIMED. Do not drop it and do not invent a criterion for it. "contract" is a C-NNN id or blank. Where my original spec and the code disagree, write an OPEN: line quoting both sides; do not choose a side.
-STOP: end your reply here and do not start the next phase until I answer. Show me the inventory with its UNCLAIMED rows, the OPEN: lines and the disagreements. For each feature I will say keep, drop or modernize, choose the target stack if I have not, and ratify by id.
-PHASE 3 - Apply my decisions. Fill the decision column (keep, drop, modernize). Remove nothing from the table: a dropped element stays with the word dropped and my reason. Print the number of kept elements that have no contract. Commit, and print the commit.
+PHASE 1 - Read and run. Find how to install, run and test the system, run its tests now and report the real result (fix nothing that fails). Print what the system does, its modules and its public surface: every route, command, flag, scheduled job, message handled, environment variable, file read or written, and stored table or column.
+PHASE 2 - Recover the spec and take the inventory. STOP at the end.
+Write docs/spec/SPEC.md and docs/spec/F-NNN-[slug].md, independent of the framework: overview, scope, non-goals, a list "the AI must never", one requirement per feature, written as a heading that starts with its id (### F-001: Name; N-001 for non-functional) in its own feature file only (its title line does not repeat the id); SPEC.md lists the features in a table (id, name, file), without id headings; acceptance criteria one list line each, starting with its id (F-001.1, F-001.2; never renumbered, never reused), with MUST, SHOULD or MAY, ending with "verified by:" and the tag [observed] until I ratify. Use my original spec's wording where the code matches it. Where my spec and the code disagree, write an OPEN: line quoting both sides; do not choose a side.
+Then write docs/migration/inventory.md: a table with the columns element | where in the code | claimed by | decision | reason, one row for every element of the public surface you listed. "claimed by" holds the criterion ids that describe the element, or UNCLAIMED when no criterion does: do not drop the row and do not invent a criterion for it. Leave decision and reason empty.
+STOP: end your reply here and do not start the next phase until I answer. Show me the criteria, the inventory with its UNCLAIMED rows, the OPEN: lines and the disagreements. For each element I will say keep (the behavior is carried to the new code), drop (it is not carried, and why) or defer (not decided, not carried now, and why), and I will ratify by id.
+PHASE 3 - Pin the behavior. Fill the decision and reason columns with my answers (a dropped or deferred element stays in the table). Then write the characterization suite in tests/characterization/: one test for each criterion of a kept element, with the criterion id in its name or in a comment inside the test. The suite is black-box: it runs the system only through the command in the environment variable GS_SUT_CMD, from the directory in GS_SUT_ROOT (defaults: the repository root, and the command that invokes the system in this working tree), reads only what comes out (standard output, exit code, files, HTTP responses) and never imports the system's code. To run it against another version of the system only these two variables change. If a behavior cannot be pinned without changing production code, write an OPEN: line saying why; its element becomes defer. Write docs/migration/equivalence.json as {"base": "<BASE>", "suite": "<the one command that runs the suite>", "original": {"cmd": "<how to invoke the system, relative to its root>", "setup": "<install step, optional>"}, "current": {"cmd": "<the same, for the working tree>"}}, and docs/deferred.md with a row element | reason for every dropped or deferred element (the file exists even if the only row says "none").
+Prove it with real output: the suite passes on this working tree; it passes against a checkout of BASE in a temporary folder (GS_SUT_ROOT pointing there); it fails against an empty folder; and plant one change in a copy of the code (flip a comparison operator) and show the suite fail, then drop the copy. Print the counts of kept, dropped and deferred elements and the number of kept elements that have no test (it must be 0). Commit.
 ```
 
 </div>
@@ -61,37 +68,33 @@ PHASE 3 - Apply my decisions. Fill the decision column (keep, drop, modernize). 
 **Español (neutro)**
 
 ```text
-Prepara este sistema para migrarlo a un stack nuevo. El origen es esta carpeta. Trabaja en una rama llamada gs-migrate-[AAAA-MM-DD], nunca en la rama principal, y no cambies el código de producción en esta sesión: puedes agregar documentos, tests y scripts. Primero corre git rev-parse HEAD y guárdalo como BASE; imprímelo en el informe. Sigue las fases en orden y detente donde diga STOP.
+Recupera la especificación de este sistema existente a partir de su código y fija su comportamiento, para que luego el proyecto pueda reconstruirse como un proyecto nuevo bajo Generative Specification con el mismo comportamiento observable. Trabaja en una rama llamada gs-migrate-[AAAA-MM-DD], nunca en la rama principal, y no cambies el código de producción en esta sesión: puedes agregar documentos, tests y scripts. Primero corre git rev-parse HEAD y guárdalo como BASE; imprímelo en el informe. Sigue las fases en orden y detente donde diga STOP.
 
-Stack de destino, si ya lo elegí: [lenguaje, framework, herramienta de pruebas, base de datos | "todavía no"]
 Mi spec original, si existe: [ruta, o "ninguna"]
+Stack de destino, solo si no es el mismo de hoy: [lenguaje, framework, herramienta de pruebas, base de datos | "el mismo de hoy"]
 
 Reglas para toda la sesión
 - Nunca marques nada como ratificado en mi nombre. Yo ratifico y yo decido.
-- No inventes. Donde la intención no se vea en el código ni en mi spec, escribe una línea que empiece con "OPEN:" y pregúntame.
-- Describe lo que existe, no un ideal. "Hecho" exige evidencia: el comando que corriste y su salida; pega salidas y códigos de salida reales, nunca describas una que no viste.
+- No inventes. Donde la intención no se vea en el código ni en mi spec, escribe una línea que empiece con "OPEN:" y pregúntame. Describe lo que el código hace, errores incluidos; la marca [observed] lo dice.
+- "Hecho" exige evidencia: el comando que corriste y su salida; pega salidas y códigos de salida reales, nunca describas una que no viste.
 - Un cambio por commit, con asunto Conventional Commit.
-- Deja en inglés las palabras que lee una verificación automática: OPEN:, verified by:, UNCLAIMED, [observed], MUST, SHOULD, MAY, los nombres de columna de las tablas.
+- Deja en inglés las palabras que lee una verificación automática: OPEN:, verified by:, UNCLAIMED, [observed], MUST, SHOULD, MAY, keep, drop, defer, GS_SUT_ROOT, GS_SUT_CMD, los nombres de columna de las tablas.
 
-FASE 1 - Leer y fijar. Averigua cómo instalar, correr y probar el origen, corre sus tests ahora e informa el resultado real (no arregles nada de lo que falle). Para cada comportamiento que el sistema ofrece hacia afuera (cada ruta, comando, tarea programada, mensaje que atiende y cada función que otro sistema llama), escribe un contrato de caracterización en docs/migration/contracts/: un script o test pequeño llamado C-NNN-[slug] que corre la cosa real con una entrada fija y verifica la salida observable (o la guarda en un archivo al lado). Cada contrato debe pasar sobre el origen tal como está. Si un comportamiento no se puede fijar sin cambiar código de producción, escribe una línea OPEN: que diga por qué.
-FASE 2 - Recuperar la spec y hacer el inventario inverso. Escribe docs/migration/spec/SPEC.md y un docs/migration/spec/F-NNN-[slug].md por funcionalidad, independientes del stack: comportamiento, entidades y relaciones, integraciones, necesidades no funcionales. Un requisito es un encabezado que empieza con su id (### F-001: Nombre; N-001 para los no funcionales), solo en su archivo de funcionalidad; SPEC.md lista las funcionalidades en una tabla (id, nombre, archivo) sin encabezados con id. Los criterios son una línea de lista cada uno, que empieza con su id (F-001.1, nunca renumerado, nunca reutilizado), con DEBE (MUST), DEBERÍA (SHOULD) o PUEDE (MAY), terminan con "verified by:" y la marca [observed] hasta que yo ratifique. Las notas propias de un framework van en docs/migration/impl-notes.md, no en la spec. Luego escribe docs/migration/inventory.md: una fila por cada elemento de la superficie pública que encuentres en el código (rutas, comandos, funciones exportadas que se usan desde afuera, tablas y columnas guardadas, tareas programadas, claves de configuración, tipos de mensaje, archivos leídos o escritos) con las columnas element | where in the code | claimed by | contract | decision. "claimed by" es un id de criterio; un elemento que ningún criterio reclama queda en la tabla marcado UNCLAIMED. No lo borres y no inventes un criterio para él. "contract" es un id C-NNN o queda vacío. Donde mi spec original y el código discrepen, escribe una línea OPEN: que cite ambos lados; no elijas uno.
-STOP: termina tu respuesta aquí y no empieces la fase siguiente hasta que yo responda. Muéstrame el inventario con sus filas UNCLAIMED, las líneas OPEN: y las discrepancias. Para cada funcionalidad diré keep, drop o modernize, elegiré el stack de destino si no lo hice y ratificaré por id.
-FASE 3 - Aplica mis decisiones. Llena la columna decision (keep, drop, modernize). No quites nada de la tabla: un elemento descartado queda con la palabra dropped y mi razón. Imprime cuántos elementos que se mantienen no tienen contrato. Haz commit e imprímelo.
+FASE 1 - Leer y correr. Averigua cómo instalar, correr y probar el sistema, corre sus tests ahora e informa el resultado real (no arregles nada de lo que falle). Imprime qué hace el sistema, sus módulos y su superficie pública: cada ruta, comando, flag, tarea programada, mensaje que atiende, variable de entorno, archivo leído o escrito, y tabla o columna guardada.
+FASE 2 - Recuperar la spec y hacer el inventario. STOP al final.
+Escribe docs/spec/SPEC.md y docs/spec/F-NNN-[slug].md, independientes del framework: resumen, alcance, no-objetivos, una lista "la IA nunca debe", un requisito por funcionalidad, escrito como un encabezado que empieza con su id (### F-001: Nombre; N-001 para los no funcionales) solo en su archivo de funcionalidad (su línea de título no repite el id); SPEC.md lista las funcionalidades en una tabla (id, nombre, archivo), sin encabezados con id; criterios de aceptación de una línea de lista cada uno, que empieza con su id (F-001.1, F-001.2; nunca renumerado, nunca reutilizado), con DEBE (MUST), DEBERÍA (SHOULD) o PUEDE (MAY), terminan con "verified by:" y la marca [observed] hasta que yo ratifique. Usa la redacción de mi spec original donde el código coincida. Donde mi spec y el código discrepen, escribe una línea OPEN: que cite ambos lados; no elijas uno.
+Luego escribe docs/migration/inventory.md: una tabla con las columnas element | where in the code | claimed by | decision | reason, una fila por cada elemento de la superficie pública que listaste. "claimed by" contiene los ids de los criterios que describen el elemento, o UNCLAIMED cuando ningún criterio lo describe: no borres la fila y no inventes un criterio para ella. Deja decision y reason vacíos.
+STOP: termina tu respuesta aquí y no empieces la fase siguiente hasta que yo responda. Muéstrame los criterios, el inventario con sus filas UNCLAIMED, las líneas OPEN: y las discrepancias. Para cada elemento diré keep (el comportamiento pasa al código nuevo), drop (no pasa, y por qué) o defer (sin decidir, no pasa ahora, y por qué), y ratificaré por id.
+FASE 3 - Fijar el comportamiento. Llena las columnas decision y reason con mis respuestas (un elemento descartado o diferido queda en la tabla). Luego escribe la suite de caracterización en tests/characterization/: un test por cada criterio de un elemento que se mantiene, con el id del criterio en su nombre o en un comentario dentro del test. La suite es de caja negra: corre el sistema solo mediante el comando de la variable de entorno GS_SUT_CMD, desde el directorio de GS_SUT_ROOT (valores por defecto: la raíz del repositorio y el comando que invoca el sistema en este árbol de trabajo), lee solo lo que sale (salida estándar, código de salida, archivos, respuestas HTTP) y nunca importa el código del sistema. Para correrla contra otra versión del sistema solo cambian estas dos variables. Si un comportamiento no se puede fijar sin cambiar código de producción, escribe una línea OPEN: que diga por qué; su elemento pasa a defer. Escribe docs/migration/equivalence.json como {"base": "<BASE>", "suite": "<el comando único que corre la suite>", "original": {"cmd": "<cómo invocar el sistema, relativo a su raíz>", "setup": "<paso de instalación, opcional>"}, "current": {"cmd": "<lo mismo, para el árbol de trabajo>"}}, y docs/deferred.md con una fila element | reason por cada elemento descartado o diferido (el archivo existe aunque su única fila diga "none").
+Demuéstralo con salidas reales: la suite pasa en este árbol de trabajo; pasa contra una copia de BASE en una carpeta temporal (GS_SUT_ROOT apuntando allí); falla contra una carpeta vacía; y planta un cambio en una copia del código (invierte un operador de comparación) y muestra que la suite falla, luego descarta la copia. Imprime la cuenta de elementos kept, dropped y deferred y cuántos elementos kept no tienen test (debe ser 0). Haz commit.
 ```
 
 </div>
 </div>
 
-### A2. Build the target (formula 1, in the empty target folder)
+### A2. Rebuild as a greenfield (formula 1 plus this addendum)
 
-Open a fresh session in the **empty target folder** and run [1. Greenfield](/formulas/greenfield/) with these two brackets filled:
-
-- **My spec:** `[absolute path of the source folder]/docs/migration/spec`, the features you marked keep or modernize, "already ratified by id; keep the ids exactly as they are; do not re-open what I ratified".
-- **Stack:** the target stack you chose.
-
-Greenfield's STOP at the end of phase 1 then becomes a quick confirmation. Copy `docs/migration/spec` and the `contracts` and `inventory.md` into the target's `docs/migration/` so the target carries its own history (a copy, with a line saying from which source commit).
-
-### A3. Parity (in the target)
+Open a **fresh session** in the same repository, on the branch A1 created. Paste [formula 1, Greenfield](/formulas/greenfield/) with its brackets filled, and **below it** the addendum. In formula 1: **My spec:** `docs/spec/` (recovered, "already ratified by id; keep the ids exactly as they are; do not re-open what I ratified"); **Stack:** the target stack of A1.
 
 <div class="prompt-pair" markdown="1">
 <div markdown="1">
@@ -99,9 +102,14 @@ Greenfield's STOP at the end of phase 1 then becomes a quick confirmation. Copy 
 **English**
 
 ```text
-Check the migrated system against the source's contracts. The source is [absolute path of the source folder, on branch gs-migrate-DATE]; the target is this folder. Do not change either system's code in this session, and never mark anything as ratified on my behalf.
-
-For each contract in [source]/docs/migration/contracts/ whose inventory row says keep or modernize: run it against the source and against the target (change only how the system is invoked, never the expected output), and write docs/migration/parity.md with one row each: contract | element | source output | target output | same | decision. For a row that is not the same, write the difference verbatim and put OPEN: in decision for me to resolve; never edit a contract or the target to make a row match. Run nothing for dropped elements. Print the table, the count same over total, and the number of kept elements that have no contract. Paste real outputs and exit codes. Finish by running the target's one command and showing exit code 0.
+MIGRATION ADDENDUM. The formula above is applied to a spec recovered from existing code; where this addendum differs from it, this addendum wins.
+- Repository: this one, on the branch gs-migrate-DATE that stage A1 created. The original system is the commit named "base" in docs/migration/equivalence.json; it stays there and history is never rewritten.
+- Phase 1 is done: docs/spec/ was recovered from the code and I ratified it by id. Do not rewrite it and do not stop for it; check that it is there and continue. A criterion you think is missing is an OPEN: line, not an addition.
+- How to build: [regenerate | carry]. regenerate: write the new implementation from the spec, in the stack named above (the original's if none is named); while writing it do not read the original source except to look up a behavior the spec leaves open, and such a case is an OPEN: line, not a silent copy. carry: keep the existing code and bring it under the substrate without changing what it does.
+- tests/characterization/ and docs/migration/ are frozen: you may add tests, never edit or delete one. A characterization test that fails on the new code is a defect of the new code, or an OPEN: line for me; never a reason to change the test.
+- Phase 5 becomes: implement every criterion of the kept elements until the characterization suite passes against the new code. Update "current" in docs/migration/equivalence.json to how the new code is invoked, and make the suite's defaults (GS_SUT_ROOT, GS_SUT_CMD) the new code. Then show with real output: the suite passes against a checkout of the base commit in a temporary folder; it passes against the new code; and a change planted in a copy of the new code (flip a comparison operator) makes it fail.
+- With regenerate, finish by removing the original production files from the working tree with git rm, in their own commit "chore: remove the original code, kept at the base commit", after the suite has passed on the new code.
+- Add docs/migration/inventory.md and docs/deferred.md to the routing table of the sentinel. In phase 6 add to the report the counts of kept, dropped and deferred elements and the three equivalence results above.
 ```
 
 </div>
@@ -110,21 +118,32 @@ For each contract in [source]/docs/migration/contracts/ whose inventory row says
 **Español (neutro)**
 
 ```text
-Verifica el sistema migrado contra los contratos del origen. El origen es [ruta absoluta de la carpeta de origen, en la rama gs-migrate-FECHA]; el destino es esta carpeta. No cambies el código de ninguno de los dos sistemas en esta sesión y nunca marques nada como ratificado en mi nombre.
-
-Para cada contrato de [origen]/docs/migration/contracts/ cuya fila del inventario diga keep o modernize: córrelo contra el origen y contra el destino (cambia solo la forma de invocar el sistema, nunca la salida esperada), y escribe docs/migration/parity.md con una fila cada uno: contract | element | source output | target output | same | decision. Para una fila que no es igual, escribe la diferencia tal cual y pon OPEN: en decision para que yo la resuelva; nunca edites un contrato ni el destino para que una fila coincida. No corras nada para los elementos descartados. Imprime la tabla, la cuenta de iguales sobre el total y cuántos elementos que se mantienen no tienen contrato. Pega salidas y códigos de salida reales. Termina corriendo el comando único del destino y mostrando el código de salida 0.
+ADENDA DE MIGRACIÓN. La fórmula de arriba se aplica a una spec recuperada de código existente; donde esta adenda difiera de ella, gana esta adenda.
+- Repositorio: este, en la rama gs-migrate-FECHA que creó la etapa A1. El sistema original es el commit llamado "base" en docs/migration/equivalence.json; se queda allí y el historial nunca se reescribe.
+- La fase 1 está hecha: docs/spec/ se recuperó del código y yo la ratifiqué por id. No la reescribas ni te detengas por ella; comprueba que está y continúa. Un criterio que creas que falta es una línea OPEN:, no una adición.
+- Cómo construir: [regenerate | carry]. regenerate: escribe la implementación nueva a partir de la spec, en el stack indicado arriba (el del original si no se indica ninguno); mientras la escribes no leas el código fuente original salvo para consultar un comportamiento que la spec deja abierto, y ese caso es una línea OPEN:, no una copia silenciosa. carry: conserva el código existente y ponlo bajo el substrato sin cambiar lo que hace.
+- tests/characterization/ y docs/migration/ están congelados: puedes agregar tests, nunca editar ni borrar uno. Un test de caracterización que falla contra el código nuevo es un defecto del código nuevo, o una línea OPEN: para mí; nunca un motivo para cambiar el test.
+- La fase 5 pasa a ser: implementa cada criterio de los elementos keep hasta que la suite de caracterización pase contra el código nuevo. Actualiza "current" en docs/migration/equivalence.json con cómo se invoca el código nuevo, y haz que los valores por defecto de la suite (GS_SUT_ROOT, GS_SUT_CMD) sean el código nuevo. Luego muestra con salidas reales: la suite pasa contra una copia del commit base en una carpeta temporal; pasa contra el código nuevo; y un cambio plantado en una copia del código nuevo (invierte un operador de comparación) la hace fallar.
+- Con regenerate, termina quitando los archivos de producción originales del árbol de trabajo con git rm, en su propio commit "chore: remove the original code, kept at the base commit", después de que la suite haya pasado sobre el código nuevo.
+- Agrega docs/migration/inventory.md y docs/deferred.md a la tabla de ruteo del centinela. En la fase 6 agrega al informe las cuentas de elementos kept, dropped y deferred y los tres resultados de equivalencia de arriba.
 ```
 
 </div>
 </div>
 
+Then add the lock with [8. Lock](/formulas/lock/): the characterization tests are derived artifacts of the criteria they cite, so they take `@gs` tags like any test.
+
+### A3. Check the equivalence (a program, not the assistant)
+
+Run [formula 13](/formulas/verify-substrate/) with the migration switch: `node gs-check.mjs --repo [project] --strict --migration --verbose`. After E01 to E12 it prints M01 to M09: the manifest and the base commit; the suite green on the **original** (a checkout of the base commit) and red on an **empty** system; the suite green on the **new** code; a mutation probe (a few comparison operators, booleans, arithmetic signs and numbers flipped one at a time, in the original and in the new code; a suite that does not refuse most of them is not an oracle); every characterization test citing a criterion of the recovered spec and every criterion cited; the inventory's decisions and claims; the original's public surface found by pattern matching in its code compared with the inventory (independent of the assistant's list); and the deferred list.
+
 ### Check that it worked (case A)
 
-1. **The source did not change.** `git diff --stat BASE..HEAD -- [production source folders]` in the source prints nothing; its tests give the same result on BASE and on the branch.
-2. **Every contract passes on the source.** Run each one yourself on the branch.
-3. **The inventory is complete.** Pick five things the system does that you know by heart (a route, a column, a job, a flag). Each is a row; if one is missing, the inventory is not complete. `UNCLAIMED` rows are not a failure, they are the list of things nobody wrote down.
-4. **Parity is yours to read.** Re-run two contracts on both systems; the table says what you see. Every row that is not `same` carries an `OPEN:` and none was settled by editing a contract.
-5. **The target has the substrate.** `node gs-check.mjs --repo [target] --strict` ([formula 13](/formulas/verify-substrate/)) reports on the twelve items.
+1. **The original did not change.** `git diff --stat BASE..HEAD -- [production source folders]` shows only the removal of the original files (regenerate) or nothing (carry); `git show BASE:[file]` still works.
+2. **Run the suite against both yourself.** `GS_SUT_ROOT=[a checkout of BASE] GS_SUT_CMD="[original command]" [suite command]` and the same on the new code: both exit 0. Edit a comparison in the new code: the suite exits non-zero.
+3. **The inventory is complete.** Pick five things the system does that you know by heart (a route, a column, a flag, a job). Each is a row; if one is missing, the inventory is not complete. `UNCLAIMED` rows are not a failure, they are the list of things nobody wrote down. Every `drop` and `defer` has a reason in `docs/deferred.md`.
+4. **The checker agrees.** `--migration` prints M01 to M09 all `PASS` and E01 to E12 as in any substrate; read M04 and M08 first.
+5. **You, not the assistant, ratified.** No criterion lost its `[observed]` tag in your name and no decision was filled in without your answer.
 
 ---
 
@@ -217,13 +236,15 @@ El centinela debe terminar con este bloque, sin cambios:
 
 ## Known limits
 
-- Neither case has a recorded run. Case A inherits the practice page's untested durations and its token cost; case B was written for this page and is the least tested thing in this section.
-- **Parity is only as good as the contracts.** A behavior nobody pinned is not compared. The inverse inventory lists what exists; it cannot list what the code does that is not on a surface (an ordering, a side effect, a timing). Run the old and the new system side by side on real data before you switch.
-- **The recovered spec records what the code does, including its mistakes.** That is why it is marked `[observed]` and why disagreements are `OPEN:` lines.
-- **An inventory is as good as the reader's search.** Dynamically registered routes, reflection and generated code hide elements. Five known items checked by hand (step 3) is a sanity test, not a proof.
-- A migration is a decision about the business. The prompts keep the decision with you (keep, drop, modernize; the stack); they do not make it.
+- Case A was exercised in development runs (2026-10-07, not evidence) and case B not at all. Neither has a registered run.
+- **Equivalence is only as good as the suite.** A behavior nobody pinned is not compared. The mutation probe (M04) shows how much of the code the suite guards, and survivors are listed; it cannot see what is not code: an ordering of concurrent events, a timing, a side effect outside the files and ports the suite looks at. Run the old and the new system side by side on real data before you switch.
+- **Black-box means a process boundary.** The suite needs the system to be invoked as a command, a server or a batch over files. A library called from other code needs a thin driver script in the suite, which prints what the function returns; the driver is part of the suite and is frozen with it.
+- **The recovered spec records what the code does, including its mistakes.** That is why it is marked `[observed]` and why disagreements are `OPEN:` lines. A mistake the suite pins is carried to the new code on purpose; fixing it afterwards is a [change](/formulas/change/), not a migration.
+- **An inventory is as good as the reader's search.** Dynamically registered routes, reflection and generated code hide elements. M08 compares the inventory with what pattern matching finds in the original, which catches the plain cases; five known items checked by hand (step 3) are a sanity test, not a proof.
+- **Regenerating is a choice with a cost.** The new code is written from the spec alone, so whatever the spec lost is lost; the suite is what notices. Carrying keeps the code and its quirks and adds the substrate around it.
+- A migration is a decision about the business. The prompts keep the decision with you (keep, drop, defer; the stack); they do not make it.
 - Case B maps files and ids; it does not judge whether the old ones were good, and it keeps decision records exactly as they were, including ones that no longer hold.
 
 ## Next
 
-[13. Verify the substrate](/formulas/verify-substrate/) on the result; [4. Refine and ratify](/formulas/refine/) for the `[observed]` criteria; [8. Lock](/formulas/lock/) once there is code with ids.
+[8. Lock](/formulas/lock/) once there is code with ids (A2 leaves the characterization tests ready to be tagged); [13. Verify the substrate](/formulas/verify-substrate/) with `--migration` on the result; [4. Refine and ratify](/formulas/refine/) for the `[observed]` criteria.

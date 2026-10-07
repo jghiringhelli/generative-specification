@@ -22,7 +22,7 @@ Most people write the spec, build an MVP, and **then** apply the method. Both or
 | **A.** You have a spec and an empty folder: build the substrate and the code together | [1. Greenfield](/formulas/greenfield/) |
 | **B.** You have an MVP that runs: add the substrate without changing what it does | [2. Adopt after an MVP](/formulas/adopt/) |
 | You just inherited or joined a codebase and may not change it | [3. Join a codebase](/formulas/join/) |
-| You are moving a legacy system to a new stack, or a project from an older GS layout to the current one | [12. Migrate](/formulas/migrate/) |
+| Your code has no GS and you want the project to become a greenfield one (code to spec to substrate), or a project has an older GS layout to bring to the current one | [12. Migrate](/formulas/migrate/) |
 | You want a first look at the project's health | [9. Audit](/formulas/audit/) |
 | You want a program, not the assistant, to say which of the twelve items are there and work | [13. Verify the substrate](/formulas/verify-substrate/) |
 
@@ -41,7 +41,7 @@ Most people write the spec, build an MVP, and **then** apply the method. Both or
 | 9 | [Audit: the free scorecard](/formulas/audit/) | A first look, or before and after |
 | 10 | [Self-experiment: before and after](/formulas/experiment/) | You want to see what it did on your own project |
 | | [Substrate checklist](/formulas/substrate-checklist/) | The twelve items the formulas aim to produce, as machine-checkable definitions |
-| 12 | [Migrate](/formulas/migrate/) | A: a legacy system to a new stack (contracts, inverse inventory, parity). B: an older GS layout to the current canon |
+| 12 | [Migrate](/formulas/migrate/) | A: existing code becomes a recovered spec and a characterization suite, then a greenfield substrate, equivalence checked by a program. B: an older GS layout to the current canon |
 | 13 | [Verify the substrate](/formulas/verify-substrate/) | After any of the above: a program checks the twelve items and the assistant pastes its raw output |
 
 ## How to run a formula
@@ -67,7 +67,7 @@ The audit prompt stays at [pragmaworks.dev/audit](https://pragmaworks.dev/audit)
 
 - **No formula for the lock without the substrate.** The [spec lock](/method/coherence/) is design status as to its effect; formula 8 installs a reference implementation (`tools/gs-lock/`, tested on its own scenarios, never run on a model-written project in a registered run).
 - **No Value Ledger, no maturity levels, no governance claim.** A scorecard letter is not "governed".
-- **No production-hardening formula.** Hardening lives at pragmaworks.dev with an untested label. [Migrate](/formulas/migrate/) is written, never run.
+- **No production-hardening formula.** Hardening lives at pragmaworks.dev with an untested label. [Migrate](/formulas/migrate/) case A has development runs only, case B none.
 - **Two small tools, no package.** `tools/gs-lock/` (the lock and the co-change gate) and `tools/gs-check/` (the checker of the twelve items) are single files for Node, MIT, with their own tests. Older pages that depended on a retired tool are marked superseded (see [Recipes](/docs/recipes/) and [Templates](/templates/)).
 
 ## Licence and language
