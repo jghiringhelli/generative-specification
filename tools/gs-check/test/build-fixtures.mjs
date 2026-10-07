@@ -50,28 +50,39 @@ function copyDir(src, dst) {
 }
 
 // Build the project in a new temp folder. Commits are made without hooks (the hooks are not installed in the source repository).
-function buildGood({ sloppy = false, template = 'good', gs = false } = {}) {
+function buildGood({ sloppy = false, template = 'good', gs = false, migration = false } = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fx1-fixture-'));
+  let base = null;
+  if (migration) { // the ORIGINAL first (a quick legacy script), recorded as the base commit; the migration then replaces it
+    git(dir, ['init', '-q', '-b', 'main']); copyDir(path.join(FIXTURES, 'legacy-ledger'), dir);
+    git(dir, ['add', '-A']); git(dir, ['commit', '-q', '-m', 'chore: the legacy ledger script as it was']);
+    base = git(dir, ['rev-parse', 'HEAD']).stdout.trim();
+    git(dir, ['rm', '-rq', '.']); git(dir, ['commit', '-q', '-m', 'chore: start the migration, the original stays at the base commit']);
+  }
   copyDir(path.join(FIXTURES, template), dir);
+  if (migration) {
+    copyDir(path.join(FIXTURES, 'migration'), dir);
+    h.write(dir, 'docs/migration/equivalence.json', JSON.stringify({ base, suite: 'node --test tests/characterization/*.test.js', original: { cmd: 'node ledger.js' }, current: { cmd: 'node src/cli.js' } }, null, 2) + String.fromCharCode(10));
+  }
   if (gs) { // the same project wired to the REFERENCE lock tool (copied from tools/gs-lock, never stored twice)
     copyDir(path.join(FIXTURES, 'good-gs'), dir);
     const toolDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..', 'gs-lock');
     for (const f of ['gs-lock.mjs', 'gs-cochange.mjs']) { fs.mkdirSync(path.join(dir, 'tools/gs-lock'), { recursive: true }); fs.copyFileSync(path.join(toolDir, f), path.join(dir, 'tools/gs-lock', f)); }
   }
-  git(dir, ['init', '-q', '-b', 'main']);
+  if (!migration) git(dir, ['init', '-q', '-b', 'main']);
   h.relock(dir);
   const msgs = sloppy ? ['wip', 'update', 'stuff', 'changes', 'fix', 'misc'] : [
     'chore: scaffold package and readme', 'docs: add spec and decision record', 'docs: add architecture, data model and conventions',
     'feat: add ledger and cli with tests (AC-001)', 'chore: add hooks, gates, ratchet floor and spec lock', 'docs: add the sentinel routing to the cascade'
   ];
-  const groups = [['package.json', 'requirements.txt', 'README.md'], ['docs/spec', 'docs/decisions'], ['docs/architecture.md', 'docs/data-model.md', 'docs/conventions.md'], ['src', 'tests', 'docs/coverage.md'], ['.githooks', 'scripts', 'tools', '.gitattributes', 'docs/ratchet.json', 'docs/spec.lock', '.github'], ['CLAUDE.md']];
+  const groups = [['package.json', 'requirements.txt', 'README.md'], ['docs/spec', 'docs/decisions'], ['docs/architecture.md', 'docs/data-model.md', 'docs/conventions.md'], ['src', 'tests', 'docs/coverage.md'], ['.githooks', 'scripts', 'tools', '.gitattributes', 'docs/ratchet.json', 'docs/spec.lock', '.github'], ['CLAUDE.md', 'docs/migration', 'docs/deferred.md']];
   groups.forEach((g, i) => { git(dir, ['add', '--', ...g.filter(p => fs.existsSync(path.join(dir, p)))]); const r = git(dir, ['commit', '-q', '-m', msgs[i]]); if (r.code !== 0) throw new Error('fixture commit failed: ' + r.out); });
   git(dir, ['update-index', '--chmod=+x', '.githooks/pre-commit', '.githooks/commit-msg']);
   git(dir, ['commit', '-q', '-m', 'chore: make the hooks executable in the index']);
   return dir;
 }
 function buildVariant(variant) {
-  const dir = buildGood({ sloppy: !!variant.sloppy, template: variant.template || 'good', gs: !!variant.gs });
+  const dir = buildGood({ sloppy: !!variant.sloppy, template: variant.template || 'good', gs: !!variant.gs, migration: !!variant.migration });
   if (variant.mutate) {
     variant.mutate(dir, h);
     git(dir, ['add', '-A']);
