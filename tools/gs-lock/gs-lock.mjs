@@ -108,7 +108,7 @@ export function definedIds(text) {
     const structural = /^\s*(?:#{1,6}[ \t]|[-*+][ \t]|\d+[.)][ \t]|\||\*\*|__)/.test(line) || /verified by:/i.test(line);
     if (!structural) return;
     const core = line.replace(/^\s*(?:#{1,6}[ \t]+|[-*+][ \t]+|\d+[.)][ \t]+)?(?:\[[ xX~]\][ \t]*)?\|?[ \t]*(?:\*\*|__|`)*/, '');
-    const m = core.match(re); if (m) out.push({ id: m[1], line: i + 1 });
+    const m = core.match(re); if (m) out.push({ id: m[1], line: i + 1, heading: /^\s*#{1,6}[ \t]/.test(line) });
   });
   return out;
 }
@@ -149,7 +149,7 @@ export function specIds(ctx, cfg = loadConfig(ctx)) {
     const t = ctx.read(rel); if (!t) continue;
     const defs = definedIds(t); for (const d of defs) if (!ids.has(d.id)) ids.set(d.id, { file: rel, line: d.line });
     // older layout: a feature F-007 with numbered **Rules** and a checklist of **Acceptance criteria** implicitly defines F-007.R<n> and F-007.C<n>
-    const fid = (defs.find(d => !d.id.includes('.')) || {}).id;
+    const fid = (defs.find(d => d.heading && !d.id.includes('.')) || {}).id;
     if (fid) for (const k of parseSections(t).keys()) { const m = k.match(/^(rule|criterion)-(\d+)$/); if (m) { const id = fid + '.' + (m[1] === 'rule' ? 'R' : 'C') + m[2]; if (!ids.has(id)) ids.set(id, { file: rel, line: 1 }); } }
   }
   return ids;

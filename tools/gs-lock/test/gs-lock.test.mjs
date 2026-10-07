@@ -478,3 +478,29 @@ test('N35 a refactor of a source file in a sub-folder and a rename+import fix in
 test('N36 an unknown command and a missing argument exit 2', () => {
   assert.equal(P.lock('frobnicate').status, 2); assert.equal(P.lock('diff').status, 2); assert.equal(P.co().status, 2);
 });
+
+// ----- gs-redproof: the red proofs as one command each -----
+const REDPROOF = join(HERE, '..', 'gs-redproof.mjs');
+const BASE = P.g('rev-parse', 'HEAD').stdout.trim(); // the shared project is put back here before and after each red proof test
+const restore = () => { P.g('reset', '-q', '--hard', BASE); P.g('clean', '-fdq'); };
+const redproof = (...a) => sh(P.dir, process.execPath, [join(P.dir, 'tools/gs-lock/gs-redproof.mjs'), ...a]);
+function headingProject() {
+  restore(); copyFileSync(REDPROOF, join(P.dir, 'tools/gs-lock/gs-redproof.mjs'));
+  P.w('docs/spec/F-001-hive.md', '# Hive\n\n## F-001: Register a hive\n\nThe user registers a hive.\n\n- F-001.1 The system MUST store the hive name, verified by: test\n');
+  P.w('src/hive.js', '// @gs F-001.1 docs/spec/F-001-hive.md#f-001-register-a-hive\nexports.name = "hive";\n'); P.lock('init'); P.commit('feat: hive (F-001.1)', '--no-verify');
+}
+test('N37 red proof "stale": a sentence written inside a tagged section makes the lock fail (exit non-zero, STALE); nothing is left behind', () => {
+  headingProject(); const r = redproof('stale'); assert.notEqual(r.status, 0, out(r)); assert.match(out(r), /STALE/); assert.equal(P.g('status', '--porcelain').stdout.trim(), ''); restore();
+});
+test('N38 red proof "uncited" and "breaking-refactor": both exit non-zero with the reason named', () => {
+  headingProject(); let r = redproof('uncited'); assert.equal(r.status, 1, out(r)); assert.match(out(r), /must cite an id/);
+  r = redproof('breaking-refactor'); assert.equal(r.status, 1, out(r)); assert.match(out(r), /NOT A REFACTOR/); restore();
+});
+test('N39 a red proof against a NEUTERED gate exits 0: the proof itself shows the gate is not red', () => {
+  headingProject(); P.w('tools/gs-lock/gs-lock.mjs', P.read('tools/gs-lock/gs-lock.mjs').replace('return failing.length ? 1 : 0;', 'return 0;')); P.commit('chore: neuter the gate', '--no-verify');
+  assert.equal(redproof('stale').status, 0); restore();
+});
+test('N40 the red proof says it cannot plant (exit 2) when no tag points at a heading, and for an unknown kind', () => {
+  restore(); copyFileSync(REDPROOF, join(P.dir, 'tools/gs-lock/gs-redproof.mjs')); P.commit('chore: add the red proof', '--no-verify');
+  assert.equal(redproof('stale').status, 2); assert.equal(redproof('nonsense').status, 2); restore();
+});

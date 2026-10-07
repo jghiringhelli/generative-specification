@@ -1,8 +1,8 @@
 # gs-lock: the reference spec lock and co-change gate
 
-Two files, Node 18+, no dependencies, no model, no network, MIT (see `../LICENSE`). Copy both into a project **unchanged**, side by side (`tools/gs-lock/`): `gs-cochange.mjs` imports `gs-lock.mjs`.
+Three files, Node 18+, no dependencies, no model, no network, MIT (see `../LICENSE`). Copy them into a project **unchanged**, side by side (`tools/gs-lock/`): `gs-cochange.mjs` and `gs-redproof.mjs` import `gs-lock.mjs`.
 
-**Status: written to the canon; tested only by its own suite (71 tests, below); not yet used in a registered run on a model-written project.** The design is the one verified once on one sample project in the lab (35 scenarios, `DIVERGENCE-SENSORS.md`); this is the first single-file implementation of it that is not tied to that project.
+**Status: written to the canon; tested only by its own suite (75 tests, below); not yet used in a registered run on a model-written project.** The design is the one verified once on one sample project in the lab (35 scenarios, `DIVERGENCE-SENSORS.md`); this is the first single-file implementation of it that is not tied to that project.
 
 ## What it is
 
@@ -23,6 +23,7 @@ node tools/gs-lock/gs-lock.mjs commit-check                         pre-commit: 
 node tools/gs-lock/gs-lock.mjs diff <base> <head>                   report for the person who signs
 node tools/gs-lock/gs-cochange.mjs --msg-file <file>                commit-msg hook
 node tools/gs-lock/gs-cochange.mjs --range <base>..<head>           CI (also --commit <rev>, --pre-push)
+node tools/gs-lock/gs-redproof.mjs stale|uncited|breaking-refactor  the red proofs, one command each: plant in a throwaway clone, run the gate, exit with the gate's code
 ```
 
 `UNCOVERED` (a spec id that no tag points at) is **reported**; it fails only with `--require-coverage`, because a spec written before its code would otherwise keep the gate red.
@@ -68,7 +69,7 @@ The development loop of 2026-10-06 found the "an unlocked edit is accepted" prob
 ## Tests
 
 ```
-node --test tools/gs-lock/test/gs-lock.test.mjs      # 71 tests, about 30 s on Windows, 10 s in a Linux container
+node --test tools/gs-lock/test/gs-lock.test.mjs      # 75 tests, about 30 s on Windows, 10 s in a Linux container
 ```
 
-`P1` to `P35` are the 35 scenarios of the lab divergence self-test (lock, ratify, commit check, record, UNLOCKED, DANGLING, orphans as MISSING-SOURCE and MISMATCH, tag neutrality, intent diff, the refactor proof and its limit, the cascade); `N1` to `N36` are new edge cases (CRLF and BOM, conflict markers and `resolve`, fenced tags, comment styles, heading anchors and nesting, Spanish anchors, the twin of the drift probe, no lock, first commit, hooks end to end, range, pre-push). Two ports are reinterpretations, said plainly: the lab's inverse inventory of routes and exported symbols (S4, stack specific) is replaced by `UNCOVERED` (P32 to P35, spec side); the lab's `covers` tags (S1) are replaced by MISSING-SOURCE and MISMATCH on `@gs` tags (P16 to P19). Everything runs without a model and without the network; no test depends on the Windows or POSIX shell.
+`P1` to `P35` are the 35 scenarios of the lab divergence self-test (lock, ratify, commit check, record, UNLOCKED, DANGLING, orphans as MISSING-SOURCE and MISMATCH, tag neutrality, intent diff, the refactor proof and its limit, the cascade); `N1` to `N40` are new edge cases (CRLF and BOM, conflict markers and `resolve`, fenced tags, comment styles, heading anchors and nesting, Spanish anchors, the twin of the drift probe, no lock, first commit, hooks end to end, range, pre-push, the red proofs against a good and a neutered gate). Two ports are reinterpretations, said plainly: the lab's inverse inventory of routes and exported symbols (S4, stack specific) is replaced by `UNCOVERED` (P32 to P35, spec side); the lab's `covers` tags (S1) are replaced by MISSING-SOURCE and MISMATCH on `@gs` tags (P16 to P19). Everything runs without a model and without the network; no test depends on the Windows or POSIX shell.
