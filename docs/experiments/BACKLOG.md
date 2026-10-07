@@ -206,6 +206,22 @@ Source: JC, 2026-10-07; note `C:\workspace\PragmaWorks\soma\docs\method-vs-enfor
 - Honest alternative stated in advance: a disciplined expert by hand may tie the automation at small scale and short horizon; the claim under test is persistence, practitioner-independence and memoryless actors.
 - Blocked on: JC's decisions listed at the end of the private note ("Para responder"); no registration written.
 
+### B-E2E. E2E-1, end-to-end 2x2 (prompt quality x substrate) on medium projects, three vendors (PROPOSAL, DRAFT prereg, 2026-10-07; capstone; not frozen, not run)
+Source: JC, 2026-10-07. Draft: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\E2E-1.md`; review: `...\prereg\E2E-1-REVIEW.md` (two fresh Claude critics; vendor-diverse review owed); private reasoning: `C:\workspace\PragmaWorks\soma\docs\e2e-and-human-read-2026-10-07.md`.
+- Arms: N (naive), N+S (naive plus substrate), X (expert prompt, no GS), X+S (expert plus substrate). Complete specification in every arm (tests the substrate, not the dial). Phase 1: build in increments; phase 2: 12 to 16 change requests with planted traps (the headroom).
+- Co-primary: hidden behavioural acceptance (sealed) and trap regression (held-out probes). Secondary: cost per accepted change including substrate setup and upkeep, frozen independent static analysis, judges from vendors other than the generator, blind human checks by JC on a sample. The seven-property rubric is secondary and circular.
+- Size: 72 runs (2 projects x 3 repetitions x 3 vendors x 4 arms), model-only about $1.8k to $6.8k; 144 runs about $3.6k to $13.7k; preparation 120 to 200 agent-assisted hours per project (guess). At 72 runs it resolves a substrate effect of about 9 points, not 5; a single build per arm is a demonstration (tier D).
+- Sits after FX-1 (substrate installed correctly), SDX-0, P2 and P4; before running, read P4: if the enforced-versus-advisory contrast is null, E2E-1 is unlikely to find more. The dial (specification completeness) is a separate later experiment (E2E-1 section 13).
+- Blocked on: the preconditions in E2E-1 section 14 and JC's answers.
+
+### B-HR. HR-1, the human-read study: which defect classes escape the automated net, and what must a person still read (PROPOSAL, 2026-10-07; not frozen, not run; extension of P2)
+Source: JC, 2026-10-07 (with the substrate, a person need not read all the code, only specific things; find which). Private reasoning: `C:\workspace\PragmaWorks\soma\docs\e2e-and-human-read-2026-10-07.md`; tool spec: `...\docs\experiments\REVIEW-SURFACE-SPEC.md`.
+- Idea: a taxonomy of defect classes that tests, executed verification, hooks, linters, type checks and the checker typically miss in agent-written code (marked hypothesis unless a verified source exists), instances injected into otherwise correct projects, the P2 net layers run on each, and the escape rate recorded per class. Output: an empirical list of what to read and base rates.
+- Two sources of instances: injected (gives the miss rate conditional on the defect) and natural escapes harvested from E2E-1 runs and SDX runs (gives prevalence); the product is what a person reads per unit of reading time.
+- Tool: `gs-review-surface` (deterministic, no model), recall measured on the injected set with rules frozen and hashed before instances are authored, and on the natural escapes as a held-out set.
+- Size: about 14 classes x 12 injected instances = 168 items; model-only about $750 to $2,000 scaled from P2; classes tiered (almost always escapes, sometimes, rarely), not point rates (12 per class gives Wilson intervals about 0.25 wide at best). Authoring 80 to 140 agent-assisted hours (guess).
+- Can run with or before P2's registration (shares its reference implementation, layers and harness); the human-reviewer arm (reading with and without the list) is optional and needs paid humans.
+
 ### Overlap risk (HYPOTHESES section 8)
 
 Four positive results for A4 on one set of chains are one bundle measured four ways unless component arms (SDX-2) separate them. Sequencing therefore puts H-PHASE (the most independent hypothesis: verification mode, not persistence) first, and the component ablation before any public count of confirmations.
