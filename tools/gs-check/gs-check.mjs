@@ -236,6 +236,10 @@ const DEFAULT_CONFIG = {
     "sourceExt": ["js", "mjs", "cjs", "ts", "py"],
     "mutation": { "count": 12, "minKill": 0.6, "runMs": 60000 },
     "surface": { "minShare": 0.9 }
+  },
+  "sync": {
+    "minShare": 0.9,
+    "ignorePrefixes": ["ADR", "RFC", "ISO", "UTF", "PEP", "SHA", "HTTP", "CVE"]
   }
 };
 
@@ -628,7 +632,7 @@ function parseSpecDefs(ctx) {
       const inCrit = stack.some(s => rx(cfg.criteriaHeading).test(s.title)) || CRIT_SHAPE.test(id);
       const body = line.replace(/^\s*(?:[-*+]|\d+[.)])?\s*(?:\[[ xX~]\]\s*)?\|?\s*(?:\*\*|__|`)*/, '').replace(id, '');
       let extra = ''; for (let j = i + 1; j < lines.length && /^[ \t]+\S/.test(lines[j]) && !leadingId(lines[j], cfg.idToken); j++) extra += ' ' + lines[j].trim();
-      defs.push({ id, file, line: i + 1, kind: inCrit ? 'criterion' : 'requirement', text: (body + extra).trim() });
+      defs.push({ id, file, line: i + 1, kind: inCrit ? 'criterion' : 'requirement', text: (body + extra).trim(), row: /^\s*\|/.test(line) });
     });
   }
   return defs;
@@ -642,13 +646,14 @@ function e02(ctx) {
   // (dev loop 2026-10-06, defect C2) The root file (SPEC.md) lists the features, so an id its listing repeats from a feature file is not a duplicate; two
   // feature files, or one file defining an id twice, are. A list or table line that restates a requirement id is not a definition (only a heading is).
   const isRoot = file => /^docs\/spec\/spec\.md$|^docs\/spec\.md$|^spec\.md$/i.test(file);
-  const seen = new Map(); const dups = [];
-  for (const d of defs) {
-    if (!seen.has(d.id)) { seen.set(d.id, d); continue; }
-    const first = seen.get(d.id);
-    if (d.kind === 'requirement' && (isRoot(d.file) || isRoot(first.file)) && d.file !== first.file) continue;
-    if (d.kind === 'requirement' && !d.heading && !first.heading) continue;
-    dups.push(d.id);
+  // (dev loop 2, defect C14) A definition is a heading (requirements) or a list or bold-label line (criteria). A table row that merely mentions an id
+  // (an assumptions table, a feature listing) is a mention, not a second definition: run b1-C-habits-en had "| F-001 empty name ..." in docs/spec/assumptions.md.
+  const byId = new Map(); for (const d of defs) { if (!byId.has(d.id)) byId.set(d.id, []); byId.get(d.id).push(d); }
+  const dups = [];
+  for (const [id, ds] of byId) {
+    let prim = ds[0].kind === 'requirement' ? ds.filter(d => d.heading) : ds.filter(d => !d.row);
+    if (prim.some(d => !isRoot(d.file))) prim = prim.filter(d => !isRoot(d.file));
+    if (prim.length > 1) dups.push(id);
   }
   const words = t => t.split(/\s+/).filter(w => /[A-Za-zÀ-ɏ]{2,}/.test(w)).length;
   const thin = crit.filter(c => words(c.text) < cfg.minCriterionWords).map(c => c.id);
@@ -1348,7 +1353,8 @@ const NAMES = {
   M06: 'every criterion of the recovered spec is cited by a characterization test or deferred',
   M07: 'inventory: every element has a decision, kept elements map to criteria, nothing UNCLAIMED is kept',
   M08: 'the public surface found in the original code is in the inventory (heuristic cross-check)',
-  M09: 'deferred list exists and explains every dropped or deferred element'
+  M09: 'deferred list exists and explains every dropped, deferred or changed element',
+  M10: 'intended changes (new features, changed behaviors) are accounted for and tested outside the characterization suite'
 };
 const TEST_DECL = /^\s*(?:(?:async\s+)?def\s+test_\w*|(?:test|it)(?:\.\w+)?\s*\(|func\s+Test\w+)/;
 const SKIP_DECL = /^\s*(?:test|it)\.(?:todo|skip)\s*\(|^\s*x(?:it|test)\s*\(|@pytest\.mark\.skip|\.skip\(/;
@@ -1374,6 +1380,9 @@ function charTests(ctx, files) {
   }
   return out.filter(t => !t.skipped);
 }
+// (dev loop 2, defect C15) a Python function name cannot hold F-001.2: test_F_001_2_... cites it. Criterion ids are also recognised with _ for - and .
+const citedCrit = (critIds, text) => { const out = new Set(); for (const id of critIds) { const m = id.match(/^([A-Z][A-Z0-9]*)-(\d+)\.(\d+)$/); if (m && new RegExp('(^|[^A-Za-z0-9])' + m[1] + '[-_]' + m[2] + '[-_.]' + m[3] + '(?![0-9])').test(text)) out.add(id); else if (!m && text.includes(id)) out.add(id); } return out; };
+const unknownCrit = (critIds, text) => { const pre = new Set([...critIds].map(c => c.split('-')[0])); const out = []; for (const p of pre) for (const m of text.matchAll(new RegExp('(?:^|[^A-Za-z0-9])' + p + '[-_](\\d{1,4})(?:[-_.](\\d{1,3}))?(?![0-9])', 'g'))) { const id = p + '-' + m[1] + (m[2] ? '.' + m[2] : ''); if (!critIds.has(id) && ![...critIds].some(c => c.startsWith(id + '.'))) out.push(id); } return out; };
 const idsIn = (cfg, text) => [...new Set([...text.matchAll(new RegExp(cfg.idToken, 'g'))].map(m => m[0]))];
 
 function loadManifest(ctx) {
@@ -1483,7 +1492,7 @@ function parseInventory(text) {
   const col = pred => hdr.findIndex(pred);
   return { rows, iEl: col(c => c.startsWith('element')), iCl: col(c => c.includes('claimed')), iDec: col(c => c.includes('decision')), iWhy: col(c => /reason|why|razón/.test(c)) };
 }
-const decisionOf = c => { const w = (c || '').toLowerCase().replace(/[`*_]/g, '').trim(); return /^(keep|kept)\b/.test(w) ? 'keep' : /^(drop|dropped)\b/.test(w) ? 'drop' : /^(defer|deferred)\b/.test(w) ? 'defer' : null; };
+const decisionOf = c => { const w = (c || '').toLowerCase().replace(/[`*_]/g, '').trim(); return /^(keep|kept)\b/.test(w) ? 'keep' : /^(drop|dropped)\b/.test(w) ? 'drop' : /^(defer|deferred)\b/.test(w) ? 'defer' : /^(change|changed)\b/.test(w) ? 'change' : null; };
 const clean = s => (s || '').replace(/[`*_|]/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
 
 function run(ctx, { mutants = null } = {}) {
@@ -1583,8 +1592,8 @@ function run(ctx, { mutants = null } = {}) {
   {
     const r = []; const unknown = new Set();
     for (const t of tests) {
-      const ids = idsIn(cfg, t.text); const hit = ids.filter(i => critIds.has(i));
-      ids.filter(i => /-\d+\.\d+$/.test(i) && !critIds.has(i)).forEach(i => unknown.add(i));
+      const hit = [...citedCrit(critIds, t.text)];
+      unknownCrit(critIds, t.text).forEach(i => unknown.add(i));
       if (!hit.length) r.push(`${t.file}:${t.line} "${t.name.slice(0, 50)}" cites no criterion of the spec`); else hit.forEach(i => touched.add(i));
     }
     if (unknown.size) r.push(`tests cite ids the spec does not define: ${[...unknown].slice(0, 6).join(', ')}`);
@@ -1594,12 +1603,14 @@ function run(ctx, { mutants = null } = {}) {
   const invText = tryRead(path.join(ctx.root, M.inventory)); const inv = invText ? parseInventory(invText) : null;
   const defText = tryRead(path.join(ctx.root, M.deferred));
   const rows = inv ? inv.rows.map(c => ({ el: c[inv.iEl] || '', claimed: inv.iCl >= 0 ? c[inv.iCl] || '' : '', dec: decisionOf(inv.iDec >= 0 ? c[inv.iDec] : ''), rawDec: inv.iDec >= 0 ? c[inv.iDec] || '' : '', why: inv.iWhy >= 0 ? c[inv.iWhy] || '' : '' })).filter(r => r.el.trim()) : [];
-  const droppedClaims = new Set(); rows.filter(r => r.dec === 'drop' || r.dec === 'defer').forEach(r => idsIn(cfg, r.claimed).forEach(i => droppedClaims.add(i)));
+  const droppedClaims = new Set(); rows.filter(r => r.dec === 'drop' || r.dec === 'defer' || r.dec === 'change').forEach(r => idsIn(cfg, r.claimed).forEach(i => droppedClaims.add(i)));
+  const changeClaims = new Set(); rows.filter(r => r.dec === 'change').forEach(r => idsIn(cfg, r.claimed).forEach(i => changeClaims.add(i)));
+  const isNew = c => /\[new\]/i.test(c.text || '');
   {
     const r = [];
     for (const c of crit) {
       if (/^N-/.test(c.id)) continue;
-      if (touched.has(c.id) || droppedClaims.has(c.id) || (defText && defText.includes(c.id))) continue;
+      if (touched.has(c.id) || droppedClaims.has(c.id) || isNew(c) || (defText && defText.includes(c.id))) continue;
       r.push(c.id);
     }
     push(res('M06', NAMES.M06, !crit.length ? 'ABSENT' : r.length ? 'PARTIAL' : 'PASS', !crit.length ? ['no criteria in the spec'] : r.length ? [`criteria no characterization test cites (and not deferred): ${r.slice(0, 10).join(', ')}`] : [], { criteria: crit.length }, {}));
@@ -1611,17 +1622,18 @@ function run(ctx, { mutants = null } = {}) {
     else {
       for (const w of rows) {
         const label = clean(w.el).slice(0, 40);
-        if (!w.dec) { r.push(`"${label}": decision "${w.rawDec.slice(0, 20)}" is none of keep, drop, defer`); continue; }
+        if (!w.dec) { r.push(`"${label}": decision "${w.rawDec.slice(0, 20)}" is none of keep, drop, defer, change`); continue; }
         const ids = idsIn(cfg, w.claimed); const unclaimed = /unclaimed/i.test(w.claimed) || !ids.length;
         if (w.dec === 'keep') {
           if (unclaimed) r.push(`"${label}" is kept but UNCLAIMED (no criterion)`);
           else for (const i of ids) { if (!critIds.has(i)) r.push(`"${label}" claims ${i}, which the spec does not define`); else if (!touched.has(i)) r.push(`"${label}" is kept but no characterization test cites ${i}`); }
         } else {
-          const why = w.why.trim() || w.rawDec.replace(/^\W*(drop(ped)?|defer(red)?)\W*/i, '').trim();
-          if (why.split(/\s+/).filter(Boolean).length < 2) r.push(`"${label}" is ${w.dec === 'drop' ? 'dropped' : 'deferred'} without a reason`);
+          if (w.dec === 'change') { if (unclaimed) r.push(`"${label}" is changed but names no new criterion`); else for (const i of ids) if (!critIds.has(i)) r.push(`"${label}" is changed and claims ${i}, which the spec does not define`); }
+          const why = w.why.trim() || w.rawDec.replace(/^\W*(drop(ped)?|defer(red)?|change[d]?)\W*/i, '').trim();
+          if (why.split(/\s+/).filter(Boolean).length < 2) r.push(`"${label}" is ${w.dec === 'drop' ? 'dropped' : w.dec === 'change' ? 'changed' : 'deferred'} without a reason`);
         }
       }
-      push(res('M07', NAMES.M07, r.length ? 'PARTIAL' : 'PASS', r.slice(0, 10), { rows: rows.length, keep: rows.filter(x => x.dec === 'keep').length, drop: rows.filter(x => x.dec === 'drop').length, defer: rows.filter(x => x.dec === 'defer').length }, {}));
+      push(res('M07', NAMES.M07, r.length ? 'PARTIAL' : 'PASS', r.slice(0, 10), { rows: rows.length, keep: rows.filter(x => x.dec === 'keep').length, drop: rows.filter(x => x.dec === 'drop').length, defer: rows.filter(x => x.dec === 'defer').length, change: rows.filter(x => x.dec === 'change').length }, {}));
     }
   }
   // ---- M08 ----
@@ -1640,20 +1652,80 @@ function run(ctx, { mutants = null } = {}) {
     if (defText == null) push(res('M09', NAMES.M09, 'ABSENT', [`no ${M.deferred} (it is required even when nothing is dropped: it then says so)`]));
     else {
       const r = []; const dtLines = defText.split('\n'); const low = clean(defText);
-      for (const w of rows.filter(x => x.dec === 'drop' || x.dec === 'defer')) {
+      for (const w of rows.filter(x => x.dec === 'drop' || x.dec === 'defer' || x.dec === 'change')) {
         const key = clean(w.el).slice(0, 40); if (!key) continue;
         const line = dtLines.find(l => clean(l).includes(key));
         if (!line) r.push(`"${key}" is ${w.dec} in the inventory but absent from the deferred list`);
         else if (clean(line).replace(key, '').split(' ').filter(x => /\w{2,}/.test(x)).length < 3) r.push(`"${key}" is in the deferred list without a reason`);
       }
       void low;
-      push(res('M09', NAMES.M09, r.length ? 'PARTIAL' : 'PASS', r.slice(0, 8), { listed: rows.filter(x => x.dec === 'drop' || x.dec === 'defer').length }, {}));
+      push(res('M09', NAMES.M09, r.length ? 'PARTIAL' : 'PASS', r.slice(0, 8), { listed: rows.filter(x => x.dec === 'drop' || x.dec === 'defer' || x.dec === 'change').length }, {}));
     }
   }
+  // ---- M10 intended changes: new features and changed behaviors are accounted for and tested outside the characterization suite ----
+  {
+    const r = []; const charIds = new Set(); for (const t of tests) citedCrit(critIds, t.text).forEach(i => charIds.add(i));
+    const otherFiles = trackedFiles(ctx.root).filter(p => isTestLike(cfg, p) && !files.includes(p) && /\.(js|mjs|cjs|ts|tsx|py|go)$/.test(p));
+    const otherIds = new Set(); for (const t of charTests(ctx, otherFiles)) citedCrit(critIds, t.text).forEach(i => otherIds.add(i));
+    const intended = crit.filter(c => isNew(c) || changeClaims.has(c.id));
+    for (const c of intended) { if (charIds.has(c.id)) r.push(c.id + ' is a new or changed behavior but the characterization suite (which must pass on the original) cites it'); if (!otherIds.has(c.id)) r.push(c.id + ' is a new or changed behavior but no ordinary test cites it'); }
+    const unaccounted = crit.filter(c => !/^N-/.test(c.id) && !charIds.has(c.id) && !isNew(c) && !changeClaims.has(c.id) && !droppedClaims.has(c.id) && !(defText && defText.includes(c.id)));
+    if (unaccounted.length) r.push('criteria that are neither pinned, new, changed nor deferred: ' + unaccounted.slice(0, 8).map(c => c.id).join(', '));
+    push(res('M10', NAMES.M10, r.length ? 'PARTIAL' : 'PASS', r.slice(0, 8), { intended: intended.length, change_rows: rows.filter(x => x.dec === 'change').length }, {}));
+  }
   items.sort((a, b) => a.id.localeCompare(b.id));
-  return { items, summary: { pass: items.filter(i => i.status === 'PASS').length, total: items.length, all_pass: items.length === 9 && items.every(i => i.status === 'PASS') } };
+  return { items, summary: { pass: items.filter(i => i.status === 'PASS').length, total: items.length, all_pass: items.length === 10 && items.every(i => i.status === 'PASS') } };
 }
-module.exports = { run };
+
+// ---------- spec-code synchronization (path B: an existing project that gets the substrate AND a spec generated from its code) ----------
+// Y01 every public element of the code (found by pattern matching, at the boundary commit) appears in the spec   Y02 every criterion is cited by a test
+// Y03 no test cites a criterion the spec does not define   Y04 no document cites an id the spec does not define (no orphan ids)
+// Y05 the production code is unchanged since the boundary commit (the formula pins behavior, it does not edit it)
+function runSync(ctx, { base }) {
+  const cfg = ctx.cfg; const S = cfg.sync; const items = []; const push = r => { items.push(r); return r; };
+  const NY = {
+    Y01: 'every public element of the code (route, command, flag, environment variable) appears in the generated spec',
+    Y02: 'every criterion of the generated spec is cited by a test',
+    Y03: 'no test cites a criterion id that the spec does not define',
+    Y04: 'no document cites an id that the spec does not define (no orphan ids)',
+    Y05: 'the production code is unchanged since the boundary commit'
+  };
+  const f = discover(ctx); const defs = parseSpecDefs(ctx); const crit = defs.filter(d => d.kind === 'criterion'); const critIds = new Set(crit.map(c => c.id)); const allIds = new Set(defs.map(d => d.id));
+  const tracked = trackedFiles(ctx.root);
+  const testFiles = tracked.filter(p => isTestLike(cfg, p) && /\.(js|mjs|cjs|ts|tsx|py|go)$/.test(p));
+  const tests = charTests(ctx, testFiles).filter(t => !/\.(md)$/.test(t.file));
+  const noBase = !base || git(ctx.root, ['cat-file', '-e', base + '^{commit}']).code !== 0;
+  const srcAtBase = noBase ? [] : git(ctx.root, ['ls-tree', '-r', '--name-only', base]).stdout.split('\n').filter(Boolean).filter(p => cfg.migration.sourceExt.includes(p.split('.').pop()) && !isTestLike(cfg, p) && !/(^|\/)(node_modules|scripts|tools|docs|\.githooks|\.github|build|dist)\//.test(p) && !new RegExp(cfg.sourceExcludePattern).test(p));
+  // Y01
+  if (noBase) push(res('Y01', NY.Y01, 'UNDETERMINABLE', ['no --base commit given or it is not in the repository']));
+  else {
+    const toks = surfaceTokens(srcAtBase.map(p => git(ctx.root, ['show', base + ':' + p]).stdout));
+    const specText = f.specFiles.map(p => tryRead(path.join(ctx.root, p)) || '').join('\n').toLowerCase();
+    if (!toks.size) push(res('Y01', NY.Y01, 'UNDETERMINABLE', ['no routes, commands, flags or environment variables were recognised in the code at the boundary commit']));
+    else if (!specText) push(res('Y01', NY.Y01, 'ABSENT', ['no spec']));
+    else { const miss = [...toks].filter(([t]) => !specText.includes(t.toLowerCase())); const share = 1 - miss.length / toks.size;
+      push(res('Y01', NY.Y01, share >= S.minShare ? 'PASS' : 'PARTIAL', share >= S.minShare ? [] : [miss.length + ' of ' + toks.size + ' public elements of the code are not in the spec: ' + miss.slice(0, 8).map(([t, k]) => t + ' (' + k + ')').join(', ')], { found: toks.size, missing: miss.length }, {})); }
+  }
+  // Y02, Y03
+  const cited = new Set(); const unknown = new Set(); for (const t of tests) { citedCrit(critIds, t.text).forEach(i => cited.add(i)); unknownCrit(critIds, t.text).forEach(i => unknown.add(i)); }
+  const unc = crit.filter(c => !/^N-/.test(c.id) && !cited.has(c.id)).map(c => c.id);
+  push(res('Y02', NY.Y02, !crit.length ? 'ABSENT' : unc.length ? 'PARTIAL' : 'PASS', !crit.length ? ['no criteria in the spec'] : unc.length ? [unc.length + ' of ' + crit.length + ' criteria are cited by no test: ' + unc.slice(0, 10).join(', ')] : [], { criteria: crit.length, tests: tests.length }, {}));
+  push(res('Y03', NY.Y03, unknown.size ? 'PARTIAL' : 'PASS', unknown.size ? ['tests cite ids the spec does not define: ' + [...unknown].slice(0, 8).join(', ')] : [], {}, {}));
+  // Y04
+  { const prefixes = new Set([...allIds].map(i => i.split('-')[0])); const orphans = new Map();
+    for (const p of tracked.filter(x => /\.md$/i.test(x) && !f.specFiles.includes(x))) {
+      for (const id of idsIn(cfg, tryRead(path.join(ctx.root, p)) || '')) { if (S.ignorePrefixes.includes(id.split('-')[0])) continue; if (!prefixes.has(id.split('-')[0])) continue; if (!allIds.has(id) && !allIds.has(id.replace(/\.\d+$/, '')) ) { if (!orphans.has(id)) orphans.set(id, p); } }
+    }
+    const o = [...orphans].filter(([id]) => !crit.some(c => c.id === id));
+    push(res('Y04', NY.Y04, !allIds.size ? 'ABSENT' : o.length ? 'PARTIAL' : 'PASS', !allIds.size ? ['no ids in the spec'] : o.length ? ['ids cited in documents but defined nowhere in the spec: ' + o.slice(0, 8).map(([id, p]) => id + ' (' + p + ')').join(', ')] : [], {}, {})); }
+  // Y05
+  if (noBase) push(res('Y05', NY.Y05, 'UNDETERMINABLE', ['no --base commit']));
+  else { const changed = git(ctx.root, ['diff', '--numstat', base + '..HEAD']).stdout.split('\n').filter(Boolean).map(l => l.split('\t')).filter(a => a.length === 3 && (a[0] !== '0' || a[1] !== '0') && srcAtBase.includes(a[2])).map(a => a[2]);
+    push(res('Y05', NY.Y05, changed.length ? 'PARTIAL' : 'PASS', changed.length ? ['production files changed since the boundary: ' + changed.slice(0, 6).join(', ')] : [], { sourceFiles: srcAtBase.length }, {})); }
+  items.sort((a, b) => a.id.localeCompare(b.id));
+  return { items, summary: { pass: items.filter(i => i.status === 'PASS').length, total: items.length, all_pass: items.length === 5 && items.every(i => i.status === 'PASS') } };
+}
+module.exports = { run, runSync };
 
 };
 
@@ -1668,7 +1740,7 @@ const { sha256, git, sh } = require('./lib/util');
 const { ORDER, prepare } = require('./lib/items');
 
 function parseArgs(argv) {
-  const a = { only: null, keep: false, since: null, strict: false, both: false, verbose: false, migration: false, mutants: null };
+  const a = { only: null, keep: false, since: null, strict: false, both: false, verbose: false, migration: false, mutants: null, sync: false, base: null };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--repo') a.repo = argv[++i];
     else if (argv[i] === '--config') a.config = argv[++i];
@@ -1680,12 +1752,14 @@ function parseArgs(argv) {
     else if (argv[i] === '--both') a.both = true;
     else if (argv[i] === '--verbose') a.verbose = true;
     else if (argv[i] === '--migration') a.migration = true;
+    else if (argv[i] === '--sync') a.sync = true;
+    else if (argv[i] === '--base') a.base = argv[++i];
     else if (argv[i] === '--mutants') a.mutants = +argv[++i];
   }
   return a;
 }
 
-function run(repo, { configPath, only = null, keep = false, since = null, strict = false, migration = false, mutants = null } = {}) {
+function run(repo, { configPath, only = null, keep = false, since = null, strict = false, migration = false, mutants = null, sync = false, base = null } = {}) {
   const cfgText = configPath ? fs.readFileSync(configPath, 'utf8') : JSON.stringify(DEFAULT_CONFIG, null, 2); const cfg = JSON.parse(cfgText);
   cfg.strictEnforcement = !!strict; // the mode, reported separately from the config hash
   const absRepo = path.resolve(repo);
@@ -1718,6 +1792,7 @@ function run(repo, { configPath, only = null, keep = false, since = null, strict
   }
   report.items.sort((a, b) => a.id.localeCompare(b.id));
   if (migration) { try { report.migration = require('./migration').run(ctx, { mutants }); } catch (e) { report.migration = { items: [{ id: 'M00', status: 'UNDETERMINABLE', reasons: ['checker exception: ' + (e && e.stack ? e.stack.split(String.fromCharCode(10)).slice(0, 3).join(' | ') : String(e))] }], summary: { all_pass: false } }; } }
+  if (sync) { try { report.sync = require('./migration').runSync(ctx, { base }); } catch (e) { report.sync = { items: [{ id: 'Y00', status: 'UNDETERMINABLE', reasons: ['checker exception: ' + String(e && e.message)] }], summary: { all_pass: false } }; } }
   if (!keep) ctx.sandboxes.forEach(s => s.cleanup()); else report.kept = ctx.sandboxes.map(s => s.dir);
   return finish(report);
 }
@@ -1727,7 +1802,7 @@ function finish(report) {
   report.finished = new Date().toISOString();
   return report;
 }
-const USAGE = 'usage: node gs-check.mjs --repo <path> [--strict] [--both] [--verbose] [--migration] [--mutants N] [--only E01,E05] [--since <rev>] [--config <file>] [--out <report.json>] [--keep] | --print-config';
+const USAGE = 'usage: node gs-check.mjs --repo <path> [--strict] [--both] [--verbose] [--migration] [--mutants N] [--sync --base <rev>] [--only E01,E05] [--since <rev>] [--config <file>] [--out <report.json>] [--keep] | --print-config';
 function printReport(report, verbose) {
   console.log(`# gs-check ${report.checker_version} mode=${report.mode} repo=${report.repo} head=${report.head} node=${report.env.node} ${report.env.platform}`);
   for (const i of report.items) {
@@ -1739,6 +1814,10 @@ function printReport(report, verbose) {
   if (report.migration) {
     for (const i of report.migration.items) { console.log(`${i.id} ${i.status.padEnd(14)} ${i.name || ''}`); for (const r of ((i.reasons || []).slice(0, verbose ? 99 : 3))) console.log('      - ' + r); if (verbose && i.evidence && Object.keys(i.evidence).length) console.log('      evidence: ' + JSON.stringify(i.evidence).slice(0, 600)); }
     console.log(`migration summary: ${JSON.stringify(report.migration.summary)}`);
+  }
+  if (report.sync) {
+    for (const i of report.sync.items) { console.log(`${i.id} ${i.status.padEnd(14)} ${i.name || ''}`); for (const r of ((i.reasons || []).slice(0, verbose ? 99 : 3))) console.log('      - ' + r); }
+    console.log(`sync summary: ${JSON.stringify(report.sync.summary)}`);
   }
 }
 function smokeChild(ms, cwd, cmd) { // the README "run" commands (servers) are started for a few seconds, then the whole process tree is killed
@@ -1757,14 +1836,14 @@ module.exports.cli = function cli(argv) {
   if (argv.includes('--print-config')) { const text = JSON.stringify(DEFAULT_CONFIG, null, 2); console.log(text); console.error('config_sha256 ' + sha256(text)); return process.exit(0); }
   const a = parseArgs(argv);
   if (!a.repo) { console.error(USAGE); process.exit(2); }
-  const opts = { configPath: a.config, only: a.only, keep: a.keep, since: a.since, mutants: a.mutants };
+  const opts = { configPath: a.config, only: a.only, keep: a.keep, since: a.since, mutants: a.mutants, base: a.base || a.since };
   const modes = a.both ? [false, true] : [a.strict];
-  const reports = modes.map((strict, k) => run(a.repo, { ...opts, strict, migration: a.migration && k === modes.length - 1 }));
+  const reports = modes.map((strict, k) => run(a.repo, { ...opts, strict, migration: a.migration && k === modes.length - 1, sync: a.sync && k === modes.length - 1 }));
   for (const r of reports) printReport(r, a.verbose);
   if (a.out) fs.writeFileSync(a.out, JSON.stringify(a.both ? { default: reports[0], strict: reports[1] } : reports[0], null, 2));
   if (a.both) { console.log('\nitem  default         strict'); for (const i of reports[0].items) console.log(`${i.id}   ${i.status.padEnd(14)}  ${(reports[1].items.find(x => x.id === i.id) || {}).status}`); }
   const lastR = reports[reports.length - 1];
-  process.exit(lastR.summary.all_pass && (!lastR.migration || lastR.migration.summary.all_pass) ? 0 : 1);
+  process.exit(lastR.summary.all_pass && (!lastR.migration || lastR.migration.summary.all_pass) && (!lastR.sync || lastR.sync.summary.all_pass) ? 0 : 1);
 };
 
 };
