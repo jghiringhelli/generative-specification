@@ -337,3 +337,24 @@ This is the first rival, not a footnote, and it can be true for any of the five.
 ## 11. Registration status
 
 None. Each hypothesis gets its own registration file under `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\` when JC decides, with this file as its parent, a logbook entry (status PROPOSED until then) and no run before the freeze. This file is itself a design document, not a registration, and is revised in place with dated notes until the first dependent registration is frozen.
+
+## 12. Proposal 2026-10-07: method versus its enforcement (channel contrasts) — PROPOSAL, NOT FROZEN
+
+Source: JC, 2026-10-07. Full note (private): `C:\workspace\PragmaWorks\soma\docs\method-vs-enforcement-2026-10-07.md`. Nothing here alters the preregistered SDX-1 materials (`C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\SDX-1-ARMS.md`); these are candidate additions for later registrations (P1 to P4 of the 2026-10-04 portfolio decision).
+
+**Framing.** The method (what must hold) is separate from its enforcement (the channel that makes it hold). Channels, most manual to most automated: M1 per-prompt by hand, M2 root instruction file, M3 retrieval tool or MCP, M4 tool-use instruction, M5 hook, M6 CI gate, M7 enforced gate with ratchet. Failure modes by channel: forgotten, drifted, ignored, bypassed.
+
+**Existing arms read as channel contrasts.** A5/A1 = M1; A3 = M2 flat; A4 = M2 routed plus M5 plus lock; P1 flat file vs sentinel vs stale map = M2 variants; P4 none / advisory / generic gate / enforced = M2 vs M5-M6 vs M7 with content held constant.
+
+**H-CHANNEL (candidate).** With content held constant, regression and drift over a long chain, and across a practitioner change or memoryless sessions, order as none > advisory (M2) ~ tool-instructed (M4) > hook or CI (M5, M6) > enforced with ratchet (M7), the gap widening with chain length. Refuted if a manual expert arm (M1-expert) is within 10 points of M7 at the registered length, or if the gap does not widen after a practitioner swap. A tie at short horizon is reported as a statement of when the substrate pays, not as a rescue.
+
+**Candidate new arms (content-matched to the existing manifest L).**
+- A-M1X: manual expert. The same L content pasted by an expert human in every prompt, with the human's best manual checks; hours logged. Human required; a model-persona version is a pilot only.
+- A-M3: MCP navigation instead of a sentinel (P1), with a no-tool-no-map arm beside it.
+- A-M4: tool-instructed verification instead of hooks (P2 or P4); executed vs claimed read from transcripts (requires transcript capture).
+- A-M5/M6/M7 split (P4, optional): hook only, CI only, hook plus ratchet.
+- A-STEEL: steelman = expert human with best manual practice plus MCP search plus CI.
+
+**Fair-test additions (proposals).** Steelman arm; token parity of artifacts across arms; human minutes and substrate setup cost in the cost endpoint; a second task family chosen by a GS skeptic; a second vendor and a frontier cell for the primary contrast; novice and experienced GS users reported separately; a "GS loses" outcome stated in advance; symmetric tables of false-blocks, upkeep failures and abandoned runs; headroom check in a pilot. The 18-item checklist with current status: section 6 of the private note above.
+
+Open for JC: which arms go first; practitioner for A-M1X and A-STEEL; who picks the second task family; whether the 5.0 white paper gets a "method versus enforcement" box (separate proposal, not applied).
