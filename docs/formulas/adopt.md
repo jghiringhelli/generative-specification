@@ -69,7 +69,7 @@ Measure what is true today (test count and result, coverage, lint and type error
 - One command that runs every check; the README names it.
 - A commit-msg hook that rejects messages that are not Conventional Commits, stored in the repository (for example .githooks/), committed as executable (`git update-index --chmod=+x`, since git skips a hook that is not), and installed by a setup step that runs on a fresh clone.
 - A pre-push hook, stored and installed the same way, that runs the one command, so a push with a failing blocking check is refused here and not only in CI. Commits stay free.
-- A CI workflow that runs the same command on every push and pull request, on the repository's real default branch.
+- A CI workflow that runs the same command on every push and pull request, on the repository's real default branch. Write the default branch's name as a constant in the workflow and in any check of it; never read it from the branch that happens to be checked out (a clone on another branch must still pass).
 - A check that fails while any "OPEN:" line exists in the spec files that are being implemented.
 - A check that fails when a baseline number gets worse, or when docs/baseline.json lowers a floor or raises a ceiling compared with an earlier commit (read the earlier versions from git).
 - A command that prints exactly one line "criteria coverage: N/M" and nothing else and fails if a test cites an id the spec does not have. Match whole ids: F-001.1 is not F-001.10.
@@ -133,7 +133,7 @@ Mide lo que es verdad hoy (cantidad de tests y resultado, cobertura, errores de 
 - Un comando que corra todas las verificaciones; el README lo nombra.
 - Un hook commit-msg que rechace los mensajes que no sigan Conventional Commits, guardado en el repositorio (por ejemplo .githooks/), commiteado como ejecutable (`git update-index --chmod=+x`, porque git ignora un hook que no lo es), e instalado con un paso de preparación que corra en un clon nuevo.
 - Un hook pre-push, guardado e instalado de la misma manera, que corra el comando único, para que un push con una verificación bloqueante en rojo se rechace aquí y no solo en CI. Los commits quedan libres.
-- Un workflow de CI que corra el mismo comando en cada push y pull request, sobre la rama principal real del repositorio.
+- Un workflow de CI que corra el mismo comando en cada push y pull request, sobre la rama principal real del repositorio. Escribe el nombre de la rama principal como constante en el workflow y en cualquier verificación suya; nunca lo leas de la rama que esté activa (un clon en otra rama debe seguir pasando).
 - Una verificación que falle mientras exista alguna línea "OPEN:" en los archivos de spec que se están implementando.
 - Una verificación que falle cuando un número del baseline empeore, o cuando docs/baseline.json baje un piso o suba un techo respecto de un commit anterior (lee las versiones anteriores desde git).
 - Un comando que imprima exactamente una línea "criteria coverage: N/M" y nada más y que falle si un test cita un id que la spec no tiene. Compara ids completos: F-001.1 no es F-001.10.
