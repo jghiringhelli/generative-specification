@@ -198,6 +198,14 @@ One fixture: Pastura, the locked scaffold, the sealed oracle, arms A0, A5, A5b, 
 
 Model-only spend through step 6 is on the order of $2,500 to $8,000 with SDX-1 Full; the human studies add about $33,000 to $57,000. All are guesses until SDX-0 measures cost per chain.
 
+### B-CH. Method versus enforcement: channel arms and a fair-test checklist (PROPOSAL, 2026-10-07; not frozen; no SDX-1 material altered)
+Source: JC, 2026-10-07; note `C:\workspace\PragmaWorks\soma\docs\method-vs-enforcement-2026-10-07.md`; hypothesis text: HYPOTHESES section 12.
+- Idea: same method content, different delivery channel (per-prompt, root file, retrieval tool, tool-use instruction, hook, CI, enforced gate with ratchet). The existing arms (A5/A1/A3/A4; P1 flat vs sentinel vs stale; P4 none / advisory / generic gate / enforced) are already channel contrasts.
+- Candidate additions, cheapest first: tool-instructed verification arm inside P2 (A-M4, needs transcript capture); MCP navigation arm plus no-tool-no-map arm inside P1 (A-M3); hook/CI/ratchet split inside P4; manual-expert arm (A-M1X) and steelman arm (A-STEEL), both needing a human practitioner who is not a GS person.
+- Fairness gaps to close before any freeze: steelman arm, human time and substrate setup cost in the cost endpoint, a second task family chosen by a GS skeptic, a second vendor and a frontier cell, novice vs experienced GS user, artifact token parity.
+- Honest alternative stated in advance: a disciplined expert by hand may tie the automation at small scale and short horizon; the claim under test is persistence, practitioner-independence and memoryless actors.
+- Blocked on: JC's decisions listed at the end of the private note ("Para responder"); no registration written.
+
 ### Overlap risk (HYPOTHESES section 8)
 
 Four positive results for A4 on one set of chains are one bundle measured four ways unless component arms (SDX-2) separate them. Sequencing therefore puts H-PHASE (the most independent hypothesis: verification mode, not persistence) first, and the component ablation before any public count of confirmations.
