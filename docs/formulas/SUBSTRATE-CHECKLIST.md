@@ -9,7 +9,7 @@ description: "The twelve items of a complete project substrate, with the day eac
 
 # The substrate checklist
 
-**Status: written to the canon, not yet tested in a registered run.** This is the target that [formulas 1 and 2](/formulas/) aim to produce, stated so that a program can check it. The shell commands below were run against one small hand-built fixture project, first on a conforming version and then with planted defects, to see that each check fails when it should. They have **not** been run on any real project, and a checker built from them will produce false positives and negatives on the first real repository. Treat them as a starting definition, not a validated instrument.
+**Status: written to the canon, not yet tested in a registered run.** This is the target that [formulas 1 and 2](/formulas/) aim to produce, stated so that a program can check it. The shell commands below were run against one small hand-built fixture project, first on a conforming version and then with planted defects, to see that each check fails when it should. They have **not** been run on any real project, and a checker built from them will produce false positives and negatives on the first real repository. Treat them as a starting definition, not a validated instrument. A single-file checker, `tools/gs-check/gs-check.mjs`, implements the same definitions as probes and prints their raw output ([13. Verify the substrate](/formulas/verify-substrate/)); it is a prototype with the same caveat.
 
 ## What "present and working" means
 
@@ -293,19 +293,19 @@ The second command is a heuristic for "atomic": it reports large commits and doe
 
 ## 10. Spec lock (day 7 to 30, once there is code with ids)
 
-**Present.** `docs/spec.lock`; `@gs <id> <spec-path>#<section>` tags in tests or sources (`git grep -l '@gs '`); a row of the gate table for the lock check and one for the orphan check.
+**Present.** `docs/spec.lock`; `@gs <id> <spec-path>#<section>` tags in tests or sources (`git grep -l '@gs '`); a row of the gate table for the lock check (named `spec-lock`).
 
-**Working.** Four red proofs fail, rows matching `lock|orphan`: edit a criterion after its artifact was tagged (stale); cite an id that does not exist (orphan); a lock behind the spec; a tag the lock does not know. Tags are inert: tests and type check give the same results on the commit before tagging and after (a one-time comparison).
+**Working.** `check` of the lock tool exits 0 on the project and each of these is refused, rows matching `lock`: a sentence written **inside** a tagged heading section of a spec file (STALE); a tag that points at a section that does not exist (MISSING-SOURCE); a tag the lock does not know (UNLOCKED); a lock entry whose tag disappeared (DANGLING). The twin of the first probe must be accepted: a **new spec file** (never inside a locked section; a trailing section appended to the same file can land inside one, and a gate that refuses every spec edit would pass without being a lock). `ratify` without `--reason` is refused; with one it appends a line to `docs/ratifications.md` and the lock is current; `commit-check` refuses a moved hash with no such line. Tags are inert: tests and type check give the same results on the commit before tagging and after (a one-time comparison).
 
 **Not machine-checkable.** That a tagged file really implements the rule (a tag can lie by omission; the lock says which version it was derived against). That an agent did not run the ratify command: the enforcement is a person's review of `docs/spec/ratifications.md` on a protected branch.
 
-Status of the mechanism itself: design, built once on one sample project (see [coherence](/method/coherence/)). There is no reference implementation in this repository.
+Status of the mechanism: the effect is design status ([coherence](/method/coherence/)); the reference implementation is `tools/gs-lock/` (`gs-lock.mjs`, with its own tests, installed by [formula 8](/formulas/lock/)). The red proofs are `node tools/gs-lock/gs-redproof.mjs stale` and the others it offers. A lock written ad hoc by an assistant is checked by the same behavioral probes through the project's hooks.
 
 ## 11. Co-change gate (day 7 to 30, once there is code with ids)
 
 **Present.** A check in the commit-msg hook or in CI, and a row of the gate table for it.
 
-**Working.** Its red proofs fail, rows matching `co-change`: a commit that changes source with no id cited, no spec change and no `refactor:` type; a `refactor:` commit whose parent's tests fail against the new source. In a clean clone with the hook installed, `fix: tweak` over a source change is rejected.
+**Working.** Its red proofs fail, rows matching `co-change|refactor`: a commit that changes source with no id cited, no spec change and no `refactor:` type; a `refactor:` commit whose source breaks the parent's tests **with a test edited in the same commit** (the edit proves nothing: the parent's tests run unchanged). Paired controls: a cited commit and a comment-only `refactor:` are accepted, so a gate that refuses everything is not credited. In a clean clone with the hook installed, `fix: tweak` over a source change is rejected.
 
 **Not machine-checkable.** That a change declared a refactor is not a behavior change at an edge no test pins (add a criterion and a test there).
 
@@ -366,4 +366,4 @@ substrate_checklist:
 - **Presence is easy to fake and "working" is only as strong as its red proof.** A red proof that plants a trivial violation proves the gate runs, not that it guards what matters.
 - **The checklist asks for form, not value.** A project can pass every item with a thin spec. It tells you the substrate is in the condition a stateless reader needs, not that the software is right.
 - **Day one is a target, not a finding.** Nothing here says how often projects reach it, or that reaching it changes defects.
-- **Item 10 and 11 describe a design** with no reference implementation here.
+- **Items 10 and 11 are verified for real only with the reference tool** (`tools/gs-lock/`); the effect of the lock on defects is design status.

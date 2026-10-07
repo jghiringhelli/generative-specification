@@ -22,7 +22,9 @@ Most people write the spec, build an MVP, and **then** apply the method. Both or
 | **A.** You have a spec and an empty folder: build the substrate and the code together | [1. Greenfield](/formulas/greenfield/) |
 | **B.** You have an MVP that runs: add the substrate without changing what it does | [2. Adopt after an MVP](/formulas/adopt/) |
 | You just inherited or joined a codebase and may not change it | [3. Join a codebase](/formulas/join/) |
+| You are moving a legacy system to a new stack, or a project from an older GS layout to the current one | [12. Migrate](/formulas/migrate/) |
 | You want a first look at the project's health | [9. Audit](/formulas/audit/) |
+| You want a program, not the assistant, to say which of the twelve items are there and work | [13. Verify the substrate](/formulas/verify-substrate/) |
 
 ## The formulas, in the order a project lives
 
@@ -35,10 +37,12 @@ Most people write the spec, build an MVP, and **then** apply the method. Both or
 | 5 | [Change: feature, fix, refactor](/formulas/change/) | Every change after the substrate exists, with the triage (a to e) for fixes |
 | 6 | [Verify a use case in layers](/formulas/verify/) | "Tests pass" is not enough |
 | 7 | [Wire a gate, red then green](/formulas/gate/) | To make a rule mechanical, one gate at a time |
-| 8 | [Lock and co-change gate](/formulas/lock/) | Day 7 to 30, once there is code with ids |
+| 8 | [Lock and co-change gate](/formulas/lock/) | Day 7 to 30, once there is code with ids. Installs the reference tool in `tools/gs-lock/` |
 | 9 | [Audit: the free scorecard](/formulas/audit/) | A first look, or before and after |
 | 10 | [Self-experiment: before and after](/formulas/experiment/) | You want to see what it did on your own project |
 | | [Substrate checklist](/formulas/substrate-checklist/) | The twelve items the formulas aim to produce, as machine-checkable definitions |
+| 12 | [Migrate](/formulas/migrate/) | A: a legacy system to a new stack (contracts, inverse inventory, parity). B: an older GS layout to the current canon |
+| 13 | [Verify the substrate](/formulas/verify-substrate/) | After any of the above: a program checks the twelve items and the assistant pastes its raw output |
 
 ## How to run a formula
 
@@ -53,7 +57,7 @@ The prompts are tight on purpose: a prompt that tries to say everything is a har
 
 ## One text for the triage
 
-Formulas [1](/formulas/greenfield/), [2](/formulas/adopt/) and [5](/formulas/change/) each carry the five-case triage block, so each prompt works alone. The canonical text is on the [refinement page](/practice/refinement/); if the copies drift, that page wins. The block ends every sentinel these formulas write.
+Formulas [1](/formulas/greenfield/), [2](/formulas/adopt/), [5](/formulas/change/) and [12](/formulas/migrate/) (case B) each carry the five-case triage block, so each prompt works alone. The canonical text is on the [refinement page](/practice/refinement/); if the copies drift, that page wins. The block ends every sentinel these formulas write.
 
 ## The audit is not copied here
 
@@ -61,10 +65,10 @@ The audit prompt stays at [pragmaworks.dev/audit](https://pragmaworks.dev/audit)
 
 ## What this section does not do yet
 
-- **No formula for the lock without the substrate.** The [spec lock](/method/coherence/) and the divergence checks are design status; formula 8 is a prompt to build them, built once on one sample project, with no reference implementation here.
+- **No formula for the lock without the substrate.** The [spec lock](/method/coherence/) is design status as to its effect; formula 8 installs a reference implementation (`tools/gs-lock/`, tested on its own scenarios, never run on a model-written project in a registered run).
 - **No Value Ledger, no maturity levels, no governance claim.** A scorecard letter is not "governed".
-- **No migration or production-hardening formula.** See [Migrate to a new stack](/practice/migrate-stack/); hardening lives at pragmaworks.dev with an untested label.
-- **No tool.** These are prompts and commands, not a package. Older pages that depended on a retired tool are marked superseded (see [Recipes](/docs/recipes/) and [Templates](/templates/)).
+- **No production-hardening formula.** Hardening lives at pragmaworks.dev with an untested label. [Migrate](/formulas/migrate/) is written, never run.
+- **Two small tools, no package.** `tools/gs-lock/` (the lock and the co-change gate) and `tools/gs-check/` (the checker of the twelve items) are single files for Node, MIT, with their own tests. Older pages that depended on a retired tool are marked superseded (see [Recipes](/docs/recipes/) and [Templates](/templates/)).
 
 ## Licence and language
 
