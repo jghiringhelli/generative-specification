@@ -770,7 +770,7 @@ function installCommands(ctx, sbx) {
 function testCommand(ctx, sbx) {
   const stack = detectStack(sbx.root);
   if (stack === 'node') { const p = tryRead(path.join(sbx.root, 'package.json')); try { const t = (JSON.parse(p).scripts || {}).test; if (t && !/no test specified/.test(t)) return 'npm test --silent'; } catch { /* ignore */ } }
-  if (stack === 'python') return 'python -m pytest -q';
+  if (stack === 'python') { const rd = ctx.shared.readme; const rc = rd && rd.commands.find(x => x.kind === 'test'); return rc ? rc.pre + rc.cmd : 'python -m pytest -q'; }
   if (stack === 'go') return 'go test ./...';
   const r = ctx.shared.readme; const c = r && r.commands.find(x => x.kind === 'test'); return c ? c.pre + c.cmd : null;
 }
@@ -889,7 +889,11 @@ function e05(ctx) {
   const existing = trackedFiles(sbx.root).find(p => isTestPath(ctx.cfg, p) && /\.(js|mjs|cjs|ts|py)$/.test(p));
   const plantAppend = existing ? { path: existing, append: py ? '\n\nimport unittest as _fx1_unittest\n\n\nclass Fx1PlantedAppend(_fx1_unittest.TestCase):\n    def test_fx1_planted_append(self):\n        self.fail("fx1 planted failure")\n' : "\nthrow new Error('fx1 planted failure');\n" } : null;
   const msgT = 'test: fx1 planted failing test' + safe.idSuffix;
+  // (dev loop 2, defect C20b) the project's test command may discover only some folders (tests/unit, tests/characterization): also plant in each folder that holds tests
+  const testDirs = [...new Set(trackedFiles(sbx.root).filter(p => isTestPath(ctx.cfg, p) && /\.(js|mjs|cjs|ts|py)$/.test(p)).map(p => path.dirname(p)))].filter(d => d !== 'tests').slice(0, 3);
+  const plantIn = d => py ? { path: `${d}/test_fx1_planted.py`, write: plantNew.write } : { path: `${d}/fx1_planted.test.${trackedFiles(sbx.root).some(p => p.startsWith(d + '/') && /\.test\.mjs$/.test(p)) ? 'mjs' : 'js'}`, write: trackedFiles(sbx.root).some(p => p.startsWith(d + '/') && /\.test\.mjs$/.test(p)) ? "throw new Error('fx1 planted failure');\n" : plantNew.write };
   let pT = sbx.probe(withSafe(plantNew), msgT, { scripts: true });
+  for (const d of testDirs) { if (BLOCKED(pT)) break; pT = sbx.probe(withSafe(plantIn(d)), msgT, { scripts: true }); }
   if (!BLOCKED(pT) && plantAppend) pT = sbx.probe(withSafe(plantAppend), msgT, { scripts: true });
   const src = srcFile(ctx, sbx);
   const pS = src ? sbx.probe(withSafe({ path: src, append: '\n)))((( fx1 planted syntax error\n' }), 'fix: fx1 planted syntax error probe' + safe.idSuffix, { scripts: true }) : null;
@@ -1402,6 +1406,17 @@ function loadManifest(ctx) {
 }
 
 // ---------- the surface of the original code, extracted by heuristics (independent of the model) ----------
+function apiTokens(texts) {
+  const T = new Map(); const add = v => { if (v && v.length > 2) T.set(v, 'api'); };
+  for (const text of texts) {
+    for (const m of text.matchAll(/^def ([a-z][A-Za-z0-9_]*)\(/gm)) add(m[1]);
+    for (const m of text.matchAll(/^class ([A-Z][A-Za-z0-9_]*)/gm)) add(m[1]);
+    for (const m of text.matchAll(/^exports\.([A-Za-z_]\w*)\s*=/gm)) add(m[1]);
+    for (const m of text.matchAll(/module\.exports\s*=\s*\{([^}]*)\}/g)) for (const k of m[1].split(',')) add(k.split(':')[0].trim());
+    for (const m of text.matchAll(/^export (?:async )?(?:function|class|const) ([A-Za-z_]\w*)/gm)) add(m[1]);
+  }
+  return T;
+}
 function surfaceTokens(texts) {
   const T = new Map(); const add = (k, v) => { if (v && v.length > 1 && !/^(--?)?(help|h|v)$/.test(v)) T.set(v, k); };
   for (const text of texts) {
@@ -1707,7 +1722,8 @@ function runSync(ctx, { base }) {
   // Y01
   if (noBase) push(res('Y01', NY.Y01, 'UNDETERMINABLE', ['no --base commit given or it is not in the repository']));
   else {
-    const toks = surfaceTokens(srcAtBase.map(p => git(ctx.root, ['show', base + ':' + p]).stdout));
+    const baseTexts = srcAtBase.map(p => git(ctx.root, ['show', base + ':' + p]).stdout);
+    let toks = surfaceTokens(baseTexts); if (!toks.size) toks = apiTokens(baseTexts);
     const specText = f.specFiles.map(p => tryRead(path.join(ctx.root, p)) || '').join('\n').toLowerCase();
     if (!toks.size) push(res('Y01', NY.Y01, 'UNDETERMINABLE', ['no routes, commands, flags or environment variables were recognised in the code at the boundary commit']));
     else if (!specText) push(res('Y01', NY.Y01, 'ABSENT', ['no spec']));
