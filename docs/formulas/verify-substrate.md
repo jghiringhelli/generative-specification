@@ -52,6 +52,8 @@ Verificador: [ruta de gs-check.mjs]
 Proyecto: [ruta absoluta de la carpeta del proyecto]
 Archivo de informe (fuera del proyecto): [ruta absoluta, por ejemplo en una carpeta temporal]
 
+Deja en inglés las palabras que imprime el verificador: PASS, PARTIAL, ABSENT, UNDETERMINABLE, not all PASS.
+
 1. Corre, desde fuera de la carpeta del proyecto, exactamente este comando y pega su salida completa y su código de salida:
    node [verificador] --repo [proyecto] --strict --verbose --out [archivo de informe]
    Clona el estado commiteado y no modifica el proyecto. Córrelo una segunda vez y di si cada ítem tiene el mismo estado que la primera. No edites el verificador, su configuración ni el proyecto para cambiar un resultado. Si un comando no arranca, pega el error y detente.
@@ -59,7 +61,6 @@ Archivo de informe (fuera del proyecto): [ruta absoluta, por ejemplo en una carp
 3. Luego la línea de resumen del verificador y el código de salida, tal cual, y el sha256 del archivo de informe.
 4. No arregles nada ni propongas arreglos salvo que yo lo pida. Si el código de salida no es 0, escribe "not all PASS", y nada más.
 5. Termina con una sección "No verificado por un programa, para una persona", con estas líneas, cada una marcada "no verificado": que el centinela lleva a una sesión en frío a la porción correcta; que la spec es correcta y completa y que una persona la ratificó; que los tests son buenos tests; que los registros de decisión llevan la razón real y que los commits son atómicos y dicen por qué; que los documentos derivados son ciertos respecto del código; que el CI corrió en verde en el servidor, que existen protección de rama y revisión obligatoria, y qué detiene `git commit --no-verify`; quién puede editar los archivos de gates y el baseline; que una etiqueta del lock no miente por omisión y que `ratify` lo corrió una persona.
-- Deja en inglés las palabras que imprime el verificador: PASS, PARTIAL, ABSENT, UNDETERMINABLE, not all PASS.
 ```
 
 </div>
