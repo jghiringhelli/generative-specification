@@ -17,7 +17,7 @@
 - Path definitions as JC gave them: A greenfield from a complete spec; B an existing project with no substrate and no complete spec, the formula adds the substrate and generates the spec from the code, judged on spec-code synchronization; C re-platform (code to spec, then a greenfield on another stack, with new features and a cleanup list), judged on equivalence of what is kept and accounting of the intended changes. Formula 12 case A was rewritten to be literally code to spec to greenfield; case B (older GS layout) unchanged and not tested.
 - Three legacy fixtures written by an ungoverned session (habits and rollup in Python, shortly in Node; development only, disjoint from any confirmatory fixture).
 - 29 valid runs in four scored batches in the Linux container (A 11, B 9, C 9), each followed by the lock formula and the checker; 11 further runs were lost to harness failures (credential revocation and an empty sandbox in batch 1, a session rate limit in the next batch) and are voided.
-- Hand inspection on 10 runs: gates block at push (commits are free by design), lock consistent, ids resolve; equivalence: a plant of a behavior change in the new code was refused in 23 of 24 trials.
+- Hand inspection on 12 runs: gates block at push (commits are free by design), lock consistent, ids resolve; equivalence: a plant of a behavior change in the new code was refused in 23 of 24 trials.
 
 ## Findings worth keeping
 - Models write Python tests as `test_F_001_2_...`; the id grammar needs both forms. Spec folders collect assumption tables whose rows start with ids.
