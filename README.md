@@ -193,6 +193,17 @@ The structural argument developed in ss10 of the white paper: when a practitione
 
 ---
 
+## Licensing
+
+Two licences apply, by kind of content:
+
+| What | Licence | File |
+|---|---|---|
+| Documents: the Compendium, the white paper and its derivatives, the essays and guides under `docs/`, the course and learning pages, and the genspec.dev site | [Creative Commons Attribution 4.0 (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) | [LICENSE](LICENSE) |
+| Code and prompts: experiment runners, scripts, the quality-gate library (`quality-gates/`), and the prompts used in the experiments | [MIT](https://opensource.org/licenses/MIT) | [LICENSE-CODE](LICENSE-CODE) |
+
+Reuse with attribution: cite the work as in the Citation section below (`CITATION.cff` has the same data). Material that other people wrote and that this repository only reproduces (for example the output of a third-party tool, or a quotation) stays under its own terms.
+
 ## Citation
 
 ```
