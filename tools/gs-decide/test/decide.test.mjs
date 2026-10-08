@@ -379,3 +379,66 @@ test('T32 CLI: usage errors exit 2; protected and verify --json run; a non-repo 
   assert.equal(r.status, 2); assert.match(out(r), /not a git repository/);
   rmSync(dir, { recursive: true, force: true });
 });
+
+// ---------- optional roles policy ----------
+const POLICY = { classes: { spec: ['product owner'], gate: ['tech lead'], ratchet: ['tech lead', 'security'], security: ['security'] }, paths: { security: ['src/auth/**'] },
+  identities: { 'maria@example.com': ['product owner'], 'bob@example.com': ['tech lead'] } };
+const withPolicy = P => { P.w('docs/decision-roles.json', JSON.stringify(POLICY, null, 2) + '\n'); P.g('add', '-A'); P.g('commit', '-q', '--no-verify', '-m', 'chore: roles policy'); };
+
+test('T33 ROLES: with a policy, add refuses a role the identity does not hold, and a single held role is the default', () => {
+  const P = proj(); withPolicy(P);
+  const r = P.decide('add', '--kind', 'gate', '--role', 'tech lead', '--covers', '.github/workflows/ci.yml', '--why', 'maria claims a role she does not hold');
+  assert.equal(r.status, 2); assert.match(out(r), /does not hold the role "tech lead".*holds: product owner/);
+  assert.equal(P.decide('add', '--kind', 'spec', '--covers', 'docs/spec/SPEC.md', '--why', 'role defaults to the only one held').status, 0);
+  assert.match(logOf(P), /^role: product owner$/m);
+});
+
+test('T34 ROLES: the hook accepts a spec change from the product owner and refuses a gate change from the same person', () => {
+  const P = proj(); withPolicy(P);
+  P.w('docs/spec/SPEC.md', SPEC + '- [ ] AC-003 New.\n'); P.decide('add', '--kind', 'spec', '--covers', 'docs/spec/SPEC.md', '--why', 'AC-003 is the agreed behaviour');
+  P.w('.github/workflows/ci.yml', 'name: ci\non: [pull_request]\n');
+  P.decide('add', '--kind', 'gate', '--role', 'product owner', '--covers', '.github/workflows/ci.yml', '--why', 'the product owner approves the CI trigger');
+  const r = P.try('ci: change the trigger and the spec'); assert.equal(r.status, 1);
+  assert.match(out(r), /ci\.yml \(gate\) is approved, but not by an allowed role: gate changes need tech lead/); assert.doesNotMatch(out(r), /SPEC\.md/);
+});
+
+test('T35 ROLES: a tech lead identity ratifies the gate change; the policy file itself is protected', () => {
+  const P = proj(); withPolicy(P);
+  P.g('config', 'user.email', 'bob@example.com'); P.g('config', 'user.name', 'Bob Lead');
+  P.w('.github/workflows/ci.yml', 'name: ci\non: [pull_request]\n'); P.approve('.github/workflows/ci.yml', 'ci', 'bob reviewed the trigger change');
+  const ok = P.try('ci: change the trigger'); assert.equal(ok.status, 0, out(ok));
+  P.w('docs/decision-roles.json', JSON.stringify({ ...POLICY, identities: { 'bob@example.com': ['tech lead', 'product owner', 'security'] } }));
+  const self = P.try('chore: bob grants himself every role'); assert.equal(self.status, 1); assert.match(out(self), /decision-roles\.json \(gate\) changed with no ratification/);
+});
+
+test('T36 ROLES: a policy path class (security) protects its own paths and needs that role', () => {
+  const P = proj(); withPolicy(P);
+  P.w('src/auth/login.js', 'module.exports = 1;\n');
+  const r = P.try('feat: add login'); assert.equal(r.status, 1); assert.match(out(r), /src\/auth\/login\.js \(security\) changed with no ratification/);
+  P.decide('add', '--kind', 'decision', '--covers', 'src/auth/login.js', '--why', 'the product owner approves security code');
+  const again = P.try('feat: add login'); assert.equal(again.status, 1); assert.match(out(again), /not by an allowed role: security changes need security/);
+});
+
+test('T37 ROLES: without the policy file behaviour is unchanged (any named human identity)', () => {
+  const P = proj(); P.w('.github/workflows/ci.yml', 'name: ci\non: [pull_request]\n');
+  P.decide('add', '--kind', 'gate', '--role', 'whoever', '--covers', '.github/workflows/ci.yml', '--why', 'no policy file exists in this repository');
+  assert.equal(P.try('ci: change the trigger').status, 0);
+});
+
+// ---------- the Chronicle export (DRAFT) ----------
+test('T38 EXPORT chronicle-jsonl: config_change per approved path, deviation for a waiver, contract keys only, deterministic ids, no ledger-assigned fields', async () => {
+  const P = proj(); P.w('docs/ratchet.json', '{ "tests_min": 3 }\n');
+  P.approve('docs/spec/SPEC.md', 'spec'); P.approve('docs/ratchet.json', 'ratchet'); P.w('docs/ratchet.json', '{ "tests_min": 4 }\n'); P.approve('docs/ratchet.json', 'ratchet');
+  P.decide('add', '--kind', 'waiver', '--role', 'tech lead', '--covers', 'docs/ratchet.json', '--expires', '2026-11-01', '--why', 'floor waived for the spike');
+  P.decide('add', '--kind', 'decision', '--role', 'cto', '--ref', 'adopt tiering', '--why', 'a decision with no file has no ledger kind');
+  const r = P.decide('export', '--format', 'chronicle-jsonl'); assert.equal(r.status, 0, out(r)); assert.match(r.stderr, /DRAFT export.*4 event\(s\); no ledger kind for D-0005/);
+  const ev = r.stdout.trim().split('\n').map(l => JSON.parse(l)); assert.equal(ev.length, 4);
+  const m = await import(pathToFileURL(DECIDE).href);
+  for (const e of ev) { assert.deepEqual(Object.keys(e).sort(), ['actor', 'id', 'kind', 'payload', 'project', 'ts', 'work_package_id']); assert.match(e.id, /^[0-7][0-9A-HJKMNP-TV-Z]{25}$/); assert.equal(e.actor, 'email:maria@example.com'); assert.equal(e.project, null); assert.equal(e.work_package_id, null); }
+  assert.deepEqual(ev[0].payload, { antes_sha256: null, despues_sha256: m.contentHash(SPEC), objeto: 'spec', objeto_id: 'docs/spec/SPEC.md', ts_evento: '2026-10-08T10:00:00.000Z' });
+  assert.equal(ev[2].kind, 'config_change'); assert.equal(ev[2].payload.antes_sha256, ev[1].payload.despues_sha256); assert.notEqual(ev[2].payload.antes_sha256, ev[2].payload.despues_sha256);
+  assert.equal(ev[3].kind, 'deviation'); assert.deepEqual(Object.keys(ev[3].payload).sort(), ['detalle', 'origen', 'tipo', 'ts_evento']); assert.match(ev[3].payload.detalle, /waiver D-0004: docs\/ratchet\.json \| floor waived for the spike \| expires 2026-11-01/);
+  assert.equal(P.decide('export', '--format', 'chronicle-jsonl').stdout, r.stdout);   // deterministic
+  const x = P.decide('export', '--format', 'chronicle-jsonl', '--with-extras'); assert.equal(JSON.parse(x.stdout.split('\n')[0]).x_gs_decide.role, 'tech lead');
+  assert.equal(P.decide('export', '--format', 'csv').status, 2);
+});

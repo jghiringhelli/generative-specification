@@ -28,12 +28,18 @@
 //   verify [--json] [--require-ratified] [--against <rev>]
 //       exit 1 on: MALFORMED CHAIN-BROKEN HISTORY-REWRITTEN EXPIRED WAIVER-NO-CHANGE RATIFICATIONS-EDITED (and UNRATIFIED with the flag).
 //       warnings (exit 0): AGENT-ENTRY, EXPIRING-SOON, UNRATIFIED without the flag.
+//   export --format chronicle-jsonl [--out <file>] [--with-extras]   DRAFT: entries as Chronicle ledger events (readme: "Where gs-decide meets Chronicle")
 //   protected [--json]    the protected-path classes in force (defaults + .gs.json decide.protect / decide.unprotect)
 //   init                  write the empty log header and the .gitattributes line (add does it too)
 // Exit codes: 0 ok, 1 findings, 2 usage or environment error.
 //
 // Optional .gs.json key "decide": { log, protect: [globs], unprotect: [globs], roles: {"email": "role"}, allowOtherSigner: false,
-//   aiPattern: "<regex>", maxWaiverDays: 365 }.
+//   aiPattern: "<regex>", maxWaiverDays: 365, rolesFile: "docs/decision-roles.json" }.
+// Optional roles policy docs/decision-roles.json (itself a protected path): { "classes": {"spec": ["product owner"], "gate": ["tech lead"],
+//   "ratchet": ["tech lead","security"], "waiver": ["tech lead","security"], "security": ["security"]},
+//   "paths": {"security": ["src/auth/**"]}, "identities": {"maria@example.com": ["product owner"]} }. With the file, the hook accepts an entry for a
+//   class only if the entry's role is allowed for it AND the signer's identity holds that role; `add` refuses a role the identity does not hold.
+//   Without the file: any named human identity. It is a policy over identities as the log records them: it does not authenticate anyone.
 
 import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
@@ -42,6 +48,7 @@ import { spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
 export const LOG = 'docs/decisions.log.md';
+export const ROLES_FILE = 'docs/decision-roles.json';
 export const RATIFICATIONS = 'docs/ratifications.md'; // gs-lock's record: read, never written here
 export const SPEC_LOCK = 'docs/spec.lock';
 export const GENESIS = '0'.repeat(64);
@@ -55,7 +62,7 @@ export const PROTECTED = {
     'docs/spec/**', 'docs/specs/**', 'docs/features/**', 'docs/especificacion/**', 'docs/especificaciones/**', 'docs/requisitos/**', SPEC_LOCK],
   gate: ['.githooks/**', '.husky/**', '.git-hooks/**', '.pre-commit-config.yaml', '.github/workflows/**', '.gitlab-ci.yml', 'azure-pipelines.yml', 'Jenkinsfile',
     '.circleci/**', 'scripts/gate*', '.gs.json', 'tools/gs-*/**', '.eslintrc*', 'eslint.config.*', '.flake8', '.pylintrc', 'ruff.toml', '.ruff.toml',
-    '.golangci.*', '.dependency-cruiser.*', '.importlinter', 'CODEOWNERS', '.github/CODEOWNERS'],
+    '.golangci.*', '.dependency-cruiser.*', '.importlinter', 'CODEOWNERS', '.github/CODEOWNERS', ROLES_FILE],
   waiver: ['docs/waivers*', '.gs-waivers*'],
 };
 export const RATCHET_NAME = /(ratchet|baseline|floor)/, RATCHET_EXT = /\.(json|ya?ml|toml|cfg|txt)$/i;
@@ -85,12 +92,30 @@ const globMatch = (g, p) => globRe(g).test(g.includes('/') ? p : basename(p));
 
 export function loadConfig(root) {
   let user = {}; try { user = JSON.parse(readText(root, '.gs.json') || '{}').decide || {}; } catch { /* a broken .gs.json: defaults */ }
-  return { log: LOG, protect: [], unprotect: [], roles: {}, allowOtherSigner: false, aiPattern: DEFAULT_AI, maxWaiverDays: 365, ...user };
+  const cfg = { log: LOG, protect: [], unprotect: [], roles: {}, allowOtherSigner: false, aiPattern: DEFAULT_AI, maxWaiverDays: 365, rolesFile: ROLES_FILE, ...user };
+  cfg.policy = null; // optional roles policy (docs/decision-roles.json): see readme. Absent file = any named human identity may ratify.
+  try { const p = readText(root, cfg.rolesFile); if (p) cfg.policy = normPolicy(JSON.parse(p)); } catch { cfg.policy = { broken: true, classes: {}, paths: {}, identities: {} }; }
+  return cfg;
+}
+const lc = a => [].concat(a || []).map(s => String(s).trim().toLowerCase()).filter(Boolean);
+function normPolicy(j) {
+  const classes = {}, paths = {}, identities = {};
+  for (const [k, v] of Object.entries(j.classes || {})) classes[k] = lc(v);
+  for (const [k, v] of Object.entries(j.paths || {})) paths[k] = [].concat(v);
+  for (const [k, v] of Object.entries(j.identities || {})) identities[k.toLowerCase()] = lc(v);
+  return { classes, paths, identities };
+}
+// does the entry's signer hold the entry's role, and may that role ratify this class? (no policy: yes)
+export function roleAllowed(e, cls, cfg) {
+  const p = cfg.policy; if (!p || !p.classes[cls]) return true;
+  const role = (e.role || '').toLowerCase(), held = p.identities[emailOf(e.who)] || [];
+  return p.classes[cls].includes(role) && held.includes(role);
 }
 // the class of a path ('spec' | 'gate' | 'ratchet' | 'waiver' | 'record') or null
 export function protectedClass(rel, cfg) {
   if (cfg.unprotect.some(g => globMatch(g, rel))) return null;
   if (rel === cfg.log || rel === RATIFICATIONS) return 'record';
+  if (cfg.policy) for (const [cls, globs] of Object.entries(cfg.policy.paths)) if (globs.some(g => globMatch(g, rel))) return cls; // a policy class such as "security"
   for (const [cls, globs] of Object.entries(PROTECTED)) if (globs.some(g => globMatch(g, rel))) return cls;
   if (cfg.protect.some(g => globMatch(g, rel))) return 'configured';
   const b = basename(rel);
@@ -192,7 +217,9 @@ export function addEntry(root, a, cfg = loadConfig(root)) { // returns {ok, entr
   const err = error => ({ ok: false, error });
   const me = identity(root); if (!me) return err('git user.name and user.email are not set: an entry is signed with the git identity, set both');
   const kind = a.kind; if (!KINDS.includes(kind)) return err(`--kind must be one of: ${KINDS.join(' ')}`);
-  const role = oneLine(a.role || cfg.roles[me.email] || cfg.roles[me.email.toLowerCase()]); if (!role) return err('--role is required (or map the e-mail in .gs.json decide.roles)');
+  const held = cfg.policy?.identities[me.email.toLowerCase()] || [];
+  const role = oneLine(a.role || cfg.roles[me.email] || cfg.roles[me.email.toLowerCase()] || (held.length === 1 ? held[0] : '')); if (!role) return err('--role is required (or map the e-mail in .gs.json decide.roles)');
+  if (cfg.policy && !cfg.policy.broken && !held.includes(role.toLowerCase())) return err(`${me.email} does not hold the role "${role}" in ${cfg.rolesFile} (holds: ${held.join(', ') || 'none'}): a role is claimed only by an identity the policy gives it to`);
   const why = oneLine(a.why); if (why.length < 15) return err('--why needs 15+ characters: the reason is the trace');
   const log = loadLog(root, cfg); if (log.problems.length) return err('the log does not verify, fix that first:\n' + log.problems.map(p => `  ${p.code} ${p.id}: ${p.note}`).join('\n'));
   let covers = [].concat(a.covers || []).flatMap(c => String(c).split(',')).map(s => s.trim()).filter(Boolean);
@@ -247,18 +274,19 @@ export function checkChange({ changes, post, pre, message = '', committers = [],
   const closedIds = new Set(postLog.entries.filter(e => e.closes).map(e => e.closes));
   const aiCommit = [...message.matchAll(/^co-authored-by:\s*(.+)$/gim)].some(m => isAi(m[1], cfg));
   const human = e => e.via === 'human' && !isAi(e.who, cfg);
-  const okFor = (path, hash, needHuman) => postLog.entries.some(e => validAt(e, closedIds, at) && (!needHuman || human(e)) && approvesOf(e).some(a => a.path === path && a.hash === hash));
+  const okFor = (path, hash, needHuman, cls) => postLog.entries.some(e => validAt(e, closedIds, at) && (!needHuman || human(e)) && (!cls || roleAllowed(e, cls, cfg)) && approvesOf(e).some(a => a.path === path && a.hash === hash));
   const ratGrew = (post.ratifications || '').length > (pre.ratifications || '').length;
   for (const { s, p } of changes) {
     const cls = protectedClass(p, cfg); if (!cls || cls === 'record') continue;
     const buf = s === 'D' ? null : post.read(p), hash = buf ? contentHash(buf) : 'deleted';
     let how = null;
-    if (okFor(p, hash, false)) how = okFor(p, hash, true) ? 'entry' : 'entry-nonhuman';
+    if (okFor(p, hash, false, cls)) how = okFor(p, hash, true, cls) ? 'entry' : 'entry-nonhuman';
     else if (p === SPEC_LOCK && !aiCommit) {
       if (ratGrew) how = 'gs-lock ratification';
       else if (pre.read(p) && buf && lockOnlyAdds(lf(pre.read(p).toString('utf8')), lf(buf.toString('utf8')))) how = 'lock additions only';
     }
     touched.push({ path: p, class: cls, hash, how });
+    if (!how && okFor(p, hash, false)) { refusals.push(`${p} (${cls}) is approved, but not by an allowed role: ${cls} changes need ${cfg.policy.classes[cls].join(' or ')} (${cfg.rolesFile}); the signer must hold that role in the policy's identities`); touched[touched.length - 1].how = null; continue; }
     if (!how) refusals.push(`${p} (${cls}) changed with no ratification entry for this content (sha256 ${hash === 'deleted' ? 'deleted' : hash.slice(0, 12)}): record one with  node tools/gs-decide/gs-decide.mjs add --kind <kind> --role <role> --covers ${p} --why "<reason>"  and stage ${cfg.log}${aiCommit && p === SPEC_LOCK ? ' (the commit has an AI co-author: a gs-lock marker is not accepted, a human entry is needed)' : ''}`);
     else if (how === 'entry-nonhuman') { if (aiCommit) refusals.push(`${p} (${cls}): the commit has an AI co-author and the only entry covering it is not human (via ${(postLog.entries.find(e => approvesOf(e).some(a => a.path === p && a.hash === hash)) || {}).via || '?'}): a named person must record it`); else warnings.push(`${p}: approved by an agent-suspected entry`); }
     else if (aiCommit && how !== 'entry') refusals.push(`${p} (${cls}): the commit has an AI co-author; a gs-lock marker is not enough, a human gs-decide entry is`);
@@ -355,8 +383,32 @@ function contentSeen(root, path, hash) {
   return false;
 }
 
+// ---------- DRAFT export to the Chronicle ledger event shape (pragmaworks-gobernanza, chronicle-ledger-contratos.md v0.9) ----------
+// Maps what the contract allows and names what it does not (see README, "Where gs-decide meets Chronicle"). Lines carry the contract's signed keys
+// minus the ones the LEDGER assigns (chain_id, seq, prev_hash, hash): actor, id, kind, payload, project, ts, work_package_id, keys sorted (JCS for
+// this ASCII-keyed shape). Payload keys are the fixed keys of the kind, nothing added. DRAFT until the contract owner confirms.
+const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+export function ulidFrom(ms, seedHex) { // 48 bits of time + 80 bits taken from sha256(seed), the deterministic rule of the contract (4.4) so a re-export gives the same id
+  let v = (BigInt(ms) << 80n) | BigInt('0x' + sha(seedHex).slice(0, 20)), s = '';
+  for (let i = 0; i < 26; i++) { s = B32[Number(v & 31n)] + s; v >>= 5n; }
+  return s;
+}
+const jcs = o => Array.isArray(o) ? '[' + o.map(jcs).join(',') + ']' : o && typeof o === 'object' ? '{' + Object.keys(o).sort().map(k => JSON.stringify(k) + ':' + jcs(o[k])).join(',') + '}' : JSON.stringify(o);
+export function exportChronicle(root, { extras = false } = {}) {
+  const cfg = loadConfig(root), log = loadLog(root, cfg), lines = [], skipped = [], lastHash = new Map();
+  for (const e of log.entries) {
+    const tsMs = e.when.replace(/Z$/, '.000Z'), base = { actor: 'email:' + emailOf(e.who), project: null, work_package_id: null, ts: tsMs }, ms = Date.parse(e.when);
+    const push = (kind, payload, n) => { const ev = { ...base, kind, payload, id: ulidFrom(ms, e.entry + ':' + n) }; if (extras) ev.x_gs_decide = { entry: e.id, entry_hash: e.entry, prev: e.prev, role: e.role, via: e.via, why: e.why, scope: e.scope || null, expires: e.expires || null, ref: e.ref || null }; lines.push(jcs(ev)); };
+    if (e.kind === 'waiver' || e.kind === 'risk') push('deviation', { tipo: 'otro', detalle: `${e.kind} ${e.id}: ${e.ref || ''} | ${e.why}${e.expires ? ' | expires ' + e.expires : ''}`, origen: 'humano', ts_evento: tsMs }, 0);
+    else if (approvesOf(e).length) {
+      approvesOf(e).forEach((a, i) => { push('config_change', { objeto: e.kind, objeto_id: a.path, antes_sha256: lastHash.get(a.path) ?? null, despues_sha256: a.hash === 'deleted' ? null : a.hash, ts_evento: tsMs }, i); lastHash.set(a.path, a.hash === 'deleted' ? null : a.hash); });
+    } else skipped.push(e.id);
+  }
+  return { lines, skipped };
+}
+
 // ---------- CLI ----------
-const WITH_VALUE = new Set(['--root', '--kind', '--role', '--why', '--ref', '--covers', '--scope', '--expires', '--closes', '--commit', '--last', '--against', '--msg-file', '--range']);
+const WITH_VALUE = new Set(['--root', '--kind', '--role', '--why', '--ref', '--covers', '--scope', '--expires', '--closes', '--commit', '--last', '--against', '--msg-file', '--range', '--format', '--out']);
 export function parseArgs(argv) {
   const o = { _: [], flags: new Set(), covers: [] };
   for (let i = 0; i < argv.length; i++) { const a = argv[i]; if (WITH_VALUE.has(a)) { const v = argv[++i]; if (a === '--covers') o.covers.push(v); else o[a.slice(2)] = v; } else if (a.startsWith('--')) o.flags.add(a.slice(2)); else o._.push(a); }
@@ -394,6 +446,13 @@ export function main(argv) {
       say(r.ok ? `ok decisions log: ${r.info.entries} entr${r.info.entries === 1 ? 'y' : 'ies'}, chain head ${r.info.head.slice(0, 12)}` : `x decisions log: ${r.findings.filter(f => f.level === 'fail').length} problem(s) in ${r.info.entries} entries`);
     }
     return r.ok ? 0 : 1;
+  }
+  if (cmd === 'export') {
+    if (o.format !== 'chronicle-jsonl') { process.stderr.write('x export: --format chronicle-jsonl is the only format\n'); return 2; }
+    const r = exportChronicle(root, { extras: o.flags.has('with-extras') });
+    process.stderr.write('DRAFT export: the field mapping is not confirmed by the owner of the ledger contract; do not ingest it into a production ledger. ' + r.lines.length + ' event(s)' + (r.skipped.length ? '; no ledger kind for ' + r.skipped.join(', ') : '') + '\n');
+    const text = r.lines.map(l => l + '\n').join(''); if (o.out) writeFileSync(join(root, o.out), text); else process.stdout.write(text);
+    return 0;
   }
   if (cmd === 'protected') {
     const cfg = loadConfig(root), all = { ...PROTECTED, ratchet: [`any ${RATCHET_EXT} file whose name matches ${RATCHET_NAME}`], configured: cfg.protect, record: [cfg.log, RATIFICATIONS + ' (append only)'] };
