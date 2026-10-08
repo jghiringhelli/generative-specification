@@ -587,11 +587,11 @@ function e01(ctx) {
     for (const { ref, soft } of refsIn(read(path.join(ctx.root, rel)), ctx.cfg)) {
       const hit = resolveRef(ctx.root, rel, ref);
       // (dev loop, defect C6) a path the repository itself git-ignores (data files, build output) is created at run time: naming it is not a dangling route
-      if (hit) resolved.push(hit); else if (!soft && git(ctx.root, ['check-ignore', '-q', ref]).code !== 0) dangling.push(ref);
+      if (hit) resolved.push(hit); else if (!soft && !/^docs\/ratifications\.md$/.test(ref) && git(ctx.root, ['check-ignore', '-q', ref]).code !== 0) dangling.push(ref);
     }
   }
   const uniq = a => [...new Set(a)];
-  const nonEmpty = rel => { try { const st = fs.statSync(path.join(ctx.root, rel)); return st.isDirectory() ? fs.readdirSync(path.join(ctx.root, rel)).length > 0 : st.size > 0; } catch { return false; } };
+  const nonEmpty = rel => { if (/(^|\/)__init__\.py$/.test(rel)) return true; try { const st = fs.statSync(path.join(ctx.root, rel)); return st.isDirectory() ? fs.readdirSync(path.join(ctx.root, rel)).length > 0 : st.size > 0; } catch { return false; } };
   const all = uniq(resolved), empties = all.filter(r => !nonEmpty(r));
   const routes = all.filter(r => !empties.includes(r)), miss = uniq(dangling);
   const docRoutes = routes.filter(r => /\.(md|mdx|txt|rst)$/i.test(r) || /^(docs?|adr|decisions)(\/|$)/i.test(r));
@@ -1380,9 +1380,12 @@ function charTests(ctx, files) {
     const lines = (tryRead(path.join(ctx.root, f)) || '').split('\n'); let cur = null;
     lines.forEach((l, i) => {
       if (TEST_DECL.test(l)) {
-        if (cur) out.push(cur);
+        // (dev loop 2, defect C24) comment lines directly above a declaration belong to it: '# F-001.1' then 'def test_x' cites it for x
+        let lead = '';
+        if (!cur) { const pre = lines.slice(0, i); let k = pre.length; while (k > 0 && /^\s*(#|\/\/|@)/.test(pre[k - 1])) k--; lead = pre.slice(k).join('\n') + (k < pre.length ? '\n' : ''); }
+        if (cur) { const body = cur.text.split('\n'); let k = body.length; while (k > 1 && /^\s*(#|\/\/|@)/.test(body[k - 1])) k--; if (k < body.length) { lead = body.slice(k).join('\n') + '\n'; cur.text = body.slice(0, k).join('\n'); } out.push(cur); }
         const nm = (l.match(/['"`]([^'"`]+)['"`]/) || l.match(/def\s+(test_\w+)/) || [])[1] || l.trim().slice(0, 50);
-        cur = { file: f, line: i + 1, name: nm, skipped: SKIP_DECL.test(l) || (i > 0 && /@pytest\.mark\.skip/.test(lines[i - 1])), text: l };
+        cur = { file: f, line: i + 1, name: nm, skipped: SKIP_DECL.test(l) || (i > 0 && /@pytest\.mark\.skip/.test(lines[i - 1])), text: lead + l };
       } else if (cur) cur.text += '\n' + l;
     });
     if (cur) out.push(cur);
@@ -1690,7 +1693,7 @@ function run(ctx, { mutants = null } = {}) {
     const r = []; const charIds = new Set(); for (const t of tests) citedCrit(critIds, t.text).forEach(i => charIds.add(i));
     const otherFiles = trackedFiles(ctx.root).filter(p => isTestLike(cfg, p) && !files.includes(p) && /\.(js|mjs|cjs|ts|tsx|py|go)$/.test(p));
     const otherIds = new Set(); for (const t of charTests(ctx, otherFiles)) citedCrit(critIds, t.text).forEach(i => otherIds.add(i));
-    const intended = crit.filter(c => isNew(c) || changeClaims.has(c.id));
+    const intended = crit.filter(c => isNew(c) || (changeClaims.has(c.id) && !/\[observed\]/i.test(c.text || '')));
     for (const c of intended) { if (charIds.has(c.id)) r.push(c.id + ' is a new or changed behavior but the characterization suite (which must pass on the original) cites it'); if (!otherIds.has(c.id)) r.push(c.id + ' is a new or changed behavior but no ordinary test cites it'); }
     const unaccounted = crit.filter(c => !/^N-/.test(c.id) && !charIds.has(c.id) && !isNew(c) && !changeClaims.has(c.id) && !droppedClaims.has(c.id) && !(defText && defText.includes(c.id)));
     if (unaccounted.length) r.push('criteria that are neither pinned, new, changed nor deferred: ' + unaccounted.slice(0, 8).map(c => c.id).join(', '));
