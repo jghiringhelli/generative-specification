@@ -2,7 +2,7 @@
 
 Two files, Node 18+, no dependencies, no model, no network, MIT (see `../LICENSE`). Copy them into a project **unchanged**, side by side (`tools/gs-decide/`): `gs-decide-hook.mjs` imports `gs-decide.mjs`. It sits beside `gs-check` and `gs-lock` and reads gs-lock's record; it never duplicates it.
 
-**Status: written to the canon; tested only by its own suite (38 tests, below); not yet used in a registered run on a model-written project.** It is the first implementation of the "ratification log with a required-marker hook" that the [functions map](../../docs/method/functions-map.md) ranks as the top gap in DECIDE and REMEMBER.
+**Status: written to the canon; tested only by its own suites (38 + 19 tests, below); not yet used in a registered run on a model-written project.** It is the first implementation of the "ratification log with a required-marker hook" that the [functions map](../../docs/method/functions-map.md) ranks as the top gap in DECIDE and REMEMBER.
 
 ## This is a tool, not a prompt
 
@@ -77,6 +77,58 @@ the hook accepts an entry for a class only if the entry's role is allowed for th
 - **Paths not on the list.** A rename of the tools, a gate configured in `package.json` scripts, or a protected file under another name is invisible; extend `decide.protect`.
 - **Concurrent branches.** Two branches that each append an entry fork the chain; the second to merge re-adds its entry (no union merge is configured, on purpose).
 
+## Signed ratifications and their limits
+
+Optional, off by default. The base mechanism proves that a *named git identity* recorded a reason. Signing adds **custody of a key**.
+
+**Setup.** Each person makes an SSH key (`ssh-keygen -t ed25519`; a passphrase or a hardware key is better) and puts the **public** key in `docs/decision-roles.json` (a protected path) next to their role. A key listed under a role-`agent` identity belongs to an assistant.
+
+```json
+{ "identities": { "maria@example.com": ["tech lead"], "claude-agent@example.com": ["agent"] },
+  "keys":       { "maria@example.com": ["ssh-ed25519 AAAA...maria"], "claude-agent@example.com": ["ssh-ed25519 AAAA...agent"] } }
+```
+
+and in `.gs.json`: `{ "decide": { "requireSigned": true, "requireSignedCommits": false } }`.
+
+- `add --key ~/.ssh/id_ed25519 ...` (or `GS_DECIDE_KEY`, or `decide.signingKey`) signs the entry hash with `ssh-keygen -Y sign -n gs-decide` and appends `sigkey:` (fingerprint) and `sig:` (the armored signature on one base64 line) after the `entry:` line. The signature covers the whole entry, including `prev`, so it also pins the chain position.
+- `verify` checks each signature with `ssh-keygen -Y verify` against the keys listed for the entry's e-mail: `BAD-SIGNATURE` (fails: edited entry, another key, no key listed), `UNSIGNED` (warning; fails with `--require-signed`), `AGENT-KEY` (warning).
+- With `requireSigned`, the **hook** accepts a protected-path change only if a valid entry for that content is **signed, verifies, and its signer does not hold the role `agent`**. An entry made by an agent key, or unsigned, is a **note** and never ratifies. `verify --require-ratified` applies the same rule to the working tree.
+- With `requireSignedCommits`, a commit that touches a protected path (judged by `--commit`, `--range`, `--pre-push`; not by the staged mode, the commit does not exist yet) must carry a good SSH signature by **git's own check** (`gpg.format=ssh`, with an allowed-signers file built from the same `keys`; needs git 2.34+) that is not an agent key.
+
+**What a signature does not prove.**
+- It proves custody of a private key, **not that a human intended the decision**. An agent running in a session where the person's key is unlocked (loaded in `ssh-agent`, or without a passphrase) can sign as that person. The kernel's rule that a person is accountable is a social rule; no tool replaces it.
+- A key that needs a physical touch (a FIDO2 security key, `ed25519-sk`) raises the bar, since an agent cannot touch the device. Whether the touch requirement survives your workflow (agent forwarding, caching, a non-interactive signing helper) is **to be verified in practice**; it is not tested here.
+- A local hook is skipped by `git commit --no-verify`. The same checks run server-side with `gs-decide-ci.mjs` (below); the repository must make that check required.
+- The roles file lives in the repository: whoever can merge a change to it can add a key. It is a protected path (it needs a ratification entry), so the protection is only as strong as who may ratify the first time and the branch rules.
+- Lost or leaked key: remove it from `keys` (a ratified change); old entries stay as records, and entries signed by a removed key will show `BAD-SIGNATURE` on `verify`, so close the gap by re-ratifying the protected files with a current key.
+
+## Marking agent-made commits: `gs-attribution-hook.mjs`
+
+Off by default; `.gs.json` `{ "attribution": { "enabled": true } }` turns it on (optional: `agents: [emails]`, `aiPattern`, `detectEnv: false`). It borrows the forms of the Linux kernel's `Documentation/process/coding-assistants.rst` (`Assisted-by: AGENT_NAME:MODEL_VERSION [TOOLS]`; an AI agent never adds `Signed-off-by`; a person is accountable) and of Claude Code's `Co-Authored-By` trailer. Apache and Fedora are reported to follow similar rules; that was seen only in search summaries and is not checked here.
+
+| Rule | What it refuses |
+|---|---|
+| A1 | a `Signed-off-by:` whose identity is an agent (role `agent` in the roles file, `attribution.agents`, or an AI-looking name) |
+| A2 | an `Assisted-by:` that does not read `AGENT:MODEL [TOOLS]`; an AI `Co-Authored-By:` that does not read `Name <email>` |
+| A3 | a commit whose author or committer is an agent identity and has no marking |
+| A4 | (commit-msg only, a heuristic) an agent environment variable is set (`CLAUDECODE` and the like) and the message has no marking |
+| A5 | a marked commit that touches a protected path with no verified human ratification (gs-decide-hook's check, including signatures) |
+
+```sh
+# .githooks/commit-msg:  node tools/gs-decide/gs-decide-hook.mjs --msg-file "$1" && node tools/gs-decide/gs-attribution-hook.mjs --msg-file "$1"
+# .githooks/pre-push:    node tools/gs-decide/gs-attribution-hook.mjs --pre-push      (reads git's stdin)
+```
+
+**Cannot be detected, said plainly:** an agent session that writes no marking, under a person's identity, with no agent environment variable, produces a commit that looks exactly like the person's. Nothing in a commit says who typed it. The hook catches the honest and the careless; the marking is a practice, and the guarantee that matters (a protected change needs a person's ratification) does not depend on it.
+
+## CI: the server-side re-check
+
+```
+node tools/gs-decide/gs-decide-ci.mjs --base origin/main [--require-signed]
+```
+
+runs `verify --require-ratified`, `gs-decide-hook --range <base>..HEAD` and `gs-attribution-hook --range <base>..HEAD`, and exits 1 if any fails. A GitHub Actions job needs `actions/checkout` with `fetch-depth: 0`, then that command; make the job a **required status check** in the branch protection or ruleset of the shared branch. GitHub's branch protection also has a setting named **"Require signed commits"** (documented as: contributors and bots can only push commits that have been signed and verified); it works on GitHub's own notion of verified, so it complements the allowed-signers check here and does not replace the role mapping. Protect `.github/workflows/**` and `docs/decision-roles.json` with CODEOWNERS and required review: a contributor who can edit the pipeline on the branch can weaken it in the same change.
+
 ## Where gs-decide meets Chronicle
 
 gs-decide is the **in-repo, offline edge**: the record lives next to the code and works with no server. The Chronicle ledger (`pragmaworks-gobernanza/docs/specs/chronicle-ledger.md` and its normative annex `chronicle-ledger-contratos.md`, v0.9) is the **aggregate and dashboard**: one append-only chain per actor consolidated by a hub, five roles (`admin`, `manager`, `executive`, `auditor`, `dev`) by `role_bindings`, access itself recorded as `access_change` events. The Chronicle MCP's `TeamService` has a third, separate vocabulary (`owner`, `lead`, `member`). The ledger has **no decision or ratification event kind**: its 19 kinds include `config_change`, `deviation`, `merge` (with `approver`) and `access_change`, and the only "ratified" in the contract is the boolean `debt.ratified` inside `gs_snapshot`.
@@ -109,7 +161,9 @@ gs-decide is the **in-repo, offline edge**: the record lives next to the code an
 ## Tests
 
 ```
-node --test tools/gs-decide/test/decide.test.mjs      # 38 tests, about 45 s on Windows
+node --test tools/gs-decide/test/decide.test.mjs tools/gs-decide/test/signed.test.mjs   # 38 + 19 tests, about 35 s on Windows
 ```
 
 `T1` to `T38` run on throwaway git repositories without a model: the entry hash as a pinned vector, tamper detection (an edited entry, an edited and rehashed entry, a removed entry, a rewritten tail), CRLF and BOM, expired and unanchored waivers, the protected classes, the hook through its staged, commit, range and pre-push modes and through git's own commit-msg hook (with `--no-verify` caught by `--range`), the AI co-author rules, interoperation with a real gs-lock `ratify`, the roles policy, and the export. `test/vendor/` holds copies of gs-lock used only when `tools/gs-lock/` is not next to this tool; one test compares the protected lists with `gs-check`'s defaults when it is found (`GS_CHECK_JS=<path>` or side by side) and is skipped otherwise.
+
+`test/signed.test.mjs` (19 tests, `S1` to `S11`, `A0` to `A7`) makes real `ssh-keygen` keys in temp directories: a signed entry verifies, an edited or rehashed one does not, a key the policy does not list for that person fails, an agent-key entry never ratifies, the hook refuses and accepts on a throwaway repository, a commit signed by git's own mechanism is checked, and each attribution rule has a red and a green case, plus one test that states the undetectable case (an unmarked agent session). It is skipped with a message when `ssh-keygen` or git 2.34 is absent. Windows 11 (Git for Windows 2.54, Node 24) and a Linux container (`node:22`, OpenSSH 9.2, git 2.39): 57 tests, 56 pass, 0 fail, 1 skipped (the gs-check comparison, which needs gs-check next to the tool) on both.
