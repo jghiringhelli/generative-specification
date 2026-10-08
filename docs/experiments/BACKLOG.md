@@ -222,6 +222,18 @@ Source: JC, 2026-10-07 (with the substrate, a person need not read all the code,
 - Size: about 14 classes x 12 injected instances = 168 items; model-only about $750 to $2,000 scaled from P2; classes tiered (almost always escapes, sometimes, rarely), not point rates (12 per class gives Wilson intervals about 0.25 wide at best). Authoring 80 to 140 agent-assisted hours (guess).
 - Can run with or before P2's registration (shares its reference implementation, layers and harness); the human-reviewer arm (reading with and without the list) is optional and needs paid humans.
 
+### B-REM. REM-1, remediation economics: after how many changes does remediating a legacy codebase pay back, with the GS substrate and with a cheap fix (PROPOSAL, DRAFT prereg revision 2, 2026-10-08; not frozen, not run)
+Source: JC, 2026-10-08 (a field case: about 3,000 dollars of tokens spent on a client's code for coverage, documentation and fixes, defended as a one-time spend that repays itself). Draft: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\REM-1.md`; review: `...\prereg\REM-1-REVIEW.md` (two fresh Claude critics; vendor-diverse review owed); private reasoning, costs and questions: `C:\workspace\PragmaWorks\soma\docsem1-remediation-economics-2026-10-08.md`; simulation: `C:\workspace\PragmaWorks\soma\docsem1-2026-10-08\simulate.py`.
+- Arms on cloned legacy codebases: A continue as-is; B GS remediation (formula 2, findings under formula 5, `gs-check`) then continue; C cheap fix by an external practitioner (no GS artifacts, capped at B's dollar spend; C-matched secondary); B' (substrate with plain wrapper) and C' for the wrapper confound; D re-platform (formula 12 case A) descriptive.
+- Fixtures: 4 mature codebases of 8 to 25 kLOC: 2 real third-party permissive-licence projects chosen by an independent person, 2 grown by an ungoverned session outside the experiment vendors; maturity by a frozen script.
+- Point 2: 60 independent items per codebase (40 changes, 20 bugs), hidden black-box tests, a sealed characterization suite, at least 15 traps; each item a fresh session from the point-1 snapshot; plus a descriptive chain probe.
+- Primary: net cumulative difference D(k) = k (m_A - m_B) - R at 60 and 200 accepted changes with a cluster-bootstrap interval; break-even k* as translation; GS overhead by category (read, write, gates, work); acceptance and regression as guards.
+- Power by simulation (assumptions): decisive unless the true break-even lies within about a factor 1.5 of the horizon; "does not repay within 200 changes" is a registered result. The simulated interval coverage is a known defect (0.68 to 0.94) to repair before freezing.
+- Cost: core about 9 to 39 thousand dollars model-only (central about 21), pilot REM-0 about 1 to 3 thousand; staged. Needs metered tokens on three vendors (the Copilot-PC pattern does not expose token counts).
+- Companion, no experiment needed: a request to Gabriel for the anonymized field case (`C:\workspace\PragmaWorks\soma\docsem1-field-request-gabriel-2026-10-08.md`, private).
+- Sits after FX-1 (the formulas and `gs-check` must work) and is independent of P1 to P4; upstream of the Remediation pricing.
+- Blocked on: JC's answers ("Para responder" of the private report), the owed rerun of the simulation, the vendor-diverse critic round.
+
 ### Overlap risk (HYPOTHESES section 8)
 
 Four positive results for A4 on one set of chains are one bundle measured four ways unless component arms (SDX-2) separate them. Sequencing therefore puts H-PHASE (the most independent hypothesis: verification mode, not persistence) first, and the component ablation before any public count of confirmations.
