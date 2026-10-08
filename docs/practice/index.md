@@ -24,6 +24,7 @@ description: "Tool-free, paste-and-run guides for applying Generative Specificat
 | Existing system already under spec and verification | [Remediate an existing system](remediation/) |
 | Structural checks (complexity, duplication, dead code, cycles) at the right moment | [Run structural gates and remediate](structural-gates/): pre-commit, pre-push, CI, and a safe remediation loop |
 | A check failed or a rule was missing, and you need to decide whether the spec changes | [Refine the spec, triage first](refinement/): five cases, a regression test is enough for some, and what a hook can and cannot enforce |
+| An assistant commits to the repository and you want agent work marked and ratification signed | [Agent commit marking](agent-commit-marking/): who may ratify, how agent commits are marked, three adoption levels, and what no hook can see |
 
 New to the whole thing? Grade a codebase first with the free audit at [pragmaworks.dev/audit](https://pragmaworks.dev/audit), then pick a row above.
 

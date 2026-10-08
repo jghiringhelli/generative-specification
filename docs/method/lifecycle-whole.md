@@ -32,6 +32,8 @@ Validated in a first round of blind critics (all one model family; vendor-divers
 
 **Orthogonal axis, not a function:** the channel. The same function can hold by hand (M1), by a file the assistant reads (M2), by a tool (M3, M4), by a hook (M5), by CI (M6) or by an enforced gate with a ratchet (M7), per [the method-versus-enforcement note](#enforcement-channels). Guides are advisory; sensors are not.
 
+**Signed ratification and agent-commit marking** (Decide, with Check at the hook and in CI): ratification can be signed with a person's SSH key and checked against a roles file, and agent-made commits are marked (`Assisted-by`, `Co-Authored-By`) and never carry an agent `Signed-off-by`. It proves custody of a key and makes skipping the step visible; it does not prove that a person decided, and an unmarked agent session is invisible. See [agent commit marking](/practice/agent-commit-marking/) (design, tools tested, not yet in a registered run).
+
 **Executive wording:** three verbs, "say it once, check it, remember it", and for the human side "see it, sign it" (Show, Decide). Technical documents use five.
 
 **Mapping to the canon:** the bridge is Say; the sentinel is Say (the map half; its bounded-context role also serves Check indirectly); phase collapse is Check (executed evidence outside the model); the lock is Remember in form and Check in operation (a stale lock fails a build); ratification is Decide, its log is Remember.

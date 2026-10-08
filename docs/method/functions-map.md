@@ -62,6 +62,7 @@ Each mechanism has ONE primary function; secondary ones in the last column.
 | Hardening suite | Stress, security, chaos, environment | M6 | observation (one project) | 8.11 | none |
 | Hooks and CI gates | Block a bad commit or merge | M5, M6 | demonstrated once (crafted violations) | 4.2 | none |
 | Branch protection on the shared branch | Stops `--no-verify` and local bypass | M6 | design only | 8.18, 8.20 | Decide |
+| Agent-commit marking and signature check (`gs-attribution-hook`, `gs-decide-ci`, [practice](/practice/agent-commit-marking/)) | Refuses an agent `Signed-off-by`, requires `Assisted-by` or `Co-Authored-By` on agent work, re-checks over a range in CI; an unmarked agent session is not detectable | M5, M6 | design, tools tested (own suite); not in a registered run | none | Decide |
 | Admissibility rule | A change is admissible only if the layer above is amended | M5 | design only | 4.2 | Say |
 | Public-surface diff rule | An interface change needs a spec change | M5 | design only | 4.2 | none |
 | Co-change gate | Behavior change must cite or stage a spec change | M5 to M6 | demonstrated once (35 crafted scenarios, one sample) | 8.20 | none |
@@ -108,6 +109,7 @@ Each mechanism has ONE primary function; secondary ones in the last column.
 | Mechanism | What it does | Channel | Status | Compendium | Secondary |
 |---|---|---|---|---|---|
 | Ratification (judgment terminus) | A person approves criteria, merge, exceptions; the executor cannot | M1; a hook can require a marker, cannot verify the person | design only | 4.2, 8.19 | Remember (the log) |
+| Signed ratification (`gs-decide` entries signed with an SSH key, roles and an `agent` role in `docs/decision-roles.json`; [practice](/practice/agent-commit-marking/)) | A protected change needs an entry whose signature verifies and whose signer is not an agent; it proves custody of a key, not human intent | M5, M6 | design, tools tested (own suite); not in a registered run | none | Check, Remember |
 | Branch protection requiring a human reviewer | Makes skipping approval impossible | M6 | design only | 4.2 | Check |
 | Specificity dial and three dials (completeness, specificity, register) | Matches control to stakes | M1 | under test (H-S drafted; expert-prompt tie on single shot) | 4.5.1, 4.5.2 | Say |
 | Consequence classification and human confirmation gate | Irreversible acts need a person | M5 to M6 | design only | 4.4 | Check |
