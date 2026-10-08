@@ -19,13 +19,15 @@
 //   node gs-decide-hook.mjs --msg-file <file>      commit-msg hook (the staged change against HEAD; the message is read, so the AI trailer is seen)
 //   node gs-decide-hook.mjs                        pre-commit (the staged change; no message, so no trailer or Waiver checks)
 //   node gs-decide-hook.mjs --commit <rev>         one commit (CI)
+//   With .gs.json decide.requireSignedCommits: a commit (--commit, --range, --pre-push) that touches a protected path must carry a good SSH signature
+//   (git verify with gpg.ssh.allowedSignersFile built from decision-roles.json "keys") that is not an agent key. The staged mode cannot check it.
 //   node gs-decide-hook.mjs --range <base>..<head> every non-merge commit of the range, each judged with the log as of that commit (CI)
 //   node gs-decide-hook.mjs --pre-push             pre-push hook: reads git's stdin lines, checks the commits being pushed
 // Exit codes: 0 accepted, 1 refused, 2 usage or environment error.
 
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import { gitOf as git, checkChange, stagedView, commitView, committerEmails, parseArgs, today } from './gs-decide.mjs';
+import { gitOf as git, checkChange, stagedView, commitView, committerEmails, parseArgs, today, withTmp, writeAllowedSigners } from './gs-decide.mjs';
 
 const out = s => process.stdout.write(s + '\n');
 
@@ -39,9 +41,26 @@ export function checkStaged(root, message = '') {
   const v = stagedView(root);
   return checkChange({ changes: v.changes, post: v.post, pre: v.pre, message, committers: committerEmails(root), at: today(), cfg: v.cfg });
 }
+// The signature of a COMMIT, by git's own mechanism: gpg.format=ssh with an allowed-signers file built from the policy's "keys".
+// -> {state: 'G' good | 'N' none | 'B' bad | 'U'/'E'/... other, principal, agent}. Needs git 2.34+ and ssh-keygen.
+export function commitSignature(root, rev, cfg) {
+  return withTmp(d => {
+    const af = writeAllowedSigners(cfg.policy, d);
+    const r = git(root, ['-c', 'gpg.format=ssh', '-c', 'gpg.ssh.allowedSignersFile=' + af, 'log', '-1', '--format=%G?%x00%GS', rev]);
+    const [state = 'N', who = ''] = r.status === 0 ? r.stdout.replace(/\n$/, '').split('\0') : ['E'];
+    const principal = ((who.match(/[^\s"<>]+@[^\s"<>]+/) || [who])[0] || '').toLowerCase();
+    return { state, principal, agent: (cfg.policy?.identities[principal] || []).includes('agent') };
+  });
+}
 export function checkRev(root, rev) {
   const v = commitView(root, rev); if (!v) return null;
-  return checkChange({ changes: v.changes, post: v.post, pre: v.pre, message: v.message, committers: v.committers, at: v.at, cfg: v.cfg });
+  const r = checkChange({ changes: v.changes, post: v.post, pre: v.pre, message: v.message, committers: v.committers, at: v.at, cfg: v.cfg });
+  if (v.cfg.requireSignedCommits && r.touched.length) { // a commit that touches a protected path must carry a good signature of a listed, non-agent key
+    const s = commitSignature(root, rev, v.cfg);
+    if (s.state !== 'G') { r.ok = false; r.refusals.push(`commit ${rev.slice(0, 10)} touches ${r.touched.map(t => t.path).join(', ')} and is not verifiably signed (git signature state ${s.state}: N none, B bad, U/E unknown key or cannot check): sign it with an SSH key listed under "keys" in ${v.cfg.rolesFile}`); }
+    else if (s.agent) { r.ok = false; r.refusals.push(`commit ${rev.slice(0, 10)} touches a protected path and is signed by an agent key (${s.principal}): an agent signature never counts`); }
+  }
+  return r;
 }
 
 export function main(argv) {

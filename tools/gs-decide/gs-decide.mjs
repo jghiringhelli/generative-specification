@@ -17,31 +17,40 @@
 // that is approved only by such an entry; a determined agent can still lie. The real enforcement is a person reviewing the log on a protected
 // branch (CODEOWNERS on the log and the protected paths) and the --range check in CI, because a local hook can be skipped (--no-verify).
 //
+// SIGNED ENTRIES (optional, off by default). `add` signs the entry hash with the person's SSH key (`ssh-keygen -Y sign`, namespace gs-decide) and
+// appends `sigkey:` (fingerprint) and `sig:` (the armored signature as one base64 line) AFTER the `entry:` line. `verify` checks each signature
+// with `ssh-keygen -Y verify` against the keys that docs/decision-roles.json lists for the entry's e-mail ("keys"), and the identity's role
+// ("identities"). With .gs.json decide.requireSigned the hook counts an entry as a ratification ONLY if it verifies and its signer does not hold
+// the role `agent`; an entry signed with an agent key is a note, never a ratification. A signature proves custody of a private key, not that a
+// human decided: an agent that can use a person's unlocked key signs as that person (see README, "Signed ratifications and their limits").
+//
 // Commands (all accept --root <dir>; default: the current directory):
 //   add --kind <k> --role <r> --why "<15+ chars>" [--ref <what>] [--covers <path|dir/|glob>]... [--covers-protected] [--scope <s>]
-//       [--expires YYYY-MM-DD] [--closes D-0003] [--commit <rev>] [--agent]
+//       [--expires YYYY-MM-DD] [--closes D-0003] [--commit <rev>] [--agent] [--key <private or public key file>] [--no-sign]
 //       kinds: spec gate hook ci linter ratchet waiver risk decision baseline other. waiver and risk REQUIRE --expires (<= 365 days) and a
 //       waiver REQUIRES an anchor (--covers or --commit). --covers records the sha256 of each covered file as it is NOW (LF normalised), which
 //       is the content approved; a path that does not exist is recorded as "deleted". --closes ends an earlier waiver or risk (a renewal is
 //       a new waiver that closes the old one). baseline = accept the current content of the protected files (adopting the tool).
 //   list [--json] [--open] [--all] [--last N]   the entries (--all adds gs-lock's docs/ratifications.md, read only)
-//   verify [--json] [--require-ratified] [--against <rev>]
-//       exit 1 on: MALFORMED CHAIN-BROKEN HISTORY-REWRITTEN EXPIRED WAIVER-NO-CHANGE RATIFICATIONS-EDITED (and UNRATIFIED with the flag).
-//       warnings (exit 0): AGENT-ENTRY, EXPIRING-SOON, UNRATIFIED without the flag.
+//   verify [--json] [--require-ratified] [--require-signed] [--against <rev>]
+//       exit 1 on: MALFORMED CHAIN-BROKEN HISTORY-REWRITTEN EXPIRED WAIVER-NO-CHANGE RATIFICATIONS-EDITED BAD-SIGNATURE (and UNRATIFIED, UNSIGNED with the flags).
+//       warnings (exit 0): AGENT-ENTRY, AGENT-KEY, EXPIRING-SOON, UNRATIFIED, UNSIGNED without the flags.
 //   export --format chronicle-jsonl [--out <file>] [--with-extras]   DRAFT: entries as Chronicle ledger events (readme: "Where gs-decide meets Chronicle")
 //   protected [--json]    the protected-path classes in force (defaults + .gs.json decide.protect / decide.unprotect)
 //   init                  write the empty log header and the .gitattributes line (add does it too)
 // Exit codes: 0 ok, 1 findings, 2 usage or environment error.
 //
 // Optional .gs.json key "decide": { log, protect: [globs], unprotect: [globs], roles: {"email": "role"}, allowOtherSigner: false,
-//   aiPattern: "<regex>", maxWaiverDays: 365, rolesFile: "docs/decision-roles.json" }.
+//   aiPattern: "<regex>", maxWaiverDays: 365, rolesFile: "docs/decision-roles.json", requireSigned: false, requireSignedCommits: false, signingKey: "<path>" }.
 // Optional roles policy docs/decision-roles.json (itself a protected path): { "classes": {"spec": ["product owner"], "gate": ["tech lead"],
 //   "ratchet": ["tech lead","security"], "waiver": ["tech lead","security"], "security": ["security"]},
-//   "paths": {"security": ["src/auth/**"]}, "identities": {"maria@example.com": ["product owner"]} }. With the file, the hook accepts an entry for a
+//   "paths": {"security": ["src/auth/**"]}, "identities": {"maria@example.com": ["product owner"], "claude-agent@example.com": ["agent"]},
+//   "keys": {"maria@example.com": ["ssh-ed25519 AAAA..."]} }. With the file, the hook accepts an entry for a
 //   class only if the entry's role is allowed for it AND the signer's identity holds that role; `add` refuses a role the identity does not hold.
 //   Without the file: any named human identity. It is a policy over identities as the log records them: it does not authenticate anyone.
 
-import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, dirname, basename } from 'node:path';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
@@ -92,18 +101,19 @@ const globMatch = (g, p) => globRe(g).test(g.includes('/') ? p : basename(p));
 
 export function loadConfig(root) {
   let user = {}; try { user = JSON.parse(readText(root, '.gs.json') || '{}').decide || {}; } catch { /* a broken .gs.json: defaults */ }
-  const cfg = { log: LOG, protect: [], unprotect: [], roles: {}, allowOtherSigner: false, aiPattern: DEFAULT_AI, maxWaiverDays: 365, rolesFile: ROLES_FILE, ...user };
+  const cfg = { log: LOG, protect: [], unprotect: [], roles: {}, allowOtherSigner: false, aiPattern: DEFAULT_AI, maxWaiverDays: 365, rolesFile: ROLES_FILE, requireSigned: false, requireSignedCommits: false, signingKey: '', ...user };
   cfg.policy = null; // optional roles policy (docs/decision-roles.json): see readme. Absent file = any named human identity may ratify.
-  try { const p = readText(root, cfg.rolesFile); if (p) cfg.policy = normPolicy(JSON.parse(p)); } catch { cfg.policy = { broken: true, classes: {}, paths: {}, identities: {} }; }
+  try { const p = readText(root, cfg.rolesFile); if (p) cfg.policy = normPolicy(JSON.parse(p)); } catch { cfg.policy = { broken: true, classes: {}, paths: {}, identities: {}, keys: {} }; }
   return cfg;
 }
 const lc = a => [].concat(a || []).map(s => String(s).trim().toLowerCase()).filter(Boolean);
 function normPolicy(j) {
-  const classes = {}, paths = {}, identities = {};
+  const classes = {}, paths = {}, identities = {}, keys = {};
   for (const [k, v] of Object.entries(j.classes || {})) classes[k] = lc(v);
   for (const [k, v] of Object.entries(j.paths || {})) paths[k] = [].concat(v);
   for (const [k, v] of Object.entries(j.identities || {})) identities[k.toLowerCase()] = lc(v);
-  return { classes, paths, identities };
+  for (const [k, v] of Object.entries(j.keys || {})) keys[k.toLowerCase()] = [].concat(v).map(x => String(x).trim()).filter(Boolean);
+  return { classes, paths, identities, keys };
 }
 // does the entry's signer hold the entry's role, and may that role ratify this class? (no policy: yes)
 export function roleAllowed(e, cls, cfg) {
@@ -125,7 +135,7 @@ export function protectedClass(rel, cfg) {
 export const isAi = (text, cfg) => new RegExp(cfg.aiPattern, 'i').test(text || '');
 
 // ---------- the log: parse, format, chain ----------
-const SINGLE = ['when', 'who', 'role', 'via', 'kind', 'ref', 'scope', 'why', 'expires', 'closes', 'commit', 'prev'], MULTI = ['covers', 'approves'];
+const SIG_KEYS = ['sigkey', 'sig'], SINGLE = ['when', 'who', 'role', 'via', 'kind', 'ref', 'scope', 'why', 'expires', 'closes', 'commit', 'prev'], MULTI = ['covers', 'approves'];
 const ORDER = ['when', 'who', 'role', 'via', 'kind', 'ref', 'covers', 'approves', 'scope', 'why', 'expires', 'closes', 'commit', 'prev'];
 export function canonical(e) {
   const lines = [`## ${e.id}`];
@@ -133,7 +143,7 @@ export function canonical(e) {
   return lines.join('\n');
 }
 export const entryHash = e => sha(canonical(e));
-export const formatEntry = e => canonical(e) + '\nentry: ' + entryHash(e) + '\n';
+export const formatEntry = e => canonical(e) + '\nentry: ' + entryHash(e) + '\n' + (e.sig ? `sigkey: ${e.sigkey}\nsig: ${e.sig}\n` : '');
 
 export function parseLog(text) {
   const entries = [], problems = [];
@@ -148,6 +158,7 @@ export function parseLog(text) {
     const m = line.match(/^([a-z]+): ?(.*)$/);
     if (!m) { problems.push({ code: 'MALFORMED', id: cur.id, note: `line ${n + 1}: not "key: value"` }); return; }
     const [, k, v] = m;
+    if (cur._after && SIG_KEYS.includes(k)) { if (cur[k] !== undefined) problems.push({ code: 'MALFORMED', id: cur.id, note: `line ${n + 1}: repeated key ${k}` }); cur[k] = v.trim(); return; }
     if (cur._after) { problems.push({ code: 'MALFORMED', id: cur.id, note: `line ${n + 1}: text after the entry hash is not covered by the chain` }); return; }
     if (k === 'entry') { cur.entry = v.trim(); cur._after = true; }
     else if (MULTI.includes(k)) cur[k].push(v);
@@ -212,6 +223,48 @@ function expandCovers(root, patterns) { // -> sorted list of {path, hash}
 export function identity(root) { const g = k => git(root, ['config', k]).stdout.trim(); const name = g('user.name'), email = g('user.email'); return name && email ? { name, email, text: `${name} <${email}>` } : null; }
 const emailOf = s => ((s || '').match(/<([^>]+)>/) || [])[1]?.toLowerCase() || '';
 
+// ---------- SSH signatures (ssh-keygen -Y: part of OpenSSH and of Git for Windows; no dependency added) ----------
+export const SIG_NS = 'gs-decide';
+const sigData = e => `gs-decide-entry ${e.id} ${e.entry}\n`;
+const tmp = fn => { const d = mkdtempSync(join(tmpdir(), 'gssig-')); try { return fn(d); } finally { rmSync(d, { recursive: true, force: true }); } };
+export const withTmp = tmp;
+export function haveSshKeygen() { const r = spawnSync('ssh-keygen', ['-?'], { encoding: 'utf8' }); return !r.error; }
+export function signText(keyFile, data, ns = SIG_NS) { // -> {ok, sig: base64 of the armored signature} | {ok: false, error}
+  return tmp(d => {
+    const f = join(d, 'data'); writeFileSync(f, data);
+    const r = spawnSync('ssh-keygen', ['-Y', 'sign', '-f', keyFile, '-n', ns, f], { stdio: ['inherit', 'pipe', 'pipe'], encoding: 'utf8' });
+    if (r.error) return { ok: false, error: 'ssh-keygen not found: install OpenSSH (it comes with Git for Windows)' };
+    if (r.status !== 0 || !existsSync(f + '.sig')) return { ok: false, error: 'ssh-keygen -Y sign failed: ' + oneLine(r.stderr) };
+    return { ok: true, sig: Buffer.from(lf(readFileSync(f + '.sig', 'utf8'))).toString('base64') };
+  });
+}
+// allowed-signers text built from the policy's "keys" (principal = the e-mail); one file serves entries (gs-decide) and commits (git)
+export function allowedSignersText(policy, namespaces = `${SIG_NS},git`) {
+  return Object.entries(policy?.keys || {}).flatMap(([who, keys]) => keys.map(k => `${who} namespaces="${namespaces}" ${k}`)).join('\n') + '\n';
+}
+export function writeAllowedSigners(policy, dir) { const f = join(dir, 'allowed_signers'); writeFileSync(f, allowedSignersText(policy)); return f; }
+// the signature state of one entry: {state: unsigned|valid|invalid|unknown-key|no-tool, fp, principal, agent, human}
+const sigCache = new Map();
+export function entryRatifier(e, cfg) {
+  if (!e.sig) return { state: 'unsigned', human: false, agent: false };
+  const principal = emailOf(e.who), held = cfg.policy?.identities[principal] || [], agent = held.includes('agent'), keys = cfg.policy?.keys?.[principal] || [];
+  const ck = [e.entry, e.sig, principal, keys.join(',')].join('|');
+  let r = sigCache.get(ck);
+  if (!r) {
+    if (!keys.length) r = { state: 'unknown-key' };
+    else r = tmp(d => {
+      const af = writeAllowedSigners({ keys: { [principal]: keys } }, d), sf = join(d, 'sig');
+      writeFileSync(sf, Buffer.from(e.sig, 'base64').toString('utf8'));
+      const v = spawnSync('ssh-keygen', ['-Y', 'verify', '-f', af, '-I', principal, '-n', SIG_NS, '-s', sf], { input: sigData(e), encoding: 'utf8' });
+      if (v.error) return { state: 'no-tool' };
+      if (v.status !== 0) return { state: 'invalid' };
+      return { state: 'valid', fp: (v.stdout.match(/(SHA256:\S+)/) || [])[1] || '' };
+    });
+    sigCache.set(ck, r);
+  }
+  return { ...r, principal, agent, human: r.state === 'valid' && !agent && (!e.sigkey || !r.fp || e.sigkey === r.fp) };
+}
+
 // ---------- add ----------
 export function addEntry(root, a, cfg = loadConfig(root)) { // returns {ok, entry?, error?}
   const err = error => ({ ok: false, error });
@@ -246,6 +299,15 @@ export function addEntry(root, a, cfg = loadConfig(root)) { // returns {ok, entr
   const e = { id: 'D-' + String(log.entries.length + 1).padStart(4, '0'), when: nowIso(), who: me.text, role, via: a.agent || AGENT_ENV.some(k => process.env[k]) ? 'agent-suspected' : 'human', kind,
     ref: ref || (list.length ? list[0].path : ''), covers: covers.map(oneLine), approves: list.map(x => `${x.hash} ${x.path}`), scope: oneLine(a.scope), why, expires, closes: a.closes || '', commit: a.commit ? git(root, ['rev-parse', a.commit + '^{commit}']).stdout.trim() : '', prev: log.head };
   const path = join(root, cfg.log);
+  const keyFile = a.noSign ? '' : (a.key || process.env.GS_DECIDE_KEY || cfg.signingKey || '');
+  if (!keyFile && cfg.requireSigned && !a.noSign) return err('decide.requireSigned is on: pass --key <ssh key file> (or set GS_DECIDE_KEY, or decide.signingKey in .gs.json) so the entry is signed');
+  if (keyFile) {
+    e.entry = entryHash(e);
+    const s = signText(keyFile, sigData(e)); if (!s.ok) return err(s.error);
+    e.sig = s.sig;
+    const fpr = spawnSync('ssh-keygen', ['-lf', keyFile], { encoding: 'utf8' }); e.sigkey = (fpr.stdout.match(/(SHA256:\S+)/) || [])[1] || '';
+    if (!e.sigkey) return err('could not read the fingerprint of ' + keyFile + ' (give the private key or the .pub file)');
+  }
   if (!log.exists) initLog(root, cfg);
   const cur = lf(readFileSync(path, 'utf8'));
   appendFileSync(path, (cur.endsWith('\n') ? '' : '\n') + '\n' + formatEntry(e));
@@ -272,9 +334,11 @@ export function checkChange({ changes, post, pre, message = '', committers = [],
   if (pre.ratifications && post.ratifications == null) refusals.push(`${RATIFICATIONS} was deleted: the record is append-only`);
   const newEntries = postLog.entries.slice(preLog.entries.length);
   const closedIds = new Set(postLog.entries.filter(e => e.closes).map(e => e.closes));
-  const aiCommit = [...message.matchAll(/^co-authored-by:\s*(.+)$/gim)].some(m => isAi(m[1], cfg));
-  const human = e => e.via === 'human' && !isAi(e.who, cfg);
-  const okFor = (path, hash, needHuman, cls) => postLog.entries.some(e => validAt(e, closedIds, at) && (!needHuman || human(e)) && (!cls || roleAllowed(e, cls, cfg)) && approvesOf(e).some(a => a.path === path && a.hash === hash));
+  const aiCommit = [...message.matchAll(/^co-authored-by:\s*(.+)$/gim)].some(m => isAi(m[1], cfg)) || /^assisted-by:\s*\S/im.test(message);
+  // with decide.requireSigned an entry ratifies only if its SSH signature verifies against a key the policy lists for the signer and the signer is not
+  // an agent; an agent-key entry is a note. Without it, the older rule stays (a named identity that does not look like an agent).
+  const human = e => cfg.requireSigned ? entryRatifier(e, cfg).human : e.via === 'human' && !isAi(e.who, cfg);
+  const okFor = (path, hash, needHuman, cls) => postLog.entries.some(e => validAt(e, closedIds, at) && (!(needHuman || cfg.requireSigned) || human(e)) && (!cls || roleAllowed(e, cls, cfg)) && approvesOf(e).some(a => a.path === path && a.hash === hash));
   const ratGrew = (post.ratifications || '').length > (pre.ratifications || '').length;
   for (const { s, p } of changes) {
     const cls = protectedClass(p, cfg); if (!cls || cls === 'record') continue;
@@ -328,7 +392,7 @@ export function committerEmails(root) {
 }
 
 // ---------- verify ----------
-export function verify(root, { against = null, requireRatified = false, at = today() } = {}) {
+export function verify(root, { against = null, requireRatified = false, requireSigned = false, at = today() } = {}) {
   const cfg = loadConfig(root), findings = [], add = (level, code, id, note) => findings.push({ level, code, id: id || '', note });
   const log = loadLog(root, cfg);
   const info = { log: cfg.log, entries: log.entries.length, head: log.head, exists: log.exists };
@@ -350,6 +414,16 @@ export function verify(root, { against = null, requireRatified = false, at = tod
     if (st.get(e.id) === 'expired' && !['waiver', 'risk'].includes(e.kind)) add('warn', 'EXPIRED-APPROVAL', e.id, `this ${e.kind} approval lapsed on ${e.expires}: re-approve it with a new entry`);
     else if (st.get(e.id) === 'expired') add('fail', 'EXPIRED', e.id, `${e.kind} expired on ${e.expires} and was not closed: renew it with a new ${e.kind} (--closes ${e.id}) or close it`);
     else if (st.get(e.id) === 'open' && e.expires && daysBetween(at, e.expires) <= 14) add('warn', 'EXPIRING-SOON', e.id, `${e.kind} expires on ${e.expires} (${daysBetween(at, e.expires)} day(s))`);
+    {
+      const rt = entryRatifier(e, cfg);
+      if (e.sig) {
+        if (rt.state === 'invalid') add('fail', 'BAD-SIGNATURE', e.id, `the signature does not verify against the key(s) ${cfg.rolesFile} lists for ${rt.principal}: the entry was edited, or signed with another key`);
+        else if (rt.state === 'unknown-key') add('fail', 'BAD-SIGNATURE', e.id, `${rt.principal} has no key in ${cfg.rolesFile} "keys": the signature cannot be checked`);
+        else if (rt.state === 'no-tool') add('warn', 'NO-SSH-KEYGEN', e.id, 'ssh-keygen is not available: the signature was not checked');
+        else if (e.sigkey && rt.fp && e.sigkey !== rt.fp) add('fail', 'BAD-SIGNATURE', e.id, `sigkey says ${e.sigkey}, the signature was made by ${rt.fp}`);
+        else if (rt.agent) add('warn', 'AGENT-KEY', e.id, `signed by ${rt.principal}, a key listed with role agent: a note, never a ratification`);
+      } else add(requireSigned || cfg.requireSigned ? 'fail' : 'warn', 'UNSIGNED', e.id, 'the entry carries no SSH signature' + (requireSigned || cfg.requireSigned ? '' : ' (--require-signed, or decide.requireSigned, makes it fail)'));
+    }
     if (e.via === 'agent-suspected') add('warn', 'AGENT-ENTRY', e.id, `signed ${e.who} from an agent environment: a person must confirm it (flagged, the log cannot tell)`);
     if (e.closes && !log.entries.some(x => x.id === e.closes && log.entries.indexOf(x) < log.entries.indexOf(e))) add('fail', 'CHAIN-BROKEN', e.id, `closes ${e.closes}, which is not an earlier entry`);
     if (e.kind === 'waiver') {
@@ -365,7 +439,7 @@ export function verify(root, { against = null, requireRatified = false, at = tod
   for (const f of trackedAndUntracked(root)) {
     const cls = protectedClass(f, cfg); if (!cls || cls === 'record' || f === SPEC_LOCK) continue;
     const b = readBuf(root, f); if (!b) continue; const h = contentHash(b);
-    if (!log.entries.some(e => validAt(e, closedIds, at) && approvesOf(e).some(a => a.path === f && a.hash === h))) unrat.push(`${f} (${cls})`);
+    if (!log.entries.some(e => validAt(e, closedIds, at) && approvesOf(e).some(a => a.path === f && a.hash === h) && (!cfg.requireSigned || entryRatifier(e, cfg).human))) unrat.push(`${f} (${cls})`);
   }
   if (unrat.length) add(requireRatified ? 'fail' : 'warn', 'UNRATIFIED', '', `${unrat.length} protected file(s) whose current content no valid entry approves: ${unrat.slice(0, 8).join(', ')}${unrat.length > 8 ? ', ...' : ''}${requireRatified ? '' : ' (reported; --require-ratified makes it fail; "add --kind baseline --covers-protected" adopts the current state)'}`);
   info.unratified = unrat.length;
@@ -408,23 +482,23 @@ export function exportChronicle(root, { extras = false } = {}) {
 }
 
 // ---------- CLI ----------
-const WITH_VALUE = new Set(['--root', '--kind', '--role', '--why', '--ref', '--covers', '--scope', '--expires', '--closes', '--commit', '--last', '--against', '--msg-file', '--range', '--format', '--out']);
+const WITH_VALUE = new Set(['--root', '--kind', '--role', '--why', '--ref', '--covers', '--scope', '--expires', '--closes', '--commit', '--last', '--against', '--msg-file', '--range', '--format', '--out', '--key']);
 export function parseArgs(argv) {
   const o = { _: [], flags: new Set(), covers: [] };
   for (let i = 0; i < argv.length; i++) { const a = argv[i]; if (WITH_VALUE.has(a)) { const v = argv[++i]; if (a === '--covers') o.covers.push(v); else o[a.slice(2)] = v; } else if (a.startsWith('--')) o.flags.add(a.slice(2)); else o._.push(a); }
   return o;
 }
 const say = s => process.stdout.write(s + '\n');
-const USAGE = 'usage: gs-decide add --kind <k> --role <r> --why "<why>" [--ref <what>] [--covers <path>]... [--covers-protected] [--scope <s>] [--expires YYYY-MM-DD] [--closes D-n] [--commit <rev>] [--agent]\n' +
-  '       gs-decide list [--json] [--open] [--all] [--last N] | verify [--json] [--require-ratified] [--against <rev>] | protected [--json] | init      [--root <dir>]\n';
+const USAGE = 'usage: gs-decide add --kind <k> --role <r> --why "<why>" [--ref <what>] [--covers <path>]... [--covers-protected] [--scope <s>] [--expires YYYY-MM-DD] [--closes D-n] [--commit <rev>] [--agent] [--key <ssh key>] [--no-sign]\n' +
+  '       gs-decide list [--json] [--open] [--all] [--last N] | verify [--json] [--require-ratified] [--require-signed] [--against <rev>] | protected [--json] | init      [--root <dir>]\n';
 
 export function main(argv) {
   const o = parseArgs(argv), cmd = o._[0], root = o.root || process.cwd();
   if (cmd === 'init') { const made = initLog(root); say(made ? 'log created' : 'log exists'); return 0; }
   if (cmd === 'add') {
-    const r = addEntry(root, { kind: o.kind, role: o.role, why: o.why, ref: o.ref, covers: o.covers, coversProtected: o.flags.has('covers-protected'), scope: o.scope, expires: o.expires, closes: o.closes, commit: o.commit, agent: o.flags.has('agent') });
+    const r = addEntry(root, { kind: o.kind, role: o.role, why: o.why, ref: o.ref, covers: o.covers, coversProtected: o.flags.has('covers-protected'), key: o.key, noSign: o.flags.has('no-sign'), scope: o.scope, expires: o.expires, closes: o.closes, commit: o.commit, agent: o.flags.has('agent') });
     if (!r.ok) { process.stderr.write('x add: ' + r.error + '\n'); return 2; }
-    const e = r.entry; say(`recorded ${e.id} ${e.kind} by ${e.who} (${e.role}, via ${e.via}): ${e.ref}${e.approves.length ? ` [${e.approves.length} file hash(es)]` : ''}${e.expires ? ' expires ' + e.expires : ''}`);
+    const e = r.entry; say(`recorded ${e.id} ${e.kind} by ${e.who} (${e.role}, via ${e.via}${e.sig ? ', signed ' + e.sigkey : ''}): ${e.ref}${e.approves.length ? ` [${e.approves.length} file hash(es)]` : ''}${e.expires ? ' expires ' + e.expires : ''}`);
     say('next: git add ' + loadConfig(root).log + ' together with the change it approves'); return 0;
   }
   if (cmd === 'list') {
@@ -439,7 +513,7 @@ export function main(argv) {
     return 0;
   }
   if (cmd === 'verify') {
-    const r = verify(root, { against: o.against, requireRatified: o.flags.has('require-ratified') });
+    const r = verify(root, { against: o.against, requireRatified: o.flags.has('require-ratified'), requireSigned: o.flags.has('require-signed') });
     if (o.flags.has('json')) say(JSON.stringify(r, null, 1));
     else {
       r.findings.forEach(f => say(`${f.level === 'fail' ? 'x' : '-'} ${f.code}${f.id ? ' ' + f.id : ''}: ${f.note}`));
