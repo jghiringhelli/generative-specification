@@ -16,6 +16,8 @@ It exists because the method began as a way to make the Inversion (state intent,
 
 ## 1. The five functions
 
+The mechanisms that realize each function, the gap analysis and a one-page executive table are in [the functions map](functions-map.md). Do not cite either externally until the vendor-diverse repeat is done.
+
 Validated in a first round of blind critics (all one model family; vendor-diverse repeat owed, see [the runbook](COPILOT-CRITIC-RUNBOOK-FUNCTIONS.md)). Three independent readers of the Compendium, given no function list, each derived 11 or 12 functions; the original three (Say it once, Stop bad changes, Remember everything) covered them partly, and ratifying and reporting state were missing. The revised set is five **functions that govern the executor**, plus two **invariants**.
 
 | Function | The job | Failure when absent |
@@ -132,7 +134,7 @@ Chosen for leverage and cost, not for importance:
 2. **CHECK/DECIDE at extension: `gs-review-surface`.** Its specification already exists (revision 2, after a fresh-critic round). It is the one tool that narrows what a human must read, which is where the method says judgment is irreducible.
 3. **REMEMBER at post-mortem: an incident record plus formula.** It closes the ratchet: every defect leaves a record, a case (a to e) and a rule. It fills the one named gap that a one-page template can close.
 
-Next after these: the snapshot generator (SHOW at governance reporting), because the governance claim ("governed as of") has no tool producing its exact line.
+The [functions map](functions-map.md) ranks gaps by how thin each function is and adds two candidates, a ratification record with a required-marker hook (DECIDE) and the snapshot generator (SHOW); the three above were chosen by phase leverage, the map's five by function weakness, and JC chooses the order. Next after these: the snapshot generator (SHOW at governance reporting), because the governance claim ("governed as of") has no tool producing its exact line.
 
 ## 7. Enforcement channels
 
