@@ -1,0 +1,740 @@
+{
+ "acc": [
+  {
+   "base": 0.55,
+   "k": 5,
+   "dp": 0,
+   "ahead": 0.03825,
+   "behind": 0.036,
+   "tie": 0.001,
+   "vd": 0.0435,
+   "inc": 0.726,
+   "hw": 0.12904303270822828
+  },
+  {
+   "base": 0.55,
+   "k": 5,
+   "dp": 5,
+   "ahead": 0.104,
+   "behind": 0.01,
+   "tie": 0.00075,
+   "vd": 0.03975,
+   "inc": 0.67075,
+   "hw": 0.12824941968222164
+  },
+  {
+   "base": 0.55,
+   "k": 5,
+   "dp": 10,
+   "ahead": 0.217,
+   "behind": 0.003,
+   "tie": 0.0005,
+   "vd": 0.0395,
+   "inc": 0.5335,
+   "hw": 0.12625678065345705
+  },
+  {
+   "base": 0.55,
+   "k": 5,
+   "dp": 15,
+   "ahead": 0.372,
+   "behind": 0.00025,
+   "tie": 0.0,
+   "vd": 0.0425,
+   "inc": 0.3605,
+   "hw": 0.12362377465558759
+  },
+  {
+   "base": 0.55,
+   "k": 5,
+   "dp": 20,
+   "ahead": 0.6,
+   "behind": 0.0,
+   "tie": 0.0005,
+   "vd": 0.04475,
+   "inc": 0.175,
+   "hw": 0.11957245453901501
+  },
+  {
+   "base": 0.55,
+   "k": 5,
+   "dp": 30,
+   "ahead": 0.901,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.057,
+   "inc": 0.01225,
+   "hw": 0.11114136456752513
+  },
+  {
+   "base": 0.55,
+   "k": 10,
+   "dp": 0,
+   "ahead": 0.076,
+   "behind": 0.07675,
+   "tie": 0.01925,
+   "vd": 0.127,
+   "inc": 0.66575,
+   "hw": 0.08623906462334542
+  },
+  {
+   "base": 0.55,
+   "k": 10,
+   "dp": 5,
+   "ahead": 0.19125,
+   "behind": 0.02375,
+   "tie": 0.016,
+   "vd": 0.12175,
+   "inc": 0.6135,
+   "hw": 0.0855537713303839
+  },
+  {
+   "base": 0.55,
+   "k": 10,
+   "dp": 10,
+   "ahead": 0.3675,
+   "behind": 0.006,
+   "tie": 0.01325,
+   "vd": 0.1185,
+   "inc": 0.45825,
+   "hw": 0.08422849211413569
+  },
+  {
+   "base": 0.55,
+   "k": 10,
+   "dp": 15,
+   "ahead": 0.57525,
+   "behind": 0.0015,
+   "tie": 0.008,
+   "vd": 0.1175,
+   "inc": 0.2715,
+   "hw": 0.08228923764007973
+  },
+  {
+   "base": 0.55,
+   "k": 10,
+   "dp": 20,
+   "ahead": 0.74825,
+   "behind": 0.0,
+   "tie": 0.00275,
+   "vd": 0.13425,
+   "inc": 0.10125,
+   "hw": 0.08016472587363555
+  },
+  {
+   "base": 0.55,
+   "k": 10,
+   "dp": 30,
+   "ahead": 0.8545,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.14375,
+   "inc": 0.001,
+   "hw": 0.07376856616717388
+  },
+  {
+   "base": 0.55,
+   "k": 20,
+   "dp": 0,
+   "ahead": 0.1195,
+   "behind": 0.11275,
+   "tie": 0.20325,
+   "vd": 0.24175,
+   "inc": 0.32275,
+   "hw": 0.060148994457398255
+  },
+  {
+   "base": 0.55,
+   "k": 20,
+   "dp": 5,
+   "ahead": 0.25875,
+   "behind": 0.0355,
+   "tie": 0.16325,
+   "vd": 0.2515,
+   "inc": 0.291,
+   "hw": 0.059614683603498995
+  },
+  {
+   "base": 0.55,
+   "k": 20,
+   "dp": 10,
+   "ahead": 0.4435,
+   "behind": 0.00725,
+   "tie": 0.102,
+   "vd": 0.23925,
+   "inc": 0.208,
+   "hw": 0.05872110763576405
+  },
+  {
+   "base": 0.55,
+   "k": 20,
+   "dp": 15,
+   "ahead": 0.62825,
+   "behind": 0.00125,
+   "tie": 0.04325,
+   "vd": 0.23725,
+   "inc": 0.09,
+   "hw": 0.05728222226582075
+  },
+  {
+   "base": 0.55,
+   "k": 20,
+   "dp": 20,
+   "ahead": 0.72225,
+   "behind": 0.0,
+   "tie": 0.00875,
+   "vd": 0.2405,
+   "inc": 0.0285,
+   "hw": 0.05564534182320737
+  },
+  {
+   "base": 0.55,
+   "k": 20,
+   "dp": 30,
+   "ahead": 0.71025,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.28975,
+   "inc": 0.0,
+   "hw": 0.05116239220186026
+  },
+  {
+   "base": 0.85,
+   "k": 5,
+   "dp": 0,
+   "ahead": 0.02675,
+   "behind": 0.02575,
+   "tie": 0.1065,
+   "vd": 0.0325,
+   "inc": 0.7745,
+   "hw": 0.08657270063063816
+  },
+  {
+   "base": 0.85,
+   "k": 5,
+   "dp": 5,
+   "ahead": 0.1565,
+   "behind": 0.00175,
+   "tie": 0.116,
+   "vd": 0.0385,
+   "inc": 0.6295,
+   "hw": 0.07946833045675109
+  },
+  {
+   "base": 0.85,
+   "k": 5,
+   "dp": 10,
+   "ahead": 0.5865,
+   "behind": 0.0,
+   "tie": 0.0405,
+   "vd": 0.0525,
+   "inc": 0.25975,
+   "hw": 0.07064298644735587
+  },
+  {
+   "base": 0.85,
+   "k": 10,
+   "dp": 0,
+   "ahead": 0.06525,
+   "behind": 0.065,
+   "tie": 0.4055,
+   "vd": 0.085,
+   "inc": 0.3785,
+   "hw": 0.057802565676269874
+  },
+  {
+   "base": 0.85,
+   "k": 10,
+   "dp": 5,
+   "ahead": 0.33175,
+   "behind": 0.003,
+   "tie": 0.32325,
+   "vd": 0.0975,
+   "inc": 0.244,
+   "hw": 0.05229421639212202
+  },
+  {
+   "base": 0.85,
+   "k": 10,
+   "dp": 10,
+   "ahead": 0.81125,
+   "behind": 0.0,
+   "tie": 0.0355,
+   "vd": 0.12475,
+   "inc": 0.0285,
+   "hw": 0.04657919572017292
+  },
+  {
+   "base": 0.85,
+   "k": 20,
+   "dp": 0,
+   "ahead": 0.098,
+   "behind": 0.10125,
+   "tie": 0.552,
+   "vd": 0.20425,
+   "inc": 0.0445,
+   "hw": 0.039974420160167896
+  },
+  {
+   "base": 0.85,
+   "k": 20,
+   "dp": 5,
+   "ahead": 0.4475,
+   "behind": 0.006,
+   "tie": 0.32675,
+   "vd": 0.2025,
+   "inc": 0.01725,
+   "hw": 0.036344063704136495
+  },
+  {
+   "base": 0.85,
+   "k": 20,
+   "dp": 10,
+   "ahead": 0.729,
+   "behind": 0.0,
+   "tie": 0.0155,
+   "vd": 0.2555,
+   "inc": 0.0,
+   "hw": 0.03229812586433987
+  }
+ ],
+ "trap": [
+  {
+   "base": 0.5,
+   "k": 5,
+   "dp": 0,
+   "ahead": 0.014,
+   "behind": 0.017,
+   "tie": 0.0,
+   "vd": 0.01225,
+   "inc": 0.663,
+   "hw": 0.23226546310105164
+  },
+  {
+   "base": 0.5,
+   "k": 5,
+   "dp": 10,
+   "ahead": 0.064,
+   "behind": 0.00325,
+   "tie": 0.0,
+   "vd": 0.013,
+   "inc": 0.57875,
+   "hw": 0.23064450568950304
+  },
+  {
+   "base": 0.5,
+   "k": 5,
+   "dp": 20,
+   "ahead": 0.20675,
+   "behind": 0.00025,
+   "tie": 0.0,
+   "vd": 0.0115,
+   "inc": 0.3425,
+   "hw": 0.2240036949849611
+  },
+  {
+   "base": 0.5,
+   "k": 5,
+   "dp": 30,
+   "ahead": 0.4775,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.0155,
+   "inc": 0.13125,
+   "hw": 0.21233520191853028
+  },
+  {
+   "base": 0.5,
+   "k": 10,
+   "dp": 0,
+   "ahead": 0.02925,
+   "behind": 0.02425,
+   "tie": 0.0,
+   "vd": 0.034,
+   "inc": 0.7045,
+   "hw": 0.15576283458660162
+  },
+  {
+   "base": 0.5,
+   "k": 10,
+   "dp": 10,
+   "ahead": 0.147,
+   "behind": 0.00425,
+   "tie": 0.0,
+   "vd": 0.028,
+   "inc": 0.551,
+   "hw": 0.15384523649624446
+  },
+  {
+   "base": 0.5,
+   "k": 10,
+   "dp": 20,
+   "ahead": 0.447,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.0275,
+   "inc": 0.254,
+   "hw": 0.14984284641106063
+  },
+  {
+   "base": 0.5,
+   "k": 10,
+   "dp": 30,
+   "ahead": 0.79025,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.033,
+   "inc": 0.049,
+   "hw": 0.14269987914896687
+  },
+  {
+   "base": 0.5,
+   "k": 20,
+   "dp": 0,
+   "ahead": 0.0525,
+   "behind": 0.05775,
+   "tie": 0.0,
+   "vd": 0.0715,
+   "inc": 0.71775,
+   "hw": 0.10835981756943514
+  },
+  {
+   "base": 0.5,
+   "k": 20,
+   "dp": 10,
+   "ahead": 0.274,
+   "behind": 0.0045,
+   "tie": 0.0,
+   "vd": 0.07075,
+   "inc": 0.53075,
+   "hw": 0.10739919984108794
+  },
+  {
+   "base": 0.5,
+   "k": 20,
+   "dp": 20,
+   "ahead": 0.65575,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.061,
+   "inc": 0.18925,
+   "hw": 0.10437424490613267
+  },
+  {
+   "base": 0.5,
+   "k": 20,
+   "dp": 30,
+   "ahead": 0.88925,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.0785,
+   "inc": 0.0165,
+   "hw": 0.09889360068455534
+  },
+  {
+   "base": 0.3,
+   "k": 5,
+   "dp": 0,
+   "ahead": 0.0135,
+   "behind": 0.0155,
+   "tie": 0.0,
+   "vd": 0.0095,
+   "inc": 0.70025,
+   "hw": 0.2151113349776555
+  },
+  {
+   "base": 0.3,
+   "k": 5,
+   "dp": 10,
+   "ahead": 0.07175,
+   "behind": 0.001,
+   "tie": 0.0,
+   "vd": 0.01525,
+   "inc": 0.5745,
+   "hw": 0.2035557375513035
+  },
+  {
+   "base": 0.3,
+   "k": 5,
+   "dp": 20,
+   "ahead": 0.337,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.016,
+   "inc": 0.2135,
+   "hw": 0.18499464859629033
+  },
+  {
+   "base": 0.3,
+   "k": 5,
+   "dp": 30,
+   "ahead": 0.765,
+   "behind": 0.0,
+   "tie": 0.00025,
+   "vd": 0.0245,
+   "inc": 0.02025,
+   "hw": 0.16932410492601133
+  },
+  {
+   "base": 0.3,
+   "k": 10,
+   "dp": 0,
+   "ahead": 0.02925,
+   "behind": 0.02525,
+   "tie": 0.0,
+   "vd": 0.0325,
+   "inc": 0.7365,
+   "hw": 0.1438517868429693
+  },
+  {
+   "base": 0.3,
+   "k": 10,
+   "dp": 10,
+   "ahead": 0.1925,
+   "behind": 0.00125,
+   "tie": 0.0,
+   "vd": 0.02625,
+   "inc": 0.54275,
+   "hw": 0.13563123738136135
+  },
+  {
+   "base": 0.3,
+   "k": 10,
+   "dp": 20,
+   "ahead": 0.679,
+   "behind": 0.0,
+   "tie": 0.00025,
+   "vd": 0.037,
+   "inc": 0.1305,
+   "hw": 0.12253372628136865
+  },
+  {
+   "base": 0.3,
+   "k": 10,
+   "dp": 30,
+   "ahead": 0.92475,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.067,
+   "inc": 0.00325,
+   "hw": 0.10897352659834923
+  },
+  {
+   "base": 0.3,
+   "k": 20,
+   "dp": 0,
+   "ahead": 0.0465,
+   "behind": 0.0495,
+   "tie": 0.00075,
+   "vd": 0.0675,
+   "inc": 0.7705,
+   "hw": 0.10026626653953925
+  },
+  {
+   "base": 0.3,
+   "k": 20,
+   "dp": 10,
+   "ahead": 0.34975,
+   "behind": 0.00075,
+   "tie": 0.0025,
+   "vd": 0.057,
+   "inc": 0.509,
+   "hw": 0.09445902041994358
+  },
+  {
+   "base": 0.3,
+   "k": 20,
+   "dp": 20,
+   "ahead": 0.85725,
+   "behind": 0.0,
+   "tie": 0.00025,
+   "vd": 0.0715,
+   "inc": 0.05725,
+   "hw": 0.08521558017569442
+  },
+  {
+   "base": 0.3,
+   "k": 20,
+   "dp": 30,
+   "ahead": 0.85,
+   "behind": 0.0,
+   "tie": 0.0,
+   "vd": 0.15,
+   "inc": 0.0,
+   "hw": 0.0744565652438496
+  }
+ ],
+ "cost": [
+  {
+   "k": 5,
+   "ratio": 1.0,
+   "costlier": 0.03975,
+   "cheaper": 0.04075,
+   "fold": 1.3332148451205574
+  },
+  {
+   "k": 5,
+   "ratio": 1.1,
+   "costlier": 0.099,
+   "cheaper": 0.0155,
+   "fold": 1.332942892792091
+  },
+  {
+   "k": 5,
+   "ratio": 1.25,
+   "costlier": 0.245,
+   "cheaper": 0.00375,
+   "fold": 1.334701175657749
+  },
+  {
+   "k": 5,
+   "ratio": 1.5,
+   "costlier": 0.57525,
+   "cheaper": 0.0,
+   "fold": 1.3367642862791305
+  },
+  {
+   "k": 5,
+   "ratio": 2.0,
+   "costlier": 0.93325,
+   "cheaper": 0.0,
+   "fold": 1.3346232895512478
+  },
+  {
+   "k": 5,
+   "ratio": 3.0,
+   "costlier": 0.9995,
+   "cheaper": 0.0,
+   "fold": 1.3375033813728254
+  },
+  {
+   "k": 10,
+   "ratio": 1.0,
+   "costlier": 0.09275,
+   "cheaper": 0.0995,
+   "fold": 1.2126425262502727
+  },
+  {
+   "k": 10,
+   "ratio": 1.1,
+   "costlier": 0.2175,
+   "cheaper": 0.03275,
+   "fold": 1.2116766291146719
+  },
+  {
+   "k": 10,
+   "ratio": 1.25,
+   "costlier": 0.4555,
+   "cheaper": 0.0065,
+   "fold": 1.2125157303441003
+  },
+  {
+   "k": 10,
+   "ratio": 1.5,
+   "costlier": 0.81525,
+   "cheaper": 0.0,
+   "fold": 1.2126455008966
+  },
+  {
+   "k": 10,
+   "ratio": 2.0,
+   "costlier": 0.99575,
+   "cheaper": 0.0,
+   "fold": 1.21228346615731
+  },
+  {
+   "k": 10,
+   "ratio": 3.0,
+   "costlier": 1.0,
+   "cheaper": 0.0,
+   "fold": 1.2122619989930976
+  }
+ ],
+ "assumptions": {
+  "NSIM": 4000,
+  "DELTA": 0.1,
+  "label_alpha": "98.33% (Bonferroni over 3 contrasts)"
+ },
+ "scen": {
+  "S0 global null, costs equal": {
+   "O1_G_behind_or_costlier_at_tie": 0.07925,
+   "O2_K_behind_or_costlier_at_tie": 0.0935,
+   "O3_bare_holds": 0.00575,
+   "O4_G_ahead": 0.09775,
+   "O5_K_ahead": 0.085,
+   "O6_tie_pair": 0.0,
+   "O8_uninformative": 0.195,
+   "G_costlier_quality_unresolved": 0.06525,
+   "any_AHEAD_label": 0.1355,
+   "any_BEHIND_label": 0.124,
+   "pubrow_G_AHEAD_or_SUGG": 0.09975
+  },
+  "S0c quality null, costs at the section 11 prior (K/B 3, G/B 2)": {
+   "O1_G_behind_or_costlier_at_tie": 0.0915,
+   "O2_K_behind_or_costlier_at_tie": 0.10675,
+   "O3_bare_holds": 0.5595,
+   "O4_G_ahead": 0.10075,
+   "O5_K_ahead": 0.09075,
+   "O6_tie_pair": 0.0,
+   "O8_uninformative": 0.1825,
+   "G_costlier_quality_unresolved": 0.757,
+   "any_AHEAD_label": 0.145,
+   "any_BEHIND_label": 0.1435,
+   "pubrow_G_AHEAD_or_SUGG": 0.10375
+  },
+  "S1 G cuts trap failures by 20 points vs B and K, no P-ACC2 change, costs at prior": {
+   "O1_G_behind_or_costlier_at_tie": 0.0635,
+   "O2_K_behind_or_costlier_at_tie": 0.26675,
+   "O3_bare_holds": 0.2825,
+   "O4_G_ahead": 0.35975,
+   "O5_K_ahead": 0.0705,
+   "O6_tie_pair": 0.0,
+   "O8_uninformative": 0.0755,
+   "G_costlier_quality_unresolved": 0.55,
+   "any_AHEAD_label": 0.3955,
+   "any_BEHIND_label": 0.1085,
+   "pubrow_G_AHEAD_or_SUGG": 0.37175
+  },
+  "S2 G cuts trap failures by 10 points vs B and K, costs at prior": {
+   "O1_G_behind_or_costlier_at_tie": 0.07375,
+   "O2_K_behind_or_costlier_at_tie": 0.1315,
+   "O3_bare_holds": 0.434,
+   "O4_G_ahead": 0.17025,
+   "O5_K_ahead": 0.0805,
+   "O6_tie_pair": 0.0,
+   "O8_uninformative": 0.1415,
+   "G_costlier_quality_unresolved": 0.71175,
+   "any_AHEAD_label": 0.2085,
+   "any_BEHIND_label": 0.11075,
+   "pubrow_G_AHEAD_or_SUGG": 0.17275
+  },
+  "S3 both tools beat B by 20 points on both outcomes, K = G, costs at prior": {
+   "O1_G_behind_or_costlier_at_tie": 0.0495,
+   "O2_K_behind_or_costlier_at_tie": 0.0505,
+   "O3_bare_holds": 0.0185,
+   "O4_G_ahead": 0.68075,
+   "O5_K_ahead": 0.68025,
+   "O6_tie_pair": 0.0,
+   "O8_uninformative": 0.008,
+   "G_costlier_quality_unresolved": 0.276,
+   "any_AHEAD_label": 0.83625,
+   "any_BEHIND_label": 0.04975,
+   "pubrow_G_AHEAD_or_SUGG": 0.681
+  },
+  "S4 K beats G and B by 20 points on trap failures, costs at prior": {
+   "O1_G_behind_or_costlier_at_tie": 0.25975,
+   "O2_K_behind_or_costlier_at_tie": 0.069,
+   "O3_bare_holds": 0.28825,
+   "O4_G_ahead": 0.07925,
+   "O5_K_ahead": 0.355,
+   "O6_tie_pair": 0.0,
+   "O8_uninformative": 0.06975,
+   "G_costlier_quality_unresolved": 0.631,
+   "any_AHEAD_label": 0.28475,
+   "any_BEHIND_label": 0.28425,
+   "pubrow_G_AHEAD_or_SUGG": 0.08675
+  }
+ },
+ "null_false_exclusion_k5_no_interaction": 0.044,
+ "coverage_conditional_k5": 0.9593333333333334
+}
