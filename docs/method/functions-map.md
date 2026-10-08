@@ -51,6 +51,7 @@ Each mechanism has ONE primary function; secondary ones in the last column.
 | Intake and clarification | Questions before building | M1 | observation | 8.7 | Decide |
 | Formulas 1, 2, 4 (greenfield, adopt, refine) | Paste-in prompts that build the cascade | M1 | design only (written to the canon, not tested in a registered run) | Formulas | none |
 | `gs-check` item 1 to 2b | Checks map targets exist, ids present | M5 | demonstrated once (own tests) | Formulas | Check |
+| One-command installer with three depths (`tools/gs-init/gs-init.mjs`, [practice](/practice/scale-adaptive-depth/)) | Writes the sentinel, spec and decision skeleton, chained hooks and the ratchet at L0, L1 or L2, backs up what it changes, and proves its claim with `gs-check --strict` on a copy | M4 (you run it); the hooks it installs are M5 | design, installer tested (19 tests, Windows and Linux container, no model); not in a registered run; not tried by a stranger | 6.1, 4.5.1 | Check |
 
 ### 2.2 CHECK
 
@@ -112,6 +113,7 @@ Each mechanism has ONE primary function; secondary ones in the last column.
 | Signed ratification (`gs-decide` entries signed with an SSH key, roles and an `agent` role in `docs/decision-roles.json`; [practice](/practice/agent-commit-marking/)) | A protected change needs an entry whose signature verifies and whose signer is not an agent; it proves custody of a key, not human intent | M5, M6 | design, tools tested (own suite); not in a registered run | none | Check, Remember |
 | Branch protection requiring a human reviewer | Makes skipping approval impossible | M6 | design only | 4.2 | Check |
 | Specificity dial and three dials (completeness, specificity, register) | Matches control to stakes | M1 | under test (H-S drafted; expert-prompt tie on single shot) | 4.5.1, 4.5.2 | Say |
+| Scale-adaptive depth: tiny, normal, risky change, and L0/L1/L2 per project ([practice](/practice/scale-adaptive-depth/)) | Matches the process to the size and risk of the change; only the risky class has a mechanical trigger (protected paths), at L2 | M1/M2 to classify; M5/M6 for the risky class at L2 | design (thresholds are defaults, unmeasured); not in a registered run | 4.5.1 | Check |
 | Consequence classification and human confirmation gate | Irreversible acts need a person | M5 to M6 | design only | 4.4 | Check |
 | Revival model (practice portfolio) | Which practices pay at which stakes | n/a | design only | 4.6 | none |
 | Triage of a failure (cases a to e) | Names which kind of failure before changing anything; a person ratifies b, c, d | M1; M5 marker | demonstrated once (one sample, crafted commits; one real-agent run) | 8.19 | Invariant: ratchet |

@@ -34,6 +34,8 @@ Validated in a first round of blind critics (all one model family; vendor-divers
 
 **Signed ratification and agent-commit marking** (Decide, with Check at the hook and in CI): ratification can be signed with a person's SSH key and checked against a roles file, and agent-made commits are marked (`Assisted-by`, `Co-Authored-By`) and never carry an agent `Signed-off-by`. It proves custody of a key and makes skipping the step visible; it does not prove that a person decided, and an unmarked agent session is invisible. See [agent commit marking](/practice/agent-commit-marking/) (design, tools tested, not yet in a registered run).
 
+**One-command start and scale-adaptive depth** (Say, with Check at the hook; Decide for the risky class): `gs-init` installs the substrate at L0 (sentinel and skeleton), L1 (plus gates, chained hooks, ratchet) or L2 (plus ratifications and a CI re-check) and proves its claim with `gs-check --strict` on a copy; [scale-adaptive depth](/practice/scale-adaptive-depth/) says how much of it a tiny, a normal and a risky change needs. Design, installer tested, not in a registered run; the classification of a change is a person's call except for protected paths at L2.
+
 **Executive wording:** three verbs, "say it once, check it, remember it", and for the human side "see it, sign it" (Show, Decide). Technical documents use five.
 
 **Mapping to the canon:** the bridge is Say; the sentinel is Say (the map half; its bounded-context role also serves Check indirectly); phase collapse is Check (executed evidence outside the model); the lock is Remember in form and Check in operation (a stale lock fails a build); ratification is Decide, its log is Remember.
