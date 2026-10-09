@@ -1,0 +1,69 @@
+{
+  "_note": "Every vendor-diverse critic round that exists as a runbook (or, for CMP-1, E2E-1 and REM-1, the generic NEW runbook added with this harness). Paths are repo-relative. 'ref' = read the file from that git ref of the protocol clone instead of the working tree (the WP5 and Functions material live on other branches). A critic gets ONLY the files listed here plus its runbook.",
+  "targets": {
+    "sdx1": {
+      "kind": "runbook", "title": "SDX-1 design critic",
+      "runbook": "docs/experiments/COPILOT-CRITIC-RUNBOOK.md",
+      "line": "Follow the file docs/experiments/COPILOT-CRITIC-RUNBOOK.md in this repository from section 0.",
+      "files": ["docs/experiments/prereg/SDX-1.md", "docs/experiments/prereg/SDX-1-ARMS.md", "docs/experiments/EXPERIMENT-PROTOCOL.md", "experiments/cr/benchmark/DOMAIN_SPEC.md"],
+      "outDir": "docs/experiments/critiques", "outPrefix": "", "needsRepoMarker": "docs/experiments/prereg/SDX-1.md",
+      "branchRequired": "experiment-protocol-2026-10-02", "priority": 2, "note": "stop rule: needs >= 3 vendors, >= 2 not Anthropic, per round"
+    },
+    "fx1": {
+      "kind": "runbook", "title": "FX-1 study and checker critic",
+      "runbook": "docs/experiments/COPILOT-CRITIC-RUNBOOK-FX1.md",
+      "line": "Follow the file docs/experiments/COPILOT-CRITIC-RUNBOOK-FX1.md in this repository from section 0.",
+      "files": ["docs/experiments/prereg/FX-1.md", "docs/experiments/FX-1-CHECKER-SPEC.md", "docs/experiments/EXPERIMENT-PROTOCOL.md", "experiments/fx1/fixtures/README.md", "experiments/fx1/fixtures/FIX-API-lendmark.md", "experiments/fx1/fixtures/FIX-CLI-stitchcount.md", "experiments/fx1/fixtures/FIX-PIPE-tidewatch.md", "experiments/fx1/fixtures/FIX-GAME-cinderfall.md", "experiments/fx1/fixtures/FIX-MCP-shelfwise.md", "experiments/fx1/simulation/results.md"],
+      "printConfig": true,
+      "outDir": "docs/experiments/critiques", "outPrefix": "fx1-", "needsRepoMarker": "docs/experiments/prereg/FX-1.md",
+      "branchRequired": "experiment-protocol-2026-10-02", "priority": 1, "note": "first in the order (JC 2026-10-05). The critic reads the five briefs; that is review, not a run, and is allowed by the runbook."
+    },
+    "sdx89": {
+      "kind": "runbook", "title": "SDX-8 and SDX-9 design critic",
+      "runbook": "docs/experiments/COPILOT-CRITIC-RUNBOOK-SDX-8-9.md",
+      "line": "Follow the file docs/experiments/COPILOT-CRITIC-RUNBOOK-SDX-8-9.md in this repository from section 0.",
+      "files": ["docs/experiments/prereg/SDX-8.md", "docs/experiments/prereg/SDX-9.md", "docs/experiments/EXPERIMENT-PROTOCOL.md"],
+      "outDir": "docs/experiments/critiques", "outPrefix": "sdx89-", "needsRepoMarker": "docs/experiments/prereg/SDX-8.md",
+      "branchRequired": "experiment-protocol-2026-10-02", "priority": 5, "note": "the 2026-10-04 portfolio decision says DROP SDX-8 and SDX-9 as designed; run this round last and only if JC wants the record"
+    },
+    "cmp1": {
+      "kind": "runbook", "title": "CMP-1 design critic (generic NEW runbook)",
+      "runbook": "docs/experiments/COPILOT-CRITIC-RUNBOOK-CMP-E2E-REM.md",
+      "line": "Follow the file docs/experiments/COPILOT-CRITIC-RUNBOOK-CMP-E2E-REM.md in this repository from section 0 with TARGET=CMP-1.",
+      "files": ["docs/experiments/prereg/CMP-1.md", "docs/experiments/EXPERIMENT-PROTOCOL.md"],
+      "outDir": "docs/experiments/critiques", "outPrefix": "cmp-e2e-rem-cmp-1-", "needsRepoMarker": "docs/experiments/prereg/CMP-1.md",
+      "branchRequired": "experiment-protocol-2026-10-02", "priority": 3, "note": "NEW runbook, review before relying on it; the original Claude-only prompt is PP-CRIT-CMP1 in the prompt pack"
+    },
+    "e2e1": {
+      "kind": "runbook", "title": "E2E-1 design critic (generic NEW runbook)",
+      "runbook": "docs/experiments/COPILOT-CRITIC-RUNBOOK-CMP-E2E-REM.md",
+      "line": "Follow the file docs/experiments/COPILOT-CRITIC-RUNBOOK-CMP-E2E-REM.md in this repository from section 0 with TARGET=E2E-1.",
+      "files": ["docs/experiments/prereg/E2E-1.md", "docs/experiments/EXPERIMENT-PROTOCOL.md"],
+      "outDir": "docs/experiments/critiques", "outPrefix": "cmp-e2e-rem-e2e-1-", "needsRepoMarker": "docs/experiments/prereg/E2E-1.md",
+      "branchRequired": "experiment-protocol-2026-10-02", "priority": 3, "note": "NEW runbook, review before relying on it"
+    },
+    "rem1": {
+      "kind": "runbook", "title": "REM-1 design critic (generic NEW runbook)",
+      "runbook": "docs/experiments/COPILOT-CRITIC-RUNBOOK-CMP-E2E-REM.md",
+      "line": "Follow the file docs/experiments/COPILOT-CRITIC-RUNBOOK-CMP-E2E-REM.md in this repository from section 0 with TARGET=REM-1.",
+      "files": ["docs/experiments/prereg/REM-1.md", "docs/experiments/EXPERIMENT-PROTOCOL.md"],
+      "outDir": "docs/experiments/critiques", "outPrefix": "cmp-e2e-rem-rem-1-", "needsRepoMarker": "docs/experiments/prereg/REM-1.md",
+      "branchRequired": "experiment-protocol-2026-10-02", "priority": 3, "note": "NEW runbook, review before relying on it"
+    },
+    "wp5": {
+      "kind": "panel", "title": "White paper 5.0 panel (six roles)",
+      "runbookRef": "origin/white-paper-5.0-draft", "runbook": "docs/white-paper/COPILOT-CRITIC-RUNBOOK-WP5.md",
+      "files": [{ "path": "docs/white-paper/GenerativeSpecification_WhitePaper_v5.0-DRAFT.md", "ref": "origin/white-paper-5.0-draft" }],
+      "preambleRegex": "Common preamble[^:]*:\\s*\\*\"([\\s\\S]*?)\"\\*",
+      "rolesFrom": "## 3.", "rolesTo": "## 4.", "repeat": {}, "priority": 4,
+      "outDirLabel": "docs/white-paper/critiques-wp5", "note": "needs the branch white-paper-5.0-draft fetched (git fetch --all); six roles per model; role 3 may use the web"
+    },
+    "functions": {
+      "kind": "panel", "title": "Functions-of-GS abstraction panel (six roles, role 1 three times)",
+      "runbookRef": "origin/lifecycle-2026-10-08", "runbook": "docs/method/COPILOT-CRITIC-RUNBOOK-FUNCTIONS.md",
+      "files": [{ "path": "docs/white-paper/GenerativeSpecification_Compendium.md", "ref": "origin/lifecycle-2026-10-08" }],
+      "preambleRegex": null, "rolesFrom": "## 3.", "rolesTo": "## 4.", "repeat": { "deriver": 3 }, "priority": 4,
+      "outDirLabel": "docs/method/critiques-functions", "note": "the Compendium is about 480 KB (several hundred thousand characters): a model with a small context window will truncate it; the run records this. Needs branch lifecycle-2026-10-08 fetched."
+    }
+  }
+}
