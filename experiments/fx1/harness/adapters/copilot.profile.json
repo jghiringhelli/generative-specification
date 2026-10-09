@@ -1,0 +1,22 @@
+{
+  "_note": "Flags of the GitHub Copilot CLI (npm @github/copilot). Every flag below was read in the command reference at docs.github.com on 2026-10-09 (see docs/experiments/research/COPILOT-ROUTE-2026-10-09.md for the evidence table) but NEVER EXECUTED by the author (no Copilot account on the authoring PC). adapter-probe.mjs checks each flag against `copilot --help` on the real PC and prints MISSING for any that is absent; fix this file, not the code.",
+  "binary": "copilot",
+  "promptFlag": "-p",
+  "silentFlag": "-s",
+  "modelFlag": "--model",
+  "continueFlag": "--continue",
+  "shareFlag": "--share",
+  "maxCreditsFlag": "--max-ai-credits",
+  "maxCreditsDefault": 800,
+  "secretEnvFlag": "--secret-env-vars",
+  "alwaysFlags": ["--allow-all-tools", "--no-ask-user", "--no-custom-instructions", "--disable-builtin-mcps", "--no-auto-update"],
+  "webFlags": ["--allow-all-urls"],
+  "env": {
+    "COPILOT_HOME": "/cfg/home",
+    "COPILOT_AUTO_UPDATE": "false",
+    "COPILOT_OTEL_FILE_EXPORTER_PATH": "/cfg/otel.jsonl",
+    "HOME": "/home/agent"
+  },
+  "tokenEnvPreference": ["COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"],
+  "flagsToVerify": ["-p", "-s", "--model", "--allow-all-tools", "--no-ask-user", "--no-custom-instructions", "--disable-builtin-mcps", "--no-auto-update", "--continue", "--share", "--max-ai-credits", "--secret-env-vars", "--allow-all-urls", "--output-format"]
+}

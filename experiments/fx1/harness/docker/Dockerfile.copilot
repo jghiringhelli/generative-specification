@@ -1,0 +1,10 @@
+# The GitHub Copilot CLI on top of the pinned agent base image. Build: docker build -t fx1-linux-copilot -f docker/Dockerfile.copilot docker
+# The version is a build argument so every run records and pins it (COPILOT_AUTO_UPDATE=false at run time). 1.0.94 was the npm "latest"
+# on 2026-10-08 (registry.npmjs.org/@github/copilot). Change it only on purpose and write the new value in deviations.md.
+FROM fx1-linux
+ARG COPILOT_VERSION=1.0.94
+RUN npm install -g @github/copilot@${COPILOT_VERSION} 2>&1 | tail -2
+RUN useradd -m -s /bin/bash agent && mkdir -p /work && chown agent /work
+USER agent
+ENV COPILOT_AUTO_UPDATE=false
+RUN git config --global user.email x@x && git config --global user.name x && git config --global --add safe.directory '*'
