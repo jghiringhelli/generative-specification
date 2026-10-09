@@ -19,3 +19,4 @@ for (let rep = 1; rep <= Number(a.reps); rep++) {
   for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; }
   for (const c of b) console.log([++seq, rep, `${a.stage}-${c.p}-${c.f}-${c.l}-${c.v}-r${rep}`, c.p, c.l, c.v, c.f, KEY[c.f], rep].join(','));
 }
+// SUPERSEDED 2026-10-09 by experiments/fx1/harness/ (kept for history; do not use).

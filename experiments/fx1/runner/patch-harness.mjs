@@ -18,3 +18,4 @@ const P = [
 for (const [a, b] of P) { if (!t.includes(a)) { console.error('PATTERN NOT FOUND, harness differs from the expected version:\n' + a); process.exit(1); } t = t.split(a).join(b); }
 fs.writeFileSync(dst, t);
 console.log('wrote', dst, '; patches applied:', P.length);
+// SUPERSEDED 2026-10-09 by experiments/fx1/harness/ (kept for history; do not use).

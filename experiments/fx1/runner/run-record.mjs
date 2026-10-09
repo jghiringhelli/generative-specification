@@ -15,3 +15,4 @@ for (const f of files) {
   rec.totals.cost_usd += t.cost_usd || 0; if (t.is_error) rec.errors++; rec.turns.push(t);
 }
 console.log(JSON.stringify(rec, null, 2));
+// SUPERSEDED 2026-10-09 by experiments/fx1/harness/ (kept for history; do not use).

@@ -4,6 +4,21 @@ Status: 2026-10-09, branch `experiment-protocol-2026-10-02`. Written for the per
 
 Every command is given twice: **PowerShell** (Windows PowerShell 5.1 or 7) and **POSIX shell** (bash or zsh, macOS or Linux, or Git Bash). Use one shell for the whole session. Files that this runbook calls "NEW, review before use" were written for this purpose, have been syntax-checked but never run against a model, and are listed in section 14.
 
+## UPDATE 2026-10-09 (later the same day): the harness is in git, the route is Copilot, results go to a private repository
+
+Read this block first; where it differs from the sections below it wins, and the sections it supersedes are named. The one-page instructions are `experiments/other-pc/README.md`; the single prompt that drives the second PC is `docs/experiments/MASTER-PROMPT-COPILOT-PC.md`; the evidence for the route is `docs/experiments/research/COPILOT-ROUTE-2026-10-09.md`.
+
+| Topic | Superseded text | What holds now |
+|---|---|---|
+| Harness | section 5 (bundle from the main PC, `patch-harness.mjs`, five patches) and appendix B | The portable harness is in git: `experiments/fx1/harness/` (flow, adapters, queue, container flow, caps, per-run metadata). No bundle, no patching. The isolation defect (the agent could read the checker) is fixed in code and proved by `isolation-test.mjs`. The old `experiments/fx1/runner/` scripts are kept for history; `schedule.mjs` moved into the harness |
+| Vendors and keys | sections 3.1 to 3.3, 7 | The route is the GitHub Copilot CLI with one fine-grained GitHub token (`COPILOT_GITHUB_TOKEN`), several vendors' models, no API keys. Adapters: `copilot` (written from the documentation, **never run against a model**), `claude` (Claude CLI, tested on one development cell), `mock` (tests). The OpenAI and Google models are called through Copilot, so no separate OpenAI or Google adapter is needed |
+| Metering | section 3.1 table, section 11 | Copilot is token-billed (AI credits) on current plans and request-billed only on legacy annual plans; the CLI can write OpenTelemetry token counts (unproven in `-p` mode). Caps are expressed in calls, wall-clock, premium requests, AI credits and dollars (`FX_CAP_*`); a credits cap that cannot be computed stops the run instead of silently not applying. Cost endpoints that need exact tokens stay unproven until the probe passes |
+| Results | section 15.2 (no remote named) | A private repository exists: `pragma-works/genspec-experiment-results`. `push-results.mjs` copies finished cells, scans for secrets, commits on a branch per phase (`<phase>-<stage>-<pc>-<date>`) and pushes only to that repository. Never to the public protocol repository |
+| Gates G-2 and G-3 | section 0.2 and 4.5 | There are **no tags at all** in the protocol repository (`git tag --list` is empty, also on the remote). `formulas-2026-10-05` is a **branch**, not a lightweight tag (an earlier statement was wrong). `gate-check.mjs` implements G-2, G-3 and "FX-1.md says FROZEN"; `run.mjs` refuses `FIX-*` fixtures until it passes (the FX-0 diagnostic on them needs JC's `GO-FX0.txt`) |
+| Critics | not covered here | Vendor-diverse critic rounds and practitioner prompts run through the same harness (`critic-run.mjs`, `practitioner-run.mjs`). CMP-1, E2E-1 and REM-1 had no Copilot critic runbook: a NEW generic one is `docs/experiments/COPILOT-CRITIC-RUNBOOK-CMP-E2E-REM.md` |
+
+Still true: the registered run (S4) is not allowed; the five confirmatory briefs stay closed until S2 and JC's written go; no run is ever "fixed" by hand.
+
 ## 0. Read this first (five minutes)
 
 ### 0.1 What you can and cannot do today
@@ -355,7 +370,7 @@ Use the NEW probe `PP-NEW-PROBE` (prompt pack, section D) in an empty folder, th
 
 ## 8. How a run works (the flow you are automating)
 
-This is the flow of `harness/run2.js` as run in development loop 2 (`soma/docs/fx1-dev-loop-2-2026-10-07.md`). Each run is one invocation: `node run2-portable.js <id> <A|B|C> <en|es> <fixtureKey>`, with `FX_MODEL` set to the exact model id.
+This is the flow of `harness/run2.js` as run in development loop 2 (`soma/docs/reports/2026-10/fx1-dev-loop-2-2026-10-07.md`). Each run is one invocation: `node run2-portable.js <id> <A|B|C> <en|es> <fixtureKey>`, with `FX_MODEL` set to the exact model id.
 
 1. A Docker volume `fxvol2-<id>` is the sandbox (`/work`). A fresh empty folder `cfg/<id>` is the agent's configuration folder. The sandbox starts empty (A, B) or with a copy of a legacy project (C; `git init` state as in the fixture).
 2. **Path A (greenfield)**: the harness fills the brackets of the English or Spanish block of `greenfield.md` (brief, stack "as my spec says", file name `CLAUDE.md`), sends it as the first message of a fresh `claude -p` session. When the turn ends without finishing, it sends the scripted messages (`RATIFY`, then `CONT`; section 8.2) up to 6 calls. "Finished" = a reply that contains the words PRESENT or MISSING and a table, after at least two calls.

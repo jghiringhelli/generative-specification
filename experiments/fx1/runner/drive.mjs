@@ -32,3 +32,4 @@ function launch() {
 }
 fs.mkdirSync(ROOT + '/logs2', { recursive: true });
 launch();
+// SUPERSEDED 2026-10-09 by experiments/fx1/harness/queue.mjs (kept for history; do not use).
