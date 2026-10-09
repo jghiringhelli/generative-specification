@@ -1,6 +1,6 @@
 # Design brief: paper M (evaluation methods and negative results), first paper to design (2026-10-05)
 
-Status: design brief, not a draft; nothing submitted. Extends `M-skeleton.md` (2026-10-03). Companion: `C:\workspace\PragmaWorks\soma\docs\paper-tree-assessment-2026-10-05.md` section 4 (schedule) and `TREE-REVISION-2026-10-05.md`.
+Status: design brief, not a draft; nothing submitted. Extends `M-skeleton.md` (2026-10-03). Companion: `C:\workspace\PragmaWorks\soma\docs\reports\2026-10\paper-tree-assessment-2026-10-05.md` section 4 (schedule) and `TREE-REVISION-2026-10-05.md`.
 
 **Thesis.** A method whose own text can define the metric invites evaluation errors that look like results; one programme's complete record of its own evaluations shows which errors occurred, and a protocol plus a short checklist would have caught them.
 

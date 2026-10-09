@@ -2,7 +2,7 @@
 
 Status: PROPOSAL (JC's addition of 2026-10-03). Nothing here is registered, run or frozen. Companion to `C:\workspace\PragmaWorks\gs\gs-paper-tree\docs\white-paper\tree\TREE.md` (card P6, orthogonality ledger section 5). Experiment id proposed: **SDX-9** (SDX-8 is already reserved in the tree for P4's long chain, so P6 takes the next unused id; ids are never reused). The protocol branch (`C:\workspace\PragmaWorks\gs\gs-experiment-protocol`, another worktree) is NOT edited by this branch; a paste-ready BACKLOG entry is in section 10 for JC to carry over.
 
-Inputs: `C:\workspace\PragmaWorks\soma\docs\productivity-studies-dissection-2026-10-03.md` (sections 1 to 3, mechanisms M1 to M14, H-NET), `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\HYPOTHESES-2026-10-02.md`, `...\BACKLOG.md`, `...\prereg\SDX-1.md`, `...\prereg\SDX-1-ARMS.md`.
+Inputs: `C:\workspace\PragmaWorks\soma\docs\reports\2026-10\productivity-studies-dissection-2026-10-03.md` (sections 1 to 3, mechanisms M1 to M14, H-NET), `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\HYPOTHESES-2026-10-02.md`, `...\BACKLOG.md`, `...\prereg\SDX-1.md`, `...\prereg\SDX-1-ARMS.md`.
 
 ## 1. The claim, in one sentence
 

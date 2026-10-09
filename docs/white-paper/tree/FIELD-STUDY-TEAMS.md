@@ -4,7 +4,7 @@ Status: **PROPOSAL.** Nothing here is registered, agreed with anyone, approved b
 
 **Publication guard.** This branch lives in the public genspec repository. The file therefore names no company and no person: "Partner A" is a software firm whose CEO is a business partner of the author; "Partner B" is an insurance brokerage that was an earlier workshop client. The mapping to real names stays in JC's private notes. The private source material (workshop recordings, the retired human-subject study, employer context) is not cited with detail; the private lessons note (`C:\workspace\PragmaWorks\soma\docs\experiments\lessons-from-past-designs.md`) is used for rules only. Before any merge to the main branch, JC should re-read this file for anything he wants removed.
 
-Inputs read: `C:\workspace\PragmaWorks\soma\docs\personal-repos-project-census-2026-10-03.md`, `...\personal-repos-productivity-analysis-2026-10-03.md`, `...\productivity-studies-dissection-2026-10-03.md` (sections 1.2 and 3.5, METR's lessons), `...\experiments\lessons-from-past-designs.md`, and the tree documents above.
+Inputs read: `C:\workspace\PragmaWorks\soma\docs\private\personal-repos\personal-repos-project-census-2026-10-03.md`, `...\personal-repos-productivity-analysis-2026-10-03.md`, `...\productivity-studies-dissection-2026-10-03.md` (sections 1.2 and 3.5, METR's lessons), `...\experiments\lessons-from-past-designs.md`, and the tree documents above.
 
 ---
 

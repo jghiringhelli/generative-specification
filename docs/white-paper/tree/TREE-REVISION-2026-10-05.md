@@ -1,6 +1,6 @@
 # Tree revision of 2026-10-05: a diff against TREE.md (history is not rewritten)
 
-Status: PROPOSAL for JC. `TREE.md` (2026-10-03) stays as written; this file lists only what changes and why. Nothing is registered, run or submitted. Basis: (a) white paper 5.0 is now a method proposal that carries no results; (b) the experiment portfolio decision of 2026-10-04 (`C:\workspace\PragmaWorks\soma\docs\experiment-portfolio-decision-2026-10-04.md`); (c) the research-resources report of 2026-10-03; (d) the UOC plan and its hygiene rule; (e) JC's criterion: each paper either supports GS or gives value even when its results are negative. Full reasoning and the per-node table: `C:\workspace\PragmaWorks\soma\docs\paper-tree-assessment-2026-10-05.md`.
+Status: PROPOSAL for JC. `TREE.md` (2026-10-03) stays as written; this file lists only what changes and why. Nothing is registered, run or submitted. Basis: (a) white paper 5.0 is now a method proposal that carries no results; (b) the experiment portfolio decision of 2026-10-04 (`C:\workspace\PragmaWorks\soma\docs\decisions\experiment-portfolio-decision-2026-10-04.md`); (c) the research-resources report of 2026-10-03; (d) the UOC plan and its hygiene rule; (e) JC's criterion: each paper either supports GS or gives value even when its results are negative. Full reasoning and the per-node table: `C:\workspace\PragmaWorks\soma\docs\reports\2026-10\paper-tree-assessment-2026-10-05.md`.
 
 ## Changes (each row: TREE.md location, old, new, reason)
 
