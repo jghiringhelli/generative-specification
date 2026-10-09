@@ -1,6 +1,6 @@
 # FX1-DEVLOOP2: development loop 2, three entry paths (greenfield, existing project, re-platform)
 
-**Development, not evidence.** The formulas and the checker were tuned on these runs; no rate here is a rate of anything. Private report with the tables and the questions: `C:\workspace\PragmaWorks\soma\docs\fx1-dev-loop-2-2026-10-07.md`.
+**Development, not evidence.** The formulas and the checker were tuned on these runs; no rate here is a rate of anything. Private report with the tables and the questions: `C:\workspace\PragmaWorks\soma\docs\reports\2026-10\fx1-dev-loop-2-2026-10-07.md`.
 
 | Field | Value |
 |---|---|

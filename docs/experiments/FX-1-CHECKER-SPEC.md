@@ -111,7 +111,7 @@ Last runs (2026-10-05, Windows 11, Node 24.18, Git for Windows 2.54, python 3.11
 
 ## 10. Development-loop changes (2026-10-06, checker version 0.2.1-devloop)
 
-Made after running the formulas on 24 invented development projects (`C:\workspace\PragmaWorks\soma\docs\fx1-dev-loop-2026-10-06.md`, logbook `LOGBOOK\FX1-DEVLOOP.md`). They are repairs of checker defects found on model-written output, not changes of what an element means, except where marked. They were made after seeing results and therefore carry the Goodhart risk of section 7 item 11; the independent controls and the held-out audit of section 5.3 remain the test of them. Each has a commit message with its motivating run.
+Made after running the formulas on 24 invented development projects (`C:\workspace\PragmaWorks\soma\docs\reports\2026-10\fx1-dev-loop-2026-10-06.md`, logbook `LOGBOOK\FX1-DEVLOOP.md`). They are repairs of checker defects found on model-written output, not changes of what an element means, except where marked. They were made after seeing results and therefore carry the Goodhart risk of section 7 item 11; the independent controls and the held-out audit of section 5.3 remain the test of them. Each has a commit message with its motivating run.
 
 - **E01, E04 (C1, C5, C6):** bare paths in a routing-table cell and in plain sentences count as routes; "no stored data" in the sentinel or architecture document satisfies the data model; a route into a git-ignored path (runtime data) is not dangling.
 - **E02 (C2, C12):** a dotted numeric id is a criterion without a criteria heading; the root SPEC.md listing a feature id is not a duplicate; a plain paragraph that merely starts with an id defines nothing.

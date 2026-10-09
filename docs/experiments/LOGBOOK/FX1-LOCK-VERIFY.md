@@ -1,6 +1,6 @@
 # FX1-LOCK-VERIFY: the lock tool, the checker as one file, and E10 and E11 verified for real
 
-**Development, not evidence.** No model was contacted; no formula was run. This entry records what was built after the development loop (`FX1-DEVLOOP.md`) so that the changes, their reasons and their limits are on record before FX-1 is frozen. Private report with the counts and the open questions: `C:\workspace\PragmaWorks\soma\docs\lock-migration-verify-2026-10-07.md`.
+**Development, not evidence.** No model was contacted; no formula was run. This entry records what was built after the development loop (`FX1-DEVLOOP.md`) so that the changes, their reasons and their limits are on record before FX-1 is frozen. Private report with the counts and the open questions: `C:\workspace\PragmaWorks\soma\docs\reports\2026-10\lock-migration-verify-2026-10-07.md`.
 
 | Field | Value |
 |---|---|

@@ -340,7 +340,7 @@ None. Each hypothesis gets its own registration file under `C:\workspace\PragmaW
 
 ## 12. Proposal 2026-10-07: method versus its enforcement (channel contrasts) — PROPOSAL, NOT FROZEN
 
-Source: JC, 2026-10-07. Full note (private): `C:\workspace\PragmaWorks\soma\docs\method-vs-enforcement-2026-10-07.md`. Nothing here alters the preregistered SDX-1 materials (`C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\SDX-1-ARMS.md`); these are candidate additions for later registrations (P1 to P4 of the 2026-10-04 portfolio decision).
+Source: JC, 2026-10-07. Full note (private): `C:\workspace\PragmaWorks\soma\docs\reports\2026-10\method-vs-enforcement-2026-10-07.md`. Nothing here alters the preregistered SDX-1 materials (`C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\SDX-1-ARMS.md`); these are candidate additions for later registrations (P1 to P4 of the 2026-10-04 portfolio decision).
 
 **Framing.** The method (what must hold) is separate from its enforcement (the channel that makes it hold). Channels, most manual to most automated: M1 per-prompt by hand, M2 root instruction file, M3 retrieval tool or MCP, M4 tool-use instruction, M5 hook, M6 CI gate, M7 enforced gate with ratchet. Failure modes by channel: forgotten, drifted, ignored, bypassed.
 

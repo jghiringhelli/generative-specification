@@ -1,6 +1,6 @@
 # FX1-DEVLOOP: development loop on the formulas and the checker before the registered FX-1 run
 
-**Development, not evidence.** Nothing in this entry supports a claim about the formulas: they were edited and the checker was repaired on these very runs. It exists so that the changes, their reasons and their limits are on record before FX-1 is frozen. Protocol: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\EXPERIMENT-PROTOCOL.md`. Registration it prepares: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\FX-1.md`. Private report with the tables: `C:\workspace\PragmaWorks\soma\docs\fx1-dev-loop-2026-10-06.md`.
+**Development, not evidence.** Nothing in this entry supports a claim about the formulas: they were edited and the checker was repaired on these very runs. It exists so that the changes, their reasons and their limits are on record before FX-1 is frozen. Protocol: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\EXPERIMENT-PROTOCOL.md`. Registration it prepares: `C:\workspace\PragmaWorks\gs\gs-experiment-protocol\docs\experiments\prereg\FX-1.md`. Private report with the tables: `C:\workspace\PragmaWorks\soma\docs\reports\2026-10\fx1-dev-loop-2026-10-06.md`.
 
 | Field | Value |
 |---|---|
