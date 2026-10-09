@@ -1,0 +1,5 @@
+FROM fx1-linux
+RUN npm install -g @anthropic-ai/claude-code 2>&1 | tail -2
+RUN useradd -m -s /bin/bash agent && mkdir -p /work && chown agent /work
+USER agent
+RUN git config --global user.email x@x && git config --global user.name x && git config --global --add safe.directory '*'

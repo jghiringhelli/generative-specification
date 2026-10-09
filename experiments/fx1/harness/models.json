@@ -1,0 +1,126 @@
+{
+  "_note": "Copilot CLI model ids as the CLI reference lists them (docs.github.com, command reference, read 2026-10-09). multiplier = premium requests per CLI prompt on a LEGACY request-based annual plan: null = NOT FILLED (the harness then counts 1 per prompt and flags it; the legacy multiplier table was not read). price_per_mtok = USD per million tokens, DEFAULT-context rows of https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing read 2026-10-09 (1 AI credit = 0.01 USD; the long-context tier and cache-write prices are not modelled, so credits are an approximation). Put your own corrected copy in a file named by FX_MODELS_FILE if your plan differs. The ids your account can actually call are found by models-discover.mjs.",
+  "models": {
+    "claude-sonnet-5.5": {
+      "vendor": "anthropic",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 2.0,
+        "output": 10.0,
+        "cached_input": 0.1
+      },
+      "cli_default": true
+    },
+    "claude-opus-5.5": {
+      "vendor": "anthropic",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 4.0,
+        "output": 20.0,
+        "cached_input": 0.2
+      }
+    },
+    "claude-haiku-5.5": {
+      "vendor": "anthropic",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 0.1,
+        "output": 0.5,
+        "cached_input": 0.01
+      }
+    },
+    "claude-haiku-4.5": {
+      "vendor": "anthropic",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 1.0,
+        "output": 5.0,
+        "cached_input": 0.1
+      }
+    },
+    "gpt-5.4": {
+      "vendor": "openai",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 2.5,
+        "output": 15.0,
+        "cached_input": 0.25
+      }
+    },
+    "gpt-5.3-codex": {
+      "vendor": "openai",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 1.75,
+        "output": 14.0,
+        "cached_input": 0.175
+      }
+    },
+    "gpt-6.1-sol": {
+      "vendor": "openai",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 2.0,
+        "output": 10.0,
+        "cached_input": 0.1
+      }
+    },
+    "gpt-6-astra": {
+      "vendor": "openai",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 10.0,
+        "output": 50.0,
+        "cached_input": 1.0
+      }
+    },
+    "gpt-6-luna": {
+      "vendor": "openai",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 0.1,
+        "output": 0.5,
+        "cached_input": 0.01
+      }
+    },
+    "gemini-3.7-flash": {
+      "vendor": "google",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 0.75,
+        "output": 3.75,
+        "cached_input": 0.075
+      }
+    },
+    "gemini-3.8-flash": {
+      "vendor": "google",
+      "multiplier": null,
+      "price_per_mtok": {
+        "input": 0.75,
+        "output": 3.75,
+        "cached_input": 0.075
+      }
+    }
+  },
+  "defaults": {
+    "_note": "Defaults for run-phase.mjs. They are the ids in the CLI reference table (verified 2026-10-09) and are filtered by models-discover.mjs against what YOUR account can actually call. Override with FX_CRITIC_MODELS, FX_PRACTITIONER_MODELS, FX_MODEL_ANTH / FX_MODEL_OAI / FX_MODEL_GOOG.",
+    "critic_set": [
+      "gpt-6.1-sol",
+      "gpt-5.4",
+      "gemini-3.8-flash",
+      "gemini-3.7-flash",
+      "claude-opus-5.5"
+    ],
+    "practitioner_set": [
+      "gpt-6.1-sol",
+      "gpt-5.4",
+      "gemini-3.8-flash"
+    ],
+    "fx_vendor_models": {
+      "anth": "claude-sonnet-5.5",
+      "oai": "gpt-5.4",
+      "goog": "gemini-3.8-flash"
+    },
+    "diversity_rule": "Protocol critic rounds (FX-1, SDX-1, SDX-8/9, CMP-1, E2E-1, REM-1) need at least 3 vendors and at least 2 not Anthropic: Anthropic + OpenAI + Google through Copilot meets it. For the WP5 and Functions panels the runbooks say a Claude model adds nothing to diversity (the first panel was all Claude): they need at least 2 non-Anthropic vendors to complete all roles."
+  }
+}
