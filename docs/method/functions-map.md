@@ -53,6 +53,8 @@ Each mechanism has ONE primary function; secondary ones in the last column.
 | `gs-check` item 1 to 2b | Checks map targets exist, ids present | M5 | demonstrated once (own tests) | Formulas | Check |
 | One-command installer with three depths (`tools/gs-init/gs-init.mjs`, [practice](/practice/scale-adaptive-depth/)) | Writes the sentinel, spec and decision skeleton, chained hooks and the ratchet at L0, L1 or L2, backs up what it changes, and proves its claim with `gs-check --strict` on a copy | M4 (you run it); the hooks it installs are M5 | design, installer tested (19 tests, Windows and Linux container, no model); not in a registered run; not tried by a stranger | 6.1, 4.5.1 | Check |
 
+| Project profiles ([profiles](profiles.md)): per project type, what each function is, which of the twelve elements apply, are replaced or do not apply (code, documents and research, content and media; games and data as code plus a pack) | Stops the code checklist from being read as the definition of the method on a documents or media project | M1 to classify; M3 for a future `gs-check --profile` | design, not yet in a registered run; one by-hand application to one repository | none | Check, Show |
+
 ### 2.2 CHECK
 
 | Mechanism | What it does | Channel | Status | Compendium | Secondary |
@@ -147,7 +149,7 @@ Each mechanism has ONE primary function; secondary ones in the last column.
 4. **An incident record and formula (REMEMBER, invariant ratchet).** One page: what happened, case a to e, the rule or test that now prevents it, who ratified. Closes the ratchet loop and the named gap in the lifecycle table.
 5. **An intent record at the start (SAY).** One page: problem, measurable outcome, out of scope, owner, signed. The missing upstream half of criteria coverage.
 
-Note: [the whole lifecycle page](lifecycle-whole.md) ranked cells by phase leverage (intent record, review surface, incident record). This ranking is by how thin each function is. The union is the five above; JC chooses the order. Candidates beyond five: a verified "chain for change X" query; evidence for the dial.
+Note: [the whole lifecycle page](lifecycle-whole.md) ranked cells by phase leverage (intent record, review surface, incident record). This ranking is by how thin each function is. The union is the five above; JC chooses the order. Candidates beyond five: a verified "chain for change X" query; evidence for the dial; project profiles ([profiles](profiles.md)), because the twelve-element checklist is the code profile and misreads a documents or media project (the earlier 0 pass, 5 partial, 7 absent on the research repository was such a misreading). The first documents-profile checks (reference check with permalink awareness, closed status vocabulary, claims ledger shape) are specified there, not built.
 
 ## 4. One-page version
 
