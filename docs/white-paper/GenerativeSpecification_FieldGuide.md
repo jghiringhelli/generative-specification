@@ -394,7 +394,7 @@ compares two models, MX, found both at the ceiling), and none estimates how fast
   generate: about 2.9 times a naive run and 1.4 times an expert-prompt run (median $1.89 per GS run, against $0.65
   naive and $1.34 expert). *(controlled comparison, exploratory; 5 runs per condition, one model (Claude Sonnet
   4.5), one benchmark, run and scored by the author)*
-  An earlier series scored the naive prompt 3/14 and the final GS version 14/14: one run per condition, the first
+  An earlier series scored the naive prompt 3/14, the expert prompt 9/14, the first GS version 10/14 and the best later GS versions 14/14 (two of the five later versions, v2 to v6; one of the two was inferred by the auditor from static artifacts and the other confirmed by a passing test run; the path was 13, 14, 11, 14, 13; a seventh version, v7, scored 13/14 on the same rubric): one run per condition, the first
   three fixed before their runs and each later one designed after seeing the gaps in the one before. It shows that each gap could be named and closed, not an effect size. Those scores use a
   14-point rubric that is a legacy instrument, retired as a scorecard in favor of letter grades A to F and a task
   list; it is kept only because the experiments were scored with it. *(post-hoc series, one run per condition)*
@@ -404,31 +404,31 @@ compares two models, MX, found both at the ceiling), and none estimates how fast
   the layer structure (n = 8; 4 trace a request file by file, and the others ask for the order of the layers, where
   the interfaces and their database code live, which layer may use the database client, and where the parts are wired
   together), the routed map used more tokens (142,511) than code search with no structure (about 106,000) or loading every document (about 101,000). On the 8 questions
-  about what a single function does, plain code search was cheaper than the map (62,649 against 78,936).
-  Accuracy was scored but is not claimed, because the answer key comes from the same structure the map reads.
+  about what the code itself answers (the status code an endpoint returns, which library, framework or algorithm is used), plain code search was cheaper than the map (62,649 against 78,936).
+  Most of that gap comes from 21 of the 45 questions (the obligation and list types), whose answers sit in files that the code-search condition did not have; on the 24 questions whose answers sit in the code, the two conditions used about the same tokens on average (93,578 against 97,821; a split made after the results were in). Accuracy was scored but is not claimed, because for 29 of the 45 questions the answer key comes from the same structure the map reads, and for 21 of those the files holding the answers were removed from the code-search condition.
   *(controlled comparison, exploratory; 45 questions per condition, one model, one system)*
 - **Ordered vs. average code (SX).** Making the same change to a codebase carrying an average project's mess
   (duplication, dead code, mixed patterns) cost **~2.4× the tokens and 3.5×
   the edits** of the clean version, *even with a navigation map on both*. A map helps the agent *find* things;
   with the map on both versions the messy one still cost more, and no map removed that cost. The study did not test
   whether refactoring removes it. This shows a mechanism, not a size of effect. *(twin comparison of two versions of one sample system, exploratory; n = 2 per version,
-  one model, not statistically tested; the figures are for the case with the map on both)*
+  one model, not statistically tested; the figures are for the case with the map on both; tokens are counted turn by turn with cached context included, and the cost in dollars per run was about 1.8 times)*
 - **Model choice (MX).** On one public benchmark (the RealWorld "Conduit" backend, 149 acceptance requests checked
   by a fixed set of HTTP checks, a Hurl suite, that the test harness runs, not the agent), a mid-tier model
-  (Sonnet 4.6) and a stronger model (Opus 4.8) both passed 149 of 149 from the same specification. The mid-tier model used fewer tokens: 43.4k
+  (Sonnet 4.6) and a stronger model (Opus 4.8) both passed 149 of 149 from the same specification (counts as reported in the experiment README; the generated servers and the suite are committed). The mid-tier model used fewer tokens: 43.4k
   against 54.4k (totals per model run, no input and output split). Cost was not metered, so no cost multiple is
   claimed. Both models were at the ceiling, no run lacked the specification, and the benchmark is one they have very
   likely seen in training, so this does not show whether the specification or the model produced the result.
   *(single-run comparison of two models, exploratory; n = 1 per model, one benchmark)*
 - **Formal tier (ALX).** A compiler derived from its own formal specification: the first run passed none of the
-  acceptance tests. The specification, not the code, was then corrected in five phases, with the tests already written and visible, so the record has six
+  acceptance tests. Five correction phases followed, with the tests already written and visible: the first changed the specification, the next three repaired the derived code against failing tests (the first of these also edited the reference compiler's source and four of the test files, adding struct fields), and the last did both, so the record has six
   scored points (the baseline and one after each phase), and the final recorded run passed all **386** tests of
-  its suite. The correction log counts 410 tests at the start; the committed evidence does not say why the count
+  its suite. The correction log, which also records the zero for the first run (the raw baseline output is not committed), counts 410 tests at the start; the committed evidence does not say why the count
   changed. *(demonstration without comparison, exploratory; one derivation)*
 - **Deployed service (EX).** A public sample backend was specified, generated and deployed to a live runtime:
   **13/13** behavioral probes (HTTP checks against the live service) passed (1,013 assertions, as reported in the
   experiment README) and all six thresholds held in a 3-minute load test (five latency and error limits, plus reaching 10 simulated
-  users). This is a small load test of a sample application, not a customer's
+  users). This is a small load test of a sample application, recorded in a summary file (no raw load-test output is committed), not a customer's
   production system. *(demonstration without comparison, exploratory; one run, one system)*
 - **Regeneration (RX).** On 15 March 2026 the author ran a script that gave Claude Code one specification and had it
   build a subset of the RealWorld "Conduit" backend and write its own tests, in three separate sessions. The Jest
@@ -444,10 +444,10 @@ compares two models, MX, found both at the ceiling), and none estimates how fast
   *(demonstration without comparison, exploratory; one recorded run, one system, one model)*
 - **Corner-cutting (RND-1).** A descriptive spec scored **0 of 3** against a check the model never saw; the same
   task with a prescriptive spec scored **3 of 3**, at about equal token cost (17,749 against 17,508 on the first
-  runs). The test harness ran the check, not the model. The result is close to true by definition, because the
+  runs, as reported in the README). The test harness ran the check, not the model. The descriptive runs failed that check at its first request, because the descriptive spec left the shape of the response open, so the 0 of 3 does not by itself show the missing aggregation; reading the code does. The result is close to true by definition, because the
   prescriptive spec states what the check tests. *(comparison of two versions of one specification, exploratory;
   3 runs per version, one task, one model, not statistically tested)* RND-1 also tested bounded context (n = 2) and
-  test-faking (n = 2); at 12 requirements the bounded-context version did no better than the flat one (both 100%), and in the test-faking
+  test-faking (n = 2); at 12 requirements the bounded-context version did no better than the flat one (both passed every check of an oracle that covers 8 of the 12 requirements), and in the test-faking
   check the model did not fake its tests, so verification had nothing to catch. The Compendium reports both (Section
   7.8.I).
 
