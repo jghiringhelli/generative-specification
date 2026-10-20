@@ -430,6 +430,18 @@ compares two models, MX, found both at the ceiling), and none estimates how fast
   experiment README) and all six thresholds held in a 3-minute load test (five latency and error limits, plus reaching 10 simulated
   users). This is a small load test of a sample application, not a customer's
   production system. *(demonstration without comparison, exploratory; one run, one system)*
+- **Regeneration (RX).** On 15 March 2026 the author ran a script that gave Claude Code one specification and had it
+  build a subset of the RealWorld "Conduit" backend and write its own tests, in three separate sessions. The Jest
+  report shows **104** tests in 7 suites, all passed: 62 in route suites and 42 in service suites. The model wrote the
+  tests, chose how many and was told to fix them until none failed, so this shows that the recipe runs end to end, not
+  that an outside check agrees. The run metadata names Claude Opus 4.5, but the script writes that label itself and
+  selects no model, so the version is unconfirmed. It also records one fix, `maxWorkers: 1` in the Jest config (test
+  files run one at a time), but not who made it. The specification, first committed the day after the run, says that
+  problem was found in "the first RX run", so it was either edited after this run or an earlier run exists; the record
+  does not say which. The Jest report and each session's final message are committed; the generated code and full
+  transcripts are not, and the run sat inside a larger project folder, so what else the model could read is not
+  shown. No one else has reported running the recipe (`experiments/rx`).
+  *(demonstration without comparison, exploratory; one recorded run, one system, one model)*
 - **Corner-cutting (RND-1).** A descriptive spec scored **0 of 3** against a check the model never saw; the same
   task with a prescriptive spec scored **3 of 3**, at about equal token cost (17,749 against 17,508 on the first
   runs). The test harness ran the check, not the model. The result is close to true by definition, because the
@@ -507,6 +519,6 @@ regenerate for free, is the judgment to specify correctly.
 
 - **White paper** (the full argument and citations): `github.com/jghiringhelli/generative-specification` → `docs/white-paper/GenerativeSpecification_WhitePaper.md`
 - **Compendium** (complete evidence, the pathology catalog, the formal treatment): same repo, `docs/white-paper/GenerativeSpecification_Compendium.md`
-- **Experiments** (committed run data and write-ups: AX, EX, KX, MX, RND-1, SX): `github.com/jghiringhelli/generative-specification/tree/main/experiments`
+- **Experiments** (committed run data and write-ups: AX, EX, KX, MX, RND-1, RX, SX): `github.com/jghiringhelli/generative-specification/tree/main/experiments`
 - **Formal-tier experiment (ALX)**: `github.com/jghiringhelli/loom/tree/main/experiments/alx`
 - **The author's firm** (PragmaWorks offers paid assessments of this kind): `pragmaworks.dev`
