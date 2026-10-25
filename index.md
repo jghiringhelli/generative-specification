@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Home
+title: Generative Specification
 nav_order: 1
 description: "Learn Generative Specification: write down what a system must be so an AI assistant can derive it, and a check outside the model can verify it. A free, open method."
 permalink: /

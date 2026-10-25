@@ -24,6 +24,7 @@ footer_content: "&copy; 2026 J.C. Ghiringhelli. Distributed under <a href=\"http
 plugins:
   - jekyll-remote-theme
   - jekyll-seo-tag
+  - jekyll-sitemap
   - jekyll-redirect-from
 
 # ---------------------------------------------------------------------------
@@ -35,39 +36,42 @@ plugins:
 # search index. Pages that carry their own front matter override these defaults.
 # ---------------------------------------------------------------------------
 defaults:
+  # Share image for every page (Open Graph and Twitter card), 1200x630.
+  - scope: { path: "" }
+    values: { image: /assets/images/og-image.png }
   # Research artifacts (agent-built sample projects, prompts, outputs).
   - scope: { path: "experiments" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   # Internal drafts: IEEE Access section drafts, supplement drafts, reference
   # logs, submission checklists, figures.
   - scope: { path: "docs/white-paper/ieee-access" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   # Internal planning for the book.
   - scope: { path: "docs/book" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   # Language specification draft (v0.1) and Onwards! submission drafts and notes.
   - scope: { path: "docs/loom" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   - scope: { path: "docs/essays/onwards.md" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   - scope: { path: "docs/essays/onwards-before-edits.md" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   - scope: { path: "docs/essays/onwards-edit-notes.md" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   # Internal paper planning and decision records.
   - scope: { path: "docs/white-paper/PAPER-DECISIONS.md" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   - scope: { path: "docs/white-paper/THESIS-RECENTER-proposal.md" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   - scope: { path: "docs/white-paper/THREE-PAPER-ROADMAP.md" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   - scope: { path: "docs/white-paper/v4-revision-notes.md" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   - scope: { path: "docs/white-paper/GenerativeSpecification_WhitePaper.LONGFORM.md" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   # Repository readmes: GitHub front pages, not site pages.
   - scope: { path: "README.md" }
-    values: { nav_exclude: true, search_exclude: true }
+    values: { nav_exclude: true, search_exclude: true, sitemap: false }
   # Public documents that carry no front matter of their own: nav placement is set here
   # so the source files (some of them papers) stay untouched.
   - scope: { path: "docs/white-paper/PAPER-TREE.md" }
