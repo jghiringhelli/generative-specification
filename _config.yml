@@ -3,6 +3,7 @@ remote_theme: just-the-docs/just-the-docs@v0.10.0
 title: Generative Specification
 description: "The open home of Generative Specification: learn to specify software so an AI can build it and a check outside the model can verify it. A free, open method."
 url: https://genspec.dev
+tagline: "A free, open method"
 
 search_enabled: true
 heading_anchors: true
