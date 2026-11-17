@@ -37,6 +37,26 @@ permalink: /
   </div>
 </div>
 
+### Three parts, each usable on its own
+
+<div class="path-grid">
+  <div class="path-card">
+    <h3 class="path-title">The rubric</h3>
+    <p>The yardstick: seven properties that make a project derivable and checkable, each with the named way it fails. Meet it with any tool.</p>
+    <p class="path-links"><a href="{{ '/method/rubric/' | relative_url }}">Read the rubric</a></p>
+  </div>
+  <div class="path-card">
+    <h3 class="path-title">The process</h3>
+    <p>The order for climbing: five levels of maturity and what each step up opens, so a team knows where it is and what comes next.</p>
+    <p class="path-links"><a href="{{ '/method/lifecycle/' | relative_url }}">Lifecycle and debt</a></p>
+  </div>
+  <div class="path-card">
+    <h3 class="path-title">The recommended implementation</h3>
+    <p>Our way of doing it: a sentinel, the bridge, hooks and a library of gates. A recommendation, not a requirement.</p>
+    <p class="path-links"><a href="{{ '/practice/' | relative_url }}">Practice</a><a href="{{ '/three-legs/' | relative_url }}">All three legs</a></p>
+  </div>
+</div>
+
 ### Three ways to reach the same lessons
 
 <div class="ways" role="list">
