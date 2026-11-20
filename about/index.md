@@ -24,6 +24,8 @@ A revised base paper is in preparation; see [Evidence and papers](/evidence/) fo
 
 ## Contribute
 
+Start with [how to contribute](https://github.com/jghiringhelli/generative-specification/blob/main/CONTRIBUTING.md): a first contribution takes about 15 minutes, and telling us what is unclear counts.
+
 The [gate library](/quality-gates/) is community-maintained: each gate is one YAML file mapped to one of the seven properties, and anyone can propose one by pull request. See [how to contribute a gate](/quality-gates/CONTRIBUTING.html) and the [gate schema](https://github.com/jghiringhelli/generative-specification/blob/main/quality-gates/schema.yaml).
 
 Independent replications of the experiments, including null results, are also welcome by pull request. See [how to replicate an experiment](/docs/white-paper/EXPERIMENT-PUBLISHING-PLAYBOOK.html).

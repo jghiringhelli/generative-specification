@@ -1,0 +1,28 @@
+name: Report a replication or a run
+description: You re-ran an experiment or applied the method. Null results are welcome.
+labels: ["replication"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What did you run, and on what?
+      description: The experiment or guide, the model and version, the project type.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: What happened?
+      description: Include results that did not match, and your conditions. Do not round up.
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: How would you label it?
+      options:
+        - Measured, with a stated method
+        - Pilot
+        - Anecdote
+    validations:
+      required: true
