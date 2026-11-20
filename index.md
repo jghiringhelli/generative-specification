@@ -37,23 +37,23 @@ permalink: /
   </div>
 </div>
 
-### Three parts, each usable on its own
+### Three pillars, each usable on its own
 
 <div class="path-grid">
   <div class="path-card">
-    <h3 class="path-title">The rubric</h3>
+    <h3 class="path-title">1. The rubric</h3>
     <p>The yardstick: seven properties that make a project derivable and checkable, each with the named way it fails. Meet it with any tool.</p>
     <p class="path-links"><a href="{{ '/method/rubric/' | relative_url }}">Read the rubric</a></p>
   </div>
   <div class="path-card">
-    <h3 class="path-title">The process</h3>
+    <h3 class="path-title">2. The process</h3>
     <p>The order for climbing: five levels of maturity and what each step up opens, so a team knows where it is and what comes next.</p>
     <p class="path-links"><a href="{{ '/method/lifecycle/' | relative_url }}">Lifecycle and debt</a></p>
   </div>
   <div class="path-card">
-    <h3 class="path-title">The recommended implementation</h3>
-    <p>Our way of doing it: a sentinel, the bridge, hooks and a library of gates. A recommendation, not a requirement.</p>
-    <p class="path-links"><a href="{{ '/practice/' | relative_url }}">Practice</a><a href="{{ '/three-legs/' | relative_url }}">All three legs</a></p>
+    <h3 class="path-title">3. The human in the loop</h3>
+    <p>Everything that can be checked is checked. A person decides what no check can decide, and what cannot be undone. An open draft.</p>
+    <p class="path-links"><a href="{{ '/three-pillars/#pillar-3' | relative_url }}">Read the draft</a><a href="{{ '/three-pillars/' | relative_url }}">All three pillars</a></p>
   </div>
 </div>
 
