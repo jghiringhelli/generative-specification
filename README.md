@@ -11,6 +11,18 @@ Community home for the Generative Specification methodology — the first progra
 
 ---
 
+## Join in
+
+Generative Specification is an open working draft. Three ways in, from the smallest:
+
+- **Tell us what is unclear** on any page: [open an issue](https://github.com/jghiringhelli/generative-specification/issues/new/choose).
+- **Take a small task** labelled [`first contribution`](https://github.com/jghiringhelli/generative-specification/labels/first%20contribution).
+- **Ask or propose** in [Discussions](https://github.com/jghiringhelli/generative-specification/discussions).
+
+How to contribute, and the one question every change is asked: [CONTRIBUTING.md](CONTRIBUTING.md). The method itself is at [genspec.dev](https://genspec.dev).
+
+---
+
 ## Repository Structure
 
 ```

@@ -1,0 +1,21 @@
+name: Something is unclear
+description: A page, a definition or an example that you could not follow
+labels: ["feedback"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Which page or section?
+      placeholder: "https://genspec.dev/method/rubric/"
+    validations:
+      required: true
+  - type: textarea
+    id: unclear
+    attributes:
+      label: What did you not understand, or what seems wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What would have helped you? (optional)
