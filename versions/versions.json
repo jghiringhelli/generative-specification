@@ -1,0 +1,22 @@
+{
+  "status": "draft, numbering proposed and not ratified",
+  "rule": "major: a property is added, removed or redefined, or how a letter is assigned changes. minor: clarification that does not change what a letter means. Entries are never rewritten.",
+  "rubric": [
+    {
+      "id": "rubric-1.0",
+      "date": "2026-11-25",
+      "commit": "943e9ec",
+      "page": "https://genspec.dev/method/rubric/",
+      "summary": "Seven properties graded A to F, as of a date, a commit and a spec version"
+    }
+  ],
+  "method": [
+    {
+      "id": "method-1.0",
+      "date": "2026-11-25",
+      "commit": "943e9ec",
+      "page": "https://genspec.dev/method/",
+      "summary": "The method pages as they stand at this commit"
+    }
+  ]
+}

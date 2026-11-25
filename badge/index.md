@@ -31,7 +31,7 @@ Put a file named `genspec.json` at the root of the repository:
 ```json
 {
   "declares": "built-with-gs",
-  "rubric_version": "<version of the rubric you used>",
+  "rubric_version": "<an identifier from /versions/, for example rubric-1.0>",
   "as_of": "<date>",
   "commit": "<commit the declaration refers to>",
   "declared_by": "<person or team>",
