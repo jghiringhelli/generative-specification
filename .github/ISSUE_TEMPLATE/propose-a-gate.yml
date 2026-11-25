@@ -1,0 +1,81 @@
+name: Propose a quality gate
+description: A rule that runs as a check and is not yet in the gate library. Written by a person or drafted by an assistant that the person approved.
+labels: ["proposal", "gate"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Send only the pattern. Leave out the project's name, code, file paths, credentials, and customer or employer data. If an assistant drafted this, the person must have read the full text and said yes to sending it.
+  - type: input
+    id: gate-id
+    attributes:
+      label: Gate identifier
+      description: Lowercase words joined by hyphens, one constraint per gate.
+      placeholder: no-hardcoded-secrets
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: What it checks
+      description: One to four sentences. A reader should know exactly what passes and what fails.
+    validations:
+      required: true
+  - type: dropdown
+    id: property
+    attributes:
+      label: Property it supports
+      options:
+        - Self-describing
+        - Auditable
+        - Verifiable
+        - Executable
+        - Defended
+        - Composable
+        - Bounded
+    validations:
+      required: true
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      description: Comma separated. Use ANY if it does not depend on a language or tool. Add a non-functional requirement tag if one applies (security, auditability, exposure, performance, accessibility, reliability).
+      placeholder: ANY, security
+    validations:
+      required: true
+  - type: textarea
+    id: how
+    attributes:
+      label: How it runs
+      description: The command or script, where it runs (on the machine, in the pull request, in the pipeline), and what a failure looks like.
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: The question. How does this make it easier to check, with a check that runs, that derived code is correct?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: An example that fails and one that passes, or a source. Say if it is measured, a pilot, an anecdote or a hypothesis.
+    validations:
+      required: true
+  - type: dropdown
+    id: origin
+    attributes:
+      label: Who wrote this draft
+      options:
+        - A person
+        - An assistant, read and approved in full by the person
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: It contains only the pattern, with no project name, code, paths, credentials, customer or employer data.
+          required: true
